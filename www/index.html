@@ -7,6 +7,9 @@
     <link rel="stylesheet" href="bootstrap.min.css">
       <link rel="stylesheet" href="all.css">
       
+        <link href="summernote-bs4.css" 
+rel="stylesheet">
+      
     <title>Spickipedia</title>
   </head>
   <body>
@@ -33,8 +36,8 @@
     </div>
 </nav>
     
-<div class="container-fluid">
-    <a class="btn float-right" href="#"><i class="fas fa-pen"></i></a>
+<a class="btn float-right" id="edit-button"><i class="fas fa-pen"></i></a>
+<article class="container-fluid">
     <h1 class="text-center">Startseite</h1>
     
     <b>Es wird keine Haftung für die Richtigkeit der Inhalte übernommen! Diese Seite ist aktuell im Beta-Status! Wenn Fehler auftreten, kannst du diese an mich melden. <a href="https://blog.selfmade4u.de/">Zu meinem Blog.</a></b>
@@ -54,10 +57,19 @@
             <li>Inhalt hinzufügen und speichern</li>
         </ol>
     </ol>
-</div>
+</article>
 
     <script src="jquery-3.3.1.min.js"></script>
     <script src="popper.min.js"></script>
     <script src="bootstrap.min.js"></script>
+    <script src="summernote-bs4.js"></script>
+<script>
+$(document).ready(function() {
+    $("#edit-button").click(function() {
+        $(this).hide();
+        $("article").summernote();
+    });
+});   
+</script>
   </body>
 </html>
