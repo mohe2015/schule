@@ -10,6 +10,19 @@
         <link href="summernote-bs4.css" 
 rel="stylesheet">
       
+      <style>
+      ins {
+    text-decoration: none;
+    background-color: #d4fcbc;
+}
+
+del {
+    text-decoration: line-through;
+    background-color: #fbb6c2;
+    color: #555;
+}
+      </style>
+      
     <title>Spickipedia</title>
   </head>
   <body>
@@ -63,13 +76,16 @@ rel="stylesheet">
     <script src="popper.min.js"></script>
     <script src="bootstrap.min.js"></script>
     <script src="summernote-bs4.js"></script>
+    <script src="visual-diff.js"></script>
 <script>
 $(document).ready(function() {
     $("#edit-button").click(function() {
         $(this).hide();
         $("article").summernote();
     });
-});   
-</script>
+    
+    document.getElementById("output").innerHTML = htmldiff(originalHTML, newHTML);
+});
+  </script>
   </body>
 </html>
