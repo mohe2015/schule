@@ -79,16 +79,17 @@ del {
     <script src="visual-diff.js"></script>
 <script>
 $(document).ready(function() {
-        var HelloButton = function (context) {
+    var FinishedButton = function (context) {
   var ui = $.summernote.ui;
 
   // create button
   var button = ui.button({
-    contents: '<i class="fa fa-child"/> Hello',
-    tooltip: 'hello',
+    contents: '<i class="fa fa-check"/>',
+    tooltip: 'Fertig',
     click: function () {
-      // invoke insertText method with 'hello' on editor module.
-      context.invoke('editor.insertText', 'hello');
+      $('article').summernote('destroy');
+        $("#edit-button").show();
+        $('.tooltip').hide();
     }
   });
 
@@ -96,24 +97,40 @@ $(document).ready(function() {
 }
 
     
+       var CancelButton = function (context) {
+  var ui = $.summernote.ui;
+
+  // create button
+  var button = ui.button({
+    contents: '<i class="fa fa-times"/>',
+    tooltip: 'Abbrechen',
+    click: function () {
+      $('article').summernote('destroy');
+        $("#edit-button").show();
+        $('.tooltip').hide();
+    }
+  });
+
+  return button.render();   // return button as jquery object
+}
     
     
     
-    
-   // $("#edit-button").click(function() {
+    $("#edit-button").click(function() {
         $("#edit-button").hide();
 $('article').summernote({
   buttons: {
-    hello: HelloButton
+    finished: FinishedButton,
+      cancel: CancelButton
   },
   toolbar: [
-    ['style', ['bold', 'italic', 'underline', 'clear', 'strikethrough', 'superscript', 'subscript']],
-    ['para', ['ul', 'ol', 'paragraph']],
-    ['height', ['height', 'outdent']],
-    ['mybutton', ['hello']]
+    ['style', ['bold', 'italic', 'underline', 'superscript', 'subscript']],
+    ['para', ['ul', 'ol', 'indent', 'outdent',  'justifyLeft', 'justifyCenter' ]],
+    ['insert', ['link', 'picture', 'video', 'table']],
+    ['management', ['undo', 'redo', 'help', 'cancel', 'finished']]
   ]
 });
-   // });
+});
     
     
     $('.note-status-output').first().html(
