@@ -79,12 +79,18 @@ del {
     <script src="visual-diff.js"></script>
 <script>
 $(document).ready(function() {
-    $("#edit-button").click(function() {
-        $(this).hide();
-        $("article").summernote();
-    });
+   // $("#edit-button").click(function() {
+        $("#edit-button").hide();
+$('article').summernote({
+  toolbar: [
+    ['style', ['bold', 'italic', 'underline'/*, 'clear'*/, 'strikethrough', 'superscript', 'subscript']],
+    ['para', ['ul', 'ol', 'paragraph']],
+    ['height', ['height']]
+  ]
+});
+   // });
     
-    document.getElementById("output").innerHTML = htmldiff(originalHTML, newHTML);
+    //document.getElementById("output").innerHTML = htmldiff(originalHTML, newHTML);
 });
   </script>
   </body>
