@@ -79,16 +79,50 @@ del {
     <script src="visual-diff.js"></script>
 <script>
 $(document).ready(function() {
+        var HelloButton = function (context) {
+  var ui = $.summernote.ui;
+
+  // create button
+  var button = ui.button({
+    contents: '<i class="fa fa-child"/> Hello',
+    tooltip: 'hello',
+    click: function () {
+      // invoke insertText method with 'hello' on editor module.
+      context.invoke('editor.insertText', 'hello');
+    }
+  });
+
+  return button.render();   // return button as jquery object
+}
+
+    
+    
+    
+    
+    
    // $("#edit-button").click(function() {
         $("#edit-button").hide();
 $('article').summernote({
+  buttons: {
+    hello: HelloButton
+  },
   toolbar: [
-    ['style', ['bold', 'italic', 'underline'/*, 'clear'*/, 'strikethrough', 'superscript', 'subscript']],
+    ['style', ['bold', 'italic', 'underline', 'clear', 'strikethrough', 'superscript', 'subscript']],
     ['para', ['ul', 'ol', 'paragraph']],
-    ['height', ['height']]
+    ['height', ['height', 'outdent']],
+    ['mybutton', ['hello']]
   ]
 });
    // });
+    
+    
+    $('.note-status-output').first().html(
+  '<div class="alert alert-danger">' +
+    'This is an error using a Bootstrap alert that has been restyled to fit here.' +
+  '</div>'
+);
+
+
     
     //document.getElementById("output").innerHTML = htmldiff(originalHTML, newHTML);
 });
