@@ -50,27 +50,16 @@ del {
     </div>
 </nav>
     
-<a class="btn float-right" id="edit-button"><i class="fas fa-pen"></i></a>
+
+      <div style="position: absolute; top: 50%; left: 50%; margin-left: -1rem; margin-top: -1rem;">
+      <div class="spinner-border" role="status">
+        <span class="sr-only">Loading...</span>
+      </div>
+    </div>
+      
+<!--<a class="btn float-right" id="edit-button"><i class="fas fa-pen"></i></a>-->
 <article class="container-fluid">
-    <h1 class="text-center">Startseite</h1>
     
-    <b>Es wird keine Haftung für die Richtigkeit der Inhalte übernommen! Diese Seite ist aktuell im Beta-Status! Wenn Fehler auftreten, kannst du diese an mich melden. <a href="https://blog.selfmade4u.de/">Zu meinem Blog.</a></b>
-    
-    <h2 class="text-center">Anleitung</h2>
-    
-    <ol>
-        <li>Nach Artikel suchen</li>
-        <li>Wenn man ihn findet</li>
-        <ol>
-            <li>Zum Verbessern auf Bearbeiten drücken</li>
-            <li>Änderungen durchführen und speichern</li>
-        </ol>
-        <li>Wenn man ihn nicht findet</li>
-        <ol>
-            <li>Seite erstellen</li>
-            <li>Inhalt hinzufügen und speichern</li>
-        </ol>
-    </ol>
 </article>
 
     <script src="jquery-3.3.1.min.js"></script>
@@ -78,156 +67,9 @@ del {
     <script src="bootstrap.min.js"></script>
     <script src="summernote-bs4.js"></script>
     <script src="visual-diff.js"></script>
+  <script src="index.js"></script>
 <script>
-$(document).ready(function() {
-    
-    
-    
-    
-    
-    
-    
-   
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    var FinishedButton = function (context) {
-  var ui = $.summernote.ui;
-
-  // create button
-  var button = ui.button({
-    contents: '<i class="fa fa-check"/>',
-    tooltip: 'Fertig',
-    click: function () {
-      $('article').summernote('destroy');
-        $("#edit-button").show();
-        $('.tooltip').hide();
-    }
-  });
-
-  return button.render();   // return button as jquery object
-}
-
-    
-       var CancelButton = function (context) {
-  var ui = $.summernote.ui;
-
-  // create button
-  var button = ui.button({
-    contents: '<i class="fa fa-times"/>',
-    tooltip: 'Abbrechen',
-    click: function () {
-      $('article').summernote('destroy');
-        $("#edit-button").show();
-        $('.tooltip').hide();
-    }
-  });
-
-  return button.render();   // return button as jquery object
-}
-    
-    
-    
-    $("#edit-button").click(function() {
-        $("#edit-button").hide();
-$('article').summernote({
-  buttons: {
-    finished: FinishedButton,
-      cancel: CancelButton
-  },
-  toolbar: [
-    ['style', ['bold', 'italic', 'underline', 'superscript', 'subscript']],
-    ['para', ['ul', 'ol', 'indent', 'outdent',  'justifyLeft', 'justifyCenter' ]],
-    ['insert', ['link', 'picture', 'video', 'table']],
-    ['management', ['undo', 'redo', 'help', 'cancel', 'finished']]
-  ]
-});
-});
-    
-    
-    $('.note-status-output').first().html(
-  '<div class="alert alert-danger">' +
-    'This is an error using a Bootstrap alert that has been restyled to fit here.' +
-  '</div>'
-);
-
-    
-    
-    
-
-(function(factory) {
-  /* global define */
-  if (typeof define === 'function' && define.amd) {
-    // AMD. Register as an anonymous module.
-    define(['jquery'], factory);
-  } else if (typeof module === 'object' && module.exports) {
-    // Node/CommonJS
-    module.exports = factory(require('jquery'));
-  } else {
-    // Browser globals
-    factory(window.jQuery);
-  }
-}(function($) {
-  // Extends plugins for adding hello.
-  //  - plugin is external module for customizing.
-  $.extend($.summernote.plugins, {
-    /**
-     * @param {Object} context - context object has status of editor.
-     */
-    'hello': function(context) {
-      var self = this;
-
-      // ui has renders to build ui elements.
-      //  - you can create a button with `ui.button`
-      var ui = $.summernote.ui;
-
-     
-      // This method will be called when editor is initialized by $('..').summernote();
-      // You can create elements for plugin
-      this.initialize = function() {
-        // Find editor
-            var $editor = $('.note-editor'),
-                $toolbar = $editor.find('.note-toolbar');
-            // Scrolling event
-            var repositionToolbar = function() {
-                var windowTop = $(window).scrollTop(),
-                    editorTop = $editor.offset().top,
-                    editorBottom = editorTop + $editor.height();
-                if (windowTop > editorTop && windowTop < editorBottom) {
-                    $toolbar.css('position', 'fixed');
-                    $toolbar.css('top', '0px');
-                    $toolbar.css('width', $editor.width() + 'px');
-                    $toolbar.css('z-index', '99999');
-                    $editor.css('padding-top', '42px');
-                }
-                else {
-                    $toolbar.css('position', 'static');
-                    $editor.css('padding-top', '0px');
-                }
-            };
-            // Move it
-            $(window).scroll(repositionToolbar);
-            repositionToolbar();
-      };
-
-    },
-  });
-}));    
-    
-    
-    
     //document.getElementById("output").innerHTML = htmldiff(originalHTML, newHTML);
-});
   </script>
   </body>
 </html>
