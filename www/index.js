@@ -115,6 +115,10 @@ $('article').summernote({
 
    $.get("api/wiki/Startseite", function (data) {
         $('article').html( data );
+       
+       $('#loading').fadeOut('slow');
+      $('#page').fadeIn('slow');
+       
    })
     .fail(function() {
       alert("Fehler beim Laden des Artikels!");
