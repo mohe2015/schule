@@ -6,7 +6,7 @@
 
 (defparameter *CATCH-ERRORS-P* nil)
 
-(mito:connect-toplevel :sqlite3 :database-name #P"/tmp/b.db")
+(mito:connect-toplevel :sqlite3 :database-name #P"database.db")
 
 (defclass user (mito-auth:has-secure-password)
   ((name  :col-type (:varchar 64)
@@ -84,7 +84,7 @@
   (let* ((title (subseq (script-name* *REQUEST*) 10)) (article (mito:find-dao 'wiki-article :title title)))
     (if article
 	(wiki-article-revision-content (car (mito:select-dao 'wiki-article-revision
-	     (where (:= :article *article*))
+	     (where (:= :article article))
 	     (order-by (:desc :id))
 	     (limit 1))))
 	(progn
