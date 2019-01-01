@@ -96,6 +96,13 @@
 	  (setf (return-code* *reply*) 404)
 	  nil))))
 
+(defun wiki-page-history ()
+  (setf (content-type*) "text/json")
+  (let* ((title (subseq (script-name* *REQUEST*) 13)) (article (mito:find-dao 'wiki-article :title title)))
+    (json:encode-json-to-string
+     (mapcar #'(lambda (r) `((user . ,(user-name (wiki-article-revision-author r)))
+			     (content . ,(wiki-article-revision-content r))))
+	     (mito:retrieve-dao 'wiki-article-revision :article article)))))
 
 (define-easy-handler (root :uri "/") ()
   (redirect "/wiki/Startseite"))
@@ -105,4 +112,5 @@
        (list 'dispatch-easy-handlers
 	     (create-prefix-dispatcher "/wiki" 'wiki-page-html)
 	     (create-prefix-dispatcher "/api/wiki" 'wiki-page)
+	     (create-prefix-dispatcher "/api/history" 'wiki-page-history)
 	     (create-folder-dispatcher-and-handler "/" #P"www/"))))
