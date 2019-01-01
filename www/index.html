@@ -1,139 +1,108 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-    <link rel="stylesheet" href="bootstrap.min.css">
-      <link rel="stylesheet" href="all.css">
-      
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link rel="stylesheet" href="bootstrap.min.css">
+        <link rel="stylesheet" href="all.css">
         <link href="summernote-bs4.css" 
-rel="stylesheet">
-      
-      <style>
-      ins {
-    text-decoration: none;
-    background-color: #d4fcbc;
-}
-
-del {
-    text-decoration: line-through;
-    background-color: #fbb6c2;
-    color: #555;
-}
-          
-.container-fluid {
-    padding-left: 10px;
-    padding-right: 10px;
-}
-          
-      </style>
-      
-    <title>Spickipedia</title>
-  </head>
-  <body>
-      
-
-<nav class="navbar navbar-expand-md navbar-light bg-light">
-    <a class="navbar-brand" href="#">
-   
-    Spickipedia
-  </a>
-
-    <div>
-        <a class="btn d-inline d-md-none edit-button"><i class="fas fa-pen"></i></a>
-
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-             
-    </div>
-        
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-                <a class="nav-link" href="#">Startseite <span class="sr-only">(current)</span></a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Anmelden</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Einstellungen</a>
-            </li>
-            <li class="nav-item d-none d-md-block">
-                <a class="nav-link edit-button" href="#">Bearbeiten</a>
-            </li>
-        </ul>
-    </div>
-</nav>
-      
-  <div id="loading">
-      
-     <div style="position: absolute; top: 50%; left: 50%; margin-left: -1rem; margin-top: -1rem;">
-      <div class="spinner-border" role="status">
-        <span class="sr-only">Loading...</span>
-      </div>
-    </div>
-    
-    </div>
-  <div style="display: none;" class="container-fluid" id="page">
-      
-<article>
-    
-          
-</article>
-      
-      <small>Dieses Werk ist lizenziert unter einer <a target="_blank" rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/deed.de">Creative Commons Namensnennung - Weitergabe unter gleichen Bedingungen 4.0 International Lizenz</a>.</small>
-</div>
-
-
-      
-      
-<!-- Modal -->
-<div class="modal fade" id="publish-changes-modal" tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Änderungen veröffentlichen</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        
-          <form>
-              <div class="form-group">
-              <label>Änderungszusammenfassung:</label><br>
-            <textarea class="form-control" id="change-summary" rows="3"></textarea>
-              </div>
-          </form>
-          <p>Mit dem Veröffentlichen dieses Artikels garantierst du, dass er nicht die Rechte anderer verletzt und bist damit einverstanden, ihn unter der <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.de">Creative Commons Namensnennung - Weitergabe unter gleichen Bedingungen 4.0 International Lizenz</a> zu veröffentlichen.</p>
-          
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Bearbeitung fortsetzen</button>
-        <button type="button" class="btn btn-primary" id="publish-changes">Änderungen veröffentlichen</button>
-          <button id="publishing-changes" class="btn btn-primary" style="display: none;" type="button" disabled>
-  <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-  Veröffentlichen...
-</button>
-          <!-- TODO Überprüfe deine Änderungen (diff) -->
-      </div>
-    </div>
-  </div>
-</div>
-      
-      
-      
-      
-    <script src="jquery-3.3.1.min.js"></script>
-    <script src="popper.min.js"></script>
-    <script src="bootstrap.min.js"></script>
-    <script src="summernote-bs4.js"></script>
-    <script src="visual-diff.js"></script>
-  <script src="index.js"></script>
-<script>
-    //document.getElementById("output").innerHTML = htmldiff(originalHTML, newHTML);
-  </script>
-  </body>
+            rel="stylesheet">
+        <style>
+            ins {
+            text-decoration: none;
+            background-color: #d4fcbc;
+            }
+            del {
+            text-decoration: line-through;
+            background-color: #fbb6c2;
+            color: #555;
+            }
+            .container-fluid {
+            padding-left: 10px;
+            padding-right: 10px;
+            }
+        </style>
+        <title>Spickipedia</title>
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-md navbar-light bg-light">
+            <a class="navbar-brand" href="#">
+            Spickipedia
+            </a>
+            <div>
+                <a class="btn d-inline d-md-none edit-button"><i class="fas fa-pen"></i></a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#">Startseite <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Anmelden</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Einstellungen</a>
+                    </li>
+                    <li class="nav-item d-none d-md-block">
+                        <a class="nav-link edit-button" href="#">Bearbeiten</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <div id="loading">
+            <div style="position: absolute; top: 50%; left: 50%; margin-left: -1rem; margin-top: -1rem;">
+                <div class="spinner-border" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            </div>
+        </div>
+        <div style="display: none;" class="container-fluid" id="page">
+            <article>
+            </article>
+            <small>Dieses Werk ist lizenziert unter einer <a target="_blank" rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/deed.de">Creative Commons Namensnennung - Weitergabe unter gleichen Bedingungen 4.0 International Lizenz</a>.</small>
+        </div>
+        <!-- Modal -->
+        <div class="modal fade" id="publish-changes-modal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Änderungen veröffentlichen</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="form-group">
+                                <label>Änderungszusammenfassung:</label><br>
+                                <textarea class="form-control" id="change-summary" rows="3"></textarea>
+                            </div>
+                        </form>
+                        <p>Mit dem Veröffentlichen dieses Artikels garantierst du, dass er nicht die Rechte anderer verletzt und bist damit einverstanden, ihn unter der <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.de">Creative Commons Namensnennung - Weitergabe unter gleichen Bedingungen 4.0 International Lizenz</a> zu veröffentlichen.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Bearbeitung fortsetzen</button>
+                        <button type="button" class="btn btn-primary" id="publish-changes">Änderungen veröffentlichen</button>
+                        <button id="publishing-changes" class="btn btn-primary" style="display: none;" type="button" disabled>
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        Veröffentlichen...
+                        </button>
+                        <!-- TODO Überprüfe deine Änderungen (diff) -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="jquery-3.3.1.min.js"></script>
+        <script src="popper.min.js"></script>
+        <script src="bootstrap.min.js"></script>
+        <script src="summernote-bs4.js"></script>
+        <script src="visual-diff.js"></script>
+        <script src="index.js"></script>
+        <script>
+            //document.getElementById("output").innerHTML = htmldiff(originalHTML, newHTML);
+        </script>
+    </body>
 </html>
