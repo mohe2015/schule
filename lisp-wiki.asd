@@ -1,3 +1,3 @@
 (defsystem :lisp-wiki
-  :depends-on (:cl-who :hunchentoot :parenscript :mito :mito-attachment :mito-auth :can)
+  :depends-on (:hunchentoot :mito :mito-auth :mito-attachment)
   :components ((:file "lisp-wiki")))

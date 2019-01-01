@@ -1,9 +1,10 @@
 (defpackage :lisp-wiki
-  (:use :common-lisp :cl-who :hunchentoot :parenscript :mito :mito-attachment :mito-auth :can)
-  (:shadowing-import-from :mito-attachment :content-type)
+  (:use :common-lisp :hunchentoot :mito :mito-auth)
   (:export))
 
 (in-package :lisp-wiki)
+
+(defparameter *CATCH-ERRORS-P* nil)
 
 (mito:connect-toplevel :sqlite3 :database-name #P"/tmp/b.db")
 
@@ -43,17 +44,19 @@
 (mito:migrate-table 'wiki-article)
 (mito:migrate-table 'wiki-article-revision)
 
-(defvar *article* (make-instance 'wiki-article :title "Startseite"))
-(defvar *user* (make-instance 'user :name "Moritz Hedtke" :group "admin" :password "common-lisp"))
-(mito:insert-dao *article*)
-(mito:insert-dao *user*)
+(defvar *user* (mito:find-dao 'user :name "Moritz Hedtke"))
 
-(defvar *revision* (make-instance 'wiki-article-revision :author *user* :article *article* :content "hi dudes"))
-(mito:insert-dao *revision*)
+;(defvar *article* (make-instance 'wiki-article :title "Startseite"))
+;(defvar *user* (make-instance 'user :name "Moritz Hedtke" :group "admin" :password "common-lisp"))
+;(mito:insert-dao *article*)
+;(mito:insert-dao *user*)
 
-(assert (auth *user* "common-lisp"))
+;(defvar *revision* (make-instance 'wiki-article-revision :author *user* :article *article* :content "hi dudes"))
+;(mito:insert-dao *revision*)
 
-(assert (not (auth *user* "wrong-password")))
+;(assert (auth *user* "common-lisp"))
+
+;(assert (not (auth *user* "wrong-password")))
 
 ;;(stop *acceptor*)
 
@@ -64,6 +67,8 @@
       (defparameter *acceptor* (make-instance 'easy-acceptor :port 8080 :document-root #p"/usr/share/nginx/html/www/"))
       (start *acceptor*)))
 
+(defparameter *dispatch-table ())
+
 (define-easy-handler (api :uri "/api") ()
   (setf (content-type*) "text/html")
   "test")
@@ -71,6 +76,24 @@
 (push (create-prefix-dispatcher "/api/wiki" 'wiki-page) *dispatch-table*)
 
 (defun wiki-page ()
-  (SETF (header-out "X-LOL" *REPLY*) "TEST")
-  
-  (script-name* *REQUEST*))
+  (ecase (request-method* *request*)
+    (:GET (get-wiki-page))
+    (:POST (post-wiki-page))))
+
+(defun get-wiki-page ()
+  (let* ((title (subseq (script-name* *REQUEST*) 10)) (article (mito:find-dao 'wiki-article :title title)))
+    (if article
+	(wiki-article-revision-content (mito:find-dao 'wiki-article-revision :article article))
+	(progn
+	  (setf (return-code* *reply*) 404)
+	  nil))))
+
+(defun post-wiki-page ()
+  (let* ((title (subseq (script-name* *REQUEST*) 10)) (article (mito:find-dao 'wiki-article :title title)))
+    (if article
+	(progn
+	  (mito:create-dao 'wiki-article-revision :article article :author *user* :content "TESTCONTENT")
+	  "success")
+	(progn
+	  (setf (return-code* *reply*) 404)
+	  "failure"))))
