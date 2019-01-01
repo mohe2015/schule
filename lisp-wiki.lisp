@@ -1,5 +1,5 @@
 (defpackage :lisp-wiki
-  (:use :common-lisp :hunchentoot :mito :mito-auth)
+  (:use :common-lisp :hunchentoot :mito :mito-auth :sxql)
   (:export))
 
 (in-package :lisp-wiki)
@@ -83,7 +83,10 @@
 (defun get-wiki-page ()
   (let* ((title (subseq (script-name* *REQUEST*) 10)) (article (mito:find-dao 'wiki-article :title title)))
     (if article
-	(wiki-article-revision-content (mito:find-dao 'wiki-article-revision :article article))
+	(wiki-article-revision-content (car (mito:select-dao 'wiki-article-revision
+	     (where (:= :article *article*))
+	     (order-by (:desc :id))
+	     (limit 1))))
 	(progn
 	  (setf (return-code* *reply*) 404)
 	  nil))))
