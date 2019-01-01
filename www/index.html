@@ -32,6 +32,37 @@ del {
   </head>
   <body>
       
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Änderungen veröffentlichen</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        
+          <form>
+              <div class="form-group">
+              <label>Änderungszusammenfassung:</label><br>
+            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+              </div>
+          </form>
+          <p>Mit dem Veröffentlichen dieses Artikels garantierst du, dass er nicht die Rechte anderer verletzt und bist damit einverstanden, ihn unter der <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.de">Creative Commons Namensnennung - Weitergabe unter gleichen Bedingungen 4.0 International Lizenz</a> zu veröffentlichen.</p>
+          
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Bearbeitung fortsetzen</button>
+        <button type="button" class="btn btn-primary">Änderungen veröffentlichen</button>
+          <!-- TODO Überprüfe deine Änderungen (diff) -->
+      </div>
+    </div>
+  </div>
+</div>
+      
 <nav class="navbar navbar-expand-md navbar-light bg-light">
     <a class="navbar-brand" href="#">
    
@@ -74,14 +105,15 @@ del {
     </div>
     
     </div>
-  <div style="display: none;" id="page">
+  <div style="display: none;" class="container-fluid" id="page">
       
-          <article class="container-fluid">
+<article>
     
           
 </article>
       
-    </div>
+      <small>Dieses Werk ist lizenziert unter einer <a target="_blank" rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/deed.de">Creative Commons Namensnennung - Weitergabe unter gleichen Bedingungen 4.0 International Lizenz</a>.</small>
+</div>
 
 
     <script src="jquery-3.3.1.min.js"></script>
