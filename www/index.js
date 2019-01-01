@@ -12,13 +12,7 @@ $(document).ready(function() {
                     $('#change-summary').trigger('focus')
                 });
 
-                // modal 1050
-                // modal backdrop: 1040
                 $('#publish-changes-modal').modal('show');
-
-
-                // $('article').summernote('destroy');
-                //  $('.tooltip').hide();
             }
         });
         return button.render();
@@ -42,16 +36,18 @@ $(document).ready(function() {
         $('#publish-changes').hide();
         $('#publishing-changes').show();
 
-        $.post("api/wiki/Startseite", function(data) {
-            $('article').html(data);
-
-            $('#loading').fadeOut('slow');
-            $('#page').fadeIn('slow');
-
+        var data = $('article').summernote('code');
+        
+        $.post("api/wiki/Startseite", data, function(data) {
+            $('#publish-changes').modal('dismiss');
+            
+            $('article').summernote('destroy');
         })
         .fail(function() {
-            alert("Fehler beim Laden des Artikels!");
+            alert("Fehler beim Speichern des Artikels!");
         });
+        
+        // TODO dismiss should cancel request
     });
 
 
