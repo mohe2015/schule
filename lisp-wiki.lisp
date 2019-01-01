@@ -5,37 +5,51 @@
 
 (in-package :lisp-wiki)
 
+(mito:connect-toplevel :sqlite3 :database-name #P"/tmp/b.db")
 
-(mito:connect-toplevel :sqlite3 :database-name #P"/usr/share/nginx/html/database.db")
+(defclass user (mito-auth:has-secure-password)
+  ((name  :col-type (:varchar 64)
+	  :initarg :name
+	  :accessor user-name)
+   (group :col-type (:varchar 64)
+	  :initarg :group
+	  :accessor user-group))
+  (:metaclass mito:dao-table-class))
 
-(deftable user (has-secure-password)
-  ((name :col-type (:varchar 60))))
+(defclass wiki-article ()
+  ((title :col-type (:varchar 128)
+	  :initarg :title
+	  :accessor wiki-article-title))
+  (:metaclass mito:dao-table-class))
 
-(deftable wiki-article ()
-  ((title :col-type (:varchar 128))))
-
-(deftable wiki-article-revision ()
-  ((user :col-type user)
-   (wiki-article :col-type wiki-article)
-   (content :col-type (:blob))))
-
+(defclass wiki-article-revision ()
+  ((author :col-type user
+	   :initarg :author
+	   :accessor wiki-article-revision-author)
+   (article :col-type wiki-article
+	    :initarg :article
+	    :accessor wiki-article-revision-article)
+   (content :col-type (:blob)
+	    :initarg :content
+	    :accessor wiki-article-revision-content))
+  (:metaclass mito:dao-table-class))
 
 (setf mito:*mito-logger-stream* t)
 
-(ensure-table-exists 'user)
-(ensure-table-exists 'wiki-article)
-(ensure-table-exists 'wiki-article-revision)
-(migrate-table 'user)
-(migrate-table 'wiki-article)
-(migrate-table 'wiki-article-revision)
+(mito:ensure-table-exists 'user)
+(mito:ensure-table-exists 'wiki-article)
+(mito:ensure-table-exists 'wiki-article-revision)
+(mito:migrate-table 'user)
+(mito:migrate-table 'wiki-article)
+(mito:migrate-table 'wiki-article-revision)
 
-;; (create-dao 'wiki-article :title "Startseite")
-;;  (create-dao 'wiki-article-revision :author *user* :article (find-dao 'wiki-article :title "Startseite") :content "THIS IS THE INITIAL CONTENT")
+(defvar *article* (make-instance 'wiki-article :title "Startseite"))
+(defvar *user* (make-instance 'user :name "Moritz Hedtke" :group "admin" :password "common-lisp"))
+(mito:insert-dao *article*)
+(mito:insert-dao *user*)
 
-
-(mito:create-dao 'user :name "Moritz Hedtke" :password "common-lisp")
-
-(defparameter *user* (mito:find-dao 'user :name "Moritz Hedtke"))
+(defvar *revision* (make-instance 'wiki-article-revision :author *user* :article *article* :content "hi dudes"))
+(mito:insert-dao *revision*)
 
 (assert (auth *user* "common-lisp"))
 
