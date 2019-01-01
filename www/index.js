@@ -7,8 +7,18 @@ $(document).ready(function() {
         contents: '<i class="fa fa-check"/>',
         tooltip: 'Fertig',
         click: function () {
-          $('article').summernote('destroy');
-          $('.tooltip').hide();
+            
+            $('#publish-changes-modal').on('shown.bs.modal', function () {
+  $('#change-summary').trigger('focus')
+});
+            
+            // modal 1050
+            // modal backdrop: 1040
+            $('#publish-changes-modal').modal('show');
+            
+            
+         // $('article').summernote('destroy');
+        //  $('.tooltip').hide();
         }
       });
       return button.render();
@@ -28,6 +38,24 @@ $(document).ready(function() {
       return button.render();
     }
 
+    $('#publish-changes').click(function() {
+        $('#publish-changes').hide();
+       $('#publishing-changes').show();
+        
+          $.post("api/wiki/Startseite", function (data) {
+        $('article').html( data );
+       
+       $('#loading').fadeOut('slow');
+      $('#page').fadeIn('slow');
+       
+   })
+    .fail(function() {
+      alert("Fehler beim Laden des Artikels!");
+   });
+    
+        
+    });
+    
         
     $(".edit-button").click(function() {
         $('article').summernote({
