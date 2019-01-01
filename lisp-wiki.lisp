@@ -101,7 +101,8 @@
   (let* ((title (subseq (script-name* *REQUEST*) 13)) (article (mito:find-dao 'wiki-article :title title)))
     (json:encode-json-to-string
      (mapcar #'(lambda (r) `((user . ,(user-name (wiki-article-revision-author r)))
-			     (content . ,(wiki-article-revision-content r))))
+			     (content . ,(wiki-article-revision-content r))
+			     (created . ,(local-time:format-timestring nil (mito:object-created-at (wiki-article-revision-author r))))))
 	     (mito:retrieve-dao 'wiki-article-revision :article article)))))
 
 (define-easy-handler (root :uri "/") ()
