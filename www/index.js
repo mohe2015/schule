@@ -36,14 +36,20 @@ $(document).ready(function() {
         $('#publish-changes').hide();
         $('#publishing-changes').show();
 
-        var data = $('article').summernote('code');
+        var changeSummary = $('#change-summary').html();
+        var newHtml = $('article').summernote('code');
         
-        $.post("api/wiki/Startseite", data, function(data) {
-            $('#publish-changes').modal('dismiss');
-            
+        $.post("api/wiki/Startseite", { summary: changeSummary, html: newHtml }, function(data) {
             $('article').summernote('destroy');
+            $('#publish-changes-modal').modal('hide');
+            
+            $('#publish-changes').show();
+            $('#publishing-changes').hide();
         })
         .fail(function() {
+            $('#publish-changes').show();
+            $('#publishing-changes').hide();
+          
             alert("Fehler beim Speichern des Artikels!");
         });
         

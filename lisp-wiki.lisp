@@ -95,8 +95,8 @@
   (let* ((title (subseq (script-name* *REQUEST*) 10)) (article (mito:find-dao 'wiki-article :title title)))
     (if article
 	(progn
-	  (mito:create-dao 'wiki-article-revision :article article :author *user* :content "TESTCONTENT")
-	  "success")
+	  (mito:create-dao 'wiki-article-revision :article article :author *user* :content (post-parameter "html" *request*))
+	  nil)
 	(progn
 	  (setf (return-code* *reply*) 404)
-	  "failure"))))
+	  nil))))
