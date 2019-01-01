@@ -64,16 +64,11 @@
 
 (if (not *acceptor*)
     (progn
-      (defparameter *acceptor* (make-instance 'easy-acceptor :port 8080 :document-root #p"/usr/share/nginx/html/www/"))
+      (defparameter *acceptor* (make-instance 'easy-acceptor :port 8080))
       (start *acceptor*)))
 
-(defparameter *dispatch-table ())
-
-(define-easy-handler (api :uri "/api") ()
-  (setf (content-type*) "text/html")
-  "test")
-
-(push (create-prefix-dispatcher "/api/wiki" 'wiki-page) *dispatch-table*)
+(defun wiki-page-html ()
+  (handle-static-file "www/index.html"))
 
 (defun wiki-page ()
   (ecase (request-method* *request*)
@@ -100,3 +95,14 @@
 	(progn
 	  (setf (return-code* *reply*) 404)
 	  nil))))
+
+
+(define-easy-handler (root :uri "/") ()
+  (redirect "/wiki/Startseite"))
+
+(setq *dispatch-table*
+      (nconc
+       (list 'dispatch-easy-handlers
+	     (create-prefix-dispatcher "/wiki" 'wiki-page-html)
+	     (create-prefix-dispatcher "/api/wiki" 'wiki-page)
+	     (create-folder-dispatcher-and-handler "/" #P"www/"))))

@@ -39,7 +39,7 @@ $(document).ready(function() {
         var changeSummary = $('#change-summary').html();
         var newHtml = $('article').summernote('code');
         
-        $.post("api/wiki/Startseite", { summary: changeSummary, html: newHtml }, function(data) {
+        $.post("/api/wiki/Startseite", { summary: changeSummary, html: newHtml }, function(data) {
             $('article').summernote('destroy');
             $('#publish-changes-modal').modal('hide');
             
@@ -75,7 +75,7 @@ $(document).ready(function() {
         $('article').summernote('fullscreen.toggle');
     });
 
-    $.get("api/wiki/Startseite", function(data) {
+    $.get("/api/wiki/Startseite", function(data) {
         $('article').html(data);
 
         $('#loading').fadeOut('slow');
