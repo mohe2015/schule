@@ -74,15 +74,35 @@ $(document).ready(function() {
         });
         $('article').summernote('fullscreen.toggle');
     });
+    
+    $("#show-history").click(function () {
+        $('.my-tab').fadeOut({queue: false});
+        $('#loading').fadeIn({queue: false});
+        
+        $.get("/api/history/Startseite", function(data) {
+            //$('article').html(data);
+            
+            window.history.pushState(null, "Änderungsverlauf Startseite", "/wiki/Startseite/history");
+
+            $('#loading').fadeOut({queue: false});
+            $('#history').fadeIn({queue: false});
+        })
+        .fail(function() {
+            alert("Fehler beim Laden des Änderungsverlaufs!");
+        });
+    });
 
     $.get("/api/wiki/Startseite", function(data) {
         $('article').html(data);
 
-        $('#loading').fadeOut('slow');
-        $('#page').fadeIn('slow');
-
+        $('.my-tab').fadeOut({queue: false});
+        $('#page').fadeIn({queue: false});
     })
     .fail(function() {
         alert("Fehler beim Laden des Artikels!");
     });
+    
+    window.onpopstate = function (event) {
+        alert("TODO");
+    };
 });
