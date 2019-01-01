@@ -8,7 +8,6 @@ $(document).ready(function() {
         tooltip: 'Fertig',
         click: function () {
           $('article').summernote('destroy');
-          $("#edit-button").show();
           $('.tooltip').hide();
         }
       });
@@ -22,7 +21,6 @@ $(document).ready(function() {
         tooltip: 'Abbrechen',
         click: function () {
             $('article').summernote('destroy');
-            $("#edit-button").show();
             $('.tooltip').hide();
         }
       });
@@ -31,8 +29,7 @@ $(document).ready(function() {
     }
 
         
-    $("#edit-button").click(function() {
-        $("#edit-button").hide();
+    $(".edit-button").click(function() {
         $('article').summernote({
           dialogsFade: true,
           focus: true,
@@ -48,7 +45,6 @@ $(document).ready(function() {
           ]
         });
         $('article').summernote('fullscreen.toggle');
-
     });
     
     
