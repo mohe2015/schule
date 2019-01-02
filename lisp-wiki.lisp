@@ -117,3 +117,4 @@
 	     (create-prefix-dispatcher "/api/wiki" 'wiki-page)
 	     (create-prefix-dispatcher "/api/history" 'wiki-page-history)
 	     (create-folder-dispatcher-and-handler "/" #P"www/"))))
+
