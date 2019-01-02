@@ -130,7 +130,7 @@
 
 (defun upload-handler ()
   (let* ((filepath (nth 0 (hunchentoot:post-parameter "file")))
-	 (filetype (nth 2 (hunchentoot:post-parameter "file")))
+	 ;; (filetype (nth 2 (hunchentoot:post-parameter "file")))
 	 (filehash (byte-array-to-hex-string (digest-file :sha512 filepath)))	 ;; TODO whitelist mimetypes TODO verify if mimetype is correct
 	 (newpath (merge-pathnames (concatenate 'string "uploads/" filehash) *default-pathname-defaults*)))
 	 (print newpath)
