@@ -70,7 +70,8 @@ $(document).ready(function() {
                 cancel: CancelButton
             },
             toolbar: [
-                ['style', ['style', 'bold', 'italic', 'underline', 'superscript', 'subscript']],
+                ['style', ['style', 'bold', 'italic', 'underline', 'strikethrough', 'superscript', 
+'subscript']],
                 ['para', ['ul', 'ol', 'indent', 'outdent', 'justifyLeft', 'justifyCenter']],
                 ['insert', ['link', 'picture', 'video', 'table']],
                 ['management', ['undo', 'redo', 'help', 'cancel', 'finished']]
