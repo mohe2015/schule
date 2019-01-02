@@ -1,8 +1,19 @@
 (defpackage :lisp-wiki
-  (:use :common-lisp :hunchentoot :mito :mito-auth :sxql)
+  (:use :common-lisp :hunchentoot :mito :mito-auth :sxql :sanitize)
   (:export))
 
 (in-package :lisp-wiki)
+
+(define-sanitize-mode *sanitize-spickipedia*
+    :elements ("h1" "h2" "h3" "h4" "h5" "h6")
+    
+    :attributes ((:all         . ("style"))
+                 ("a"          . ("href")))
+
+    :protocols (("a"           . (("href" . (:ftp :http :https :mailto :relative))))
+                ("img"         . (("src"  . (:http :https :relative)))))
+    :css-attributes (("text-align" . ("center"))))
+
 
 (defparameter *CATCH-ERRORS-P* nil)
 
@@ -76,10 +87,10 @@
 (defun get-wiki-page ()
   (let* ((title (subseq (script-name* *REQUEST*) 10)) (article (mito:find-dao 'wiki-article :title title)))
     (if article
-	(wiki-article-revision-content (car (mito:select-dao 'wiki-article-revision
-	     (where (:= :article article))
-	     (order-by (:desc :id))
-	     (limit 1))))
+	(clean (wiki-article-revision-content (car (mito:select-dao 'wiki-article-revision
+									    (where (:= :article article))
+									    (order-by (:desc :id))
+									    (limit 1)))) *sanitize-spickipedia*)
 	(progn
 	  (setf (return-code* *reply*) 404)
 	  nil))))
@@ -88,7 +99,7 @@
   (let* ((title (subseq (script-name* *REQUEST*) 10)) (article (mito:find-dao 'wiki-article :title title)))
     (if article
 	(progn
-	  (mito:create-dao 'wiki-article-revision :article article :author *user* :content (post-parameter "html" *request*))
+	  (mito:create-dao 'wiki-article-revision :article article :author *user* :content (clean (post-parameter "html" *request*) *sanitize-spickipedia*))
 	  nil)
 	(progn
 	  (setf (return-code* *reply*) 404)
@@ -117,4 +128,3 @@
 	     (create-prefix-dispatcher "/api/wiki" 'wiki-page)
 	     (create-prefix-dispatcher "/api/history" 'wiki-page-history)
 	     (create-folder-dispatcher-and-handler "/" #P"www/"))))
-

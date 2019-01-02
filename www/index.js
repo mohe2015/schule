@@ -74,7 +74,7 @@ $(document).ready(function() {
 'subscript']],
                 ['para', ['ul', 'ol', 'indent', 'outdent', 'justifyLeft', 'justifyCenter']],
                 ['insert', ['link', 'picture', 'video', 'table']],
-                ['management', ['undo', 'redo', 'help', 'cancel', 'finished']]
+                ['management', ['undo', 'redo', 'help', 'cancel', 'finished', 'codeview']]
             ]
         });
         $('article').summernote('fullscreen.toggle');
