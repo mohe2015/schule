@@ -5,14 +5,20 @@
 (in-package :lisp-wiki)
 
 (define-sanitize-mode *sanitize-spickipedia*
-    :elements ("h1" "h2" "h3" "h4" "h5" "h6")
+    :elements ("h1" "h2" "h3" "h4" "h5" "h6" "p" "strike" "sub" "b" "u" "i" "sup" "table" "tbody" "tr" "td" "ul" "a" "br" "ol" "li" "img" "iframe")
     
-    :attributes ((:all         . ("style"))
-                 ("a"          . ("href")))
+    :attributes (("h1"          . ("align"))
+		 ("a"           . ("href" "target"))
+		 ("p"           . ("align"))
+		 ("img"         . ("src" "style"))
+		 ("table"       . ("class"))
+		 ("iframe"      . ("src"))) ;; TODO this needs to be checked correctly
 
     :protocols (("a"           . (("href" . (:ftp :http :https :mailto :relative))))
-                ("img"         . (("src"  . (:http :https :relative)))))
-    :css-attributes (("text-align" . ("center"))))
+                ("img"         . (("src"  . (:http :https :relative))))
+		("iframe"      . (("src"  . (:https)))))
+    :css-attributes (("text-align" . ("center"))
+		     ("float"      . ("left" "right"))))
 
 
 (defparameter *CATCH-ERRORS-P* nil)
@@ -99,7 +105,7 @@
   (let* ((title (subseq (script-name* *REQUEST*) 10)) (article (mito:find-dao 'wiki-article :title title)))
     (if article
 	(progn
-	  (mito:create-dao 'wiki-article-revision :article article :author *user* :content (clean (post-parameter "html" *request*) *sanitize-spickipedia*))
+	  (mito:create-dao 'wiki-article-revision :article article :author *user* :content (post-parameter "html" *request*))
 	  nil)
 	(progn
 	  (setf (return-code* *reply*) 404)
