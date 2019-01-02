@@ -1,5 +1,5 @@
 (defpackage :lisp-wiki
-  (:use :common-lisp :hunchentoot :mito :mito-auth :sxql :sanitize)
+  (:use :common-lisp :hunchentoot :mito :mito-auth :sxql :sanitize :ironclad :cl-fad)
   (:export))
 
 (in-package :lisp-wiki)
@@ -128,7 +128,16 @@
   (redirect "/wiki/Startseite"))
 
 (defun upload-handler ()
-  (handle-static-file (nth 0 (hunchentoot:post-parameter "file")) (nth 2 (hunchentoot:post-parameter "file")))) ;; TODO whitelist mimetypes
+  (let* ((filepath (nth 0 (hunchentoot:post-parameter "file")))
+	 (filetype (nth 2 (hunchentoot:post-parameter "file")))
+	 (filehash (byte-array-to-hex-string (digest-file :sha512 filepath)))	 ;; TODO whitelist mimetypes TODO verify if mimetype is correct
+	 (newpath (merge-pathnames (concatenate 'string "uploads/" filehash) *default-pathname-defaults*)))
+	 (print newpath)
+	 (copy-file filepath newpath :overwrite t)
+	 filehash))
+
+(defun file-handler ()
+  (handle-static-file (merge-pathnames (concatenate 'string "uploads/" (subseq (script-name* *REQUEST*) 10)))))
 
 (setq *dispatch-table*
       (nconc
@@ -137,4 +146,5 @@
 	     (create-prefix-dispatcher "/api/wiki" 'wiki-page)
 	     (create-prefix-dispatcher "/api/history" 'wiki-page-history)
 	     (create-prefix-dispatcher "/api/upload" 'upload-handler)
+	     (create-prefix-dispatcher "/api/file" 'file-handler)
 	     (create-folder-dispatcher-and-handler "/" #P"www/"))))

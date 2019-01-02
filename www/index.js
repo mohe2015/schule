@@ -44,7 +44,6 @@ $(document).ready(function() {
             $('article').summernote('fullscreen.toggle');
             $('article').summernote('destroy');
             
-            
             $('#publish-changes-modal').modal('hide');
             
             $('#publish-changes').show();
@@ -62,6 +61,7 @@ $(document).ready(function() {
 
     
     function sendFile(file, editor, welEditable) {
+        $('#uploadProgressModal').modal('show');
         data = new FormData();
         data.append("file", file);
         $.ajax({
@@ -77,7 +77,7 @@ $(document).ready(function() {
             contentType: false,
             processData: false,
             success: function(url) {
-                editor.insertImage(welEditable, url);
+                $('article').summernote('insertImage', '/api/file/' + url);
             }
         });
     }
@@ -97,8 +97,8 @@ $(document).ready(function() {
     $(".edit-button").click(function() {
         $('article').summernote({
             callbacks: {
-              onImageUpload: function(files, editor, welEditable) {
-                sendFile(files[0], editor, welEditable);
+              onImageUpload: function(files) {
+                sendFile(files[0]);
               }
             },
             dialogsFade: true,
