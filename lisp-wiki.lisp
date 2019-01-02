@@ -44,19 +44,15 @@
 (mito:migrate-table 'wiki-article)
 (mito:migrate-table 'wiki-article-revision)
 
-(defvar *user* (mito:find-dao 'user :name "Moritz Hedtke"))
-
-;(defvar *article* (make-instance 'wiki-article :title "Startseite"))
-;(defvar *user* (make-instance 'user :name "Moritz Hedtke" :group "admin" :password "common-lisp"))
-;(mito:insert-dao *article*)
-;(mito:insert-dao *user*)
-
-;(defvar *revision* (make-instance 'wiki-article-revision :author *user* :article *article* :content "hi dudes"))
-;(mito:insert-dao *revision*)
-
-;(assert (auth *user* "common-lisp"))
-
-;(assert (not (auth *user* "wrong-password")))
+;; run only once
+(defvar *article* (make-instance 'wiki-article :title "Startseite"))
+(defvar *user* (make-instance 'user :name "Moritz Hedtke" :group "admin" :password "common-lisp"))
+(mito:insert-dao *article*)
+(mito:insert-dao *user*)
+(defvar *revision* (make-instance 'wiki-article-revision :author *user* :article *article* :content "hi dudes"))
+(mito:insert-dao *revision*)
+(assert (auth *user* "common-lisp"))
+(assert (not (auth *user* "wrong-password")))
 
 ;;(stop *acceptor*)
 
