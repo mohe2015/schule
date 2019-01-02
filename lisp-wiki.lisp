@@ -18,7 +18,8 @@
                 ("img"         . (("src"  . (:http :https :relative))))
 		("iframe"      . (("src"  . (:https)))))
     :css-attributes (("text-align" . ("center"))
-		     ("float"      . ("left" "right"))))
+		     ("float"      . ("left" "right"))
+		     ("width")))
 
 
 (defparameter *CATCH-ERRORS-P* nil)

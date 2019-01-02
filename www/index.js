@@ -78,6 +78,7 @@ $(document).ready(function() {
             processData: false,
             success: function(url) {
                 $('article').summernote('insertImage', '/api/file/' + url);
+                $('#uploadProgressModal').modal('hide');
             }
         });
     }
@@ -86,10 +87,10 @@ $(document).ready(function() {
 
     function progressHandlingFunction(e){
         if(e.lengthComputable){
-            $('#uploadProgress').attr({value:e.loaded, max:e.total});
+            $('#uploadProgress').css('width', (100 * e.loaded / e.total) + '%');
             // reset progress on complete
             if (e.loaded == e.total) {
-                $('#uploadProgress').attr('value','0.0');
+                $('#uploadProgress').attr('width','0%');
             }
         }
     }
