@@ -103,6 +103,6 @@ $(document).ready(function() {
     });
     
     window.onpopstate = function (event) {
-        alert("TODO");
+        //alert("TODO");
     };
 });

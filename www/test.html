@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link rel="stylesheet" href="/bootstrap.min.css">
+        <link rel="stylesheet" href="/all.css">
+        <link href="/summernote-bs4.css" 
+            rel="stylesheet">
+        <style>
+            ins {
+            text-decoration: none;
+            background-color: #d4fcbc;
+            }
+            del {
+            text-decoration: line-through;
+            background-color: #fbb6c2;
+            color: #555;
+            }
+            .container-fluid {
+            padding-left: 10px;
+            padding-right: 10px;
+            }
+        </style>
+        <title>Spickipedia</title>
+    </head>
+    <body>
+       
+        <div class="container-fluid my-tab" id="page">
+            <article>
+            </article>
+        </div>
+       
+      
+        <script src="/jquery-3.3.1.min.js"></script>
+        <script src="/popper.min.js"></script>
+        <script src="/bootstrap.min.js"></script>
+        <script src="/summernote-bs4.js"></script>
+        <script>
+            $('article').summernote({
+                dialogsFade: true,
+                focus: true,
+                toolbar: [
+                    ['style', ['style', 'bold', 'italic', 'underline', 'superscript', 'subscript']],
+                    ['para', ['ul', 'ol', 'indent', 'outdent', 'justifyLeft', 'justifyCenter']],
+                    ['insert', ['link', 'picture', 'video', 'table']],
+                    ['management', ['undo', 'redo', 'help', 'codeview']]
+                ]
+            });
+            $('article').summernote('fullscreen.toggle');
+        </script>
+        <script src="plugin.js"></script>
+    </body>
+</html>
