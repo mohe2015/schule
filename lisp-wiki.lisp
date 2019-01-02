@@ -127,10 +127,14 @@
 (define-easy-handler (root :uri "/") ()
   (redirect "/wiki/Startseite"))
 
+(defun upload-handler ()
+  (handle-static-file (nth 0 (hunchentoot:post-parameter "file")) (nth 2 (hunchentoot:post-parameter "file")))) ;; TODO whitelist mimetypes
+
 (setq *dispatch-table*
       (nconc
        (list 'dispatch-easy-handlers
 	     (create-prefix-dispatcher "/wiki" 'wiki-page-html)
 	     (create-prefix-dispatcher "/api/wiki" 'wiki-page)
 	     (create-prefix-dispatcher "/api/history" 'wiki-page-history)
+	     (create-prefix-dispatcher "/api/upload" 'upload-handler)
 	     (create-folder-dispatcher-and-handler "/" #P"www/"))))

@@ -60,9 +60,47 @@ $(document).ready(function() {
         // TODO dismiss should cancel request
     });
 
+    
+    function sendFile(file, editor, welEditable) {
+        data = new FormData();
+        data.append("file", file);
+        $.ajax({
+            data: data,
+            type: 'POST',
+            xhr: function() {
+                var myXhr = $.ajaxSettings.xhr();
+                if (myXhr.upload) myXhr.upload.addEventListener('progress',progressHandlingFunction, false);
+                return myXhr;
+            },
+            url: '/api/upload',
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function(url) {
+                editor.insertImage(welEditable, url);
+            }
+        });
+    }
+
+    // update progress bar
+
+    function progressHandlingFunction(e){
+        if(e.lengthComputable){
+            $('#uploadProgress').attr({value:e.loaded, max:e.total});
+            // reset progress on complete
+            if (e.loaded == e.total) {
+                $('#uploadProgress').attr('value','0.0');
+            }
+        }
+    }
 
     $(".edit-button").click(function() {
         $('article').summernote({
+            callbacks: {
+              onImageUpload: function(files, editor, welEditable) {
+                sendFile(files[0], editor, welEditable);
+              }
+            },
             dialogsFade: true,
             focus: true,
             buttons: {
