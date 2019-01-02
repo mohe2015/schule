@@ -24,6 +24,7 @@ $(document).ready(function() {
             contents: '<i class="fa fa-times"/>',
             tooltip: 'Abbrechen',
             click: function() {
+                $('article').summernote('fullscreen.toggle');
                 $('article').summernote('destroy');
                 $('.tooltip').hide();
             }
@@ -40,7 +41,10 @@ $(document).ready(function() {
         var newHtml = $('article').summernote('code');
         
         $.post("/api/wiki/Startseite", { summary: changeSummary, html: newHtml }, function(data) {
+            $('article').summernote('fullscreen.toggle');
             $('article').summernote('destroy');
+            
+            
             $('#publish-changes-modal').modal('hide');
             
             $('#publish-changes').show();

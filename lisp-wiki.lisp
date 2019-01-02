@@ -54,6 +54,8 @@
 ;;(assert (auth *user* "common-lisp"))
 ;;(assert (not (auth *user* "wrong-password")))
 
+(defvar *user* (mito:find-dao 'user))
+
 ;;(stop *acceptor*)
 
 (defvar *acceptor* nil)
