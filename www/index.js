@@ -1,6 +1,16 @@
 /*eslint-env browser, jquery*/
 $(document).ready(function() {
 
+    function setFullscreen(value) {
+      if (value && $('.fullscreen').length == 0) {
+        console.log("enable fullscreen");
+        $('article').summernote('fullscreen.toggle');
+      } else if (!value && $('.fullscreen').length == 1) {
+        console.log("disable fullscreen");
+        $('article').summernote('fullscreen.toggle');
+      }
+    }
+  
     var FinishedButton = function(context) {
         var ui = $.summernote.ui;
         var button = ui.button({
@@ -24,9 +34,7 @@ $(document).ready(function() {
             contents: '<i class="fa fa-times"/>',
             tooltip: 'Abbrechen',
             click: function() {
-                $('article').summernote('fullscreen.toggle');
-                $('article').summernote('destroy');
-                $('.tooltip').hide();
+                window.history.back();
             }
         });
 
@@ -34,15 +42,15 @@ $(document).ready(function() {
     }
 
     function readCookie(name) {
-            var nameEQ = name + "=";
-            var ca = document.cookie.split(';');
-            for (var i = 0; i < ca.length; i++) {
-                var c = ca[i];
-                while (c.charAt(0) == ' ') c = c.substring(1, c.length);
-                if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
-            }
-            return null;
+        var nameEQ = name + "=";
+        var ca = document.cookie.split(';');
+        for (var i = 0; i < ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+            if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
         }
+        return null;
+    }
     
     $('#publish-changes').click(function() {
         $('#publish-changes').hide();
@@ -51,14 +59,8 @@ $(document).ready(function() {
         var changeSummary = $('#change-summary').html();
         var newHtml = $('article').summernote('code');
         
-        $.post("/api/wiki/Startseite", { summary: changeSummary, html: newHtml, csrf_token: readCookie('CSRF_TOKEN') }, function(data) {
-            $('article').summernote('fullscreen.toggle');
-            $('article').summernote('destroy');
-            
-            $('#publish-changes-modal').modal('hide');
-            
-            $('#publish-changes').show();
-            $('#publishing-changes').hide();
+        $.post("/api/wiki/" + window.location.pathname.substr(6), { summary: changeSummary, html: newHtml, csrf_token: readCookie('CSRF_TOKEN') }, function(data) {
+            replaceState(null, null, window.location.pathname.substr(window.location.pathname.lastIndexOf("/")));
         })
         .fail(function() {
             $('#publish-changes').show();
@@ -99,8 +101,6 @@ $(document).ready(function() {
         });
     }
 
-    // update progress bar
-
     function progressHandlingFunction(e){
         if(e.lengthComputable){
             $('#uploadProgress').css('width', (100 * e.loaded / e.total) + '%');
@@ -111,7 +111,7 @@ $(document).ready(function() {
         }
     }
 
-    $(".edit-button").click(function() {
+    function showEditor() {
         $('article').summernote({
             callbacks: {
               onImageUpload: function(files) {
@@ -132,17 +132,37 @@ $(document).ready(function() {
                 ['management', ['undo', 'redo', 'help', 'cancel', 'finished', 'codeview']]
             ]
         });
-        $('article').summernote('fullscreen.toggle');
+        setFullscreen(true);
+    }
+    
+    function hideEditor() {
+      setFullscreen(false);
+      $('article').summernote('destroy');
+      $('.tooltip').hide(); 
+    }
+    
+    $(".edit-button").click(function(e) {
+        e.preventDefault();
+        window.history.pushState(null, null, window.location.pathname + "/edit");
+        updateState();
+        return false;
+    });
+    
+    $("#create-article").click(function(e) {
+        e.preventDefault();
+        window.history.pushState(null, null, window.location.pathname + "/create");
+        updateState();
+        return false;
     });
     
     $("#show-history").click(function () {
         $('.my-tab').fadeOut({queue: false});
         $('#loading').fadeIn({queue: false});
         
-        $.get("/api/history/Startseite", function(data) {
+        $.get("/api/history/" + window.location.pathname.substr(6), function(data) {
             //$('article').html(data);
             
-            window.history.pushState(null, "Änderungsverlauf Startseite", "/wiki/Startseite/history");
+            window.history.pushState(null, "Änderungsverlauf " + window.location.pathname.substr(6), "/wiki/" + window.location.pathname.substr(6) + "/history");
 
             $('#loading').fadeOut({queue: false});
             $('#history').fadeIn({queue: false});
@@ -151,20 +171,86 @@ $(document).ready(function() {
             alert("Fehler beim Laden des Änderungsverlaufs!");
         });
     });
+    
+    // /wiki/:name
+    // /wiki/:name/history
+    // /wiki/:name/discussion
+    // /wiki/:name/edit
+    // /wiki/:name/create
+    // /search/:query
+    
+    function cleanup() {
+      setFullscreen(false);
+      $('article').summernote('destroy');
+            
+      $('#publish-changes-modal').modal('hide');
+      
+      $('#publish-changes').show();
+      $('#publishing-changes').hide(); 
+    }
+    
+    // the url should contain the main state and the state object may contain additional information which is not show in the url
+    function updateState() {
+      //if (history.state && history.state.currentState == 'create-article') {
+        
+        
+        
+      //  return;
+      //}
+      
+      var pathname = window.location.pathname.split('/');
+      console.log(pathname);
+      if (pathname.length > 1 && pathname[1] == 'wiki') {
+        if (pathname.length == 3) { // /wiki/:name
+          $.get("/api/wiki/" + pathname[2], function(data) {
+              $('article').html(data);
 
-    $.get("/api/wiki/Startseite", function(data) {
-        $('article').html(data);
-
-        $('.my-tab').fadeOut({queue: false});
-        $('#page').fadeIn({queue: false});
-    })
-    .fail(function() {
-        alert("Fehler beim Laden des Artikels!");
-    });
+              $('.my-tab').fadeOut({queue: false});
+              $('#page').fadeIn({queue: false});
+              
+              window.history.replaceState({ currentState: 'show-article' }, null, null);
+          })
+          .fail(function(jqXHR, textStatus, errorThrown) {
+              if (textStatus === 'error' && errorThrown === 'Not Found') {
+                  $('.my-tab').fadeOut({queue: false});
+                  $('#not-found').fadeIn({queue: false});
+                  
+                  window.history.replaceState({ currentState: 'not-found' }, null, null);
+              } else {
+                alert("Fehler beim Laden des Artikels! " + textStatus + " | " + errorThrown);
+                
+                window.history.replaceState({ currentState: 'unknown-error' }, null, null);
+              }
+          });
+        }
+        if (pathname.length == 4 && pathname[3] == 'create') {
+          $('article').html("");
+      
+          showEditor();
+          
+          $('.my-tab').fadeOut({queue: false});
+          $('#page').fadeIn({queue: false});
+        }
+        if (pathname.length == 4 && pathname[3] == 'edit') {
+          // TODO load article
+          console.log("jo");
+          
+          showEditor();
+          
+          $('.my-tab').fadeOut({queue: false});
+          $('#page').fadeIn({queue: false});
+        }
+      }
+    }
     
     window.onpopstate = function (event) {
-        //alert("TODO");
+      console.log('onpopstate');
+      updateState();
     };
     
+    updateState();
     
+    window.onbeforeunload = function() {
+        //return false;
+    }
 });

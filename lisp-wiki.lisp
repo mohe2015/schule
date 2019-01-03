@@ -117,9 +117,7 @@
 									    (where (:= :article article))
 									    (order-by (:desc :id))
 									    (limit 1)))) *sanitize-spickipedia*)
-	(progn
-	  (setf (return-code* *reply*) 404)
-	  nil))))
+	(setf (return-code* *reply*) 404))))
 
 (defun post-wiki-page ()
   (basic-headers)
