@@ -9,14 +9,14 @@
     
     :attributes (("h1"          . ("align"))
 		 ("a"           . ("href" "target"))
-		 ("p"           . ("align"))
+		 ("p"           . ("align" "style"))
 		 ("img"         . ("src" "style"))
 		 ("table"       . ("class"))
-		 ("iframe"      . ("src"))) ;; TODO this needs to be checked correctly
+		 ("iframe"      . ("src" "width" "height"))) ;; TODO this needs to be checked correctly
 
     :protocols (("a"           . (("href" . (:ftp :http :https :mailto :relative))))
                 ("img"         . (("src"  . (:http :https :relative))))
-		("iframe"      . (("src"  . (:https)))))
+		("iframe"      . (("src"  . (:http :https :relative))))) ;; TODO only https ;; TODO better use a regex as it fails to detect the same protocol url //www.youtube.com
     :css-attributes (("text-align" . ("center"))
 		     ("float"      . ("left" "right"))
 		     ("width")))
@@ -80,10 +80,18 @@
 
 (if (not *acceptor*)
     (progn
-      (defparameter *acceptor* (make-instance 'easy-acceptor :port 8080))
+      (defparameter *acceptor* (make-instance 'easy-acceptor :port 8888))
       (start *acceptor*)))
 
+(defun basic-headers ()
+  (setf (header-out "X-Frame-Options") "DENY")
+  (setf (header-out "Content-Security-Policy") "default-src 'none'; script-src 'self'; img-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self'; frame-src www.youtube.com youtube.com")
+  (setf (header-out "X-XSS-Protection") "1; mode=block")
+  (setf (header-out "X-Content-Type-Options") "nosniff")
+  )
+
 (defun wiki-page-html ()
+  (basic-headers)
   (handle-static-file "www/index.html"))
 
 (defun wiki-page ()
@@ -92,6 +100,7 @@
     (:POST (post-wiki-page))))
 
 (defun get-wiki-page ()
+  (basic-headers)
   (let* ((title (subseq (script-name* *REQUEST*) 10)) (article (mito:find-dao 'wiki-article :title title)))
     (if article
 	(clean (wiki-article-revision-content (car (mito:select-dao 'wiki-article-revision
@@ -103,6 +112,7 @@
 	  nil))))
 
 (defun post-wiki-page ()
+  (basic-headers)
   (let* ((title (subseq (script-name* *REQUEST*) 10)) (article (mito:find-dao 'wiki-article :title title)))
     (if article
 	(progn
@@ -113,6 +123,7 @@
 	  nil))))
 
 (defun wiki-page-history ()
+  (basic-headers)
   (setf (content-type*) "text/json")
   (let* ((title (subseq (script-name* *REQUEST*) 13)) (article (mito:find-dao 'wiki-article :title title)))
     (if article
@@ -126,9 +137,11 @@
 	  nil))))
 
 (define-easy-handler (root :uri "/") ()
+  (basic-headers)
   (redirect "/wiki/Startseite"))
 
 (defun upload-handler ()
+  (basic-headers)
   (let* ((filepath (nth 0 (hunchentoot:post-parameter "file")))
 	 ;; (filetype (nth 2 (hunchentoot:post-parameter "file")))
 	 (filehash (byte-array-to-hex-string (digest-file :sha512 filepath)))	 ;; TODO whitelist mimetypes TODO verify if mimetype is correct
@@ -138,6 +151,7 @@
 	 filehash))
 
 (defun file-handler ()
+  (basic-headers)
   (handle-static-file (merge-pathnames (concatenate 'string "uploads/" (subseq (script-name* *REQUEST*) 10)))))
 
 (setq *dispatch-table*
