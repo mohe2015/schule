@@ -59,8 +59,10 @@ $(document).ready(function() {
         var changeSummary = $('#change-summary').html();
         var newHtml = $('article').summernote('code');
         
-        $.post("/api/wiki/" + window.location.pathname.substr(6), { summary: changeSummary, html: newHtml, csrf_token: readCookie('CSRF_TOKEN') }, function(data) {
-            replaceState(null, null, window.location.pathname.substr(window.location.pathname.lastIndexOf("/")));
+        var articlePath = window.location.pathname.substr(0, window.location.pathname.lastIndexOf("/"));
+        $.post("/api" + articlePath, { summary: changeSummary, html: newHtml, csrf_token: readCookie('CSRF_TOKEN') }, function(data) {
+            window.history.pushState(null, null, articlePath);
+            updateState();
         })
         .fail(function() {
             $('#publish-changes').show();
@@ -202,11 +204,13 @@ $(document).ready(function() {
       console.log(pathname);
       if (pathname.length > 1 && pathname[1] == 'wiki') {
         if (pathname.length == 3) { // /wiki/:name
+          cleanup();
+          
           $.get("/api/wiki/" + pathname[2], function(data) {
               $('article').html(data);
 
-              $('.my-tab').fadeOut({queue: false});
-              $('#page').fadeIn({queue: false});
+              $('.my-tab').not('#page').fadeOut();
+              $('#page').fadeIn();
               
               window.history.replaceState({ currentState: 'show-article' }, null, null);
           })
@@ -237,8 +241,8 @@ $(document).ready(function() {
           
           showEditor();
           
-          $('.my-tab').not('#page').fadeOut({queue: false});
-          $('#page').fadeIn({queue: false});
+          $('.my-tab').not('#page').fadeOut();
+          $('#page').fadeIn();
         }
       }
     }
