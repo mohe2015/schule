@@ -157,6 +157,11 @@
 
 (defun upload-handler ()
   (basic-headers)
+  (if (invalid-csrf)
+      (progn
+	(setf (return-code*) +http-forbidden+)
+	(log-message* :ERROR "POTENTIAL ONGOING CROSS SITE REQUEST FORGERY ATTACK!!!")
+	(return-from upload-handler)))
   (let* ((filepath (nth 0 (hunchentoot:post-parameter "file")))
 	 ;; (filetype (nth 2 (hunchentoot:post-parameter "file")))
 	 (filehash (byte-array-to-hex-string (digest-file :sha512 filepath)))	 ;; TODO whitelist mimetypes TODO verify if mimetype is correct

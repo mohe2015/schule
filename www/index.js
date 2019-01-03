@@ -75,6 +75,7 @@ $(document).ready(function() {
         $('#uploadProgressModal').modal('show');
         data = new FormData();
         data.append("file", file);
+        data.append("csrf_token", readCookie('CSRF_TOKEN'));
         $.ajax({
             data: data,
             type: 'POST',
@@ -88,8 +89,12 @@ $(document).ready(function() {
             contentType: false,
             processData: false,
             success: function(url) {
-                $('article').summernote('insertImage', '/api/file/' + url);
                 $('#uploadProgressModal').modal('hide');
+                $('article').summernote('insertImage', '/api/file/' + url);
+            },
+            error: function() {
+              $('#uploadProgressModal').modal('hide');
+              alert("Fehler beim Upload!");
             }
         });
     }
