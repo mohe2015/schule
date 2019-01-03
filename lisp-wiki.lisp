@@ -22,7 +22,7 @@
 		     ("width")))
 
 
-(defparameter *CATCH-ERRORS-P* nil)
+(defparameter *CATCH-ERRORS-P* nil) ;; TODO scan with this line enabled to find bugs
 
 (mito:connect-toplevel :sqlite3 :database-name #P"database.db")
 
@@ -85,7 +85,7 @@
 
 (defun basic-headers ()
   (setf (header-out "X-Frame-Options") "DENY")
-  (setf (header-out "Content-Security-Policy") "default-src 'none'; script-src 'self'; img-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self'; frame-src www.youtube.com youtube.com")
+  (setf (header-out "Content-Security-Policy") "default-src 'none'; script-src 'self'; img-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self'; frame-src www.youtube.com youtube.com") ;; TODO the inline css from the whsiwyg editor needs to be replaced - write an own editor sometime
   (setf (header-out "X-XSS-Protection") "1; mode=block")
   (setf (header-out "X-Content-Type-Options") "nosniff")
   )
@@ -154,6 +154,14 @@
   (basic-headers)
   (handle-static-file (merge-pathnames (concatenate 'string "uploads/" (subseq (script-name* *REQUEST*) 10)))))
 
+(defun root-handler ()
+  (basic-headers)
+  (let ((request-path (request-pathname *request* "/")))
+    (when (null request-path)
+      (setf (return-code*) +http-forbidden+)
+      (abort-request-handler))
+    (handle-static-file (merge-pathnames request-path #P"www/"))))
+
 (setq *dispatch-table*
       (nconc
        (list 'dispatch-easy-handlers
@@ -162,4 +170,4 @@
 	     (create-prefix-dispatcher "/api/history" 'wiki-page-history)
 	     (create-prefix-dispatcher "/api/upload" 'upload-handler)
 	     (create-prefix-dispatcher "/api/file" 'file-handler)
-	     (create-folder-dispatcher-and-handler "/" #P"www/"))))
+	     (create-prefix-dispatcher "/" 'root-handler))))
