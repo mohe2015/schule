@@ -38,30 +38,30 @@
                 </ul>
             </div>
         </nav>
-        <div class="my-tab" id="loading">
-            <div style="position: absolute; top: 50%; left: 50%; margin-left: -1rem; margin-top: -1rem;">
-                <div class="spinner-border" role="status">
-                    <span class="sr-only">Loading...</span>
-                </div>
-            </div>
-        </div>
-        <div style="display: none;" class="container-fluid my-tab" id="page">
-            <article>
-            </article>
-            <div>
-                <button type="button" class="btn btn-outline-primary">Diskussion</button>
-                <button id="show-history" type="button" class="btn btn-outline-primary">Änderungsverlauf</button>
-            </div>
-            <small>Dieses Werk ist lizenziert unter einer <a target="_blank" rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/deed.de">Creative Commons Namensnennung - Weitergabe unter gleichen Bedingungen 4.0 International Lizenz</a>.</small>
-        </div>
-        <div style="display: none;" class="container-fluid my-tab" id="not-found">
-          <div class="alert alert-danger" role="alert">
-            Der Artikel konnte nicht gefunden werden. Möchtest du ihn <a id="create-article" href="#" class="alert-link">erstellen</a>?
+        <div>
+          <div class="my-tab position-absolute" style="top: 50%; left: 50%; margin-left: -1rem; margin-top: -1rem;" id="loading">
+                  <div class="spinner-border" role="status">
+                      <span class="sr-only">Loading...</span>
+                  </div>
           </div>
-        </div>
-        <div style="display: none;" class="container-fluid my-tab" id="history">
-        <h1 class="text-center">Änderungsverlauf</h1>
-            
+          <div style="display: none;" class="container-fluid my-tab position-absolute" id="page">
+              <article>
+              </article>
+              <div>
+                  <button type="button" class="btn btn-outline-primary">Diskussion</button>
+                  <button id="show-history" type="button" class="btn btn-outline-primary">Änderungsverlauf</button>
+              </div>
+              <small>Dieses Werk ist lizenziert unter einer <a target="_blank" rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/deed.de">Creative Commons Namensnennung - Weitergabe unter gleichen Bedingungen 4.0 International Lizenz</a>.</small>
+          </div>
+          <div style="display: none;" class="container-fluid my-tab position-absolute" id="not-found">
+            <div class="alert alert-danger" role="alert">
+              Der Artikel konnte nicht gefunden werden. Möchtest du ihn <a id="create-article" href="#" class="alert-link">erstellen</a>?
+            </div>
+          </div>
+          <div style="display: none;" class="container-fluid my-tab position-absolute" id="history">
+          <h1 class="text-center">Änderungsverlauf</h1>
+              
+          </div>
         </div>
         
         <!-- Modal -->
