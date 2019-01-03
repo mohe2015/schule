@@ -4,3 +4,6 @@
 [submodule "monkeylib-bcrypt"]
 	path = monkeylib-bcrypt
 	url = https://github.com/gigamonkey/monkeylib-bcrypt.git
+[submodule "summernote"]
+	path = summernote
+	url = https://github.com/summernote/summernote/
