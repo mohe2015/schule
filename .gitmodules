@@ -1,3 +1,6 @@
 [submodule "cl-sanitize"]
 	path = cl-sanitize
 	url = https://github.com/mohe2015/cl-sanitize.git
+[submodule "monkeylib-bcrypt"]
+	path = monkeylib-bcrypt
+	url = https://github.com/gigamonkey/monkeylib-bcrypt.git

@@ -1,5 +1,6 @@
+
 (defpackage :lisp-wiki
-  (:use :common-lisp :hunchentoot :mito :mito-auth :sxql :sanitize :ironclad :cl-fad)
+  (:use :common-lisp :hunchentoot :mito :sxql :sanitize :ironclad :cl-fad :cl-base64)
   (:export))
 
 (in-package :lisp-wiki)
@@ -26,7 +27,7 @@
 
 (mito:connect-toplevel :sqlite3 :database-name #P"database.db")
 
-(defclass user (mito-auth:has-secure-password)
+(defclass user ()
   ((name  :col-type (:varchar 64)
 	  :initarg :name
 	  :accessor user-name)
@@ -83,12 +84,14 @@
       (defparameter *acceptor* (make-instance 'easy-acceptor :port 8888))
       (start *acceptor*)))
 
+(defun random-base64 ()
+  (usb8-array-to-base64-string (random-data 64)))
+
 (defun basic-headers ()
   (setf (header-out "X-Frame-Options") "DENY")
   (setf (header-out "Content-Security-Policy") "default-src 'none'; script-src 'self'; img-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self'; frame-src www.youtube.com youtube.com") ;; TODO the inline css from the whsiwyg editor needs to be replaced - write an own editor sometime
   (setf (header-out "X-XSS-Protection") "1; mode=block")
-  (setf (header-out "X-Content-Type-Options") "nosniff")
-  )
+  (setf (header-out "X-Content-Type-Options") "nosniff"))
 
 (defun wiki-page-html ()
   (basic-headers)
