@@ -88,10 +88,17 @@
   (usb8-array-to-base64-string (random-data 64)))
 
 (defun basic-headers ()
+  (if (not (session-value 'CSRF_TOKEN (start-session)))
+      (progn
+	(setf (session-value 'CSRF_TOKEN (start-session)) (random-base64))
+	(set-cookie "CSRF_TOKEN" :value (session-value 'CSRF_TOKEN) :path "/")))
   (setf (header-out "X-Frame-Options") "DENY")
   (setf (header-out "Content-Security-Policy") "default-src 'none'; script-src 'self'; img-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self'; frame-src www.youtube.com youtube.com") ;; TODO the inline css from the whsiwyg editor needs to be replaced - write an own editor sometime
   (setf (header-out "X-XSS-Protection") "1; mode=block")
   (setf (header-out "X-Content-Type-Options") "nosniff"))
+
+(defun invalid-csrf () ;; TODO macro around ;; TODO secure string compare
+  (not (string= (session-value 'CSRF_TOKEN) (post-parameter "csrf_token"))))
 
 (defun wiki-page-html ()
   (basic-headers)
@@ -116,6 +123,11 @@
 
 (defun post-wiki-page ()
   (basic-headers)
+  (if (invalid-csrf)
+      (progn
+	(setf (return-code*) +http-forbidden+)
+	(log-message* :ERROR "POTENTIAL ONGOING CROSS SITE REQUEST FORGERY ATTACK!!!")
+	(return-from post-wiki-page)))
   (let* ((title (subseq (script-name* *REQUEST*) 10)) (article (mito:find-dao 'wiki-article :title title)))
     (if article
 	(progn
