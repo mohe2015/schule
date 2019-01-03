@@ -158,20 +158,8 @@ $(document).ready(function() {
     });
     
     $("#show-history").click(function () {
-        $('.my-tab').fadeOut({queue: false});
-        $('#loading').fadeIn({queue: false});
-        
-        $.get("/api/history/" + window.location.pathname.substr(6), function(data) {
-            //$('article').html(data);
-            
-            window.history.pushState(null, "Änderungsverlauf " + window.location.pathname.substr(6), "/wiki/" + window.location.pathname.substr(6) + "/history");
-
-            $('#loading').fadeOut({queue: false});
-            $('#history').fadeIn({queue: false});
-        })
-        .fail(function() {
-            alert("Fehler beim Laden des Änderungsverlaufs!");
-        });
+        window.history.pushState(null, null, window.location.pathname + "/history");
+        updateState();
     });
     
     // /wiki/:name
@@ -189,6 +177,11 @@ $(document).ready(function() {
       
       $('#publish-changes').show();
       $('#publishing-changes').hide(); 
+    }
+    
+    function showTab(id) {
+      $('.my-tab').not(id).fadeOut();
+      $(id).fadeIn();
     }
     
     // the url should contain the main state and the state object may contain additional information which is not show in the url
@@ -209,8 +202,7 @@ $(document).ready(function() {
           $.get("/api/wiki/" + pathname[2], function(data) {
               $('article').html(data);
 
-              $('.my-tab').not('#page').fadeOut();
-              $('#page').fadeIn();
+              showTab('#page');
               
               window.history.replaceState({ currentState: 'show-article' }, null, null);
           })
@@ -232,8 +224,7 @@ $(document).ready(function() {
       
           showEditor();
           
-          $('.my-tab').fadeOut({queue: false});
-          $('#page').fadeIn({queue: false});
+          showTab('#page');
         }
         if (pathname.length == 4 && pathname[3] == 'edit') {
           // TODO load article
@@ -241,8 +232,22 @@ $(document).ready(function() {
           
           showEditor();
           
-          $('.my-tab').not('#page').fadeOut();
-          $('#page').fadeIn();
+          showTab('#page');
+        }
+        if (pathname.length == 4 && pathname[3] == 'history') {
+         
+          showTab('loading');
+          
+          var articlePath = window.location.pathname.substr(6, window.location.pathname.lastIndexOf("/")-6);
+          $.get("/api/history/" + articlePath, function(data) {
+              
+          })
+          .fail(function() {
+              alert("Fehler beim Laden des Änderungsverlaufs!");
+          });
+          
+          
+          showTab('#history');
         }
       }
     }
