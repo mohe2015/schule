@@ -237,7 +237,7 @@ $(document).ready(function() {
           
           showEditor();
           
-          $('.my-tab').fadeOut({queue: false});
+          $('.my-tab').not('#page').fadeOut({queue: false});
           $('#page').fadeIn({queue: false});
         }
       }
