@@ -90,7 +90,7 @@
 (defun basic-headers ()
   (if (not (session-value 'CSRF_TOKEN (start-session)))
       (progn
-	(setf (session-value 'CSRF_TOKEN (start-session)) (random-base64))
+	(setf (session-value 'CSRF_TOKEN) (random-base64))
 	(set-cookie "CSRF_TOKEN" :value (session-value 'CSRF_TOKEN) :path "/")))
   (setf (header-out "X-Frame-Options") "DENY")
   (setf (header-out "Content-Security-Policy") "default-src 'none'; script-src 'self'; img-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self'; frame-src www.youtube.com youtube.com") ;; TODO the inline css from the whsiwyg editor needs to be replaced - write an own editor sometime

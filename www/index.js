@@ -76,11 +76,13 @@ $(document).ready(function() {
 
     
     function sendFile(file, editor, welEditable) {
+        console.log("show");
         $('#uploadProgressModal').modal('show');
         data = new FormData();
         data.append("file", file);
         data.append("csrf_token", readCookie('CSRF_TOKEN'));
-        $.ajax({
+        window.fileUploadFinished = false;
+        window.fileUploadXhr = $.ajax({
             data: data,
             type: 'POST',
             xhr: function() {
@@ -93,12 +95,18 @@ $(document).ready(function() {
             contentType: false,
             processData: false,
             success: function(url) {
+                console.log("hide");
+                window.fileUploadFinished = true;
                 $('#uploadProgressModal').modal('hide');
                 $('article').summernote('insertImage', '/api/file/' + url);
             },
             error: function() {
-              $('#uploadProgressModal').modal('hide');
-              alert("Fehler beim Upload!");
+              if (!window.fileUploadFinished) {
+                console.log("hide");
+                window.fileUploadFinished = true;
+                $('#uploadProgressModal').modal('hide');
+                alert("Fehler beim Upload!");
+              }
             }
         });
     }
@@ -107,12 +115,28 @@ $(document).ready(function() {
         if(e.lengthComputable){
             $('#uploadProgress').css('width', (100 * e.loaded / e.total) + '%');
             // reset progress on complete
-            if (e.loaded == e.total) {
-                $('#uploadProgress').attr('width','0%');
-            }
         }
     }
+    
+    $('#uploadProgressModal').on('shown.bs.modal', function (e) {
+      if (window.fileUploadFinished) {
+        $('#uploadProgressModal').modal('hide');
+      }
+    });
+    
+    $('#uploadProgressModal').on('hide.bs.modal', function (e) {
+      if (!window.fileUploadFinished) {
+        window.fileUploadFinished = true;
+        console.log("abort");
+        window.fileUploadXhr.abort();
+      }
+    })
+    
+    $('#uploadProgressModal').on('hidden.bs.modal', function (e) {
+      $('#uploadProgress').attr('width','0%');
+    })
 
+    
     function showEditor() {
         $('article').summernote({
             callbacks: {
@@ -208,8 +232,7 @@ $(document).ready(function() {
           })
           .fail(function(jqXHR, textStatus, errorThrown) {
               if (textStatus === 'error' && errorThrown === 'Not Found') {
-                  $('.my-tab').fadeOut({queue: false});
-                  $('#not-found').fadeIn({queue: false});
+                  showTab('#not-found');
                   
                   window.history.replaceState({ currentState: 'not-found' }, null, null);
               } else {
@@ -236,6 +259,8 @@ $(document).ready(function() {
         }
         if (pathname.length == 4 && pathname[3] == 'history') {
          
+          // TODO only load if not cached
+          
           showTab('loading');
           
           var articlePath = window.location.pathname.substr(6, window.location.pathname.lastIndexOf("/")-6);
@@ -245,7 +270,6 @@ $(document).ready(function() {
           .fail(function() {
               alert("Fehler beim Laden des Änderungsverlaufs!");
           });
-          
           
           showTab('#history');
         }
