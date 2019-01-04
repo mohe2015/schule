@@ -24,6 +24,7 @@
 
 
 (defparameter *CATCH-ERRORS-P* nil) ;; TODO scan with this line enabled to find bugs
+(defparameter *rewrite-for-session-urls* nil)
 
 (mito:connect-toplevel :sqlite3 :database-name #P"database.db")
 
@@ -96,7 +97,7 @@
 	(setf (session-value 'CSRF_TOKEN) (random-base64))
 	(set-cookie "CSRF_TOKEN" :value (session-value 'CSRF_TOKEN) :path "/")))
   (setf (header-out "X-Frame-Options") "DENY")
-  (setf (header-out "Content-Security-Policy") "default-src 'none'; script-src 'self'; img-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self'; frame-src www.youtube.com youtube.com") ;; TODO the inline css from the whsiwyg editor needs to be replaced - write an own editor sometime
+  (setf (header-out "Content-Security-Policy") "default-src 'none'; script-src 'self'; img-src 'self' data: ; style-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self'; frame-src www.youtube.com youtube.com") ;; TODO the inline css from the whsiwyg editor needs to be replaced - write an own editor sometime
   (setf (header-out "X-XSS-Protection") "1; mode=block")
   (setf (header-out "X-Content-Type-Options") "nosniff"))
 
@@ -106,6 +107,10 @@
 (defun wiki-page-html ()
   (basic-headers)
   (handle-static-file "www/index.html"))
+
+(defun favicon-handler ()
+  (basic-headers)
+  (handle-static-file "www/favicon.ico"))
 
 (defun wiki-page ()
   (ecase (request-method* *request*)
@@ -177,12 +182,22 @@
   (handle-static-file (merge-pathnames (concatenate 'string "uploads/" (subseq (script-name* *REQUEST*) 10)))))
 
 (defun root-handler ()
+  (cache-forever)
   (basic-headers)
-  (let ((request-path (request-pathname *request* "/")))
+  (let ((request-path (request-pathname *request* "/s/")))
     (when (null request-path)
       (setf (return-code*) +http-forbidden+)
       (abort-request-handler))
-    (handle-static-file (merge-pathnames request-path #P"www/"))))
+    (handle-static-file (merge-pathnames request-path #P"www/s/"))))
+
+(defun webfonts-handler ()
+  (cache-forever)
+  (basic-headers)
+  (let ((request-path (request-pathname *request* "/webfonts/")))
+    (when (null request-path)
+      (setf (return-code*) +http-forbidden+)
+      (abort-request-handler))
+    (handle-static-file (merge-pathnames request-path #P"www/webfonts/"))))
 
 (setq *dispatch-table*
       (nconc
@@ -192,4 +207,6 @@
 	     (create-prefix-dispatcher "/api/history" 'wiki-page-history)
 	     (create-prefix-dispatcher "/api/upload" 'upload-handler)
 	     (create-prefix-dispatcher "/api/file" 'file-handler)
-	     (create-prefix-dispatcher "/" 'root-handler))))
+	     (create-prefix-dispatcher "/s/" 'root-handler)
+	     (create-prefix-dispatcher "/webfonts/" 'webfonts-handler)
+	     (create-prefix-dispatcher "/favicon.ico" 'favicon-handler))))
