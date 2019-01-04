@@ -1,180 +1,159 @@
 <!doctype html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <link rel="stylesheet" href="/s/bootstrap.min.css">
-        <link rel="stylesheet" href="/s/all.css">
-        <link rel="stylesheet" href="/s/summernote-bs4.css">
-        <link rel="stylesheet" href="/s/index.css">
-        <!--<link rel="stylesheet" href="/s/bootstrap-select.min.css">-->
-        <title>Spickipedia</title>
-    </head>
-    <body>
-        <nav class="navbar navbar-expand-md navbar-light bg-light">
-            <a class="navbar-brand" href="#">
-            Spickipedia
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="/s/bootstrap.min.css">
+    <link rel="stylesheet" href="/s/all.css">
+    <link rel="stylesheet" href="/s/summernote-bs4.css">
+    <link rel="stylesheet" href="/s/index.css">
+    <!--<link rel="stylesheet" href="/s/bootstrap-select.min.css">-->
+    <title>Spickipedia</title>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-md navbar-light bg-light">
+      <a class="navbar-brand" href="#">
+      Spickipedia
+      </a>
+      <div>
+        <a class="btn d-inline d-md-none edit-button"><i class="fas fa-pen"></i></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+        </button>
+      </div>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="#">Startseite <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Anmelden</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Einstellungen</a>
+          </li>
+          <li class="nav-item d-none d-md-block">
+            <a class="nav-link edit-button" href="#">Bearbeiten</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+    <div>
+    <div style="display: none;" class="container-fluid my-tab position-absolute" id="page">
+      <article>
+      </article>
+      <div>
+        <button type="button" class="btn btn-outline-primary">Diskussion</button>
+        <button id="show-history" type="button" class="btn btn-outline-primary">Änderungsverlauf</button>
+      </div>
+      <small>Dieses Werk ist lizenziert unter einer <a target="_blank" rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/deed.de">Creative Commons Namensnennung - Weitergabe unter gleichen Bedingungen 4.0 International Lizenz</a>.</small>
+    </div>
+    <div style="display: none;" class="container-fluid my-tab position-absolute" id="not-found">
+      <div class="alert alert-danger" role="alert">
+        Der Artikel konnte nicht gefunden werden. Möchtest du ihn <a id="create-article" href="#" class="alert-link">erstellen</a>?
+      </div>
+    </div>
+    <div style="display: none;" class="container-fluid my-tab position-absolute" id="history">
+      <h1 class="text-center">Änderungsverlauf</h1>
+      <div class="list-group">
+        <a class="list-group-item list-group-item-action ">
+          <div class="d-flex w-100 justify-content-between">
+            <h5 class="mb-1">Moritz Hedtke</h5>
+            <small>vor 3 Tagen</small>
+          </div>
+          <p class="mb-1">Ein paar wichtige Infos hinzugefügt</p>
+          <small>50.322 Zeichen | <span class="text-success">+ 50 Zeichen</span> | kleine Änderung</small>
+          <div class="btn-group w-100" role="group" aria-label="Basic example">
+            <button type="button" class="btn btn-outline-dark"><i class="fas fa-eye"></i></button>
+            <button type="button" class="btn btn-outline-dark"><i class="fas fa-columns"></i></button>
+            <button type="button" class="btn btn-outline-dark"><i class="fas fa-undo"></i></button>
+          </div>
+        </a>
+      </div>
+    </div>
+    <div style="display: none;" class="container-fluid my-tab position-absolute" id="search">
+      <br>
+      <div class="input-group mb-3">
+        <input type="text" class="form-control" id="search-query" placeholder="Suchbegriff">
+        <div class="input-group-append">
+          <button class="btn btn-outline-secondary" type="button" id="button-search"><i class="fas fa-search"></i></button>
+        </div>
+      </div>
+      <div>
+        <div class="position-absolute" style="left: 50%; margin-left: -1rem;" id="search-results-loading">
+          <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+          </div>
+        </div>
+        <div style="display: none;" class="position-absolute" id="search-results">
+          <div class="list-group">
+            <a class="list-group-item list-group-item-action">
+              <div class="media">
+                <img src="/s/64.png" class="mr-3" alt="...">
+                <div class="media-body">
+                  <h5 class="mt-0">Media heading</h5>
+                  Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
+                </div>
+              </div>
             </a>
-            <div>
-                <a class="btn d-inline d-md-none edit-button"><i class="fas fa-pen"></i></a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-                </button>
-            </div>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item active">
-                        <a class="nav-link" href="#">Startseite <span class="sr-only">(current)</span></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Anmelden</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Einstellungen</a>
-                    </li>
-                    <li class="nav-item d-none d-md-block">
-                        <a class="nav-link edit-button" href="#">Bearbeiten</a>
-                    </li>
-                </ul>
-                
-            </div>
-        </nav>
-        <div>
-          <div style="display: none;" class="container-fluid my-tab position-absolute" id="page">
-              <article>
-              </article>
-              <div>
-                  <button type="button" class="btn btn-outline-primary">Diskussion</button>
-                  <button id="show-history" type="button" class="btn btn-outline-primary">Änderungsverlauf</button>
-              </div>
-              <small>Dieses Werk ist lizenziert unter einer <a target="_blank" rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/deed.de">Creative Commons Namensnennung - Weitergabe unter gleichen Bedingungen 4.0 International Lizenz</a>.</small>
           </div>
-          <div style="display: none;" class="container-fluid my-tab position-absolute" id="not-found">
-            <div class="alert alert-danger" role="alert">
-              Der Artikel konnte nicht gefunden werden. Möchtest du ihn <a id="create-article" href="#" class="alert-link">erstellen</a>?
-            </div>
-          </div>
-          <div style="display: none;" class="container-fluid my-tab position-absolute" id="history">
-            <h1 class="text-center">Änderungsverlauf</h1>
-          
-              <div class="list-group">
-                          
-              <a class="list-group-item list-group-item-action ">
-                <div class="d-flex w-100 justify-content-between">
-                  <h5 class="mb-1">Moritz Hedtke</h5>
-                  <small>vor 3 Tagen</small>
-                </div>
-                <p class="mb-1">Ein paar wichtige Infos hinzugefügt</p>
-                <small>50.322 Zeichen | <span class="text-success">+ 50 Zeichen</span> | kleine Änderung</small>
-                <div class="btn-group w-100" role="group" aria-label="Basic example">
-                  <button type="button" class="btn btn-outline-dark"><i class="fas fa-eye"></i></button>
-                  <button type="button" class="btn btn-outline-dark"><i class="fas fa-columns"></i></button>
-                  <button type="button" class="btn btn-outline-dark"><i class="fas fa-undo"></i></button>
-                </div>
-              </a>
-
         </div>
-
+      </div>
+    </div>
+    <div class="my-tab position-absolute" style="top: 50%; left: 50%; margin-left: -1rem; margin-top: -1rem;" id="loading">
+      <div class="spinner-border" role="status">
+        <span class="sr-only">Loading...</span>
+      </div>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="publish-changes-modal" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Änderungen veröffentlichen</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
           </div>
-          
-          
-          <div style="display: none;" class="container-fluid my-tab position-absolute" id="search">
-              <br>
-             
-             <div class="input-group mb-3">
-                <input type="text" class="form-control" id="search-query" placeholder="Suchbegriff">
-                <div class="input-group-append">
-                  <button class="btn btn-outline-secondary" type="button" id="button-search"><i class="fas fa-search"></i></button>
-                </div>
+          <div class="modal-body">
+            <form>
+              <div class="form-group">
+                <label>Änderungszusammenfassung:</label><br>
+                <textarea class="form-control" id="change-summary" rows="3"></textarea>
               </div>
-              
-              
-              <div>
-               <div class="position-absolute" style="left: 50%; margin-left: -1rem;" id="search-results-loading">
-                  <div class="spinner-border" role="status">
-                      <span class="sr-only">Loading...</span>
-                  </div>
-              </div>
-              
-              <div style="display: none;" class="position-absolute" id="search-results">
-              
-               <div class="list-group">
-                              
-                <a class="list-group-item list-group-item-action">
-                 <div class="media">
-                    <img src="/s/64.png" class="mr-3" alt="...">
-                    <div class="media-body">
-                      <h5 class="mt-0">Media heading</h5>
-                      Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
-                    </div>
-                  </div>
-                  </a>
-              </div>
-              </div>
-              
-            </div>    
-              
-            
+            </form>
+            <p>Mit dem Veröffentlichen dieses Artikels garantierst du, dass er nicht die Rechte anderer verletzt und bist damit einverstanden, ihn unter der <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.de">Creative Commons Namensnennung - Weitergabe unter gleichen Bedingungen 4.0 International Lizenz</a> zu veröffentlichen.</p>
           </div>
-          
-          
-          <div class="my-tab position-absolute" style="top: 50%; left: 50%; margin-left: -1rem; margin-top: -1rem;" id="loading">
-                  <div class="spinner-border" role="status">
-                      <span class="sr-only">Loading...</span>
-                  </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Bearbeitung fortsetzen</button>
+            <button type="button" class="btn btn-primary" id="publish-changes">Änderungen veröffentlichen</button>
+            <button id="publishing-changes" class="btn btn-primary" style="display: none;" type="button" disabled>
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            Veröffentlichen...
+            </button>
+            <!-- TODO Überprüfe deine Änderungen (diff) -->
           </div>
-        
-        <!-- Modal -->
-        <div class="modal fade" id="publish-changes-modal" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Änderungen veröffentlichen</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <form>
-                            <div class="form-group">
-                                <label>Änderungszusammenfassung:</label><br>
-                                <textarea class="form-control" id="change-summary" rows="3"></textarea>
-                            </div>
-                        </form>
-                        <p>Mit dem Veröffentlichen dieses Artikels garantierst du, dass er nicht die Rechte anderer verletzt und bist damit einverstanden, ihn unter der <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.de">Creative Commons Namensnennung - Weitergabe unter gleichen Bedingungen 4.0 International Lizenz</a> zu veröffentlichen.</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Bearbeitung fortsetzen</button>
-                        <button type="button" class="btn btn-primary" id="publish-changes">Änderungen veröffentlichen</button>
-                        <button id="publishing-changes" class="btn btn-primary" style="display: none;" type="button" disabled>
-                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                        Veröffentlichen...
-                        </button>
-                        <!-- TODO Überprüfe deine Änderungen (diff) -->
-                    </div>
-                </div>
-            </div>
         </div>
-        
-        <div class="modal fade" id="uploadProgressModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-          <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-              <div class="modal-body">
-                <div class="progress">
-                  <div id="uploadProgress" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
-                </div>
-              </div>
+      </div>
+    </div>
+    <div class="modal fade" id="uploadProgressModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-body">
+            <div class="progress">
+              <div id="uploadProgress" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
             </div>
           </div>
         </div>
-        
-        <script src="/s/jquery-3.3.1.min.js"></script>
-        <script src="/s/popper.min.js"></script>
-        <script src="/s/bootstrap.min.js"></script>
-        <script src="/s/summernote-bs4.js"></script>
-        <script src="/s/visual-diff.js"></script>
-        <script src="/s/index.js"></script>
-        <!--<script src="/s/bootstrap-select.min.js"></script>
-        <script src="/s/defaults-de_DE.min.js"></script>-->
-    </body>
+      </div>
+    </div>
+    <script src="/s/jquery-3.3.1.min.js"></script>
+    <script src="/s/popper.min.js"></script>
+    <script src="/s/bootstrap.min.js"></script>
+    <script src="/s/summernote-bs4.js"></script>
+    <script src="/s/visual-diff.js"></script>
+    <script src="/s/index.js"></script>
+    <!--<script src="/s/bootstrap-select.min.js"></script>
+      <script src="/s/defaults-de_DE.min.js"></script>-->
+  </body>
 </html>
