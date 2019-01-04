@@ -104,7 +104,7 @@
 (defun invalid-csrf () ;; TODO macro around ;; TODO secure string compare
   (not (string= (session-value 'CSRF_TOKEN) (post-parameter "csrf_token"))))
 
-(defun wiki-page-html ()
+(defun index-html ()
   (basic-headers)
   (handle-static-file "www/index.html"))
 
@@ -206,7 +206,8 @@
 (setq *dispatch-table*
       (nconc
        (list 'dispatch-easy-handlers
-	     (create-prefix-dispatcher "/wiki" 'wiki-page-html)
+	     (create-prefix-dispatcher "/search" 'index-html)
+	     (create-prefix-dispatcher "/wiki" 'index-html)
 	     (create-prefix-dispatcher "/api/wiki" 'wiki-page)
 	     (create-prefix-dispatcher "/api/history" 'wiki-page-history)
 	     (create-prefix-dispatcher "/api/upload" 'upload-handler)

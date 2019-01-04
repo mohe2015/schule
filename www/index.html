@@ -5,9 +5,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <link rel="stylesheet" href="/s/bootstrap.min.css">
         <link rel="stylesheet" href="/s/all.css">
-        <link href="/s/summernote-bs4.css" 
-            rel="stylesheet">
-       <link href="/s/index.css" rel="stylesheet">
+        <link rel="stylesheet" href="/s/summernote-bs4.css">
+        <link rel="stylesheet" href="/s/index.css">
+        <!--<link rel="stylesheet" href="/s/bootstrap-select.min.css">-->
         <title>Spickipedia</title>
     </head>
     <body>
@@ -36,17 +36,10 @@
                         <a class="nav-link edit-button" href="#">Bearbeiten</a>
                     </li>
                 </ul>
-                <form class="form-inline my-2 my-lg-0">
-                  <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-                </form>
+                
             </div>
         </nav>
         <div>
-          <div class="my-tab position-absolute" style="top: 50%; left: 50%; margin-left: -1rem; margin-top: -1rem;" id="loading">
-                  <div class="spinner-border" role="status">
-                      <span class="sr-only">Loading...</span>
-                  </div>
-          </div>
           <div style="display: none;" class="container-fluid my-tab position-absolute" id="page">
               <article>
               </article>
@@ -62,27 +55,74 @@
             </div>
           </div>
           <div style="display: none;" class="container-fluid my-tab position-absolute" id="history">
-          <h1 class="text-center">Änderungsverlauf</h1>
+            <h1 class="text-center">Änderungsverlauf</h1>
           
               <div class="list-group">
-              
-  <a class="list-group-item list-group-item-action ">
-    <div class="d-flex w-100 justify-content-between">
-      <h5 class="mb-1">Moritz Hedtke</h5>
-      <small>vor 3 Tagen</small>
-    </div>
-    <p class="mb-1">Ein paar wichtige Infos hinzugefügt</p>
-    <small>50.322 Zeichen | <span class="text-success">+ 50 Zeichen</span> | kleine Änderung</small>
-    <div class="btn-group w-100" role="group" aria-label="Basic example">
-      <button type="button" class="btn btn-outline-dark"><i class="fas fa-eye"></i></button>
-      <button type="button" class="btn btn-outline-dark"><i class="fas fa-columns"></i></button>
-      <button type="button" class="btn btn-outline-dark"><i class="fas fa-undo"></i></button>
-    </div>
-  </a>
+                          
+              <a class="list-group-item list-group-item-action ">
+                <div class="d-flex w-100 justify-content-between">
+                  <h5 class="mb-1">Moritz Hedtke</h5>
+                  <small>vor 3 Tagen</small>
+                </div>
+                <p class="mb-1">Ein paar wichtige Infos hinzugefügt</p>
+                <small>50.322 Zeichen | <span class="text-success">+ 50 Zeichen</span> | kleine Änderung</small>
+                <div class="btn-group w-100" role="group" aria-label="Basic example">
+                  <button type="button" class="btn btn-outline-dark"><i class="fas fa-eye"></i></button>
+                  <button type="button" class="btn btn-outline-dark"><i class="fas fa-columns"></i></button>
+                  <button type="button" class="btn btn-outline-dark"><i class="fas fa-undo"></i></button>
+                </div>
+              </a>
 
+        </div>
 
           </div>
-        </div>
+          
+          
+          <div style="display: none;" class="container-fluid my-tab position-absolute" id="search">
+              <br>
+             
+             <div class="input-group mb-3">
+                <input type="text" class="form-control" id="search-query" placeholder="Suchbegriff">
+                <div class="input-group-append">
+                  <button class="btn btn-outline-secondary" type="button" id="button-search"><i class="fas fa-search"></i></button>
+                </div>
+              </div>
+              
+              
+              <div>
+               <div class="position-absolute" style="left: 50%; margin-left: -1rem;" id="search-results-loading">
+                  <div class="spinner-border" role="status">
+                      <span class="sr-only">Loading...</span>
+                  </div>
+              </div>
+              
+              <div style="display: none;" class="position-absolute" id="search-results">
+              
+               <div class="list-group">
+                              
+                <a class="list-group-item list-group-item-action">
+                 <div class="media">
+                    <img src="/s/64.png" class="mr-3" alt="...">
+                    <div class="media-body">
+                      <h5 class="mt-0">Media heading</h5>
+                      Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
+                    </div>
+                  </div>
+                  </a>
+              </div>
+              </div>
+              
+            </div>    
+              
+            
+          </div>
+          
+          
+          <div class="my-tab position-absolute" style="top: 50%; left: 50%; margin-left: -1rem; margin-top: -1rem;" id="loading">
+                  <div class="spinner-border" role="status">
+                      <span class="sr-only">Loading...</span>
+                  </div>
+          </div>
         
         <!-- Modal -->
         <div class="modal fade" id="publish-changes-modal" tabindex="-1" role="dialog" aria-hidden="true">
@@ -134,5 +174,7 @@
         <script src="/s/summernote-bs4.js"></script>
         <script src="/s/visual-diff.js"></script>
         <script src="/s/index.js"></script>
+        <!--<script src="/s/bootstrap-select.min.js"></script>
+        <script src="/s/defaults-de_DE.min.js"></script>-->
     </body>
 </html>

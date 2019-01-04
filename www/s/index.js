@@ -274,7 +274,23 @@ $(document).ready(function() {
           showTab('#history');
         }
       }
+      if (pathname.length > 1 && pathname[1] == 'search') {
+          showTab('loading');
+          
+          $.get("/api/search/" + pathname[2], function(data) {
+              
+          })
+          .fail(function() {
+              alert("Fehler beim Laden der Suche!");
+          });
+          
+          showTab('#search');
+      }
     }
+    
+    $('#button-search').click(function() {
+      alert("search for " + $('#search-query').val());
+    });
     
     window.onpopstate = function (event) {
       console.log('onpopstate');
@@ -286,4 +302,6 @@ $(document).ready(function() {
     window.onbeforeunload = function() {
         //return false;
     }
+    
+   // $('.selectpicker').selectpicker();
 });
