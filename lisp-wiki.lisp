@@ -87,6 +87,9 @@
 (defun random-base64 ()
   (usb8-array-to-base64-string (random-data 64)))
 
+(defun cache-forever ()
+  (setf (header-out "Cache-Control") "max-age: 31536000"))
+
 (defun basic-headers ()
   (if (not (session-value 'CSRF_TOKEN (start-session)))
       (progn
@@ -151,7 +154,7 @@
 
 (define-easy-handler (root :uri "/") ()
   (basic-headers)
-  (redirect "/wiki/Startseite"))
+  (redirect "/wiki/Startseite")) ;; TODO permanent redirect?
 
 (defun upload-handler ()
   (basic-headers)
@@ -169,6 +172,7 @@
 	 filehash))
 
 (defun file-handler ()
+  (cache-forever)
   (basic-headers)
   (handle-static-file (merge-pathnames (concatenate 'string "uploads/" (subseq (script-name* *REQUEST*) 10)))))
 
