@@ -155,6 +155,12 @@
 	  (setf (return-code* *reply*) 404)
 	  nil))))
 
+(defun search-handler ()
+  (basic-headers)
+  (setf (content-type*) "text/json")
+  (let* ((query (subseq (script-name* *REQUEST*) 12)) (results (mito:select-dao 'wiki-article (where (:like :title (concatenate 'string "%" query "%"))))))
+    (json:encode-json-to-string (mapcar #'(lambda (a) (wiki-article-title a)) results))))
+
 (define-easy-handler (root :uri "/") ()
   (basic-headers)
   (redirect "/wiki/Startseite")) ;; TODO permanent redirect?
@@ -205,6 +211,7 @@
 	     (create-prefix-dispatcher "/api/history" 'wiki-page-history)
 	     (create-prefix-dispatcher "/api/upload" 'upload-handler)
 	     (create-prefix-dispatcher "/api/file" 'file-handler)
+	     (create-prefix-dispatcher "/api/search" 'search-handler)
 	     (create-prefix-dispatcher "/s/" 'root-handler)
 	     (create-prefix-dispatcher "/webfonts/" 'webfonts-handler)
 	     (create-prefix-dispatcher "/favicon.ico" 'favicon-handler))))
