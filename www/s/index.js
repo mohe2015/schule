@@ -275,21 +275,30 @@ $(document).ready(function() {
         }
       }
       if (pathname.length > 1 && pathname[1] == 'search') {
-          showTab('loading');
-          
-          $.get("/api/search/" + pathname[2], function(data) {
-              
-          })
-          .fail(function() {
-              alert("Fehler beim Laden der Suche!");
-          });
-          
           showTab('#search');
+          $('#search-query').val(pathname[2]);
       }
     }
     
     $('#button-search').click(function() {
-      alert("search for " + $('#search-query').val());
+      //alert("search for " + $('#search-query').val());
+      
+      // TODO update url / only update when search button clicked
+      
+      $('#search-results-loading').stop().fadeIn();
+      $('#search-results').stop().fadeOut();
+      
+      // TODO cancel previous requests
+      $.get("/api/search/" + $('#search-query').val(), function(data) {
+              console.log(data);
+              
+              $('#search-results-loading').stop().fadeOut();
+              $('#search-results').stop().fadeIn();
+      })
+      .fail(function() {
+          alert("Fehler beim Laden der Suche!");
+      });
+          
     });
     
     window.onpopstate = function (event) {
@@ -302,6 +311,12 @@ $(document).ready(function() {
     window.onbeforeunload = function() {
         //return false;
     }
+    
+    $(document).on("input", "#search-query", function(e){
+        //if (e.which == 13){
+            $('#button-search').click();
+       // }
+    });
     
    // $('.selectpicker').selectpicker();
 });
