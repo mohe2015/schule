@@ -125,7 +125,8 @@
 									    (where (:= :article article))
 									    (order-by (:desc :id))
 									    (limit 1)))) *sanitize-spickipedia*)
-	(setf (return-code* *reply*) 404))))
+	(progn (setf (return-code* *reply*) 404)
+	       nil))))
 
 (defun post-wiki-page ()
   (basic-headers)
@@ -135,13 +136,10 @@
 	(log-message* :ERROR "POTENTIAL ONGOING CROSS SITE REQUEST FORGERY ATTACK!!!")
 	(return-from post-wiki-page)))
   (let* ((title (subseq (script-name* *REQUEST*) 10)) (article (mito:find-dao 'wiki-article :title title)))
-    (if article
-	(progn
-	  (mito:create-dao 'wiki-article-revision :article article :author *user* :content (post-parameter "html" *request*))
-	  nil)
-	(progn
-	  (setf (return-code* *reply*) 404)
-	  nil))))
+    (if (not article)
+	(setf article (mito:create-dao 'wiki-article :title title)))
+    (mito:create-dao 'wiki-article-revision :article article :author *user* :content (post-parameter "html" *request*))
+    nil))
 
 (defun wiki-page-history ()
   (basic-headers)
