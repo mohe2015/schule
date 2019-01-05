@@ -304,6 +304,30 @@ $(document).ready(function() {
           
     });
     
+    $('#login-form').on('submit', function (e) {
+      e.preventDefault();
+      var name = $('#inputName').val();
+      var password = $('#inputPassword').val();
+      //alert(name);
+      //alert(password);
+      
+      $('#login-button').prop("disabled",true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Anmelden...');
+      
+      
+      $.post("/api/login", { csrf_token: readCookie('CSRF_TOKEN'), "name": name, "password": password }, function(data) {
+            window.history.pushState(null, null, "/wiki/Startseite");
+            updateState();
+        })
+        .fail(function() {
+            alert("Fehler beim Anmelden");
+        }).done(function () {
+           $('#login-button').prop("disabled",false).html('Anmelden');
+            $('#inputPassword').val('');
+        });
+        
+        return false;
+    });
+    
     window.onpopstate = function (event) {
       console.log('onpopstate');
       updateState();

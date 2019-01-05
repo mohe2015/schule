@@ -1,9 +1,12 @@
 
 (defpackage :lisp-wiki
-  (:use :common-lisp :hunchentoot :mito :sxql :sanitize :ironclad :cl-fad :cl-base64)
+  (:use :common-lisp :hunchentoot :mito :sxql :sanitize :ironclad :cl-fad :cl-base64 :bcrypt)
   (:export))
 
 (in-package :lisp-wiki)
+
+(defparameter *default-cost* 13
+  "The default value for the COST parameter to HASH.")
 
 (define-sanitize-mode *sanitize-spickipedia*
     :elements ("h1" "h2" "h3" "h4" "h5" "h6" "p" "strike" "sub" "b" "u" "i" "sup" "table" "tbody" "tr" "td" "ul" "a" "br" "ol" "li" "img" "iframe")
@@ -180,6 +183,22 @@
 	 (copy-file filepath newpath :overwrite t)
 	 filehash))
 
+(defun login-handler ()
+  (basic-headers)
+   (if (invalid-csrf)
+      (progn
+	(setf (return-code*) +http-forbidden+)
+	(log-message* :ERROR "POTENTIAL ONGOING CROSS SITE REQUEST FORGERY ATTACK!!!")
+	(return-from login-handler)))
+   (let* ((name (post-parameter "name"))
+	  (password (post-parameter "password"))
+	  (user (mito:find-dao 'user :name name)))
+     (if (and user (password= password (user-password-hash user)))                        ;; TODO prevent timing attack
+	 "success"
+	 (progn
+	   (setf (return-code*) +http-forbidden+)
+	   nil))))
+
 (defun file-handler ()
   (cache-forever)
   (basic-headers)
@@ -214,6 +233,7 @@
 	     (create-prefix-dispatcher "/api/upload" 'upload-handler)
 	     (create-prefix-dispatcher "/api/file" 'file-handler)
 	     (create-prefix-dispatcher "/api/search" 'search-handler)
+	     (create-prefix-dispatcher "/api/login" 'login-handler)
 	     (create-prefix-dispatcher "/s/" 'root-handler)
 	     (create-prefix-dispatcher "/webfonts/" 'webfonts-handler)
 	     (create-prefix-dispatcher "/favicon.ico" 'favicon-handler))))
