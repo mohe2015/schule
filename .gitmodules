@@ -7,3 +7,6 @@
 [submodule "summernote"]
 	path = summernote
 	url = https://github.com/summernote/summernote/
+[submodule "hunchentoot"]
+	path = hunchentoot
+	url = https://github.com/edicl/hunchentoot
