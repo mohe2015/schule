@@ -344,7 +344,7 @@ $(document).ready(function() {
                 $('#no-search-results').hide();
                 for (page of data) {
                   var t = $($('#search-result-template').html());
-                  t.find('.s-title').html(page);
+                  t.find('.s-title').text(page);
                   t.attr('href', "/wiki/" + page);
                   
                   $('#search-results-content').append(t);
