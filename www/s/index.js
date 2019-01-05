@@ -211,14 +211,34 @@ $(document).ready(function() {
     // the url should contain the main state and the state object may contain additional information which is not show in the url
     function updateState() {
       //if (history.state && history.state.currentState == 'create-article') {
-        
-        
+      
+      // TODO maybe use less fading or shorter fading for faster navigation?
+      
+      if (localStorage.name !== undefined) {
+       $('#nav-username').html(localStorage.name); 
+      }
         
       //  return;
       //}
       
       var pathname = window.location.pathname.split('/');
       console.log(pathname);
+      
+      if (pathname.length > 1 && pathname[1] == 'login') {
+          showTab('#login');
+          $('.login-hide').fadeOut(function() {
+              $('.login-hide').attr("style", "display: none !important");
+          });
+          return;
+      } else {
+          if (localStorage.name === undefined) {
+              window.history.pushState(null, null, "/login");
+              updateState();
+              return;
+          }
+          $('.login-hide').fadeIn(); 
+      }
+      
       if (pathname.length > 1 && pathname[1] == 'wiki') {
         if (pathname.length == 3) { // /wiki/:name
           cleanup();
@@ -278,9 +298,6 @@ $(document).ready(function() {
           showTab('#search');
           $('#search-query').val(pathname[2]);
       }
-      if (pathname.length > 1 && pathname[1] == 'login') {
-          showTab('#login');
-      }
     }
     
     $('#button-search').click(function() {
@@ -315,10 +332,12 @@ $(document).ready(function() {
       
       
       $.post("/api/login", { csrf_token: readCookie('CSRF_TOKEN'), "name": name, "password": password }, function(data) {
+            localStorage.name = name;
             window.history.pushState(null, null, "/wiki/Startseite");
             updateState();
         })
         .fail(function() {
+            localStorage.removeItem('name');
             alert("Fehler beim Anmelden");
         }).always(function () {
            $('#login-button').prop("disabled",false).html('Anmelden');
