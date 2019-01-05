@@ -301,6 +301,17 @@ $(document).ready(function() {
           var articlePath = window.location.pathname.substr(6, window.location.pathname.lastIndexOf("/")-6);
           $.get("/api/history/" + articlePath, function(data) {
               
+              console.log(data);
+            
+              $('#history-list').html('');
+              
+              for (page of data) {
+                var t = $($('#history-item-template').html());
+                t.find('.history-username').html(page.user);
+                t.find('.history-date').html(moment(new Date(page.created)).locale('de').fromNow());
+                
+                $('#history-list').append(t);
+              }            
           })
           .fail(function() {
               alert("Fehler beim Laden des Änderungsverlaufs!");

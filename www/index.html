@@ -11,17 +11,33 @@
     <title>Spickipedia</title>
   </head>
   <body>
-  <template id="search-result-template">
-          <a class="list-group-item list-group-item-action">
-              <div class="media">
-                <img src="/s/64.png" class="mr-3" alt="...">
-                <div class="media-body">
-                  <h5 class="mt-0 s-title">Media heading</h5>
-                  <!--Beschreibung nicht verfügbar-->
-                </div>
-              </div>
-            </a>
-        </template>
+      <template id="search-result-template">
+        <a class="list-group-item list-group-item-action">
+          <div class="media">
+            <img src="/s/64.png" class="mr-3" alt="...">
+            <div class="media-body">
+              <h5 class="mt-0 s-title">Media heading</h5>
+              <!--Beschreibung nicht verfügbar-->
+            </div>
+          </div>
+        </a>
+    </template>
+    
+    <template id="history-item-template">
+      <a class="list-group-item list-group-item-action">
+          <div class="d-flex w-100 justify-content-between">
+            <h5 class="mb-1 history-username">Moritz Hedtke</h5>
+            <small class="history-date">vor 3 Tagen</small>
+          </div>
+          <p class="mb-1 history-summary">Ein paar wichtige Infos hinzugefügt</p>
+          <!--<small><span class="history-characters">50.322</span> Zeichen | <span class="text-success d-none">+ 50 Zeichen</span></small>
+          <div class="btn-group w-100" role="group" aria-label="Basic example">
+            <button type="button" class="btn btn-outline-dark"><i class="fas fa-eye"></i></button>
+            <button type="button" class="btn btn-outline-dark"><i class="fas fa-columns"></i></button>
+            <button type="button" class="btn btn-outline-dark"><i class="fas fa-undo"></i></button>
+          </div>-->
+        </a>
+    </template>
   
     <nav class="navbar navbar-expand-md navbar-light bg-light">
       <a class="navbar-brand" href="/wiki/Startseite"><!-- TODO use history.pushState -->
@@ -83,20 +99,8 @@
     </div>
     <div style="display: none;" class="container-fluid my-tab position-absolute" id="history">
       <h1 class="text-center">Änderungsverlauf</h1>
-      <div class="list-group">
-        <a class="list-group-item list-group-item-action ">
-          <div class="d-flex w-100 justify-content-between">
-            <h5 class="mb-1">Moritz Hedtke</h5>
-            <small>vor 3 Tagen</small>
-          </div>
-          <p class="mb-1">Ein paar wichtige Infos hinzugefügt</p>
-          <small>50.322 Zeichen | <span class="text-success">+ 50 Zeichen</span> | kleine Änderung</small>
-          <div class="btn-group w-100" role="group" aria-label="Basic example">
-            <button type="button" class="btn btn-outline-dark"><i class="fas fa-eye"></i></button>
-            <button type="button" class="btn btn-outline-dark"><i class="fas fa-columns"></i></button>
-            <button type="button" class="btn btn-outline-dark"><i class="fas fa-undo"></i></button>
-          </div>
-        </a>
+      <div class="list-group" id="history-list">
+        
       </div>
     </div>
     <div style="display: none;" class="container-fluid my-tab position-absolute" id="search">
@@ -174,6 +178,7 @@
     <script src="/s/summernote-bs4.js"></script>
     <script src="/s/visual-diff.js"></script>
     <script src="/s/index.js"></script>
+    <script src="/s/moment-with-locales.js"></script>
     <!--<script src="/s/bootstrap-select.min.js"></script>
       <script src="/s/defaults-de_DE.min.js"></script>-->
   </body>
