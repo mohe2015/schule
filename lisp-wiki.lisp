@@ -142,8 +142,8 @@
 
 (defmacro defpost (name &body body) ;; TODO assert that's really a POST REQUEST
   `(defun ,name ()
-     (with-user ;; HOW should the request be resent when user auth fails with a post request?? 
-       (basic-headers)
+     (basic-headers)
+     (with-user
        (if (valid-csrf)
 	   (progn ,@body)
 	   (progn
@@ -152,7 +152,7 @@
 	     nil)))))
 
 (defun basic-headers ()
-  (if (not (session-value 'CSRF_TOKEN (start-session)))
+  (if (not (session-value 'CSRF_TOKEN))
       (progn
 	(setf (session-value 'CSRF_TOKEN) (random-base64))
 	(set-cookie "CSRF_TOKEN" :value (session-value 'CSRF_TOKEN) :path "/")))

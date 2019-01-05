@@ -1,6 +1,9 @@
 /*eslint-env browser, jquery*/
 $(document).ready(function() {
 
+  
+  // TODO big issue - this code does never reload the page and therefore doesnt ask for an updated page...
+  
     $( document ).ajaxError(function( event, jqxhr, settings, thrownError ) {
       console.log(thrownError);
       if (thrownError === 'Authorization Required') {
@@ -247,9 +250,18 @@ $(document).ready(function() {
             updateState();
             return;
           }
-          showTab('#login');
-          $('.login-hide').fadeOut(function() {
-              $('.login-hide').attr("style", "display: none !important");
+          
+          $('#publish-changes-modal').modal('hide');
+          showTab('#loading');
+          
+          $.get("/", function(data) {
+              showTab('#login');
+              $('.login-hide').fadeOut(function() {
+                  $('.login-hide').attr("style", "display: none !important");
+              });
+          })
+          .fail(function(jqXHR, textStatus, errorThrown) {
+              alert("Fehler beim Laden der Login-Seite");
           });
           return;
       } else {
@@ -384,7 +396,7 @@ $(document).ready(function() {
       $.post("/api/login", { csrf_token: readCookie('CSRF_TOKEN'), "name": name, "password": password }, function(data) {
             localStorage.name = name;
            
-            if (window.history.state !== undefined && window.history.state.lastState !== undefined && window.history.state.lastUrl !== undefined) {
+            if (window.history.state !== null && window.history.state.lastState !== undefined && window.history.state.lastUrl !== undefined) {
               window.history.replaceState(window.history.state.lastState, null, window.history.state.lastUrl);
               updateState();
             } else {
