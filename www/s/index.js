@@ -350,6 +350,7 @@ $(document).ready(function() {
                   $('#search-results-content').append(t);
                 }
               } else {
+                $('#search-create-article').attr('href', "/wiki/" + $('#search-query').val() + "/create");
                 $('#no-search-results').show();
               }
               

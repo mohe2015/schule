@@ -45,7 +45,7 @@
       </a>
       <div class="login-hide">
         <a class="btn d-inline d-md-none edit-button"><i class="fas fa-pen"></i></a>
-        <a class="btn d-inline d-md-none search-button"><i class="fas fa-search"></i></a>
+        <a class="btn d-inline d-md-none search-button" href="/search"><i class="fas fa-search"></i></a><!-- TODO use history.pushState -->
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
         </button>
@@ -121,7 +121,11 @@
           <div class="list-group" id="search-results-content">
             
           </div>
-          <div style="display: none;" class="text-center" id="no-search-results">Keine Seite gefunden</div>
+          <div style="display: none;" class="text-center" id="no-search-results">
+            <div class="alert alert-danger" role="alert">
+              Der Artikel konnte nicht gefunden werden. Möchtest du ihn <a id="search-create-article" href="#" class="alert-link">erstellen</a>?
+            </div>
+          </div>
         </div>
       </div>
     </div>
