@@ -307,8 +307,9 @@ $(document).ready(function() {
               
               for (page of data) {
                 var t = $($('#history-item-template').html());
-                t.find('.history-username').html(page.user);
-                t.find('.history-date').html(moment(new Date(page.created)).locale('de').fromNow());
+                t.find('.history-username').text(page.user);
+                t.find('.history-date').text(moment(new Date(page.created)).locale('de').fromNow());
+                t.find('.history-summary').text(page.summary);
                 
                 $('#history-list').append(t);
               }            

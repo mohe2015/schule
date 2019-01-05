@@ -58,7 +58,7 @@
 	    :accessor wiki-article-revision-article)
    (summary :col-type (:varchar 256)
 	    :initarg :summary
-	    :accessor wiki-article-summary)
+	    :accessor wiki-article-revision-summary)
    (content :col-type (:blob)
 	    :initarg :content
 	    :accessor wiki-article-revision-content))
@@ -193,8 +193,8 @@
     (if article
 	(json:encode-json-to-string
 	 (mapcar #'(lambda (r) `((user . ,(user-name (wiki-article-revision-author r)))
-				 (content . ,(wiki-article-revision-content r))
-				 (created . ,(local-time:format-timestring nil (mito:object-created-at (wiki-article-revision-author r))))))
+				 (summary . ,(wiki-article-revision-summary r))
+				 (created . ,(local-time:format-timestring nil (mito:object-created-at r)))))
 		 (mito:retrieve-dao 'wiki-article-revision :article article)))
 	(progn
 	  (setf (return-code* *reply*) 404)
