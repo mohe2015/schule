@@ -278,6 +278,9 @@ $(document).ready(function() {
           showTab('#search');
           $('#search-query').val(pathname[2]);
       }
+      if (pathname.length > 1 && pathname[1] == 'login') {
+          showTab('#login');
+      }
     }
     
     $('#button-search').click(function() {
