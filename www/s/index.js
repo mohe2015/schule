@@ -234,6 +234,13 @@ $(document).ready(function() {
       var pathname = window.location.pathname.split('/');
       console.log(pathname);
       
+      if (pathname.length > 1 && pathname[1] == 'logout') {
+        localStorage.removeItem('name');
+        window.history.replaceState(null, null, "/login");
+        updateState();
+        return;
+      }
+      
       if (pathname.length > 1 && pathname[1] == 'login') {
           if (localStorage.name !== undefined) {
             window.history.replaceState(null, null, "/wiki/Startseite");
@@ -377,7 +384,7 @@ $(document).ready(function() {
       $.post("/api/login", { csrf_token: readCookie('CSRF_TOKEN'), "name": name, "password": password }, function(data) {
             localStorage.name = name;
            
-            if (window.history.state.lastUrl !== undefined) {
+            if (window.history.state !== undefined && window.history.state.lastState !== undefined && window.history.state.lastUrl !== undefined) {
               window.history.replaceState(window.history.state.lastState, null, window.history.state.lastUrl);
               updateState();
             } else {

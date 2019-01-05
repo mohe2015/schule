@@ -251,6 +251,7 @@
       (nconc
        (list 'dispatch-easy-handlers
 	     (create-prefix-dispatcher "/login" 'index-html)
+	     (create-prefix-dispatcher "/logout" 'index-html)
 	     (create-prefix-dispatcher "/search" 'index-html)
 	     (create-prefix-dispatcher "/wiki" 'index-html)
 	     (create-prefix-dispatcher "/api/wiki" 'wiki-page)
