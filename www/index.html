@@ -11,6 +11,18 @@
     <title>Spickipedia</title>
   </head>
   <body>
+  <template id="search-result-template">
+          <a class="list-group-item list-group-item-action">
+              <div class="media">
+                <img src="/s/64.png" class="mr-3" alt="...">
+                <div class="media-body">
+                  <h5 class="mt-0 s-title">Media heading</h5>
+                  <!--Beschreibung nicht verfügbar-->
+                </div>
+              </div>
+            </a>
+        </template>
+  
     <nav class="navbar navbar-expand-md navbar-light bg-light">
       <a class="navbar-brand" href="/wiki/Startseite"><!-- TODO use history.pushState -->
       Spickipedia
@@ -102,17 +114,10 @@
           </div>
         </div>
         <div style="display: none;" id="search-results">
-          <div class="list-group">
-            <a class="list-group-item list-group-item-action">
-              <div class="media">
-                <img src="/s/64.png" class="mr-3" alt="...">
-                <div class="media-body">
-                  <h5 class="mt-0">Media heading</h5>
-                  Beschreibung nicht verfügbar
-                </div>
-              </div>
-            </a>
+          <div class="list-group" id="search-results-content">
+            
           </div>
+          <div style="display: none;" class="text-center" id="no-search-results">Keine Seite gefunden</div>
         </div>
       </div>
     </div>

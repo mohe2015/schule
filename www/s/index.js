@@ -327,6 +327,21 @@ $(document).ready(function() {
       $.get("/api/search/" + $('#search-query').val(), function(data) {
               console.log(data);
               
+              $('#search-results-content').html('');
+              
+              if (data != null) {
+                $('#no-search-results').hide();
+                for (page of data) {
+                  var t = $($('#search-result-template').html());
+                  t.find('.s-title').html(page);
+                  t.attr('href', "/wiki/" + page);
+                  
+                  $('#search-results-content').append(t);
+                }
+              } else {
+                $('#no-search-results').show();
+              }
+              
               $('#search-results-loading').stop().fadeOut();
               $('#search-results').stop().fadeIn();
       })
