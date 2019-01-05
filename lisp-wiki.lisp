@@ -217,7 +217,9 @@
 	 (password (post-parameter "password"))
 	 (user (mito:find-dao 'user :name name)))
     (if (and user (password= password (user-hash user)))                        ;; TODO prevent timing attack
-	"success" ;; TODO really login user in session
+	(progn
+	  (setf (session-value 'USER_ID) (object-id user))
+	  nil)
 	(progn
 	  (setf (return-code*) +http-forbidden+)
 	  nil))))
