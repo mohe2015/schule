@@ -195,7 +195,7 @@
 	 (mapcar #'(lambda (r) `((user . ,(user-name (wiki-article-revision-author r)))
 				 (summary . ,(wiki-article-revision-summary r))
 				 (created . ,(local-time:format-timestring nil (mito:object-created-at r)))))
-		 (mito:retrieve-dao 'wiki-article-revision :article article)))
+		 (mito:select-dao 'wiki-article-revision (where (:= :article article)) (order-by (:desc :created-at)))))
 	(progn
 	  (setf (return-code* *reply*) 404)
 	  nil))))
