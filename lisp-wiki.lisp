@@ -56,6 +56,9 @@
    (article :col-type wiki-article
 	    :initarg :article
 	    :accessor wiki-article-revision-article)
+   (summary :col-type (:varchar 256)
+	    :initarg :summary
+	    :accessor wiki-article-summary)
    (content :col-type (:blob)
 	    :initarg :content
 	    :accessor wiki-article-revision-content))
@@ -166,19 +169,22 @@
 
 (defget get-wiki-page
   (let* ((title (subseq (script-name* *REQUEST*) 10)) (article (mito:find-dao 'wiki-article :title title)))
-    (if article
-	(clean (wiki-article-revision-content (car (mito:select-dao 'wiki-article-revision
-						     (where (:= :article article))
-						     (order-by (:desc :id))
-						     (limit 1)))) *sanitize-spickipedia*)
-	(progn (setf (return-code* *reply*) 404)
-	       nil))))
+    (if (not article)
+	(progn
+	  (setf (return-code* *reply*) 404)
+	  (return-from get-wiki-page)))
+    (let ((revision (mito:select-dao 'wiki-article-revision (where (:= :article article)) (order-by (:desc :id)) (limit 1))))
+      (if (not revision)
+	  (progn
+	  (setf (return-code* *reply*) 404)
+	  (return-from get-wiki-page)))
+      (clean (wiki-article-revision-content (car revision)) *sanitize-spickipedia*))))
 
 (defpost post-wiki-page 
   (let* ((title (subseq (script-name* *REQUEST*) 10)) (article (mito:find-dao 'wiki-article :title title)))
     (if (not article)
 	(setf article (mito:create-dao 'wiki-article :title title)))
-    (mito:create-dao 'wiki-article-revision :article article :author user :content (post-parameter "html" *request*))
+    (mito:create-dao 'wiki-article-revision :article article :author user :summary (post-parameter "summary") :content (post-parameter "html" *request*))
     nil))
 
 (defget wiki-page-history

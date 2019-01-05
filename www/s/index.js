@@ -66,7 +66,7 @@ $(document).ready(function() {
         $('#publish-changes').hide();
         $('#publishing-changes').show();
 
-        var changeSummary = $('#change-summary').html();
+        var changeSummary = $('#change-summary').val();
         var newHtml = $('article').summernote('code');
         
         var articlePath = window.location.pathname.substr(0, window.location.pathname.lastIndexOf("/"));
