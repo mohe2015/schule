@@ -1,6 +1,16 @@
 /*eslint-env browser, jquery*/
 $(document).ready(function() {
 
+    $( document ).ajaxError(function( event, jqxhr, settings, thrownError ) {
+      console.log(thrownError);
+      if (thrownError === 'Authorization Required') {
+        var name = $('#inputName').val(localStorage.name);
+        localStorage.removeItem('name');
+        window.history.pushState({lastUrl: window.location.href, lastState: window.history.state}, null, "/login");
+        updateState();
+      }
+    });
+  
     function setFullscreen(value) {
       if (value && $('.fullscreen').length == 0) {
         console.log("enable fullscreen");

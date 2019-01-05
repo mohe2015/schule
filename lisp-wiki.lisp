@@ -122,9 +122,19 @@
        (basic-headers)
        ,@body)))
 
+(defmacro defpost-noauth (name &body body)
+  `(defun ,name ()
+     (basic-headers)
+     (if (valid-csrf)
+	 (progn ,@body)
+	 (progn
+	   (setf (return-code*) +http-forbidden+)
+	   (log-message* :ERROR "POTENTIAL ONGOING CROSS SITE REQUEST FORGERY ATTACK!!!")
+	   nil))))
+
 (defmacro defpost (name &body body) ;; TODO assert that's really a POST REQUEST
   `(defun ,name ()
-     (with-user
+     (with-user ;; HOW should the request be resent when user auth fails with a post request?? 
        (basic-headers)
        (if (valid-csrf)
 	   (progn ,@body)
@@ -202,7 +212,7 @@
 	 (copy-file filepath newpath :overwrite t)
 	 filehash))
 
-(defpost login-handler
+(defpost-noauth login-handler
   (let* ((name (post-parameter "name"))
 	 (password (post-parameter "password"))
 	 (user (mito:find-dao 'user :name name)))
