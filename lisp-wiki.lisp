@@ -71,16 +71,7 @@
 (mito:migrate-table 'wiki-article-revision)
 
 ;; run only once
-;;(defvar *article* (make-instance 'wiki-article :title "Startseite"))
-;(defparameter *user* (make-instance 'user :name "Moritz Hedtke" :group "admin" :hash (hash "common-lisp")))
-;;(mito:insert-dao *article*)
-;(mito:insert-dao *user*)
-;;(defvar *revision* (make-instance 'wiki-article-revision :author *user* :article *article* :content "hi dudes"))
-;;(mito:insert-dao *revision*)
-;;(assert (auth *user* "common-lisp"))
-;;(assert (not (auth *user* "wrong-password")))
-
-(defparameter *user* (mito:find-dao 'user))
+;(mito:insert-dao (make-instance 'user :name "Moritz Hedtke" :group "admin" :hash (hash "common-lisp")))
 
 ;;(stop *acceptor*)
 
@@ -97,6 +88,51 @@
 (defun cache-forever ()
   (setf (header-out "Cache-Control") "max-age: 31536000"))
 
+(defun get-user ()
+  (let ((user-id (session-value 'USER_ID *session*)))
+    (if user-id
+	(mito:find-dao 'user :id user-id)
+	nil)))
+
+(defun valid-csrf () ;; ;; TODO secure string compare
+  (string= (session-value 'CSRF_TOKEN) (post-parameter "csrf_token")))
+
+(defmacro with-user (&body body)
+  `(let ((user (get-user)))
+     (if user
+	 (progn ,@body)
+	 (progn
+	   (setf (return-code*) +http-authorization-required+)
+	   nil))))
+
+(defmacro defget-noauth (name &body body) ;; TODO assert that's really a GET request
+  `(defun ,name ()
+     (basic-headers)
+     ,@body))
+
+(defmacro defget-noauth-cache (name &body body)
+  `(defun ,name ()
+     (cache-forever)
+     (basic-headers)
+     ,@body))
+
+(defmacro defget (name &body body) ;; TODO assert that's really a GET request
+  `(defun ,name ()
+     (with-user
+       (basic-headers)
+       ,@body)))
+
+(defmacro defpost (name &body body) ;; TODO assert that's really a POST REQUEST
+  `(defun ,name ()
+     (with-user
+       (basic-headers)
+       (if (valid-csrf)
+	   (progn ,@body)
+	   (progn
+	     (setf (return-code*) +http-forbidden+)
+	     (log-message* :ERROR "POTENTIAL ONGOING CROSS SITE REQUEST FORGERY ATTACK!!!")
+	     nil)))))
+
 (defun basic-headers ()
   (if (not (session-value 'CSRF_TOKEN (start-session)))
       (progn
@@ -107,15 +143,10 @@
   (setf (header-out "X-XSS-Protection") "1; mode=block")
   (setf (header-out "X-Content-Type-Options") "nosniff"))
 
-(defun invalid-csrf () ;; TODO macro around ;; TODO secure string compare
-  (not (string= (session-value 'CSRF_TOKEN) (post-parameter "csrf_token"))))
-
-(defun index-html ()
-  (basic-headers)
+(defget-noauth index-html
   (handle-static-file "www/index.html"))
 
-(defun favicon-handler ()
-  (basic-headers)
+(defget-noauth favicon-handler
   (handle-static-file "www/favicon.ico"))
 
 (defun wiki-page ()
@@ -123,32 +154,24 @@
     (:GET (get-wiki-page))
     (:POST (post-wiki-page))))
 
-(defun get-wiki-page ()
-  (basic-headers)
+(defget get-wiki-page
   (let* ((title (subseq (script-name* *REQUEST*) 10)) (article (mito:find-dao 'wiki-article :title title)))
     (if article
 	(clean (wiki-article-revision-content (car (mito:select-dao 'wiki-article-revision
-									    (where (:= :article article))
-									    (order-by (:desc :id))
-									    (limit 1)))) *sanitize-spickipedia*)
+						     (where (:= :article article))
+						     (order-by (:desc :id))
+						     (limit 1)))) *sanitize-spickipedia*)
 	(progn (setf (return-code* *reply*) 404)
 	       nil))))
 
-(defun post-wiki-page ()
-  (basic-headers)
-  (if (invalid-csrf)
-      (progn
-	(setf (return-code*) +http-forbidden+)
-	(log-message* :ERROR "POTENTIAL ONGOING CROSS SITE REQUEST FORGERY ATTACK!!!")
-	(return-from post-wiki-page)))
+(defpost post-wiki-page 
   (let* ((title (subseq (script-name* *REQUEST*) 10)) (article (mito:find-dao 'wiki-article :title title)))
     (if (not article)
 	(setf article (mito:create-dao 'wiki-article :title title)))
-    (mito:create-dao 'wiki-article-revision :article article :author *user* :content (post-parameter "html" *request*))
+    (mito:create-dao 'wiki-article-revision :article article :author user :content (post-parameter "html" *request*))
     nil))
 
-(defun wiki-page-history ()
-  (basic-headers)
+(defget wiki-page-history
   (setf (content-type*) "text/json")
   (let* ((title (subseq (script-name* *REQUEST*) 13)) (article (mito:find-dao 'wiki-article :title title)))
     (if article
@@ -161,23 +184,16 @@
 	  (setf (return-code* *reply*) 404)
 	  nil))))
 
-(defun search-handler ()
-  (basic-headers)
+(defget search-handler
   (setf (content-type*) "text/json")
   (let* ((query (subseq (script-name* *REQUEST*) 12)) (results (mito:select-dao 'wiki-article (where (:like :title (concatenate 'string "%" query "%"))))))
     (json:encode-json-to-string (mapcar #'(lambda (a) (wiki-article-title a)) results))))
 
-(define-easy-handler (root :uri "/") ()
+(define-easy-handler (root :uri "/") () ;; TODO replace this handler
   (basic-headers)
   (redirect "/wiki/Startseite")) ;; TODO permanent redirect?
 
-(defun upload-handler ()
-  (basic-headers)
-  (if (invalid-csrf)
-      (progn
-	(setf (return-code*) +http-forbidden+)
-	(log-message* :ERROR "POTENTIAL ONGOING CROSS SITE REQUEST FORGERY ATTACK!!!")
-	(return-from upload-handler)))
+(defpost upload-handler
   (let* ((filepath (nth 0 (hunchentoot:post-parameter "file")))
 	 ;; (filetype (nth 2 (hunchentoot:post-parameter "file")))
 	 (filehash (byte-array-to-hex-string (digest-file :sha512 filepath)))	 ;; TODO whitelist mimetypes TODO verify if mimetype is correct
@@ -186,39 +202,27 @@
 	 (copy-file filepath newpath :overwrite t)
 	 filehash))
 
-(defun login-handler ()
-  (basic-headers)
-   (if (invalid-csrf)
-      (progn
-	(setf (return-code*) +http-forbidden+)
-	(log-message* :ERROR "POTENTIAL ONGOING CROSS SITE REQUEST FORGERY ATTACK!!!")
-	(return-from login-handler)))
-   (let* ((name (post-parameter "name"))
-	  (password (post-parameter "password"))
-	  (user (mito:find-dao 'user :name name)))
-     (if (and user (password= password (user-hash user)))                        ;; TODO prevent timing attack
-	 "success"
-	 (progn
-	   (setf (return-code*) +http-forbidden+)
-	   nil))))
+(defpost login-handler
+  (let* ((name (post-parameter "name"))
+	 (password (post-parameter "password"))
+	 (user (mito:find-dao 'user :name name)))
+    (if (and user (password= password (user-hash user)))                        ;; TODO prevent timing attack
+	"success" ;; TODO really login user in session
+	(progn
+	  (setf (return-code*) +http-forbidden+)
+	  nil))))
 
-(defun file-handler ()
-  (cache-forever)
-  (basic-headers)
+(defget-noauth-cache file-handler
   (handle-static-file (merge-pathnames (concatenate 'string "uploads/" (subseq (script-name* *REQUEST*) 10)))))
 
-(defun root-handler ()
-  (cache-forever)
-  (basic-headers)
+(defget-noauth-cache root-handler
   (let ((request-path (request-pathname *request* "/s/")))
     (when (null request-path)
       (setf (return-code*) +http-forbidden+)
       (abort-request-handler))
     (handle-static-file (merge-pathnames request-path #P"www/s/"))))
 
-(defun webfonts-handler ()
-  (cache-forever)
-  (basic-headers)
+(defget-noauth-cache webfonts-handler
   (let ((request-path (request-pathname *request* "/webfonts/")))
     (when (null request-path)
       (setf (return-code*) +http-forbidden+)
