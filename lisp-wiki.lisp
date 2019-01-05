@@ -33,6 +33,8 @@
 
 (defparameter *CATCH-ERRORS-P* nil) ;; TODO scan with this line enabled to find bugs
 (defparameter *rewrite-for-session-urls* nil)
+(defparameter *content-types-for-url-rewrite* nil)
+(defparameter *session-secret* "9CU0JB0R12") ;; TODO remove this in production
 
 (mito:connect-toplevel :sqlite3 :database-name #P"database.db")
 
@@ -69,14 +71,35 @@
 	    :accessor wiki-article-revision-content))
   (:metaclass mito:dao-table-class))
 
+(defclass my-session ()
+  ((session-cookie :col-type (:varchar 512)
+		   :initarg :session-cookie
+		   :accessor my-session-cookie)
+   (csrf-token     :col-type (:varchar 512)
+		   :initarg :csrf-token
+		   :accessor my-session-csrf-token)
+   (user           :col-type (or user :null)
+		   :initarg  :user
+		   :accesser my-session-user))
+  (:metaclass mito:dao-table-class))
+
+(defmethod session-verify ((request request))
+  (let ((session-identifier (cookie-in (session-cookie-name *acceptor*) request)))
+    (mito:find-dao 'my-session :session-cookie session-identifier)))
+
+(defun start-my-session ()
+  (mito:create-dao 'my-session :session-cookie (random-base64) :csrf-token (random-base64)))
+
 (setf mito:*mito-logger-stream* t)
 
 (mito:ensure-table-exists 'user)
 (mito:ensure-table-exists 'wiki-article)
 (mito:ensure-table-exists 'wiki-article-revision)
+(mito:ensure-table-exists 'my-session)
 (mito:migrate-table 'user)
 (mito:migrate-table 'wiki-article)
 (mito:migrate-table 'wiki-article-revision)
+(mito:migrate-table 'my-session)
 
 ;; run only once
 ;(mito:insert-dao (make-instance 'user :name "Moritz Hedtke" :group "admin" :hash (hash "common-lisp")))
@@ -234,6 +257,7 @@
 	 (user (mito:find-dao 'user :name name)))
     (if (and user (password= password (user-hash user)))                        ;; TODO prevent timing attack
 	(progn
+	  (regenerate-session-cookie-value *SESSION*)
 	  (setf (session-value 'USER_ID) (object-id user))
 	  nil)
 	(progn
