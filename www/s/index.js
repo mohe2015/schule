@@ -225,6 +225,11 @@ $(document).ready(function() {
       console.log(pathname);
       
       if (pathname.length > 1 && pathname[1] == 'login') {
+          if (localStorage.name !== undefined) {
+            window.history.replaceState(null, null, "/wiki/Startseite");
+            updateState();
+            return;
+          }
           showTab('#login');
           $('.login-hide').fadeOut(function() {
               $('.login-hide').attr("style", "display: none !important");
@@ -232,7 +237,7 @@ $(document).ready(function() {
           return;
       } else {
           if (localStorage.name === undefined) {
-              window.history.pushState(null, null, "/login");
+              window.history.pushState({lastUrl: window.location.href, lastState: window.history.state}, null, "/login");
               updateState();
               return;
           }
@@ -333,8 +338,14 @@ $(document).ready(function() {
       
       $.post("/api/login", { csrf_token: readCookie('CSRF_TOKEN'), "name": name, "password": password }, function(data) {
             localStorage.name = name;
-            window.history.pushState(null, null, "/wiki/Startseite");
-            updateState();
+           
+            if (window.history.state.lastUrl !== undefined) {
+              window.history.replaceState(window.history.state.lastState, null, window.history.state.lastUrl);
+              updateState();
+            } else {
+              window.history.replaceState(null, null, "/wiki/Startseite");
+              updateState();
+            }
         })
         .fail(function() {
             localStorage.removeItem('name');
