@@ -140,7 +140,7 @@
 	   (progn ,@body)
 	   (progn
 	     (setf (return-code*) +http-forbidden+)
-	     (log-message* :ERROR "POTENTIAL ONGOING CROSS SITE REQUEST FORGERY ATTACK!!!")
+	     (log-message* :ERROR (format nil "POTENTIAL ONGOING CROSS SITE REQUEST FORGERY ATTACK!!! username: ~a" (user-name user)))
 	     nil)))))
 
 (defun basic-headers ()
