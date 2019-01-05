@@ -37,7 +37,10 @@
 	  :accessor user-name)
    (group :col-type (:varchar 64)
 	  :initarg :group
-	  :accessor user-group))
+	  :accessor user-group)
+   (hash  :col-type (:varchar 512)
+	  :initarg :hash
+	  :accessor user-hash))
   (:metaclass mito:dao-table-class))
 
 (defclass wiki-article ()
@@ -69,15 +72,15 @@
 
 ;; run only once
 ;;(defvar *article* (make-instance 'wiki-article :title "Startseite"))
-;;(defvar *user* (make-instance 'user :name "Moritz Hedtke" :group "admin" :password "common-lisp"))
+;(defparameter *user* (make-instance 'user :name "Moritz Hedtke" :group "admin" :hash (hash "common-lisp")))
 ;;(mito:insert-dao *article*)
-;;(mito:insert-dao *user*)
+;(mito:insert-dao *user*)
 ;;(defvar *revision* (make-instance 'wiki-article-revision :author *user* :article *article* :content "hi dudes"))
 ;;(mito:insert-dao *revision*)
 ;;(assert (auth *user* "common-lisp"))
 ;;(assert (not (auth *user* "wrong-password")))
 
-(defvar *user* (mito:find-dao 'user))
+(defparameter *user* (mito:find-dao 'user))
 
 ;;(stop *acceptor*)
 
@@ -193,7 +196,7 @@
    (let* ((name (post-parameter "name"))
 	  (password (post-parameter "password"))
 	  (user (mito:find-dao 'user :name name)))
-     (if (and user (password= password (user-password-hash user)))                        ;; TODO prevent timing attack
+     (if (and user (password= password (user-hash user)))                        ;; TODO prevent timing attack
 	 "success"
 	 (progn
 	   (setf (return-code*) +http-forbidden+)

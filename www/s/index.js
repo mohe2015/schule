@@ -320,7 +320,7 @@ $(document).ready(function() {
         })
         .fail(function() {
             alert("Fehler beim Anmelden");
-        }).done(function () {
+        }).always(function () {
            $('#login-button').prop("disabled",false).html('Anmelden');
             $('#inputPassword').val('');
         });
