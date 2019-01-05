@@ -11,7 +11,12 @@
 (define-sanitize-mode *sanitize-spickipedia*
     :elements ("h1" "h2" "h3" "h4" "h5" "h6" "p" "strike" "sub" "b" "u" "i" "sup" "table" "tbody" "tr" "td" "ul" "a" "br" "ol" "li" "img" "iframe")
     
-    :attributes (("h1"          . ("align"))
+    :attributes (("h1"          . ("align" "style"))
+		 ("h2"          . ("align" "style"))
+		 ("h3"          . ("align" "style"))
+		 ("h4"          . ("align" "style"))
+		 ("h5"          . ("align" "style"))
+		 ("h6"          . ("align" "style"))
 		 ("a"           . ("href" "target"))
 		 ("p"           . ("align" "style"))
 		 ("img"         . ("src" "style"))
