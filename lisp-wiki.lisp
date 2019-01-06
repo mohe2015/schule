@@ -80,15 +80,32 @@
 		   :accessor my-session-csrf-token)
    (user           :col-type (or user :null)
 		   :initarg  :user
-		   :accesser my-session-user))
+		   :accessor my-session-user))
   (:metaclass mito:dao-table-class))
 
 (defmethod session-verify ((request request))
   (let ((session-identifier (cookie-in (session-cookie-name *acceptor*) request)))
     (mito:find-dao 'my-session :session-cookie session-identifier)))
 
+(defmethod session-cookie-value ((my-session my-session))
+  (and my-session (my-session-cookie my-session)))
+
 (defun start-my-session ()
-  (mito:create-dao 'my-session :session-cookie (random-base64) :csrf-token (random-base64)))
+  "Returns the current SESSION object. If there is no current session,
+creates one and updates the corresponding data structures. In this
+case the function will also send a session cookie to the browser."
+  (let ((session (session *request*)))
+    (when session
+      (return-from start-my-session session))
+    (setf session (mito:create-dao 'my-session :session-cookie (random-base64) :csrf-token (random-base64))
+	  (session *request*) session)
+    (set-cookie (session-cookie-name *acceptor*)
+                :value (my-session-cookie session)
+                :path "/"
+                :http-only t)
+    (set-cookie "CSRF_TOKEN" :value (my-session-csrf-token session) :path "/")
+    (session-created *acceptor* session)
+    (setq *session* session)))
 
 (setf mito:*mito-logger-stream* t)
 
@@ -119,17 +136,11 @@
 (defun cache-forever ()
   (setf (header-out "Cache-Control") "max-age: 31536000"))
 
-(defun get-user ()
-  (let ((user-id (session-value 'USER_ID *session*)))
-    (if user-id
-	(mito:find-dao 'user :id user-id)
-	nil)))
-
 (defun valid-csrf () ;; ;; TODO secure string compare
   (string= (session-value 'CSRF_TOKEN) (post-parameter "csrf_token")))
 
 (defmacro with-user (&body body)
-  `(let ((user (get-user)))
+  `(let ((user (my-session-user *session*)))
      (if user
 	 (progn ,@body)
 	 (progn
@@ -143,8 +154,8 @@
 
 (defmacro defget-noauth-cache (name &body body)
   `(defun ,name ()
-     (cache-forever)
      (basic-headers)
+     (cache-forever)
      (if (header-in* "If-Modified-Since")
 	 (progn
 	   (setf (return-code*) +http-not-modified+)
@@ -153,8 +164,8 @@
 
 (defmacro defget (name &body body) ;; TODO assert that's really a GET request
   `(defun ,name ()
+     (basic-headers)
      (with-user
-       (basic-headers)
        ,@body)))
 
 (defmacro defpost-noauth (name &body body)
@@ -179,10 +190,8 @@
 	     nil)))))
 
 (defun basic-headers ()
-  (if (not (session-value 'CSRF_TOKEN))
-      (progn
-	(setf (session-value 'CSRF_TOKEN) (random-base64))
-	(set-cookie "CSRF_TOKEN" :value (session-value 'CSRF_TOKEN) :path "/" )))
+  (if (not *SESSION*)
+      (start-my-session))
   (setf (header-out "X-Frame-Options") "DENY")
   (setf (header-out "Content-Security-Policy") "default-src 'none'; script-src 'self'; img-src 'self' data: ; style-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self'; frame-src www.youtube.com youtube.com; frame-ancestors 'none';") ;; TODO the inline css from the whsiwyg editor needs to be replaced - write an own editor sometime
   (setf (header-out "X-XSS-Protection") "1; mode=block")
