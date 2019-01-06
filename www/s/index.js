@@ -334,7 +334,7 @@ $(document).ready(function() {
               for (var page of data) {
                 var t = $($('#history-item-template').html());
                 t.find('.history-username').text(page.user);
-                t.find('.history-date').text(moment(new Date(page.created)).locale('de').fromNow());
+                t.find('.history-date').text(new Date(page.created));
                 t.find('.history-summary').text(page.summary);
                 
                 $('#history-list').append(t);
