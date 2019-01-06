@@ -23,8 +23,6 @@
  * SOFTWARE.
  */
 (function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-	typeof define === 'function' && define.amd ? define(factory) :
 	(global.Popper = factory());
 }(this, (function () { 'use strict';
 
@@ -2570,7 +2568,7 @@ var Popper = function () {
  */
 
 
-Popper.Utils = (typeof window !== 'undefined' ? window : global).PopperUtils;
+Popper.Utils = window.PopperUtils;
 Popper.placements = placements;
 Popper.Defaults = Defaults;
 

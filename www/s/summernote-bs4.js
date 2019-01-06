@@ -8,8 +8,6 @@
  * Date: 2019-01-03T19:26Z
  */
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? factory(require('jquery')) :
-  typeof define === 'function' && define.amd ? define(['jquery'], factory) :
   (global = global || self, factory(global.jQuery));
 }(this, function ($$1) { 'use strict';
 
@@ -471,38 +469,6 @@
   }
   var isEdge = /Edge\/\d+/.test(userAgent);
   var hasCodeMirror = !!window.CodeMirror;
-  if (!hasCodeMirror && isSupportAmd) {
-      // Webpack
-      if (typeof __webpack_require__ === 'function') { // eslint-disable-line
-          try {
-              // If CodeMirror can't be resolved, `require.resolve` will throw an
-              // exception and `hasCodeMirror` won't be set to `true`.
-              require.resolve('codemirror');
-              hasCodeMirror = true;
-          }
-          catch (e) {
-              // do nothing
-          }
-      }
-      else if (typeof require !== 'undefined') {
-          // Browserify
-          if (typeof require.resolve !== 'undefined') {
-              try {
-                  // If CodeMirror can't be resolved, `require.resolve` will throw an
-                  // exception and `hasCodeMirror` won't be set to `true`.
-                  require.resolve('codemirror');
-                  hasCodeMirror = true;
-              }
-              catch (e) {
-                  // do nothing
-              }
-              // Almond/Require
-          }
-          else if (typeof require.specified !== 'undefined') {
-              hasCodeMirror = require.specified('codemirror');
-          }
-      }
-  }
   var isSupportTouch = (('ontouchstart' in window) ||
       (navigator.MaxTouchPoints > 0) ||
       (navigator.msMaxTouchPoints > 0));
@@ -5041,14 +5007,7 @@
 
   var CodeMirror;
   if (env.hasCodeMirror) {
-      if (env.isSupportAmd) {
-          require(['codemirror'], function (cm) {
-              CodeMirror = cm;
-          });
-      }
-      else {
-          CodeMirror = window.CodeMirror;
-      }
+    CodeMirror = window.CodeMirror;
   }
   /**
    * @class Codeview
