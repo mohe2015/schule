@@ -7,8 +7,8 @@ $(document).ready(function() {
     $( document ).ajaxError(function( event, jqxhr, settings, thrownError ) {
       console.log(thrownError);
       if (thrownError === 'Authorization Required') {
-        var name = $('#inputName').val(localStorage.name);
-        localStorage.removeItem('name');
+        var name = $('#inputName').val(window.localStorage.name);
+        window.localStorage.removeItem('name');
         window.history.pushState({lastUrl: window.location.href, lastState: window.history.state}, null, "/login");
         updateState();
       }
@@ -91,7 +91,7 @@ $(document).ready(function() {
     function sendFile(file, editor, welEditable) {
         console.log("show");
         $('#uploadProgressModal').modal('show');
-        data = new FormData();
+        var data = new FormData();
         data.append("file", file);
         data.append("csrf_token", readCookie('CSRF_TOKEN'));
         window.fileUploadFinished = false;
@@ -227,8 +227,8 @@ $(document).ready(function() {
       
       // TODO maybe use less fading or shorter fading for faster navigation?
       
-      if (localStorage.name !== undefined) {
-       $('#nav-username').html(localStorage.name); 
+      if (window.localStorage.name !== undefined) {
+       $('#nav-username').html(window.localStorage.name); 
       }
         
       //  return;
@@ -241,7 +241,7 @@ $(document).ready(function() {
         showTab('#loading');
         
         $.post("/api/logout", { csrf_token: readCookie('CSRF_TOKEN') }, function(data) {
-            localStorage.removeItem('name');
+            window.localStorage.removeItem('name');
             window.history.replaceState(null, null, "/login");
             updateState();
         })
@@ -252,7 +252,7 @@ $(document).ready(function() {
       }
       
       if (pathname.length > 1 && pathname[1] == 'login') {
-          if (localStorage.name !== undefined) {
+          if (window.localStorage.name !== undefined) {
             window.history.replaceState(null, null, "/wiki/Startseite");
             updateState();
             return;
@@ -272,7 +272,7 @@ $(document).ready(function() {
           });
           return;
       } else {
-          if (localStorage.name === undefined) {
+          if (window.localStorage.name === undefined) {
               window.history.pushState({lastUrl: window.location.href, lastState: window.history.state}, null, "/login");
               updateState();
               return;
@@ -331,7 +331,7 @@ $(document).ready(function() {
             
               $('#history-list').html('');
               
-              for (page of data) {
+              for (var page of data) {
                 var t = $($('#history-item-template').html());
                 t.find('.history-username').text(page.user);
                 t.find('.history-date').text(moment(new Date(page.created)).locale('de').fromNow());
@@ -369,7 +369,7 @@ $(document).ready(function() {
               
               if (data != null) {
                 $('#no-search-results').hide();
-                for (page of data) {
+                for (var page of data) {
                   var t = $($('#search-result-template').html());
                   t.find('.s-title').text(page);
                   t.attr('href', "/wiki/" + page);
@@ -401,7 +401,7 @@ $(document).ready(function() {
       
       
       $.post("/api/login", { csrf_token: readCookie('CSRF_TOKEN'), "name": name, "password": password }, function(data) {
-            localStorage.name = name;
+            window.localStorage.name = name;
            
             if (window.history.state !== null && window.history.state.lastState !== undefined && window.history.state.lastUrl !== undefined) {
               window.history.replaceState(window.history.state.lastState, null, window.history.state.lastUrl);
@@ -412,7 +412,7 @@ $(document).ready(function() {
             }
         })
         .fail(function() {
-            localStorage.removeItem('name');
+            window.localStorage.removeItem('name');
             alert("Fehler beim Anmelden");
         }).always(function () {
            $('#login-button').prop("disabled",false).html('Anmelden');
