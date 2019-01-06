@@ -238,9 +238,16 @@ $(document).ready(function() {
       console.log(pathname);
       
       if (pathname.length > 1 && pathname[1] == 'logout') {
-        localStorage.removeItem('name');
-        window.history.replaceState(null, null, "/login");
-        updateState();
+        showTab('#loading');
+        
+        $.post("/api/logout", { csrf_token: readCookie('CSRF_TOKEN') }, function(data) {
+            localStorage.removeItem('name');
+            window.history.replaceState(null, null, "/login");
+            updateState();
+        })
+        .fail(function() {
+            alert("Fehler beim Abmelden");
+        });
         return;
       }
       

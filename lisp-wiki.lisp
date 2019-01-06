@@ -292,6 +292,10 @@ function twice in the same second will regenerate twice the same value."
 	  (setf (return-code*) +http-forbidden+)
 	  nil))))
 
+(defpost logout-handler
+  (mito:delete-dao *SESSION*)
+  (setf *SESSION* nil))
+
 (defget-noauth-cache file-handler
   (handle-static-file (merge-pathnames (concatenate 'string "uploads/" (subseq (script-name* *REQUEST*) 10)))))
 
@@ -322,6 +326,7 @@ function twice in the same second will regenerate twice the same value."
 	     (create-prefix-dispatcher "/api/file" 'file-handler)
 	     (create-prefix-dispatcher "/api/search" 'search-handler)
 	     (create-prefix-dispatcher "/api/login" 'login-handler)
+	     (create-prefix-dispatcher "/api/logout" 'logout-handler)
 	     (create-prefix-dispatcher "/s/" 'root-handler)
 	     (create-prefix-dispatcher "/webfonts/" 'webfonts-handler)
 	     (create-prefix-dispatcher "/favicon.ico" 'favicon-handler))))
