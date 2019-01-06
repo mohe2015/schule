@@ -9,9 +9,10 @@
   "The default value for the COST parameter to HASH.")
 
 (define-sanitize-mode *sanitize-spickipedia*
-    :elements ("h1" "h2" "h3" "h4" "h5" "h6" "p" "strike" "sub" "b" "u" "i" "sup" "table" "tbody" "tr" "td" "ul" "a" "br" "ol" "li" "img" "iframe")
+    :elements ("h1" "h2" "h3" "h4" "h5" "h6" "p" "strike" "sub" "b" "u" "i" "sup" "table" "tbody" "tr" "td" "ul" "a" "br" "ol" "li" "img" "iframe" "div")
     
     :attributes (("h1"          . ("align" "style"))
+		 ("div"         . ("id"))
 		 ("h2"          . ("align" "style"))
 		 ("h3"          . ("align" "style"))
 		 ("h4"          . ("align" "style"))

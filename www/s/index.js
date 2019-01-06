@@ -289,6 +289,11 @@ $(document).ready(function() {
 
               MathLive.renderMathInDocument();
               
+        /*
+             MathLive.makeMathField(document.getElementById('mathfield'), {
+                virtualKeyboardMode: 'manual',
+             });
+          */    
               showTab('#page');
               
               window.history.replaceState({ currentState: 'show-article' }, null, null);
