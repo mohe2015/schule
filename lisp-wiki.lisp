@@ -170,9 +170,14 @@ function twice in the same second will regenerate twice the same value."
      (basic-headers)
      ,@body))
 
+(defmacro defget-noauth-nosession (name &body body) ;; TODO assert that's really a GET request
+  `(defun ,name ()
+     (basic-headers-nosession)
+     ,@body))
+
 (defmacro defget-noauth-cache (name &body body)
   `(defun ,name ()
-     (basic-headers)
+     (basic-headers-nosession)
      (cache-forever)
      (if (header-in* "If-Modified-Since")
 	 (progn
@@ -207,19 +212,22 @@ function twice in the same second will regenerate twice the same value."
 	     (log-message* :ERROR (format nil "POTENTIAL ONGOING CROSS SITE REQUEST FORGERY ATTACK!!! username: ~a" (user-name user)))
 	     nil)))))
 
-(defun basic-headers ()
-  (if (not *SESSION*)
-      (start-my-session))
+(defun basic-headers-nosession ()
   (setf (header-out "X-Frame-Options") "DENY")
   (setf (header-out "Content-Security-Policy") "default-src 'none'; script-src 'self'; img-src 'self' data: ; style-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self'; frame-src www.youtube.com youtube.com; frame-ancestors 'none';") ;; TODO the inline css from the whsiwyg editor needs to be replaced - write an own editor sometime
   (setf (header-out "X-XSS-Protection") "1; mode=block")
   (setf (header-out "X-Content-Type-Options") "nosniff")
   (setf (header-out "Referrer-Policy") "no-referrer"))
 
+(defun basic-headers ()
+  (if (not *SESSION*)
+      (start-my-session))
+  (basic-headers-nosession))
+
 (defget-noauth index-html
   (handle-static-file "www/index.html"))
 
-(defget-noauth favicon-handler
+(defget-noauth-nosession favicon-handler
   (handle-static-file "www/favicon.ico"))
 
 (defun wiki-page ()
