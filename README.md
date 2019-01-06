@@ -15,16 +15,5 @@ git reset --hard && html-minifier --collapse-boolean-attributes --collapse-inlin
 --sort-attributes --sort-class-name --trim-custom-fragments --use-short-doctype  -o www/index.html 
 www/index.html
 
-java -jar closure-compiler-v20181210.jar --js_output_file=www/s/result.js www/s/jquery-3.3.1.js www/s/popper.js www/s/bootstrap.js www/s/summernote-bs4.js www/s/visual-diff.js www/s/index.js 
-www/s/moment-with-locales.js 
-
-
-java -jar closure-compiler-v20181210.jar --compilation_level ADVANCED --js_output_file=www/s/result.js 
---externs externs/jquery-3.3.js www/s/jquery-3.3.1.js www/s/popper.js www/s/bootstrap.js 
-www/s/summernote-bs4.js www/s/visual-diff.js www/s/moment-with-locales.js www/s/index.js
-
- java -jar closure-compiler-v20181210.jar --compilation_level ADVANCED 
---js_output_file=www/s/result.js --externs externs/jquery-3.3.js --externs externs/moment.js 
-www/s/jquery-3.3.1.js www/s/popper.js www/s/bootstrap.js www/s/summernote-bs4.js www/s/visual-diff.js 
-www/s/moment-with-locales.js www/s/index.js 
-
+java -jar closure-compiler-v20181210.jar --js_output_file=www/s/result.js --externs externs/jquery-3.3.js --externs externs/moment.js www/s/jquery-3.3.1.js www/s/popper.js www/s/bootstrap.js www/s/summernote-bs4.js www/s/visual-diff.js www/s/moment-with-locales.js www/s/index.js 
+// --debug --compilation_level ADVANCED
