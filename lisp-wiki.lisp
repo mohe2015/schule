@@ -137,7 +137,7 @@ case the function will also send a session cookie to the browser."
   (setf (header-out "Cache-Control") "max-age: 31536000"))
 
 (defun valid-csrf () ;; ;; TODO secure string compare
-  (string= (session-value 'CSRF_TOKEN) (post-parameter "csrf_token")))
+  (string= (my-session-csrf-token *SESSION*) (post-parameter "csrf_token")))
 
 (defmacro with-user (&body body)
   `(let ((user (my-session-user *session*)))
