@@ -287,7 +287,10 @@ $(document).ready(function() {
           $.get("/api/wiki/" + pathname[2], function(data) {
               $('article').html(data);
 
-              MathLive.renderMathInDocument();
+              $(".mathfield").each(function(f) {
+                //f.attr('contenteditable','false');
+                MathLive.renderMathInElement(f);
+              });
               
         /*
              MathLive.makeMathField(document.getElementById('mathfield'), {

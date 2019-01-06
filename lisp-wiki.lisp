@@ -12,7 +12,7 @@
     :elements ("h1" "h2" "h3" "h4" "h5" "h6" "p" "strike" "sub" "b" "u" "i" "sup" "table" "tbody" "tr" "td" "ul" "a" "br" "ol" "li" "img" "iframe" "div" "script")
     
     :attributes (("h1"          . ("align" "style"))
-		 ("div"         . ("id"))
+		 ("div"         . ("id" "class"))
 		 ("script"      . ("type")) ;; TODO FIXME 
 		 ("h2"          . ("align" "style"))
 		 ("h3"          . ("align" "style"))
