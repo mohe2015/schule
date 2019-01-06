@@ -10,3 +10,6 @@
 [submodule "hunchentoot"]
 	path = hunchentoot
 	url = https://github.com/edicl/hunchentoot
+[submodule "mathlive"]
+	path = mathlive
+	url = https://github.com/arnog/mathlive

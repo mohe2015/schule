@@ -85,7 +85,9 @@
 
 (defmethod session-verify ((request request))
   (let ((session-identifier (cookie-in (session-cookie-name *acceptor*) request)))
-    (mito:find-dao 'my-session :session-cookie session-identifier)))
+    (if session-identifier
+	(mito:find-dao 'my-session :session-cookie session-identifier)
+	nil)))
 
 (defmethod session-cookie-value ((my-session my-session))
   (and my-session (my-session-cookie my-session)))

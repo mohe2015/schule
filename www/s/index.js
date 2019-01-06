@@ -287,6 +287,8 @@ $(document).ready(function() {
           $.get("/api/wiki/" + pathname[2], function(data) {
               $('article').html(data);
 
+              MathLive.renderMathInDocument();
+              
               showTab('#page');
               
               window.history.replaceState({ currentState: 'show-article' }, null, null);
@@ -438,6 +440,6 @@ $(document).ready(function() {
             $('#button-search').click();
        // }
     });
-    
+        
    // $('.selectpicker').selectpicker();
 });
