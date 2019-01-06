@@ -107,6 +107,24 @@ case the function will also send a session cookie to the browser."
     (session-created *acceptor* session)
     (setq *session* session)))
 
+(defun regenerate-session (session)
+  "Regenerates the cookie value. This should be used
+when a user logs in according to the application to prevent against
+session fixation attacks. The cookie value being dependent on ID,
+USER-AGENT, REMOTE-ADDR, START, and *SESSION-SECRET*, the only value
+we can change is START to regenerate a new value. Since we're
+generating a new cookie, it makes sense to have the session being
+restarted, in time. That said, because of this fact, calling this
+function twice in the same second will regenerate twice the same value."
+  (setf (my-session-cookie *SESSION*) (random-base64))
+  (setf (my-session-csrf-token *SESSION*) (random-base64))
+  (mito:save-dao *SESSION*)
+  (set-cookie (session-cookie-name *acceptor*)
+              :value (my-session-cookie session)
+              :path "/"
+              :http-only t)
+  (set-cookie "CSRF_TOKEN" :value (my-session-csrf-token session) :path "/"))
+
 (setf mito:*mito-logger-stream* t)
 
 (mito:ensure-table-exists 'user)
@@ -266,8 +284,9 @@ case the function will also send a session cookie to the browser."
 	 (user (mito:find-dao 'user :name name)))
     (if (and user (password= password (user-hash user)))                        ;; TODO prevent timing attack
 	(progn
-	  (regenerate-session-cookie-value *SESSION*)
-	  (setf (session-value 'USER_ID) (object-id user))
+	  (regenerate-session *SESSION*)
+	  (setf (my-session-user *SESSION*) user)
+	  (mito:save-dao *SESSION*)
 	  nil)
 	(progn
 	  (setf (return-code*) +http-forbidden+)
