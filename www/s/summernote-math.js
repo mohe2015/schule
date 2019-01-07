@@ -53,9 +53,6 @@
                 });
                 
                 self.events = {
-                      'summernote.init': function(we, e) {
-                        
-                      },
                       'summernote.keyup summernote.mouseup summernote.change summernote.scroll': function() {
                         self.update();
                       },
