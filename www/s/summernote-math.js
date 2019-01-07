@@ -129,17 +129,12 @@
                         
                         window.formula.$revertToOriginalContent();
                         window.formula = null;
+                        
                         var node = document.createElement('div');
                         node.className = "formula";
                         node.innerHTML = $('#formula').html();
-                        $('article').summernote('insertNode', node);
-                        
                         MathLive.renderMathInElement(node);
-                        
-                       // $('.formula').each(function (f) {
-                        //  MathLive.renderMathInElement(this);
-                        //  this.contentEditable = "false";
-                        //});
+                        $('article').summernote('insertNode', node);
                     });
                 };
                 this.openDialog = function (editorInfo) {
