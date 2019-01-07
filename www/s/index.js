@@ -54,6 +54,24 @@ $(document).ready(function() {
         return button.render();
     }
 
+    var MathButton = function(context) {
+        var ui = $.summernote.ui;
+        var button = ui.button({
+            contents: '<i class="fas fa-calculator"/>',
+            tooltip: 'Formel einfügen',
+            click: function() {
+                window.formula = MathLive.makeMathField(document.getElementById('formula'), { virtualKeyboardMode: 'manual' });
+                $('#mathModal').modal('show');
+            }
+        });
+
+        return button.render(); 
+    }
+    
+    $('#mathModal').on('hide.bs.modal', function (e) {
+      window.formula.$revertToOriginalContent();
+    })
+    
     function readCookie(name) {
         var nameEQ = name + "=";
         var ca = document.cookie.split(';');
@@ -161,13 +179,14 @@ $(document).ready(function() {
             focus: true,
             buttons: {
                 finished: FinishedButton,
-                cancel: CancelButton
+                cancel: CancelButton,
+                math: MathButton
             },
             toolbar: [
                 ['style', ['style', 'bold', 'italic', 'underline', 'strikethrough', 'superscript', 
 'subscript']],
                 ['para', ['ul', 'ol', 'indent', 'outdent', 'justifyLeft', 'justifyCenter']],
-                ['insert', ['link', 'picture', 'video', 'table']],
+                ['insert', ['link', 'picture', 'video', 'table', 'math']],
                 ['management', ['undo', 'redo', 'help', 'cancel', 'finished', 'codeview']]
             ]
         });
@@ -261,7 +280,7 @@ $(document).ready(function() {
           $('#publish-changes-modal').modal('hide');
           showTab('#loading');
           
-          $.get("/", function(data) {
+          $.get("/api/get-session", function(data) {
               showTab('#login');
               $('.login-hide').fadeOut(function() {
                   $('.login-hide').attr("style", "display: none !important");

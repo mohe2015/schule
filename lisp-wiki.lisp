@@ -201,6 +201,7 @@ function twice in the same second will regenerate twice the same value."
      (if (valid-csrf)
 	 (progn ,@body)
 	 (progn
+	   (start-my-session)
 	   (setf (return-code*) +http-forbidden+)
 	   (log-message* :ERROR "POTENTIAL ONGOING CROSS SITE REQUEST FORGERY ATTACK!!!")
 	   nil))))
@@ -212,6 +213,7 @@ function twice in the same second will regenerate twice the same value."
        (if (valid-csrf)
 	   (progn ,@body)
 	   (progn
+	     (start-my-session)
 	     (setf (return-code*) +http-forbidden+)
 	     (log-message* :ERROR (format nil "POTENTIAL ONGOING CROSS SITE REQUEST FORGERY ATTACK!!! username: ~a" (user-name user)))
 	     nil)))))
@@ -290,6 +292,9 @@ function twice in the same second will regenerate twice the same value."
 	 (copy-file filepath newpath :overwrite t)
 	 filehash))
 
+(defget-noauth get-session-handler
+  nil)
+
 (defpost-noauth login-handler
   (let* ((name (post-parameter "name"))
 	 (password (post-parameter "password"))
@@ -304,7 +309,7 @@ function twice in the same second will regenerate twice the same value."
 	  (setf (return-code*) +http-forbidden+)
 	  nil))))
 
-(defpost logout-handler
+(defpost-noauth logout-handler
   (mito:delete-dao *SESSION*)
   (setf *SESSION* nil))
 
@@ -339,6 +344,7 @@ function twice in the same second will regenerate twice the same value."
 	     (create-prefix-dispatcher "/api/search" 'search-handler)
 	     (create-prefix-dispatcher "/api/login" 'login-handler)
 	     (create-prefix-dispatcher "/api/logout" 'logout-handler)
+	     (create-prefix-dispatcher "/api/get-session" 'get-session-handler)
 	     (create-prefix-dispatcher "/s/" 'root-handler)
 	     (create-prefix-dispatcher "/webfonts/" 'webfonts-handler)
 	     (create-prefix-dispatcher "/favicon.ico" 'favicon-handler))))
