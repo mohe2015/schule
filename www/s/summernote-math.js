@@ -1,8 +1,8 @@
 /**
  * 
- * copyright [year] [your Business Name and/or Your Name].
- * email: your@email.com
- * license: Your chosen license, or link to a license file.
+ * copyright 2019 Moritz Hedtke.
+ * email: Moritz.Hedtke@t-online.de
+ * license: GLP-3.0.
  * 
  */
 (function (factory) {
@@ -28,7 +28,7 @@
             /**
              *  @param {Object} context - context object has status of editor.
              */
-            'examplePlugin': function (context) {
+            'mathPlugin': function (context) {
                 var self = this,
 
                     // ui has renders to build ui elements
@@ -75,22 +75,23 @@
                         '</div>';
 
                     // Build the Footer HTML of the Dialog.
-                    var footer = '<button href="#" class="btn btn-primary note-examplePlugin-btn">' + lang.examplePlugin.okButton + '</button>'
+                    var footer = '<button href="#" class="btn btn-primary note-examplePlugin-btn">' + "ok" + '</button>'
+                
+                  this.$dialog = ui.dialog({
+
+                      // Set the title for the Dialog. Note: We don't need to build the markup for the Modal
+                      // Header, we only need to set the Title.
+                      title: "test",
+
+                      // Set the Body of the Dialog.
+                      body: body,
+
+                      // Set the Footer of the Dialog.
+                      footer: footer
+
+                      // This adds the Modal to the DOM.
+                  }).render().appendTo($container);
                 }
-                this.$dialog = ui.dialog({
-
-                    // Set the title for the Dialog. Note: We don't need to build the markup for the Modal
-                    // Header, we only need to set the Title.
-                    title: lang.examplePlugin.dialogTitle,
-
-                    // Set the Body of the Dialog.
-                    body: body,
-
-                    // Set the Footer of the Dialog.
-                    footer: footer
-
-                    // This adds the Modal to the DOM.
-                }).render().appendTo($container);
                 this.destroy = function () {
                     ui.hideDialog(this.$dialog);
                     this.$dialog.remove();
