@@ -84,11 +84,11 @@ $(document).ready(function() {
             window.history.pushState(null, null, articlePath);
             updateState();
         })
-        .fail(function() {
+        .fail(function( jqXHR, textStatus, errorThrown) {
             $('#publish-changes').show();
             $('#publishing-changes').hide();
           
-            alert("Fehler beim Speichern des Artikels!");
+            alert("Fehler beim Speichern des Artikels! "+errorThrown);
         });
         
         // TODO dismiss should cancel request
@@ -252,8 +252,8 @@ $(document).ready(function() {
             window.history.replaceState(null, null, "/login");
             updateState();
         })
-        .fail(function() {
-            $('#errorMessage').text("Unbekannter Fehler beim Abmelden.");
+        .fail(function( jqXHR, textStatus, errorThrown) {
+            $('#errorMessage').text("Unbekannter Fehler beim Abmelden." + errorThrown);
             showTab('#error');
         });
         return;
@@ -275,8 +275,8 @@ $(document).ready(function() {
                   $('.login-hide').attr("style", "display: none !important");
               });
           })
-          .fail(function(jqXHR, textStatus, errorThrown) {
-              alert("Fehler beim Laden der Login-Seite");
+          .fail(function( jqXHR, textStatus, errorThrown) {
+              alert("Fehler beim Laden der Login-Seite" + errorThrown);
           });
           return;
       } else {
@@ -353,8 +353,8 @@ $(document).ready(function() {
                 $('#history-list').append(t);
               }            
           })
-          .fail(function() {
-              alert("Fehler beim Laden des Änderungsverlaufs!");
+          .fail(function( jqXHR, textStatus, errorThrown) {
+              alert("Fehler beim Laden des Änderungsverlaufs!" + errorThrown);
           });
           
           showTab('#history');
@@ -400,8 +400,8 @@ $(document).ready(function() {
               $('#search-results-loading').stop().fadeOut();
               $('#search-results').stop().fadeIn();
       })
-      .fail(function() {
-          alert("Fehler beim Laden der Suche!");
+      .fail(function( jqXHR, textStatus, errorThrown) {
+          alert("Fehler beim Laden der Suche!"+errorThrown);
       });
     });
     
@@ -423,9 +423,9 @@ $(document).ready(function() {
               updateState();
             }
         })
-        .fail(function() {
+        .fail(function( jqXHR, textStatus, errorThrown) {
             window.localStorage.removeItem('name');
-            alert("Fehler beim Anmelden");
+            alert("Fehler beim Anmelden. "+errorThrown);
         }).always(function () {
            $('#login-button').prop("disabled",false).html('Anmelden');
             $('#inputPassword').val('');
