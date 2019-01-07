@@ -7,10 +7,33 @@
             factory(window.jQuery);
         }
     }(function ($) {
+      
+          // Extends summernote
+          $.extend(true, $.summernote, {
+
+            options: {
+              popover: {
+                math: [
+                  ['math', ['math']],
+                ],
+              },
+            },
+
+            lang: {
+              'de-DE': {
+                math: {
+                  title: 'Formel einfügen',
+                },
+              },
+            },
+
+          });
+      
         $.extend($.summernote.plugins, {
             'mathPlugin': function (context) {
                 var self = this,
                     ui = $.summernote.ui,
+                    dom = $.summernote.dom,
                     $note = context.layoutInfo.note,
                     $editor = context.layoutInfo.editor,
                     $editable = context.layoutInfo.editable,
@@ -28,6 +51,19 @@
                     });
                     return button.render(); 
                 });
+                
+                self.events = {
+                      'summernote.init': function(we, e) {
+                        
+                      },
+                      'summernote.keyup summernote.mouseup summernote.change summernote.scroll': function() {
+                        self.update();
+                      },
+                      'summernote.dialog.shown': function() {
+                        self.hidePopover();
+                      },
+                };
+                
                 this.initialize = function () {
                   var $container = options.dialogsInBody ? $(document.body) : $editor;
                   this.$dialog = ui.dialog({
@@ -41,7 +77,39 @@
                       className: 'ext-math-popover',
                   }).render().appendTo('body');
                   var $content = self.$popover.find('.popover-content');
+                   context.invoke('buttons.build', $content, options.popover.math);
                 }
+                self.update = function() {
+                    // Prevent focusing on editable when invoke('code') is executed
+                    if (!context.invoke('editor.hasFocus')) {
+                      self.hidePopover();
+                      return;
+                    }
+
+                    var rng = context.invoke('editor.createRange');
+                    var visible = false;
+
+                    if ($(rng.sc).hasClass('formula')) {
+                      console.log(dom);
+                      var pos = dom.position(rng.sc);
+                      
+                      self.$popover.css({
+                        display: 'block',
+                        left: 0,
+                        top: 0,
+                      });
+
+                      visible = true;
+                    }
+
+                    // hide if not visible
+                    if (!visible) {
+                      self.hidePopover();
+                    }
+                };
+                self.hidePopover = function() {
+                  self.$popover.hide();
+                };
                 this.destroy = function () {
                     ui.hideDialog(this.$dialog);
                     this.$dialog.remove();
