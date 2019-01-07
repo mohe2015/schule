@@ -60,7 +60,7 @@
 	  :accessor user-hash))
   (:metaclass mito:dao-table-class))
 
-;;  (mito:create-dao 'user :name "Anonymous" :hash (hash "I don't have an account.") :group nil)
+;;  (mito:create-dao 'user :name "Anonymous" :hash (hash "xfg3zte94h") :group nil)
 
 (defgeneric action-allowed-p (action group))
 
