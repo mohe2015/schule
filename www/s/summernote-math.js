@@ -153,8 +153,29 @@
                         window.formula = null;
                         
                         MathLive.renderMathInElement(node);
-                        this.contentEditable = false;
+                        node.contentEditable = false;
                         $('article').summernote('insertNode', node);
+                    });
+                };
+                this.editMath = function () {
+                  
+                    document.getElementById('formula').innerHTML = "\\( " + MathLive.getOriginalContent(window.currentMathElement) + " \\)";
+                    window.formula = MathLive.makeMathField(document.getElementById('formula'), { virtualKeyboardMode: 'manual' });
+                  
+                    var $img = $($editable.data('target'));
+                    var editorInfo = {
+
+                    };
+                    this.openDialog(editorInfo).then(function (editorInfo) {
+                        ui.hideDialog(self.$dialog);
+                        
+                        window.currentMathElement.innerHTML = "\\( " + window.formula.$latex() + " \\)";
+                        
+                        $("#formula").find("*").off();
+                        window.formula = null;
+                        
+                        MathLive.renderMathInElement(window.currentMathElement);
+                        window.currentMathElement.contentEditable = false;
                     });
                 };
                 this.deleteMath = function () {
