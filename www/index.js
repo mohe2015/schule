@@ -1,18 +1,23 @@
 /*eslint-env browser, jquery*/
 $(document).ready(function() {
 
-  
   // TODO big issue - this code does never reload the page and therefore doesnt ask for an updated page...
   
-    $( document ).ajaxError(function( event, jqxhr, settings, thrownError ) {
+    function handleError (thrownError) {
       console.log(thrownError);
       if (thrownError === 'Authorization Required') {
         var name = $('#inputName').val(window.localStorage.name);
         window.localStorage.removeItem('name');
         window.history.pushState({lastUrl: window.location.href, lastState: window.history.state}, null, "/login");
         updateState();
+      } else if (thrownError === 'Forbidden') {
+        var errorMessage = 'Du hast nicht die benötigten Berechtigungen, um diese Aktion durchzuführen. Sag mit Bescheid, wenn du glaubst, dass dies ein Fehler ist.';
+        alert(errorMessage);
+      } else {
+        var errorMessage = 'Unbekannter Fehler: ' + thrownError;
+        alert(errorMessage);
       }
-    });
+    };
   
     function setFullscreen(value) {
       if (value && $('.fullscreen').length == 0) {
@@ -84,11 +89,11 @@ $(document).ready(function() {
             window.history.pushState(null, null, articlePath);
             updateState();
         })
-        .fail(function() {
+        .fail(function( jqXHR, textStatus, errorThrown) {
             $('#publish-changes').show();
             $('#publishing-changes').hide();
           
-            alert("Fehler beim Speichern des Artikels!");
+            handleError(errorThrown);
         });
         
         // TODO dismiss should cancel request
@@ -174,7 +179,7 @@ $(document).ready(function() {
 'subscript']],
                 ['para', ['ul', 'ol', 'indent', 'outdent', 'justifyLeft', 'justifyCenter']],
                 ['insert', ['link', 'picture', 'video', 'table', 'math']],
-                ['management', ['undo', 'redo', 'help', 'cancel', 'finished', 'codeview']]
+                ['management', ['undo', 'redo', 'help', 'cancel', 'finished']]
             ]
         });
         setFullscreen(true);
@@ -252,9 +257,8 @@ $(document).ready(function() {
             window.history.replaceState(null, null, "/login");
             updateState();
         })
-        .fail(function() {
-            $('#errorMessage').text("Unbekannter Fehler beim Abmelden.");
-            showTab('#error');
+        .fail(function( jqXHR, textStatus, errorThrown) {
+            handleError(errorThrown);
         });
         return;
       }
@@ -275,8 +279,8 @@ $(document).ready(function() {
                   $('.login-hide').attr("style", "display: none !important");
               });
           })
-          .fail(function(jqXHR, textStatus, errorThrown) {
-              alert("Fehler beim Laden der Login-Seite");
+          .fail(function( jqXHR, textStatus, errorThrown) {
+              handleError(errorThrown);
           });
           return;
       } else {
@@ -305,14 +309,10 @@ $(document).ready(function() {
               window.history.replaceState({ currentState: 'show-article' }, null, null);
           })
           .fail(function(jqXHR, textStatus, errorThrown) {
-              if (textStatus === 'error' && errorThrown === 'Not Found') {
+              if (errorThrown === 'Not Found') {
                   showTab('#not-found');
-                  
-                  window.history.replaceState({ currentState: 'not-found' }, null, null);
               } else {
-                alert("Fehler beim Laden des Artikels! " + textStatus + " | " + errorThrown);
-                
-                window.history.replaceState({ currentState: 'unknown-error' }, null, null);
+                handleError(errorThrown);
               }
           });
           return;
@@ -353,8 +353,8 @@ $(document).ready(function() {
                 $('#history-list').append(t);
               }            
           })
-          .fail(function() {
-              alert("Fehler beim Laden des Änderungsverlaufs!");
+          .fail(function( jqXHR, textStatus, errorThrown) {
+              handleError(errorThrown);
           });
           
           showTab('#history');
@@ -400,8 +400,8 @@ $(document).ready(function() {
               $('#search-results-loading').stop().fadeOut();
               $('#search-results').stop().fadeIn();
       })
-      .fail(function() {
-          alert("Fehler beim Laden der Suche!");
+      .fail(function( jqXHR, textStatus, errorThrown) {
+          handleError(errorThrown);
       });
     });
     
@@ -423,9 +423,9 @@ $(document).ready(function() {
               updateState();
             }
         })
-        .fail(function() {
+        .fail(function( jqXHR, textStatus, errorThrown) {
             window.localStorage.removeItem('name');
-            alert("Fehler beim Anmelden");
+            handleError(errorThrown);
         }).always(function () {
            $('#login-button').prop("disabled",false).html('Anmelden');
             $('#inputPassword').val('');

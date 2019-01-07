@@ -1,6 +1,9 @@
 
 (defpackage :lisp-wiki
   (:use :common-lisp :hunchentoot :mito :sxql :sanitize :ironclad :cl-fad :cl-base64 :bcrypt)
+  (:import-from #:alexandria
+                #:make-keyword
+                #:compose)
   (:export))
 
 (in-package :lisp-wiki)
@@ -49,11 +52,50 @@
 	  :accessor user-name)
    (group :col-type (:varchar 64)
 	  :initarg :group
+	  :inflate (compose #'make-keyword #'string-upcase)
+          :deflate #'string-downcase
 	  :accessor user-group)
    (hash  :col-type (:varchar 512)
 	  :initarg :hash
 	  :accessor user-hash))
   (:metaclass mito:dao-table-class))
+
+;;  (mito:create-dao 'user :name "Anonymous" :hash (hash "I don't have an account.") :group nil)
+
+(defgeneric action-allowed-p (action group))
+
+;; requirement: user is logged in - but still group may be nil
+;; groups: admin, user, nil / other
+
+;; every user can read wiki pages
+(defmethod action-allowed-p ((action (eql 'get-wiki-page)) group) t)
+
+;; every user can see the history
+(defmethod action-allowed-p ((action (eql 'wiki-page-history)) group) t)
+
+;; every user can view the files
+(defmethod action-allowed-p ((action (eql 'file-handler)) group) t)
+
+;; every user can search
+(defmethod action-allowed-p ((action (eql 'search-handler)) group) t)
+
+;; every user can logout
+(defmethod action-allowed-p ((action (eql 'logout-handler)) group) t)
+
+;; only admins and users can edit them
+(defmethod action-allowed-p ((action (eql 'post-wiki-page)) (group (eql :admin))) t)
+(defmethod action-allowed-p ((action (eql 'post-wiki-page)) (group (eql :user))) t)
+(defmethod action-allowed-p ((action (eql 'post-wiki-page)) group) nil)
+
+;; only admins and users can upload images
+(defmethod action-allowed-p ((action (eql 'upload-handler)) (group (eql :admin))) t)
+(defmethod action-allowed-p ((action (eql 'upload-handler)) (group (eql :user))) t)
+(defmethod action-allowed-p ((action (eql 'upload-handler)) group) nil)
+
+(defun can (user action)
+  (if user
+      (action-allowed-p action (user-group user))
+      (action-allowed-p action nil)))
 
 (defclass wiki-article ()
   ((title :col-type (:varchar 128)
@@ -164,10 +206,14 @@ function twice in the same second will regenerate twice the same value."
 (defun valid-csrf () ;; ;; TODO secure string compare
   (string= (my-session-csrf-token *SESSION*) (post-parameter "csrf_token")))
 
-(defmacro with-user (&body body)
+(defmacro with-user-perm (permission &body body)
   `(let ((user (my-session-user *session*)))
      (if user
-	 (progn ,@body)
+	 (if (can user ',permission)
+	     (progn ,@body)
+	     (progn
+	       (setf (return-code*) +http-forbidden+)
+	       nil))
 	 (progn
 	   (setf (return-code*) +http-authorization-required+)
 	   nil))))
@@ -195,7 +241,7 @@ function twice in the same second will regenerate twice the same value."
 (defmacro defget (name &body body) ;; TODO assert that's really a GET request
   `(defun ,name ()
      (basic-headers)
-     (with-user
+     (with-user-perm ,name
        ,@body)))
 
 (defmacro defpost-noauth (name &body body)
@@ -212,7 +258,7 @@ function twice in the same second will regenerate twice the same value."
 (defmacro defpost (name &body body) ;; TODO assert that's really a POST REQUEST
   `(defun ,name ()
      (basic-headers)
-     (with-user
+     (with-user-perm ,name
        (if (valid-csrf)
 	   (progn ,@body)
 	   (progn
@@ -232,12 +278,6 @@ function twice in the same second will regenerate twice the same value."
   (if (not *SESSION*)
       (start-my-session))
   (basic-headers-nosession))
-
-(defget-noauth index-html
-  (handle-static-file "www/index.html"))
-
-(defget-noauth-nosession favicon-handler
-  (handle-static-file "www/favicon.ico"))
 
 (defun wiki-page ()
   (ecase (request-method* *request*)
@@ -282,10 +322,6 @@ function twice in the same second will regenerate twice the same value."
   (let* ((query (subseq (script-name* *REQUEST*) 12)) (results (mito:select-dao 'wiki-article (where (:like :title (concatenate 'string "%" query "%"))))))
     (json:encode-json-to-string (mapcar #'(lambda (a) (wiki-article-title a)) results))))
 
-(define-easy-handler (root :uri "/") () ;; TODO replace this handler
-  (basic-headers)
-  (redirect "/wiki/Startseite")) ;; TODO permanent redirect?
-
 (defpost upload-handler
   (let* ((filepath (nth 0 (hunchentoot:post-parameter "file")))
 	 ;; (filetype (nth 2 (hunchentoot:post-parameter "file")))
@@ -319,35 +355,13 @@ function twice in the same second will regenerate twice the same value."
 (defget-noauth-cache file-handler
   (handle-static-file (merge-pathnames (concatenate 'string "uploads/" (subseq (script-name* *REQUEST*) 10)))))
 
-(defget-noauth-cache root-handler
-  (let ((request-path (request-pathname *request* "/s/")))
-    (when (null request-path)
-      (setf (return-code*) +http-forbidden+)
-      (abort-request-handler))
-    (handle-static-file (merge-pathnames request-path #P"www/s/"))))
-
-(defget-noauth-cache webfonts-handler
-  (let ((request-path (request-pathname *request* "/webfonts/")))
-    (when (null request-path)
-      (setf (return-code*) +http-forbidden+)
-      (abort-request-handler))
-    (handle-static-file (merge-pathnames request-path #P"www/webfonts/"))))
-
 (setq *dispatch-table*
       (nconc
-       (list 'dispatch-easy-handlers
-	     (create-prefix-dispatcher "/login" 'index-html)
-	     (create-prefix-dispatcher "/logout" 'index-html)
-	     (create-prefix-dispatcher "/search" 'index-html)
-	     (create-prefix-dispatcher "/wiki" 'index-html)
-	     (create-prefix-dispatcher "/api/wiki" 'wiki-page)
+       (list (create-prefix-dispatcher "/api/wiki" 'wiki-page)
 	     (create-prefix-dispatcher "/api/history" 'wiki-page-history)
 	     (create-prefix-dispatcher "/api/upload" 'upload-handler)
 	     (create-prefix-dispatcher "/api/file" 'file-handler)
 	     (create-prefix-dispatcher "/api/search" 'search-handler)
 	     (create-prefix-dispatcher "/api/login" 'login-handler)
 	     (create-prefix-dispatcher "/api/logout" 'logout-handler)
-	     (create-prefix-dispatcher "/api/get-session" 'get-session-handler)
-	     (create-prefix-dispatcher "/s/" 'root-handler)
-	     (create-prefix-dispatcher "/webfonts/" 'webfonts-handler)
-	     (create-prefix-dispatcher "/favicon.ico" 'favicon-handler))))
+	     (create-prefix-dispatcher "/api/get-session" 'get-session-handler))))
