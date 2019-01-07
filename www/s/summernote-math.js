@@ -131,6 +131,7 @@
                         node.className = "formula";
                         node.innerHTML = $('#formula').html();
                         MathLive.renderMathInElement(node);
+                        this.contentEditable = false;
                         $('article').summernote('insertNode', node);
                     });
                 };

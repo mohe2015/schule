@@ -294,6 +294,7 @@ $(document).ready(function() {
 
               $(".formula").each(function() {
                 MathLive.renderMathInElement(this);
+                this.contentEditable = false;
               });
       
               showTab('#page');
