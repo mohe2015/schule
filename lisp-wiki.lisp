@@ -60,10 +60,12 @@
 	  :accessor user-hash))
   (:metaclass mito:dao-table-class))
 
+;;  (mito:create-dao 'user :name "Anonymous" :hash (hash "I don't have an account.") :group nil)
+
 (defgeneric action-allowed-p (action group))
 
-(defmethod action-allowed-p (action group)
-  nil)
+;;(defmethod action-allowed-p (action group)
+;;  nil)
 
 (defmethod action-allowed-p ((action (eql :show-article)) group)
   t)
@@ -254,12 +256,6 @@ function twice in the same second will regenerate twice the same value."
       (start-my-session))
   (basic-headers-nosession))
 
-(defget-noauth index-html
-  (handle-static-file "www/index.html"))
-
-(defget-noauth-nosession favicon-handler
-  (handle-static-file "www/favicon.ico"))
-
 (defun wiki-page ()
   (ecase (request-method* *request*)
     (:GET (get-wiki-page))
@@ -303,10 +299,6 @@ function twice in the same second will regenerate twice the same value."
   (let* ((query (subseq (script-name* *REQUEST*) 12)) (results (mito:select-dao 'wiki-article (where (:like :title (concatenate 'string "%" query "%"))))))
     (json:encode-json-to-string (mapcar #'(lambda (a) (wiki-article-title a)) results))))
 
-(define-easy-handler (root :uri "/") () ;; TODO replace this handler
-  (basic-headers)
-  (redirect "/wiki/Startseite")) ;; TODO permanent redirect?
-
 (defpost upload-handler
   (let* ((filepath (nth 0 (hunchentoot:post-parameter "file")))
 	 ;; (filetype (nth 2 (hunchentoot:post-parameter "file")))
@@ -340,35 +332,13 @@ function twice in the same second will regenerate twice the same value."
 (defget-noauth-cache file-handler
   (handle-static-file (merge-pathnames (concatenate 'string "uploads/" (subseq (script-name* *REQUEST*) 10)))))
 
-(defget-noauth-cache root-handler
-  (let ((request-path (request-pathname *request* "/s/")))
-    (when (null request-path)
-      (setf (return-code*) +http-forbidden+)
-      (abort-request-handler))
-    (handle-static-file (merge-pathnames request-path #P"www/s/"))))
-
-(defget-noauth-cache webfonts-handler
-  (let ((request-path (request-pathname *request* "/webfonts/")))
-    (when (null request-path)
-      (setf (return-code*) +http-forbidden+)
-      (abort-request-handler))
-    (handle-static-file (merge-pathnames request-path #P"www/webfonts/"))))
-
 (setq *dispatch-table*
       (nconc
-       (list 'dispatch-easy-handlers
-	     (create-prefix-dispatcher "/login" 'index-html)
-	     (create-prefix-dispatcher "/logout" 'index-html)
-	     (create-prefix-dispatcher "/search" 'index-html)
-	     (create-prefix-dispatcher "/wiki" 'index-html)
-	     (create-prefix-dispatcher "/api/wiki" 'wiki-page)
+       (list (create-prefix-dispatcher "/api/wiki" 'wiki-page)
 	     (create-prefix-dispatcher "/api/history" 'wiki-page-history)
 	     (create-prefix-dispatcher "/api/upload" 'upload-handler)
 	     (create-prefix-dispatcher "/api/file" 'file-handler)
 	     (create-prefix-dispatcher "/api/search" 'search-handler)
 	     (create-prefix-dispatcher "/api/login" 'login-handler)
 	     (create-prefix-dispatcher "/api/logout" 'logout-handler)
-	     (create-prefix-dispatcher "/api/get-session" 'get-session-handler)
-	     (create-prefix-dispatcher "/s/" 'root-handler)
-	     (create-prefix-dispatcher "/webfonts/" 'webfonts-handler)
-	     (create-prefix-dispatcher "/favicon.ico" 'favicon-handler))))
+	     (create-prefix-dispatcher "/api/get-session" 'get-session-handler))))
