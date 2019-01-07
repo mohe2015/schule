@@ -153,7 +153,7 @@
                         window.formula = null;
                         
                         MathLive.renderMathInElement(node);
-                        node.contentEditable = false;
+                       // node.contentEditable = false;
                         $('article').summernote('insertNode', node);
                     });
                 };
@@ -175,7 +175,7 @@
                         window.formula = null;
                         
                         MathLive.renderMathInElement(window.currentMathElement);
-                        window.currentMathElement.contentEditable = false;
+                      //  window.currentMathElement.contentEditable = false;
                     });
                 };
                 this.deleteMath = function () {

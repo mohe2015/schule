@@ -72,7 +72,11 @@ $(document).ready(function() {
         var changeSummary = $('#change-summary').val();
         var tempDom = $('<output>').append($.parseHTML($('article').summernote('code')));
         tempDom.find('.formula').each(function() {
+          try {
           this.innerHTML = "\\( " + MathLive.getOriginalContent(this) + " \\)";
+          } catch (err) {
+              console.log(err);
+          }
         });
         
         var articlePath = window.location.pathname.substr(0, window.location.pathname.lastIndexOf("/"));
@@ -294,7 +298,7 @@ $(document).ready(function() {
 
               $(".formula").each(function() {
                 MathLive.renderMathInElement(this);
-                this.contentEditable = false;
+               // this.contentEditable = false;
               });
       
               showTab('#page');
