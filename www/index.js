@@ -236,7 +236,9 @@ $(document).ready(function() {
       // TODO maybe use less fading or shorter fading for faster navigation?
       
       if (window.localStorage.name !== undefined) {
-       $('#nav-username').html(window.localStorage.name); 
+       $('#logout').text(window.localStorage.name + " abmelden"); 
+      } else {
+        $('#logout').text('Abmelden');
       }
 
       var pathname = window.location.pathname.split('/');
