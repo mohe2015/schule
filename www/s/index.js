@@ -54,19 +54,7 @@ $(document).ready(function() {
         return button.render();
     }
 
-    var MathButton = function(context) {
-        var ui = $.summernote.ui;
-        var button = ui.button({
-            contents: '<i class="fas fa-calculator"/>',
-            tooltip: 'Formel einfügen',
-            click: function() {
-                window.formula = MathLive.makeMathField(document.getElementById('formula'), { virtualKeyboardMode: 'manual' });
-                $('#mathModal').modal('show');
-            }
-        });
-
-        return button.render(); 
-    }
+    
     
     var MathPopover = $.summernote.ui.popover({
       className: 'note-link-popover',
@@ -209,8 +197,7 @@ $(document).ready(function() {
             focus: true,
             buttons: {
                 finished: FinishedButton,
-                cancel: CancelButton,
-                math: MathButton
+                cancel: CancelButton
             },
             toolbar: [
                 ['style', ['style', 'bold', 'italic', 'underline', 'strikethrough', 'superscript', 

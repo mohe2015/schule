@@ -47,21 +47,17 @@
                     // lang holds the Language Information from Summernote and what we extended above.
                     lang = options.langInfo;
 
-                context.memo('button.examplePlugin', function () {
-
-                    // Here we create a button
+                context.memo('button.math', function () {
                     var button = ui.button({
-
-                        // icon for button
-                        contents: options.examplePlugin.icon,
-
-                        // tooltip for button
-                        tooltip: lang.examplePlugin.tooltip,
-                        click: function (e) {
-                            context.invoke('examplePlugin.show');
+                        contents: '<i class="fas fa-calculator"/>',
+                        tooltip: 'Formel einfügen',
+                        click: function(e) {
+                            context.invoke('mathPlugin.insertMath');
+                            //window.formula = MathLive.makeMathField(document.getElementById('formula'), { virtualKeyboardMode: 'manual' });
+                            //$('#mathModal').modal('show');
                         }
                     });
-                    return button.render();
+                    return button.render(); 
                 });
                 this.initialize = function () {
 
@@ -107,7 +103,7 @@
                         $(this).parent().find('.form-control:first').focus();
                     });
                 };
-                this.show = function () {
+                this.insertMath = function () {
                     var $img = $($editable.data('target'));
                     var editorInfo = {
 
