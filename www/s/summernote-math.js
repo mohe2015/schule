@@ -88,7 +88,7 @@
                   this.$dialog = ui.dialog({
                       title: "Formel einfügen",
                       fade: options.dialogsFade,
-                      body: '<div id="formula"> \\( e=mc^2 \\) </div>',
+                      body: '<span id="formula"> \\( e=mc^2 \\) </span>',
                       footer: '<button type="button" class="btn btn-secondary" data-dismiss="modal">Abbrechen</button><button type="button" class="btn btn-primary note-mathPlugin-btn">Einfügen</button>'
                   }).render().appendTo($container);
                   
@@ -145,7 +145,7 @@
                     this.openDialog(editorInfo).then(function (editorInfo) {
                         ui.hideDialog(self.$dialog);
                         
-                        var node = document.createElement('div');
+                        var node = document.createElement('span');
                         node.className = "formula";
                         node.innerHTML = "\\( " + window.formula.$latex() + " \\)";
                         
