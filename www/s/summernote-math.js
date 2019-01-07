@@ -64,19 +64,33 @@
                 };
                 this.showexamplePluginDialog = function (editorInfo) {
                     return $.Deferred(function (deferred) {
+                        var $insertBtn = self.$dialog.find('.note-mathPlugin-btn');
                         ui.onDialogShown(self.$dialog, function () {
                             context.triggerEvent('dialog.shown');
-                            var $insertBtn = self.$dialog.find('.note-mathPlugin-btn');
                             $insertBtn.click(function (e) {
                                 e.preventDefault();
+                                
+                                window.formula.$revertToOriginalContent();
+                                window.formula = null;
+                                var node = document.createElement('div');
+                                node.className = "formula";
+                                node.innerHTML = $('#formula').html();
+                                $('article').summernote('insertNode', node);
+                                $('.formula').each(function (f) {
+                                  MathLive.renderMathInElement(this);
+                                  this.contentEditable = "false";
+                                });
+                                
                                 deferred.resolve({
-
                                 });
                             });
                         });
                         ui.onDialogHidden(self.$dialog, function () {
                             $insertBtn.off('click');
                             if (deferred.state() === 'pending') deferred.reject();
+                            if (window.formula !== null) {
+                              window.formula.$revertToOriginalContent();
+                            }
                         });
                         ui.showDialog(self.$dialog);
                     });

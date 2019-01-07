@@ -53,42 +53,6 @@ $(document).ready(function() {
 
         return button.render();
     }
-
-    
-    
-    var MathPopover = $.summernote.ui.popover({
-      className: 'note-link-popover',
-      callback: ($node) => {
-        const $content = $node.find('.popover-content,.note-popover-content');
-        $content.prepend('<span><a target="_blank"></a>&nbsp;</span>');
-      },
-    }).render().appendTo($.summernote.options.container);
-    
-    function updateMath() {
-      $('.formula').each(function (f) {
-        console.log(this);
-        MathLive.renderMathInElement(this);
-        this.contentEditable = "false";
-      });
-    }
-    
-    $('#insertMath').click(function() {
-      window.formula.$revertToOriginalContent();
-      window.formula = null;
-      $('#mathModal').modal('hide');
-      var node = document.createElement('div');
-      node.className = "formula";
-      node.innerHTML = $('#formula').html();
-      $('article').summernote('insertNode', node);
-      updateMath();
-    });
-    
-    $('#mathModal').on('hide.bs.modal', function (e) {
-      if (window.formula !== null) {
-        window.formula.$revertToOriginalContent();
-        window.formula = null;
-      }
-    })
     
     function readCookie(name) {
         var nameEQ = name + "=";
