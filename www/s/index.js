@@ -257,6 +257,7 @@ $(document).ready(function() {
       console.log(pathname);
       
       if (pathname.length > 1 && pathname[1] == 'logout') {
+        // TODO don't allow this using get as then somebody can log you out by sending you a link
         showTab('#loading');
         
         $.post("/api/logout", { csrf_token: readCookie('CSRF_TOKEN') }, function(data) {
@@ -265,7 +266,8 @@ $(document).ready(function() {
             updateState();
         })
         .fail(function() {
-            alert("Fehler beim Abmelden");
+            $('#errorMessage').text("Unbekannter Fehler beim Abmelden.");
+            showTab('#error');
         });
         return;
       }
