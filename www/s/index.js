@@ -70,10 +70,13 @@ $(document).ready(function() {
         $('#publishing-changes').show();
 
         var changeSummary = $('#change-summary').val();
-        var newHtml = $('article').summernote('code');
+        var tempDom = $('<output>').append($.parseHTML($('article').summernote('code')));
+        tempDom.find('.formula').each(function(index) {
+          this.innerHTML = "\\( " + MathLive.getOriginalContent(this) + " \\)";
+        });
         
         var articlePath = window.location.pathname.substr(0, window.location.pathname.lastIndexOf("/"));
-        $.post("/api" + articlePath, { summary: changeSummary, html: newHtml, csrf_token: readCookie('CSRF_TOKEN') }, function(data) {
+        $.post("/api" + articlePath, { summary: changeSummary, html: tempDom.html(), csrf_token: readCookie('CSRF_TOKEN') }, function(data) {
             window.history.pushState(null, null, articlePath);
             updateState();
         })
@@ -289,16 +292,10 @@ $(document).ready(function() {
           $.get("/api/wiki/" + pathname[2], function(data) {
               $('article').html(data);
 
-              $(".mathfield").each(function(f) {
-                //f.attr('contenteditable','false');
-                MathLive.renderMathInElement(f);
+              $(".formula").each(function(index) {
+                MathLive.renderMathInElement(this);
               });
-              
-        /*
-             MathLive.makeMathField(document.getElementById('mathfield'), {
-                virtualKeyboardMode: 'manual',
-             });
-          */    
+      
               showTab('#page');
               
               window.history.replaceState({ currentState: 'show-article' }, null, null);

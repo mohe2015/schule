@@ -86,9 +86,9 @@
                     var rng = context.invoke('editor.createRange');
                     var visible = false;
 
-                    console.log(dom);
-                    if ($(rng.sc).hasClass('formula')) {
-                      var pos = dom.posFromPlaceholder(rng.sc);
+                    var formula = $(rng.sc).closest('.formula');
+                    if (formula.length == 1) {
+                      var pos = dom.posFromPlaceholder(formula[0]);
                       
                       self.$popover.css({
                         display: 'block',

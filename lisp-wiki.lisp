@@ -9,11 +9,11 @@
   "The default value for the COST parameter to HASH.")
 
 (define-sanitize-mode *sanitize-spickipedia*
-    :elements ("h1" "h2" "h3" "h4" "h5" "h6" "p" "strike" "sub" "b" "u" "i" "sup" "table" "tbody" "tr" "td" "ul" "a" "br" "ol" "li" "img" "iframe" "div" "script")
+    :elements ("h1" "h2" "h3" "h4" "h5" "h6" "p" "strike" "sub" "b" "u" "i" "sup" "table" "tbody" "tr" "td" "ul" "a" "br" "ol" "li" "img" "iframe" "div")
     
     :attributes (("h1"          . ("align" "style"))
 		 ("div"         . ("id" "class"))
-		 ("script"      . ("type")) ;; TODO FIXME 
+;		 ("span"        . ("style"))
 		 ("h2"          . ("align" "style"))
 		 ("h3"          . ("align" "style"))
 		 ("h4"          . ("align" "style"))
@@ -30,7 +30,11 @@
 		("iframe"      . (("src"  . (:http :https :relative))))) ;; TODO only https ;; TODO better use a regex as it fails to detect the same protocol url //www.youtube.com
     :css-attributes (("text-align" . ("center"))
 		     ("float"      . ("left" "right"))
-		     ("width")))
+		     ("width")
+		     ("height")
+		     ("vertical-align")
+		     ("top")
+		     ("margin-right")))
 
 
 (defparameter *CATCH-ERRORS-P* nil) ;; TODO scan with this line enabled to find bugs
