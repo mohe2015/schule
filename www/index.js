@@ -179,7 +179,7 @@ $(document).ready(function() {
 'subscript']],
                 ['para', ['ul', 'ol', 'indent', 'outdent', 'justifyLeft', 'justifyCenter']],
                 ['insert', ['link', 'picture', 'video', 'table', 'math']],
-                ['management', ['undo', 'redo', 'help', 'cancel', 'finished', 'codeview']]
+                ['management', ['undo', 'redo', 'help', 'cancel', 'finished']]
             ]
         });
         setFullscreen(true);
