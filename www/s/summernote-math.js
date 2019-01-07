@@ -145,13 +145,13 @@
                     this.openDialog(editorInfo).then(function (editorInfo) {
                         ui.hideDialog(self.$dialog);
                         
-                        window.formula.$revertToOriginalContent();
+                        var node = document.createElement('div');
+                        node.className = "formula";
+                        node.innerHTML = "\\( " + window.formula.$latex() + " \\)";
+                        
                         $("#formula").find("*").off();
                         window.formula = null;
                         
-                        var node = document.createElement('div');
-                        node.className = "formula";
-                        node.innerHTML = $('#formula').html();
                         MathLive.renderMathInElement(node);
                         this.contentEditable = false;
                         $('article').summernote('insertNode', node);
