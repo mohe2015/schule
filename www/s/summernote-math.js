@@ -14,7 +14,7 @@
             options: {
               popover: {
                 math: [
-                  ['math', ['math']],
+                  ['math', ['edit-math', 'delete-math']],
                 ],
               },
             },
@@ -52,12 +52,34 @@
                     return button.render(); 
                 });
                 
+                context.memo('button.edit-math', function () {
+                    var button = ui.button({
+                        contents: '<i class="fas fa-pen"/>',
+                        tooltip: 'Formel ändern',
+                        click: function(e) {
+                            context.invoke('mathPlugin.editMath');
+                        }
+                    });
+                    return button.render(); 
+                });
+                
+                context.memo('button.delete-math', function () {
+                    var button = ui.button({
+                        contents: '<i class="fas fa-trash"/>',
+                        tooltip: 'Formel löschen',
+                        click: function(e) {
+                            context.invoke('mathPlugin.deleteMath');
+                        }
+                    });
+                    return button.render(); 
+                });
+                
                 self.events = {
                       'summernote.keyup summernote.mouseup summernote.change summernote.scroll': function() {
                         self.update();
                       },
                       'summernote.dialog.shown': function() {
-                        self.hidePopover();
+                          self.$popover.hide();
                       },
                 };
                 
@@ -79,7 +101,7 @@
                 self.update = function() {
                     // Prevent focusing on editable when invoke('code') is executed
                     if (!context.invoke('editor.hasFocus')) {
-                      self.hidePopover();
+                      self.$popover.hide();
                       return;
                     }
 
@@ -88,7 +110,8 @@
 
                     var formula = $(rng.sc).closest('.formula');
                     if (formula.length == 1) {
-                      var pos = dom.posFromPlaceholder(formula[0]);
+                      window.currentMathElement = formula[0];
+                      var pos = dom.posFromPlaceholder(window.currentMathElement);
                       
                       self.$popover.css({
                         display: 'block',
@@ -101,11 +124,8 @@
 
                     // hide if not visible
                     if (!visible) {
-                      self.hidePopover();
+                      self.$popover.hide();
                     }
-                };
-                self.hidePopover = function() {
-                  self.$popover.hide();
                 };
                 this.destroy = function () {
                     ui.hideDialog(this.$dialog);
@@ -115,6 +135,7 @@
                     this.$popover = null;
                 };
                 this.insertMath = function () {
+                    document.getElementById('formula').innerHTML = "\\( e=mc^2 \\)";
                     window.formula = MathLive.makeMathField(document.getElementById('formula'), { virtualKeyboardMode: 'manual' });
                   
                     var $img = $($editable.data('target'));
@@ -125,6 +146,7 @@
                         ui.hideDialog(self.$dialog);
                         
                         window.formula.$revertToOriginalContent();
+                        $("#formula").find("*").off();
                         window.formula = null;
                         
                         var node = document.createElement('div');
@@ -134,6 +156,10 @@
                         this.contentEditable = false;
                         $('article').summernote('insertNode', node);
                     });
+                };
+                this.deleteMath = function () {
+                  window.currentMathElement.remove();
+                  self.$popover.hide();
                 };
                 this.openDialog = function (editorInfo) {
                     return $.Deferred(function (deferred) {
