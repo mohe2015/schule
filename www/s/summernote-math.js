@@ -24,8 +24,6 @@
                         tooltip: 'Formel einfügen',
                         click: function(e) {
                             context.invoke('mathPlugin.insertMath');
-                            //window.formula = MathLive.makeMathField(document.getElementById('formula'), { virtualKeyboardMode: 'manual' });
-                            //$('#mathModal').modal('show');
                         }
                     });
                     return button.render(); 
@@ -38,23 +36,22 @@
                       body: '<div id="formula"> \( e=mc^2 \) </div>',
                       footer: '<button type="button" class="btn btn-secondary" data-dismiss="modal">Abbrechen</button><button type="button" class="btn btn-primary note-mathPlugin-btn">Einfügen</button>'
                   }).render().appendTo($container);
+                  
+                  self.$popover = ui.popover({
+                      className: 'ext-math-popover',
+                  }).render().appendTo('body');
+                  var $content = self.$popover.find('.popover-content');
                 }
                 this.destroy = function () {
                     ui.hideDialog(this.$dialog);
                     this.$dialog.remove();
-                };
-                this.bindEnterKey = function ($input, $btn) {
-                    $input.on('keypress', function (event) {
-                        if (event.keyCode === 13) $btn.trigger('click');
-                    });
-                };
-                this.bindLabels = function () {
-                    self.$dialog.find('.form-control:first').focus().select();
-                    self.$dialog.find('label').on('click', function () {
-                        $(this).parent().find('.form-control:first').focus();
-                    });
+                    
+                    this.$popover.remove();
+                    this.$popover = null;
                 };
                 this.insertMath = function () {
+                    window.formula = MathLive.makeMathField(document.getElementById('formula'), { virtualKeyboardMode: 'manual' });
+                  
                     var $img = $($editable.data('target'));
                     var editorInfo = {
 
@@ -76,8 +73,6 @@
 
                                 });
                             });
-                            self.bindEnterKey($insertBtn);
-                            self.bindLabels();
                         });
                         ui.onDialogHidden(self.$dialog, function () {
                             $insertBtn.off('click');
