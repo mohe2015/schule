@@ -188,8 +188,12 @@ function twice in the same second will regenerate twice the same value."
 
 (defmacro with-user-perm (permission &body body)
   `(let ((user (my-session-user *session*)))
-     (if (and user (can user ',permission))
-	 (progn ,@body)
+     (if user
+	 (if (can user ',permission)
+	     (progn ,@body)
+	     (progn
+	       (setf (return-code*) +http-forbidden+)
+	       nil))
 	 (progn
 	   (setf (return-code*) +http-authorization-required+)
 	   nil))))
