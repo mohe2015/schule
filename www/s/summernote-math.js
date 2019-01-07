@@ -89,14 +89,14 @@
                     var rng = context.invoke('editor.createRange');
                     var visible = false;
 
+                    console.log(dom);
                     if ($(rng.sc).hasClass('formula')) {
-                      console.log(dom);
-                      var pos = dom.position(rng.sc);
+                      var pos = dom.posFromPlaceholder(rng.sc);
                       
                       self.$popover.css({
                         display: 'block',
-                        left: 0,
-                        top: 0,
+                        left: pos.left,
+                        top: pos.top,
                       });
 
                       visible = true;
