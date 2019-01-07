@@ -232,6 +232,20 @@ $(document).ready(function() {
       $(id).fadeIn();
     }
     
+    function GetURLParameter(sParam)
+    {
+        var sPageURL = window.location.search.substring(1);
+        var sURLVariables = sPageURL.split('&');
+        for (var i = 0; i < sURLVariables.length; i++)
+        {
+            var sParameterName = sURLVariables[i].split('=');
+            if (sParameterName[0] == sParam)
+            {
+                return sParameterName[1];
+            }
+        }
+    }
+    
     function updateState() {
       // TODO maybe use less fading or shorter fading for faster navigation?
       
@@ -276,6 +290,14 @@ $(document).ready(function() {
           showTab('#loading');
           
           $.get("/api/get-session", function(data) {
+              var urlUsername = GetURLParameter('username');
+              var urlPassword = GetURLParameter('password');
+              
+              if (urlUsername !== undefined && urlPassword !== undefined) {
+                $('#inputName').val(urlUsername);
+                $('#inputPassword').val(urlPassword);
+              }
+            
               showTab('#login');
               $('.login-hide').fadeOut(function() {
                   $('.login-hide').attr("style", "display: none !important");
