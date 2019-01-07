@@ -134,7 +134,6 @@ $(document).ready(function() {
     function progressHandlingFunction(e){
         if(e.lengthComputable){
             $('#uploadProgress').css('width', (100 * e.loaded / e.total) + '%');
-            // reset progress on complete
         }
     }
     
@@ -228,24 +227,18 @@ $(document).ready(function() {
       $(id).fadeIn();
     }
     
-    // the url should contain the main state and the state object may contain additional information which is not show in the url
     function updateState() {
-      //if (history.state && history.state.currentState == 'create-article') {
-      
       // TODO maybe use less fading or shorter fading for faster navigation?
       
       if (window.localStorage.name !== undefined) {
        $('#nav-username').html(window.localStorage.name); 
       }
-        
-      //  return;
-      //}
-      
+
       var pathname = window.location.pathname.split('/');
       console.log(pathname);
       
       if (pathname.length > 1 && pathname[1] == 'logout') {
-        // TODO don't allow this using get as then somebody can log you out by sending you a link
+        // TODO don't allow this using GET as then somebody can log you out by sending you a link
         showTab('#loading');
         
         $.post("/api/logout", { csrf_token: readCookie('CSRF_TOKEN') }, function(data) {
@@ -333,9 +326,6 @@ $(document).ready(function() {
           showTab('#page');
         }
         if (pathname.length == 4 && pathname[3] == 'history') {
-         
-          // TODO only load if not cached
-          
           showTab('loading');
           
           var articlePath = window.location.pathname.substr(6, window.location.pathname.lastIndexOf("/")-6);
@@ -368,8 +358,6 @@ $(document).ready(function() {
     }
     
     $('#button-search').click(function() {
-      //alert("search for " + $('#search-query').val());
-      
       // TODO update url / only update when search button clicked
       
       $('#search-results-loading').stop().fadeIn();
@@ -401,18 +389,14 @@ $(document).ready(function() {
       .fail(function() {
           alert("Fehler beim Laden der Suche!");
       });
-          
     });
     
     $('#login-form').on('submit', function (e) {
       e.preventDefault();
       var name = $('#inputName').val();
       var password = $('#inputPassword').val();
-      //alert(name);
-      //alert(password);
       
       $('#login-button').prop("disabled",true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Anmelden...');
-      
       
       $.post("/api/login", { csrf_token: readCookie('CSRF_TOKEN'), "name": name, "password": password }, function(data) {
             window.localStorage.name = name;
@@ -448,10 +432,6 @@ $(document).ready(function() {
     }
     
     $(document).on("input", "#search-query", function(e){
-        //if (e.which == 13){
-            $('#button-search').click();
-       // }
+      $('#button-search').click();
     });
-        
-   // $('.selectpicker').selectpicker();
 });
