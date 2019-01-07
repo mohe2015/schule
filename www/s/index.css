@@ -11,3 +11,10 @@ del {
   padding-left: 10px;
   padding-right: 10px;
 }
+
+.modal-full {
+ max-width: 100%;
+ margin-top: 0;
+ margin-bottom: 0;
+ height: 100%;
+}
