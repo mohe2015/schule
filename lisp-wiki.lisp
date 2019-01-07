@@ -64,13 +64,33 @@
 
 (defgeneric action-allowed-p (action group))
 
-;;(defmethod action-allowed-p (action group)
-;;  nil)
+;; requirement: user is logged in - but still group may be nil
+;; groups: admin, user, nil / other
 
+;; every user can read wiki pages
 (defmethod action-allowed-p ((action (eql 'get-wiki-page)) group) t)
 
+;; every user can see the history
+(defmethod action-allowed-p ((action (eql 'wiki-page-history)) group) t)
+
+;; every user can view the files
+(defmethod action-allowed-p ((action (eql 'file-handler)) group) t)
+
+;; every user can search
+(defmethod action-allowed-p ((action (eql 'search-handler)) group) t)
+
+;; every user can logout
+(defmethod action-allowed-p ((action (eql 'logout-handler)) group) t)
+
+;; only admins and users can edit them
 (defmethod action-allowed-p ((action (eql 'post-wiki-page)) (group (eql :admin))) t)
+(defmethod action-allowed-p ((action (eql 'post-wiki-page)) (group (eql :user))) t)
 (defmethod action-allowed-p ((action (eql 'post-wiki-page)) group) nil)
+
+;; only admins and users can upload images
+(defmethod action-allowed-p ((action (eql 'upload-handler)) (group (eql :admin))) t)
+(defmethod action-allowed-p ((action (eql 'upload-handler)) (group (eql :user))) t)
+(defmethod action-allowed-p ((action (eql 'upload-handler)) group) nil)
 
 (defun can (user action)
   (if user
