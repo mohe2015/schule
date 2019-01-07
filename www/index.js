@@ -237,6 +237,12 @@ $(document).ready(function() {
       var pathname = window.location.pathname.split('/');
       console.log(pathname);
       
+      if (pathname.length == 2 && pathname[1] == '') {
+        window.history.replaceState(null, null, "/wiki/Startseite");
+        updateState();
+        return;
+      }
+      
       if (pathname.length > 1 && pathname[1] == 'logout') {
         // TODO don't allow this using GET as then somebody can log you out by sending you a link
         showTab('#loading');
@@ -309,6 +315,7 @@ $(document).ready(function() {
                 window.history.replaceState({ currentState: 'unknown-error' }, null, null);
               }
           });
+          return;
         }
         if (pathname.length == 4 && pathname[3] == 'create') {
           $('article').html("");
@@ -316,6 +323,7 @@ $(document).ready(function() {
           showEditor();
           
           showTab('#page');
+          return;
         }
         if (pathname.length == 4 && pathname[3] == 'edit') {
           // TODO load article
@@ -324,6 +332,7 @@ $(document).ready(function() {
           showEditor();
           
           showTab('#page');
+          return;
         }
         if (pathname.length == 4 && pathname[3] == 'history') {
           showTab('loading');
@@ -349,12 +358,17 @@ $(document).ready(function() {
           });
           
           showTab('#history');
+          return;
         }
       }
       if (pathname.length > 1 && pathname[1] == 'search') {
           showTab('#search');
           $('#search-query').val(pathname[2]);
+          return;
       }
+      
+      $('#errorMessage').text("Pfad nicht gefunden! Hast du dich vielleicht vertippt?");
+      showTab('#error');
     }
     
     $('#button-search').click(function() {
