@@ -68,6 +68,14 @@ $(document).ready(function() {
         return button.render(); 
     }
     
+    var MathPopover = $.summernote.ui.popover({
+      className: 'note-link-popover',
+      callback: ($node) => {
+        const $content = $node.find('.popover-content,.note-popover-content');
+        $content.prepend('<span><a target="_blank"></a>&nbsp;</span>');
+      },
+    }).render().appendTo($.summernote.options.container);
+    
     function updateMath() {
       $('.formula').each(function (f) {
         console.log(this);
