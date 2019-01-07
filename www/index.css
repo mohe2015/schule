@@ -1,0 +1,20 @@
+ ins {
+  text-decoration: none;
+  background-color: #d4fcbc;
+}
+del {
+  text-decoration: line-through;
+  background-color: #fbb6c2;
+  color: #555;
+}
+.container-fluid {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.modal-full {
+ max-width: 100%;
+ margin-top: 0;
+ margin-bottom: 0;
+ height: 100%;
+}
