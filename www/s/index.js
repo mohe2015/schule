@@ -53,7 +53,7 @@ $(document).ready(function() {
 
         return button.render();
     }
-
+    
     function readCookie(name) {
         var nameEQ = name + "=";
         var ca = document.cookie.split(';');
@@ -70,10 +70,17 @@ $(document).ready(function() {
         $('#publishing-changes').show();
 
         var changeSummary = $('#change-summary').val();
-        var newHtml = $('article').summernote('code');
+        var tempDom = $('<output>').append($.parseHTML($('article').summernote('code')));
+        tempDom.find('.formula').each(function() {
+          try {
+          this.innerHTML = "\\( " + MathLive.getOriginalContent(this) + " \\)";
+          } catch (err) {
+              console.log(err);
+          }
+        });
         
         var articlePath = window.location.pathname.substr(0, window.location.pathname.lastIndexOf("/"));
-        $.post("/api" + articlePath, { summary: changeSummary, html: newHtml, csrf_token: readCookie('CSRF_TOKEN') }, function(data) {
+        $.post("/api" + articlePath, { summary: changeSummary, html: tempDom.html(), csrf_token: readCookie('CSRF_TOKEN') }, function(data) {
             window.history.pushState(null, null, articlePath);
             updateState();
         })
@@ -167,7 +174,7 @@ $(document).ready(function() {
                 ['style', ['style', 'bold', 'italic', 'underline', 'strikethrough', 'superscript', 
 'subscript']],
                 ['para', ['ul', 'ol', 'indent', 'outdent', 'justifyLeft', 'justifyCenter']],
-                ['insert', ['link', 'picture', 'video', 'table']],
+                ['insert', ['link', 'picture', 'video', 'table', 'math']],
                 ['management', ['undo', 'redo', 'help', 'cancel', 'finished', 'codeview']]
             ]
         });
@@ -238,6 +245,7 @@ $(document).ready(function() {
       console.log(pathname);
       
       if (pathname.length > 1 && pathname[1] == 'logout') {
+        // TODO don't allow this using get as then somebody can log you out by sending you a link
         showTab('#loading');
         
         $.post("/api/logout", { csrf_token: readCookie('CSRF_TOKEN') }, function(data) {
@@ -246,7 +254,8 @@ $(document).ready(function() {
             updateState();
         })
         .fail(function() {
-            alert("Fehler beim Abmelden");
+            $('#errorMessage').text("Unbekannter Fehler beim Abmelden.");
+            showTab('#error');
         });
         return;
       }
@@ -261,7 +270,7 @@ $(document).ready(function() {
           $('#publish-changes-modal').modal('hide');
           showTab('#loading');
           
-          $.get("/", function(data) {
+          $.get("/api/get-session", function(data) {
               showTab('#login');
               $('.login-hide').fadeOut(function() {
                   $('.login-hide').attr("style", "display: none !important");
@@ -287,6 +296,11 @@ $(document).ready(function() {
           $.get("/api/wiki/" + pathname[2], function(data) {
               $('article').html(data);
 
+              $(".formula").each(function() {
+                MathLive.renderMathInElement(this);
+               // this.contentEditable = false;
+              });
+      
               showTab('#page');
               
               window.history.replaceState({ currentState: 'show-article' }, null, null);
@@ -438,6 +452,6 @@ $(document).ready(function() {
             $('#button-search').click();
        // }
     });
-    
+        
    // $('.selectpicker').selectpicker();
 });

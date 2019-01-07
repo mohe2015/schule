@@ -9,9 +9,10 @@
   "The default value for the COST parameter to HASH.")
 
 (define-sanitize-mode *sanitize-spickipedia*
-    :elements ("h1" "h2" "h3" "h4" "h5" "h6" "p" "strike" "sub" "b" "u" "i" "sup" "table" "tbody" "tr" "td" "ul" "a" "br" "ol" "li" "img" "iframe")
+    :elements ("h1" "h2" "h3" "h4" "h5" "h6" "p" "strike" "sub" "b" "u" "i" "sup" "table" "tbody" "tr" "td" "ul" "a" "br" "ol" "li" "img" "iframe" "span")
     
     :attributes (("h1"          . ("align" "style"))
+		 ("span"        . ("class"))
 		 ("h2"          . ("align" "style"))
 		 ("h3"          . ("align" "style"))
 		 ("h4"          . ("align" "style"))
@@ -28,7 +29,11 @@
 		("iframe"      . (("src"  . (:http :https :relative))))) ;; TODO only https ;; TODO better use a regex as it fails to detect the same protocol url //www.youtube.com
     :css-attributes (("text-align" . ("center"))
 		     ("float"      . ("left" "right"))
-		     ("width")))
+		     ("width")
+		     ("height")
+		     ("vertical-align")
+		     ("top")
+		     ("margin-right")))
 
 
 (defparameter *CATCH-ERRORS-P* nil) ;; TODO scan with this line enabled to find bugs
@@ -85,7 +90,9 @@
 
 (defmethod session-verify ((request request))
   (let ((session-identifier (cookie-in (session-cookie-name *acceptor*) request)))
-    (mito:find-dao 'my-session :session-cookie session-identifier)))
+    (if session-identifier
+	(mito:find-dao 'my-session :session-cookie session-identifier)
+	nil)))
 
 (defmethod session-cookie-value ((my-session my-session))
   (and my-session (my-session-cookie my-session)))
@@ -197,6 +204,7 @@ function twice in the same second will regenerate twice the same value."
      (if (valid-csrf)
 	 (progn ,@body)
 	 (progn
+	   (start-my-session)
 	   (setf (return-code*) +http-forbidden+)
 	   (log-message* :ERROR "POTENTIAL ONGOING CROSS SITE REQUEST FORGERY ATTACK!!!")
 	   nil))))
@@ -208,6 +216,7 @@ function twice in the same second will regenerate twice the same value."
        (if (valid-csrf)
 	   (progn ,@body)
 	   (progn
+	     (start-my-session)
 	     (setf (return-code*) +http-forbidden+)
 	     (log-message* :ERROR (format nil "POTENTIAL ONGOING CROSS SITE REQUEST FORGERY ATTACK!!! username: ~a" (user-name user)))
 	     nil)))))
@@ -286,6 +295,9 @@ function twice in the same second will regenerate twice the same value."
 	 (copy-file filepath newpath :overwrite t)
 	 filehash))
 
+(defget-noauth get-session-handler
+  nil)
+
 (defpost-noauth login-handler
   (let* ((name (post-parameter "name"))
 	 (password (post-parameter "password"))
@@ -300,7 +312,7 @@ function twice in the same second will regenerate twice the same value."
 	  (setf (return-code*) +http-forbidden+)
 	  nil))))
 
-(defpost logout-handler
+(defpost-noauth logout-handler
   (mito:delete-dao *SESSION*)
   (setf *SESSION* nil))
 
@@ -335,6 +347,7 @@ function twice in the same second will regenerate twice the same value."
 	     (create-prefix-dispatcher "/api/search" 'search-handler)
 	     (create-prefix-dispatcher "/api/login" 'login-handler)
 	     (create-prefix-dispatcher "/api/logout" 'logout-handler)
+	     (create-prefix-dispatcher "/api/get-session" 'get-session-handler)
 	     (create-prefix-dispatcher "/s/" 'root-handler)
 	     (create-prefix-dispatcher "/webfonts/" 'webfonts-handler)
 	     (create-prefix-dispatcher "/favicon.ico" 'favicon-handler))))
