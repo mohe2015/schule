@@ -71,7 +71,7 @@ $(document).ready(function() {
 
         var changeSummary = $('#change-summary').val();
         var tempDom = $('<output>').append($.parseHTML($('article').summernote('code')));
-        tempDom.find('.formula').each(function(index) {
+        tempDom.find('.formula').each(function() {
           this.innerHTML = "\\( " + MathLive.getOriginalContent(this) + " \\)";
         });
         
@@ -292,7 +292,7 @@ $(document).ready(function() {
           $.get("/api/wiki/" + pathname[2], function(data) {
               $('article').html(data);
 
-              $(".formula").each(function(index) {
+              $(".formula").each(function() {
                 MathLive.renderMathInElement(this);
               });
       

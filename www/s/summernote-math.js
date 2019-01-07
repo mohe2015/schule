@@ -147,9 +147,6 @@
                         ui.onDialogHidden(self.$dialog, function () {
                             $insertBtn.off('click');
                             if (deferred.state() === 'pending') deferred.reject();
-                            if (window.formula !== null) {
-                              window.formula.$revertToOriginalContent();
-                            }
                         });
                         ui.showDialog(self.$dialog);
                     });
