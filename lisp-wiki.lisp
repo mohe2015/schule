@@ -67,11 +67,10 @@
 ;;(defmethod action-allowed-p (action group)
 ;;  nil)
 
-(defmethod action-allowed-p ((action (eql :show-article)) group)
-  t)
+(defmethod action-allowed-p ((action (eql 'get-wiki-page)) group) t)
 
-(defmethod action-allowed-p ((action (eql :delete-article)) (group (eql :admin)))
-  t)
+(defmethod action-allowed-p ((action (eql 'post-wiki-page)) (group (eql :admin))) t)
+(defmethod action-allowed-p ((action (eql 'post-wiki-page)) group) nil)
 
 (defun can (user action)
   (if user
@@ -187,9 +186,9 @@ function twice in the same second will regenerate twice the same value."
 (defun valid-csrf () ;; ;; TODO secure string compare
   (string= (my-session-csrf-token *SESSION*) (post-parameter "csrf_token")))
 
-(defmacro with-user (&body body)
+(defmacro with-user-perm (permission &body body)
   `(let ((user (my-session-user *session*)))
-     (if user
+     (if (and user (can user ',permission))
 	 (progn ,@body)
 	 (progn
 	   (setf (return-code*) +http-authorization-required+)
@@ -218,7 +217,7 @@ function twice in the same second will regenerate twice the same value."
 (defmacro defget (name &body body) ;; TODO assert that's really a GET request
   `(defun ,name ()
      (basic-headers)
-     (with-user
+     (with-user-perm ,name
        ,@body)))
 
 (defmacro defpost-noauth (name &body body)
@@ -235,7 +234,7 @@ function twice in the same second will regenerate twice the same value."
 (defmacro defpost (name &body body) ;; TODO assert that's really a POST REQUEST
   `(defun ,name ()
      (basic-headers)
-     (with-user
+     (with-user-perm ,name
        (if (valid-csrf)
 	   (progn ,@body)
 	   (progn
