@@ -68,8 +68,30 @@ $(document).ready(function() {
         return button.render(); 
     }
     
-    $('#mathModal').on('hide.bs.modal', function (e) {
+    function updateMath() {
+      $('.formula').each(function (f) {
+        console.log(this);
+        MathLive.renderMathInElement(this);
+        this.contentEditable = "false";
+      });
+    }
+    
+    $('#insertMath').click(function() {
       window.formula.$revertToOriginalContent();
+      window.formula = null;
+      $('#mathModal').modal('hide');
+      var node = document.createElement('div');
+      node.className = "formula";
+      node.innerHTML = $('#formula').html();
+      $('article').summernote('insertNode', node);
+      updateMath();
+    });
+    
+    $('#mathModal').on('hide.bs.modal', function (e) {
+      if (window.formula !== null) {
+        window.formula.$revertToOriginalContent();
+        window.formula = null;
+      }
     })
     
     function readCookie(name) {
