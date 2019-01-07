@@ -33,7 +33,7 @@
                   this.$dialog = ui.dialog({
                       title: "Formel einfügen",
                       fade: options.dialogsFade,
-                      body: '<div id="formula"> \( e=mc^2 \) </div>',
+                      body: '<div id="formula"> \\( e=mc^2 \\) </div>',
                       footer: '<button type="button" class="btn btn-secondary" data-dismiss="modal">Abbrechen</button><button type="button" class="btn btn-primary note-mathPlugin-btn">Einfügen</button>'
                   }).render().appendTo($container);
                   
@@ -56,33 +56,32 @@
                     var editorInfo = {
 
                     };
-                    this.showexamplePluginDialog(editorInfo).then(function (editorInfo) {
+                    this.openDialog(editorInfo).then(function (editorInfo) {
                         ui.hideDialog(self.$dialog);
-                        $note.val(context.invoke('code'));
-                        $note.change();
+                        
+                        window.formula.$revertToOriginalContent();
+                        window.formula = null;
+                        var node = document.createElement('div');
+                        node.className = "formula";
+                        node.innerHTML = $('#formula').html();
+                        $('article').summernote('insertNode', node);
+                        
+                        MathLive.renderMathInElement(node);
+                        
+                       // $('.formula').each(function (f) {
+                        //  MathLive.renderMathInElement(this);
+                        //  this.contentEditable = "false";
+                        //});
                     });
                 };
-                this.showexamplePluginDialog = function (editorInfo) {
+                this.openDialog = function (editorInfo) {
                     return $.Deferred(function (deferred) {
                         var $insertBtn = self.$dialog.find('.note-mathPlugin-btn');
                         ui.onDialogShown(self.$dialog, function () {
                             context.triggerEvent('dialog.shown');
                             $insertBtn.click(function (e) {
                                 e.preventDefault();
-                                
-                                window.formula.$revertToOriginalContent();
-                                window.formula = null;
-                                var node = document.createElement('div');
-                                node.className = "formula";
-                                node.innerHTML = $('#formula').html();
-                                $('article').summernote('insertNode', node);
-                                $('.formula').each(function (f) {
-                                  MathLive.renderMathInElement(this);
-                                  this.contentEditable = "false";
-                                });
-                                
-                                deferred.resolve({
-                                });
+                                deferred.resolve({});
                             });
                         });
                         ui.onDialogHidden(self.$dialog, function () {
