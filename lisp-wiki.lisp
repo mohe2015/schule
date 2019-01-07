@@ -1,6 +1,9 @@
 
 (defpackage :lisp-wiki
   (:use :common-lisp :hunchentoot :mito :sxql :sanitize :ironclad :cl-fad :cl-base64 :bcrypt)
+  (:import-from #:alexandria
+                #:make-keyword
+                #:compose)
   (:export))
 
 (in-package :lisp-wiki)
@@ -49,11 +52,29 @@
 	  :accessor user-name)
    (group :col-type (:varchar 64)
 	  :initarg :group
+	  :inflate (compose #'make-keyword #'string-upcase)
+          :deflate #'string-downcase
 	  :accessor user-group)
    (hash  :col-type (:varchar 512)
 	  :initarg :hash
 	  :accessor user-hash))
   (:metaclass mito:dao-table-class))
+
+(defgeneric action-allowed-p (action group))
+
+(defmethod action-allowed-p (action group)
+  nil)
+
+(defmethod action-allowed-p ((action (eql :show-article)) group)
+  t)
+
+(defmethod action-allowed-p ((action (eql :delete-article)) (group (eql :admin)))
+  t)
+
+(defun can (user action)
+  (if user
+      (action-allowed-p action (user-group user))
+      (action-allowed-p action nil)))
 
 (defclass wiki-article ()
   ((title :col-type (:varchar 128)
