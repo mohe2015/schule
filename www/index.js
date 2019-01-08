@@ -336,7 +336,7 @@ $(document).ready(function() {
           return;
         }
         if (pathname.length == 4 && pathname[3] == 'create') {
-          $('article').html("");
+          $('article').html("<h1>" + pathname[2] + "</h1>");
       
           showEditor();
           
