@@ -198,7 +198,10 @@ $(document).ready(function() {
     
     $(".edit-button").click(function(e) {
         e.preventDefault();
-        window.history.pushState(null, null, window.location.pathname + "/edit");
+        
+        var pathname = window.location.pathname.split('/');
+        
+        window.history.pushState(null, null, "/wiki/" + pathname[2] + "/edit");
         updateState();
         return false;
     });
@@ -317,6 +320,7 @@ $(document).ready(function() {
       
       if (pathname.length > 1 && pathname[1] == 'wiki') {
         if (pathname.length == 3) { // /wiki/:name
+          $('#is-outdated-article').addClass('d-none');
           cleanup();
           
           $.get("/api/wiki/" + pathname[2], function(data) {
@@ -341,6 +345,7 @@ $(document).ready(function() {
           return;
         }
         if (pathname.length == 4 && pathname[3] == 'create') {
+          $('#is-outdated-article').addClass('d-none');
           $('article').html("<h1>" + pathname[2] + "</h1>");
       
           showEditor();
@@ -391,6 +396,7 @@ $(document).ready(function() {
           cleanup();
           
           $.get("/api/revision/" + pathname[4], function(data) {
+              $('#is-outdated-article').removeClass('d-none');
               $('article').html(data);
 
               $(".formula").each(function() {
