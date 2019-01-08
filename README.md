@@ -2,9 +2,25 @@
 
 ## Requirements
 
-* maybe libgit2
 * Common Lisp
 * postgresql
+
+## Installation
+
+sudo pacman -S --needed postgresql
+sudo -iu postgres
+initdb -D /var/lib/postgres/data
+exit
+sudo systemctl start postgresql
+sudo -iu postgres
+createuser --interactive
+spickipedia
+n
+n
+n
+createdb spickipedia
+exit
+git clone https://github.com/phppgadmin/phppgadmin /usr/share/nginx/phppgadmin
 
 ```bash
 npm install html-minifier -g
