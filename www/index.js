@@ -449,7 +449,11 @@ $(document).ready(function() {
         })
         .fail(function( jqXHR, textStatus, errorThrown) {
             window.localStorage.removeItem('name');
-            handleError(errorThrown);
+            if (errorThrown === 'Forbidden') {
+              alert('Ungültige Zugangsdaten!');
+            } else {
+              handleError(errorThrown);
+            }
         }).always(function () {
            $('#login-button').prop("disabled",false).html('Anmelden');
             $('#inputPassword').val('');
