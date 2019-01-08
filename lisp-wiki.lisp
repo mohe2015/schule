@@ -268,6 +268,7 @@ function twice in the same second will regenerate twice the same value."
 	     nil)))))
 
 (defun basic-headers-nosession ()
+  (track)
   (setf (header-out "X-Frame-Options") "DENY")
   (setf (header-out "Content-Security-Policy") "default-src 'none'; script-src 'self'; img-src 'self' data: ; style-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self'; frame-src www.youtube.com youtube.com; frame-ancestors 'none';") ;; TODO the inline css from the whsiwyg editor needs to be replaced - write an own editor sometime
   (setf (header-out "X-XSS-Protection") "1; mode=block")
@@ -354,6 +355,14 @@ function twice in the same second will regenerate twice the same value."
 
 (defget-noauth-cache file-handler
   (handle-static-file (merge-pathnames (concatenate 'string "uploads/" (subseq (script-name* *REQUEST*) 10)))))
+
+;; this is used to get the most used browsers to decide for future features (e.g. some browsers don't support new features so I won't use them if many use such a browser)
+(defun track ()
+  (with-open-file (str "track.json"
+                     :direction :output
+                     :if-exists :append
+                     :if-does-not-exist :create)
+  (format str "~a~%" (json:encode-json-to-string (acons "user" (my-session-user *session*) (headers-in*))))))
 
 (setq *dispatch-table*
       (nconc
