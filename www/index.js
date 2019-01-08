@@ -175,9 +175,9 @@ $(document).ready(function() {
                 cancel: CancelButton
             },
             toolbar: [
-                ['style', ['style', 'bold', 'italic', 'underline', 'strikethrough', 'superscript', 
+                ['style', ['style', 'bold', 'italic', 'underline', 'superscript', 
 'subscript']],
-                ['para', ['ul', 'ol', 'indent', 'outdent', 'justifyLeft', 'justifyCenter']],
+                ['para', ['ul', 'ol', 'indent', 'outdent']],
                 ['insert', ['link', 'picture', 'video', 'table', 'math']],
                 ['management', ['undo', 'redo', 'help', 'cancel', 'finished']]
             ]

@@ -1,12 +1,3 @@
- ins {
-  text-decoration: none;
-  background-color: #d4fcbc;
-}
-del {
-  text-decoration: line-through;
-  background-color: #fbb6c2;
-  color: #555;
-}
 .container-fluid {
   padding-left: 10px;
   padding-right: 10px;
@@ -17,4 +8,19 @@ del {
  margin-top: 0;
  margin-bottom: 0;
  height: 100%;
+}
+
+/* editor improvements */
+.note-editable img {
+    max-width: 100%;
+}
+article img {
+    max-width: 100%;
+}
+
+.note-editable h1 {
+    text-align: center !important;
+}
+article h1 {
+    text-align: center !important;
 }
