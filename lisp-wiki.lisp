@@ -44,7 +44,7 @@
 (defparameter *content-types-for-url-rewrite* nil)
 (defparameter *session-secret* "9CU0JB0R12") ;; TODO remove this in production
 
-(mito:connect-toplevel :sqlite3 :database-name #P"database.db")
+(mito:connect-toplevel :postgres :username "postgres" :database-name "spickipedia")
 
 (defclass user ()
   ((name  :col-type (:varchar 64)
@@ -113,7 +113,7 @@
    (summary :col-type (:varchar 256)
 	    :initarg :summary
 	    :accessor wiki-article-revision-summary)
-   (content :col-type (:blob)
+   (content :col-type (:text)
 	    :initarg :content
 	    :accessor wiki-article-revision-content))
   (:metaclass mito:dao-table-class))
