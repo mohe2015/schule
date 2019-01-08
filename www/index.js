@@ -392,6 +392,7 @@ $(document).ready(function() {
           return;
         }
       }
+      // /wiki/:page/history/:id
       if (pathname.length == 5 && pathname[3] == 'history') {
           cleanup();
           
@@ -414,6 +415,48 @@ $(document).ready(function() {
           });
           return;
       }
+      // /wiki/:page/history/:id/changes
+      if (pathname.length == 6 && pathname[3] == 'history' && pathname[5] == 'changes') {
+          cleanup();
+          
+          $.get("/api/revision/" + pathname[4], function(data) {
+              $('#is-outdated-article').removeClass('d-none');
+              $('article').html(data);
+
+              $(".formula").each(function() {
+                MathLive.renderMathInElement(this);
+              });
+      
+              showTab('#page');
+              
+              $.get("/api/previous-revision/" + pathname[4], function(data) {
+                    $('#is-outdated-article').removeClass('d-none');
+                    $('article').html(data);
+
+                    $(".formula").each(function() {
+                      MathLive.renderMathInElement(this);
+                    });
+            
+                    showTab('#page'); 
+              })
+              .fail(function(jqXHR, textStatus, errorThrown) {
+                  if (errorThrown === 'Not Found') {
+                      showTab('#not-found');
+                  } else {
+                    handleError(errorThrown);
+                  }
+              });
+          })
+          .fail(function(jqXHR, textStatus, errorThrown) {
+              if (errorThrown === 'Not Found') {
+                  showTab('#not-found');
+              } else {
+                handleError(errorThrown);
+              }
+          });
+          return;
+      }
+      
       if (pathname.length > 1 && pathname[1] == 'search') {
           showTab('#search');
           $('#search-query').val(pathname[2]);

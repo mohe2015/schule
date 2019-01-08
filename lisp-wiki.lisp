@@ -92,10 +92,15 @@
 (defmethod action-allowed-p ((action (eql 'upload-handler)) (group (eql :user))) t)
 (defmethod action-allowed-p ((action (eql 'upload-handler)) group) nil)
 
-;; only admins and users can upload images
+;; only admins and users can see revisions
 (defmethod action-allowed-p ((action (eql 'wiki-revision-handler)) (group (eql :admin))) t)
 (defmethod action-allowed-p ((action (eql 'wiki-revision-handler)) (group (eql :user))) t)
 (defmethod action-allowed-p ((action (eql 'wiki-revision-handler)) group) nil)
+
+;; only admins and users can see previous revision
+(defmethod action-allowed-p ((action (eql 'previous-revision-handler)) (group (eql :admin))) t)
+(defmethod action-allowed-p ((action (eql 'previous-revision-handler)) (group (eql :user))) t)
+(defmethod action-allowed-p ((action (eql 'previous-revision-handler)) group) nil)
 
 (defun can (user action)
   (if user
@@ -312,6 +317,10 @@ function twice in the same second will regenerate twice the same value."
 	  (return-from wiki-revision-handler)))
     (clean (wiki-article-revision-content revision) *sanitize-spickipedia*)))
 
+(defget previous-revision-handler
+  (let* (id (parse-integer (subseq (script-name* *REQUEST*) 23)))
+    
+
 (defpost post-wiki-page 
   (let* ((title (subseq (script-name* *REQUEST*) 10)) (article (mito:find-dao 'wiki-article :title title)))
     (if (not article)
@@ -386,6 +395,7 @@ function twice in the same second will regenerate twice the same value."
        (list (create-prefix-dispatcher "/api/wiki" 'wiki-page)
 	     (create-prefix-dispatcher "/api/history" 'wiki-page-history)
 	     (create-prefix-dispatcher "/api/revision" 'wiki-revision-handler)
+	     (create-prefix-dispatcher "/api/previous-revision" 'previous-revision-handler)
 	     (create-prefix-dispatcher "/api/upload" 'upload-handler)
 	     (create-prefix-dispatcher "/api/file" 'file-handler)
 	     (create-prefix-dispatcher "/api/search" 'search-handler)
