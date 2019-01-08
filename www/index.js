@@ -1,7 +1,7 @@
 /*eslint-env browser, jquery*/
 $(document).ready(function() {
 
-  // TODO big issue - this code does never reload the page and therefore doesnt ask for an updated page...
+  // TODO big issue - this code does never reload the page and therefore doesnt ask for an updated page....
   
     function handleError (thrownError) {
       console.log(thrownError);
