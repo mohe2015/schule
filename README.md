@@ -22,6 +22,10 @@ createdb spickipedia
 exit
 git clone https://github.com/phppgadmin/phppgadmin /usr/share/nginx/phppgadmin
 
+(mito:create-dao 'user :name "Administrator" :hash (hash "xfg3zte94h62j392h") :group "admin")
+(mito:create-dao 'user :name "Anonymous" :hash (hash "xfg3zte94h") :group nil)
+(mito:create-dao 'user :name "<your name>" :hash (hash "fjd8sh3l2h") :group "user")
+
 ```bash
 npm install html-minifier -g
 html-minifier --collapse-boolean-attributes --collapse-inline-tag-whitespace --collapse-whitespace --decode-entities --remove-attribute-quotes --remove-comments --remove-empty-attributes --remove-optional-tags --remove-redundant-attributes --remove-script-type-attributes --remove-style-link-type-attributes --remove-tag-whitespace --sort-attributes --sort-class-name --trim-custom-fragments --use-short-doctype -o www/index.html www/index.html
