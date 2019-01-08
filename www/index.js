@@ -287,24 +287,18 @@ $(document).ready(function() {
           }
           
           $('#publish-changes-modal').modal('hide');
-          showTab('#loading');
           
-          $.get("/api/get-session", function(data) {
-              var urlUsername = GetURLParameter('username');
-              var urlPassword = GetURLParameter('password');
-              
-              if (urlUsername !== undefined && urlPassword !== undefined) {
-                $('#inputName').val(urlUsername);
-                $('#inputPassword').val(urlPassword);
-              }
-            
-              showTab('#login');
-              $('.login-hide').fadeOut(function() {
-                  $('.login-hide').attr("style", "display: none !important");
-              });
-          })
-          .fail(function( jqXHR, textStatus, errorThrown) {
-              handleError(errorThrown);
+          var urlUsername = GetURLParameter('username');
+          var urlPassword = GetURLParameter('password');
+          
+          if (urlUsername !== undefined && urlPassword !== undefined) {
+            $('#inputName').val(urlUsername);
+            $('#inputPassword').val(urlPassword);
+          }
+        
+          showTab('#login');
+          $('.login-hide').fadeOut(function() {
+              $('.login-hide').attr("style", "display: none !important");
           });
           return;
       } else {

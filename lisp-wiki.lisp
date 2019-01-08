@@ -332,9 +332,6 @@ function twice in the same second will regenerate twice the same value."
 	 (copy-file filepath newpath :overwrite t)
 	 filehash))
 
-(defget-noauth get-session-handler
-  nil)
-
 (defpost-noauth login-handler
   (let* ((name (post-parameter "name"))
 	 (password (post-parameter "password"))
@@ -372,5 +369,4 @@ function twice in the same second will regenerate twice the same value."
 	     (create-prefix-dispatcher "/api/file" 'file-handler)
 	     (create-prefix-dispatcher "/api/search" 'search-handler)
 	     (create-prefix-dispatcher "/api/login" 'login-handler)
-	     (create-prefix-dispatcher "/api/logout" 'logout-handler)
-	     (create-prefix-dispatcher "/api/get-session" 'get-session-handler))))
+	     (create-prefix-dispatcher "/api/logout" 'logout-handler))))
