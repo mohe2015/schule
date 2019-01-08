@@ -387,6 +387,27 @@ $(document).ready(function() {
           return;
         }
       }
+      if (pathname.length == 5 && pathname[3] == 'history') {
+          cleanup();
+          
+          $.get("/api/revision/" + pathname[4], function(data) {
+              $('article').html(data);
+
+              $(".formula").each(function() {
+                MathLive.renderMathInElement(this);
+              });
+      
+              showTab('#page');
+          })
+          .fail(function(jqXHR, textStatus, errorThrown) {
+              if (errorThrown === 'Not Found') {
+                  showTab('#not-found');
+              } else {
+                handleError(errorThrown);
+              }
+          });
+          return;
+      }
       if (pathname.length > 1 && pathname[1] == 'search') {
           showTab('#search');
           $('#search-query').val(pathname[2]);

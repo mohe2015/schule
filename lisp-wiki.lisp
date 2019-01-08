@@ -92,6 +92,11 @@
 (defmethod action-allowed-p ((action (eql 'upload-handler)) (group (eql :user))) t)
 (defmethod action-allowed-p ((action (eql 'upload-handler)) group) nil)
 
+;; only admins and users can upload images
+(defmethod action-allowed-p ((action (eql 'wiki-revision-handler)) (group (eql :admin))) t)
+(defmethod action-allowed-p ((action (eql 'wiki-revision-handler)) (group (eql :user))) t)
+(defmethod action-allowed-p ((action (eql 'wiki-revision-handler)) group) nil)
+
 (defun can (user action)
   (if user
       (action-allowed-p action (user-group user))
@@ -294,9 +299,18 @@ function twice in the same second will regenerate twice the same value."
     (let ((revision (mito:select-dao 'wiki-article-revision (where (:= :article article)) (order-by (:desc :id)) (limit 1))))
       (if (not revision)
 	  (progn
-	  (setf (return-code* *reply*) 404)
-	  (return-from get-wiki-page)))
+	    (setf (return-code* *reply*) 404)
+	    (return-from get-wiki-page)))
       (clean (wiki-article-revision-content (car revision)) *sanitize-spickipedia*))))
+
+(defget wiki-revision-handler
+  (let* ((id (subseq (script-name* *REQUEST*) 14))
+	 (revision (mito:find-dao 'wiki-article-revision :id (parse-integer id))))
+    (if (not revision)
+	(progn
+	  (setf (return-code*) 404)
+	  (return-from wiki-revision-handler)))
+    (clean (wiki-article-revision-content revision) *sanitize-spickipedia*)))
 
 (defpost post-wiki-page 
   (let* ((title (subseq (script-name* *REQUEST*) 10)) (article (mito:find-dao 'wiki-article :title title)))
@@ -371,6 +385,7 @@ function twice in the same second will regenerate twice the same value."
       (nconc
        (list (create-prefix-dispatcher "/api/wiki" 'wiki-page)
 	     (create-prefix-dispatcher "/api/history" 'wiki-page-history)
+	     (create-prefix-dispatcher "/api/revision" 'wiki-revision-handler)
 	     (create-prefix-dispatcher "/api/upload" 'upload-handler)
 	     (create-prefix-dispatcher "/api/file" 'file-handler)
 	     (create-prefix-dispatcher "/api/search" 'search-handler)
