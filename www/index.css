@@ -18,9 +18,50 @@ article img {
     max-width: 100%;
 }
 
+
 .note-editable h1 {
     text-align: center !important;
 }
 article h1 {
+    text-align: center !important;
+}
+
+
+.note-editable h2 {
+    text-align: center !important;
+}
+article h2 {
+    text-align: center !important;
+}
+
+
+.note-editable h3 {
+    text-align: center !important;
+}
+article h3 {
+    text-align: center !important;
+}
+
+
+.note-editable h4 {
+    text-align: center !important;
+}
+article h4 {
+    text-align: center !important;
+}
+
+
+.note-editable h5 {
+    text-align: center !important;
+}
+article h5 {
+    text-align: center !important;
+}
+
+
+.note-editable h6 {
+    text-align: center !important;
+}
+article h6 {
     text-align: center !important;
 }
