@@ -405,8 +405,9 @@ $(document).ready(function() {
                 $('#no-search-results').hide();
                 for (var page of data) {
                   var t = $($('#search-result-template').html());
-                  t.find('.s-title').text(page);
-                  t.attr('href', "/wiki/" + page);
+                  t.find('.s-title').text(page.title);
+                  t.attr('href', "/wiki/" + page.title);
+                  t.find('.search-result-summary').html(page.summary);
                   
                   $('#search-results-content').append(t);
                 }
@@ -431,6 +432,7 @@ $(document).ready(function() {
       $('#login-button').prop("disabled",true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Anmelden...');
       
       $.post("/api/login", { csrf_token: readCookie('CSRF_TOKEN'), "name": name, "password": password }, function(data) {
+            $('#inputPassword').val('');
             window.localStorage.name = name;
            
             if (window.history.state !== null && window.history.state.lastState !== undefined && window.history.state.lastUrl !== undefined) {
@@ -445,12 +447,12 @@ $(document).ready(function() {
             window.localStorage.removeItem('name');
             if (errorThrown === 'Forbidden') {
               alert('Ungültige Zugangsdaten!');
+              // TODO try two times because of CSRF cookie
             } else {
               handleError(errorThrown);
             }
         }).always(function () {
            $('#login-button').prop("disabled",false).html('Anmelden');
-            $('#inputPassword').val('');
         });
         
         return false;
