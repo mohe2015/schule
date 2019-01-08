@@ -310,9 +310,11 @@ function twice in the same second will regenerate twice the same value."
   (let* ((title (subseq (script-name* *REQUEST*) 13)) (article (mito:find-dao 'wiki-article :title title)))
     (if article
 	(json:encode-json-to-string
-	 (mapcar #'(lambda (r) `((user . ,(user-name (wiki-article-revision-author r)))
+	 (mapcar #'(lambda (r) `((id   . ,(object-id r))
+				 (user . ,(user-name (wiki-article-revision-author r)))
 				 (summary . ,(wiki-article-revision-summary r))
-				 (created . ,(local-time:format-timestring nil (mito:object-created-at r)))))
+				 (created . ,(local-time:format-timestring nil (mito:object-created-at r)))
+				 (size    . ,(length (wiki-article-revision-content r)))))
 		 (mito:select-dao 'wiki-article-revision (where (:= :article article)) (order-by (:desc :created-at)))))
 	(progn
 	  (setf (return-code* *reply*) 404)

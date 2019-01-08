@@ -3,6 +3,11 @@ $(document).ready(function() {
 
   // TODO big issue - this code does never reload the page and therefore doesnt ask for an updated page....f
   
+    $("body").on("click",".history-pushState",function() {
+        window.history.pushState(null, null, $(this).data('href'));
+        updateState();
+    });
+  
     function handleError (thrownError) {
       console.log(thrownError);
       if (thrownError === 'Authorization Required') {
@@ -367,6 +372,9 @@ $(document).ready(function() {
                 t.find('.history-username').text(page.user);
                 t.find('.history-date').text(new Date(page.created));
                 t.find('.history-summary').text(page.summary);
+                t.find('.history-characters').text(page.size);
+                
+                t.find('.history-show').data('href', "/wiki/" + articlePath + "/history/" + page.id);
                 
                 $('#history-list').append(t);
               }            
