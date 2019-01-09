@@ -223,7 +223,8 @@ $(document).ready(function() {
     });
     
     $("#show-history").click(function () {
-        window.history.pushState(null, null, window.location.pathname + "/history");
+        var pathname = window.location.pathname.split('/');
+        window.history.pushState(null, null, "/wiki/" + pathname[2] + "/history");
         updateState();
     });
     
@@ -276,12 +277,14 @@ $(document).ready(function() {
       console.log(pathname);
       
       if (pathname.length == 2 && pathname[1] == '') {
+        $(".edit-button").removeClass('disabled')
         window.history.replaceState(null, null, "/wiki/Startseite");
         updateState();
         return;
       }
       
       if (pathname.length == 2 && pathname[1] == 'logout') {
+        $(".edit-button").addClass('disabled')
         // TODO don't allow this using GET as then somebody can log you out by sending you a link
         showTab('#loading');
         
@@ -297,6 +300,7 @@ $(document).ready(function() {
       }
       
       if (pathname.length == 2 && pathname[1] == 'login') {
+          $(".edit-button").addClass('disabled')
           if (window.localStorage.name !== undefined) {
             window.history.replaceState(null, null, "/wiki/Startseite");
             updateState();
@@ -329,6 +333,7 @@ $(document).ready(function() {
       
       if (pathname.length > 1 && pathname[1] == 'wiki') {
         if (pathname.length == 3) { // /wiki/:name
+          $(".edit-button").removeClass('disabled')
           $('#is-outdated-article').addClass('d-none');
           $('#wiki-article-title').text(pathname[2]);
           cleanup();
@@ -353,6 +358,7 @@ $(document).ready(function() {
           return;
         }
         if (pathname.length == 4 && pathname[3] == 'create') {
+          $(".edit-button").addClass('disabled')
           $('#is-outdated-article').addClass('d-none');
           $('article').html("");
       
@@ -362,6 +368,7 @@ $(document).ready(function() {
           return;
         }
         if (pathname.length == 4 && pathname[3] == 'edit') {
+          $(".edit-button").addClass('disabled')
           $('#is-outdated-article').addClass('d-none');
           $('#wiki-article-title').text(pathname[2]);
           cleanup();
@@ -387,6 +394,7 @@ $(document).ready(function() {
           return;
         }
         if (pathname.length == 4 && pathname[3] == 'history') {
+          $(".edit-button").removeClass('disabled')
           showTab('loading');
           
           var articlePath = window.location.pathname.substr(6, window.location.pathname.lastIndexOf("/")-6);
@@ -419,6 +427,7 @@ $(document).ready(function() {
       }
       // /wiki/:page/history/:id
       if (pathname.length == 5 && pathname[3] == 'history') {
+          $(".edit-button").removeClass('disabled')
           cleanup();
           $('#wiki-article-title').text(pathname[2]);
           
@@ -443,6 +452,7 @@ $(document).ready(function() {
       }
       // /wiki/:page/history/:id/changes
       if (pathname.length == 6 && pathname[3] == 'history' && pathname[5] == 'changes') {
+          $(".edit-button").addClass('disabled')
           $('#is-outdated-article').removeClass('d-none');
           cleanup();
           
@@ -483,6 +493,7 @@ $(document).ready(function() {
       }
       
       if ((pathname.length == 2 || pathname.length == 3) && pathname[1] == 'search') {
+          $(".edit-button").addClass('disabled')
           showTab('#search');
           $('#search-query').val(pathname[2]);
           return;
