@@ -13,3 +13,6 @@
 [submodule "crypt_blowfish"]
 	path = crypt_blowfish
 	url = https://github.com/mohe2015/crypt_blowfish
+[submodule "monkeylib-bcrypt"]
+	path = monkeylib-bcrypt
+	url = https://github.com/mohe2015/monkeylib-bcrypt
