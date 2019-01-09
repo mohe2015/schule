@@ -359,12 +359,28 @@ $(document).ready(function() {
           return;
         }
         if (pathname.length == 4 && pathname[3] == 'edit') {
-          // TODO load article
-          console.log("jo");
+          $('#is-outdated-article').addClass('d-none');
+          $('#wiki-article-title').text(pathname[2]);
+          cleanup();
           
-          showEditor();
-          
-          showTab('#page');
+          $.get("/api/wiki/" + pathname[2], function(data) {
+              $('article').html(data);
+
+              $(".formula").each(function() {
+                MathLive.renderMathInElement(this);
+              });
+              
+              showEditor();
+              
+              showTab('#page');
+          })
+          .fail(function(jqXHR, textStatus, errorThrown) {
+              if (errorThrown === 'Not Found') {
+                  showTab('#not-found');
+              } else {
+                handleError(errorThrown);
+              }
+          });
           return;
         }
         if (pathname.length == 4 && pathname[3] == 'history') {
