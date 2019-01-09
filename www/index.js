@@ -1,4 +1,8 @@
 /*eslint-env browser, jquery*/
+window.onerror = function(message, source, lineno, colno, error) {
+  alert("Es ist ein Fehler aufgetreten! Melde ihn bitte dem Entwickler! " + message + " source: " + source + " lineno: " + lineno + " colno: " + colno + " error: " + error);
+};
+
 $(document).ready(function() {
 
   // TODO big issue - this code does never reload the page and therefore doesnt ask for an updated page....f
