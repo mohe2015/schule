@@ -1,10 +1,12 @@
-(ql:quickload :dbi)
-(ql:quickload "str")
-(use-package :str)
+;;(ql:quickload :dbi)
+;;(ql:quickload "str")
+;;(use-package :str)
 
-(defvar *connection* (dbi:connect :postgres :database-name "spickipedia" :username "postgres"))
+;;(defvar *connection* (dbi:connect :postgres :database-name "spickipedia" :username "postgres"))
 
-(defparameter *query* (dbi:prepare *connection* "SELECT to_tsquery('german', ?), to_tsquery('german', ?) @@ to_tsvector('german', 'Dies ist ein sehr toller Text über Elefanten. Sie können laufen, rennen und trompeten');"))
+;;(defparameter *query* (dbi:prepare *connection* "SELECT to_tsquery('german', ?), to_tsquery('german', ?) @@ to_tsvector('german', 'Dies ist ein sehr toller Text über Elefanten. Sie können laufen, rennen und trompeten');"))
+
+(in-package :lisp-wiki)
 
 (defun handle-quoted (query)
   (concat "(" (join " <-> " (split " " query)) ")"))
@@ -63,6 +65,6 @@
 (trace handle-quoted)
 (trace handle-unquoted)
 
-(defun test (query)
-  (let ((query (tsquery-convert query)))
-    (dbi:fetch-all (dbi:execute *query* query query))))
+;;(defun test (query)
+;;  (let ((query (tsquery-convert query)))
+;;    (dbi:fetch-all (dbi:execute *query* query query))))
