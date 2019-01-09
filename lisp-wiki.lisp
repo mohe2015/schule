@@ -319,7 +319,7 @@ function twice in the same second will regenerate twice the same value."
 
 (defget previous-revision-handler
   (let* (id (parse-integer (subseq (script-name* *REQUEST*) 23)))
-    
+    id))
 
 (defpost post-wiki-page 
   (let* ((title (subseq (script-name* *REQUEST*) 10)) (article (mito:find-dao 'wiki-article :title title)))
@@ -395,7 +395,7 @@ function twice in the same second will regenerate twice the same value."
        (list (create-prefix-dispatcher "/api/wiki" 'wiki-page)
 	     (create-prefix-dispatcher "/api/history" 'wiki-page-history)
 	     (create-prefix-dispatcher "/api/revision" 'wiki-revision-handler)
-	     (create-prefix-dispatcher "/api/previous-revision" 'previous-revision-handler)
+	     (create-prefix-dispatcher "/api/prevrev" 'previous-revision-handler)
 	     (create-prefix-dispatcher "/api/upload" 'upload-handler)
 	     (create-prefix-dispatcher "/api/file" 'file-handler)
 	     (create-prefix-dispatcher "/api/search" 'search-handler)
