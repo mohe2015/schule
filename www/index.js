@@ -546,6 +546,7 @@ $(document).ready(function() {
       $('#login-button').prop("disabled",true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Anmelden...');
       
       $.post("/api/login", { csrf_token: readCookie('CSRF_TOKEN'), "name": name, "password": password }, function(data) {
+            $('#login-button').prop("disabled",false).html('Anmelden');
             $('#inputPassword').val('');
             window.localStorage.name = name;
            
@@ -560,13 +561,33 @@ $(document).ready(function() {
         .fail(function( jqXHR, textStatus, errorThrown) {
             window.localStorage.removeItem('name');
             if (errorThrown === 'Forbidden') {
-              alert('Ungültige Zugangsdaten!');
-              // TODO try two times because of CSRF cookie
+                // quick and dirty copy and paste
+                $.post("/api/login", { csrf_token: readCookie('CSRF_TOKEN'), "name": name, "password": password }, function(data) {
+                    $('#inputPassword').val('');
+                    window.localStorage.name = name;
+                  
+                    if (window.history.state !== null && window.history.state.lastState !== undefined && window.history.state.lastUrl !== undefined) {
+                      window.history.replaceState(window.history.state.lastState, null, window.history.state.lastUrl);
+                      updateState();
+                    } else {
+                      window.history.replaceState(null, null, "/wiki/Startseite");
+                      updateState();
+                    }
+                })
+                .fail(function( jqXHR, textStatus, errorThrown) {
+                    window.localStorage.removeItem('name');
+                    if (errorThrown === 'Forbidden') {
+                      alert('Ungültige Zugangsdaten!');
+                    } else {
+                      handleError(errorThrown);
+                    }
+                }).always(function () {
+                  $('#login-button').prop("disabled",false).html('Anmelden');
+                });
             } else {
+              $('#login-button').prop("disabled",false).html('Anmelden');
               handleError(errorThrown);
             }
-        }).always(function () {
-           $('#login-button').prop("disabled",false).html('Anmelden');
         });
         
         return false;
