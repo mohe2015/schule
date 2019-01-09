@@ -278,7 +278,7 @@ $(document).ready(function() {
         return;
       }
       
-      if (pathname.length > 1 && pathname[1] == 'logout') {
+      if (pathname.length == 2 && pathname[1] == 'logout') {
         // TODO don't allow this using GET as then somebody can log you out by sending you a link
         showTab('#loading');
         
@@ -293,7 +293,7 @@ $(document).ready(function() {
         return;
       }
       
-      if (pathname.length > 1 && pathname[1] == 'login') {
+      if (pathname.length == 2 && pathname[1] == 'login') {
           if (window.localStorage.name !== undefined) {
             window.history.replaceState(null, null, "/wiki/Startseite");
             updateState();
@@ -463,7 +463,7 @@ $(document).ready(function() {
           return;
       }
       
-      if (pathname.length > 1 && pathname[1] == 'search') {
+      if ((pathname.length == 2 || pathname.length == 3) && pathname[1] == 'search') {
           showTab('#search');
           $('#search-query').val(pathname[2]);
           return;
