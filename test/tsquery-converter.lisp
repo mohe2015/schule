@@ -6,15 +6,6 @@
 
 (defparameter *query* (dbi:prepare *connection* "SELECT to_tsquery('german', ?), to_tsquery('german', ?) @@ to_tsvector('german', 'Dies ist ein sehr toller Text über Elefanten. Sie können laufen, rennen und trompeten');"))
 
-(trace tsquery-convert)
-(trace tsquery-convert-part)
-(trace handle-quoted)
-(trace handle-unquoted)
-
-(defun test (query)
-  (let ((query (tsquery-convert query)))
-    (dbi:fetch-all (dbi:execute *query* query query))))
-
 (defun handle-quoted (query)
   (concat "(" (join " <-> " (split " " query)) ")"))
 
@@ -36,6 +27,8 @@
 	   else do
 	     (setf e (handle-quoted e))
 	   collect e))
+
+  (setf query (remove "()" query :test #'string=))
 
   (setf query (join " & " query))
 
@@ -59,3 +52,14 @@
   (setf query (join " | " query))
   
   query)
+
+
+
+(trace tsquery-convert)
+(trace tsquery-convert-part)
+(trace handle-quoted)
+(trace handle-unquoted)
+
+(defun test (query)
+  (let ((query (tsquery-convert query)))
+    (dbi:fetch-all (dbi:execute *query* query query))))
