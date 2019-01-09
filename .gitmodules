@@ -1,9 +1,6 @@
 [submodule "cl-sanitize"]
 	path = cl-sanitize
 	url = https://github.com/mohe2015/cl-sanitize.git
-[submodule "monkeylib-bcrypt"]
-	path = monkeylib-bcrypt
-	url = https://github.com/gigamonkey/monkeylib-bcrypt.git
 [submodule "summernote"]
 	path = summernote
 	url = https://github.com/summernote/summernote/
@@ -13,3 +10,9 @@
 [submodule "mathlive"]
 	path = mathlive
 	url = https://github.com/arnog/mathlive
+[submodule "crypt_blowfish"]
+	path = crypt_blowfish
+	url = https://github.com/mohe2015/crypt_blowfish
+[submodule "monkeylib-bcrypt"]
+	path = monkeylib-bcrypt
+	url = https://github.com/mohe2015/monkeylib-bcrypt
