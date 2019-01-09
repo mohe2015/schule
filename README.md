@@ -2,8 +2,9 @@
 
 ## Requirements
 
-* Common Lisp
+* sbcl
 * postgresql
+* inotify-tools
 
 ## Installation
 

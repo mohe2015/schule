@@ -296,7 +296,7 @@ $(document).ready(function() {
       
       if (pathname.length == 2 && pathname[1] == '') {
         $(".edit-button").removeClass('disabled')
-        window.history.replaceState(null, null, "/wiki/Startseite");
+        window.history.replaceState(null, null, "/wiki/Hauptseite");
         updateState();
         return;
       }
@@ -320,7 +320,7 @@ $(document).ready(function() {
       if (pathname.length == 2 && pathname[1] == 'login') {
           $(".edit-button").addClass('disabled')
           if (window.localStorage.name !== undefined) {
-            window.history.replaceState(null, null, "/wiki/Startseite");
+            window.history.replaceState(null, null, "/wiki/Hauptseite");
             updateState();
             return;
           }
@@ -572,7 +572,7 @@ $(document).ready(function() {
               window.history.replaceState(window.history.state.lastState, null, window.history.state.lastUrl);
               updateState();
             } else {
-              window.history.replaceState(null, null, "/wiki/Startseite");
+              window.history.replaceState(null, null, "/wiki/Hauptseite");
               updateState();
             }
         })
@@ -588,7 +588,7 @@ $(document).ready(function() {
                       window.history.replaceState(window.history.state.lastState, null, window.history.state.lastUrl);
                       updateState();
                     } else {
-                      window.history.replaceState(null, null, "/wiki/Startseite");
+                      window.history.replaceState(null, null, "/wiki/Hauptseite");
                       updateState();
                     }
                 })
