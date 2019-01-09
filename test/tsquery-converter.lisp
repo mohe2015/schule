@@ -12,9 +12,12 @@
 (defun handle-unquoted (query)
   (concat "(" (join " & " (split " " query)) ")"))
 
-(defun tsquery-convert-part (query)
+(defun tsquery-convert-part (query add-wildcard)
    ;; split at quotes
   (setf query (split #\" query))
+
+  (if add-wildcard
+      (setf (car (last query)) (concat (car (last query)) ":*")))
 
   ;; handle quoted and unquoted parts separately
   (setf query
@@ -43,7 +46,7 @@
   (setf query (split "OR" query))
 
   (setf query (loop for e in query
-		   collect (tsquery-convert-part (trim e))))
+		   collect (tsquery-convert-part (trim e) (= 1 (length query)))))
 
   
   ;; handle logical not operator
