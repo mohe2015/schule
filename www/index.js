@@ -13,8 +13,14 @@ $(document).ready(function() {
         updateState();
         return false;
     });
+    
+    $('#refresh').click(function(e) {
+      e.preventDefault();
+      updateState();
+      return false;
+    })
   
-    function handleError (thrownError) {
+    function handleError (thrownError, showErrorPage) {
       console.log(thrownError);
       if (thrownError === 'Authorization Required') {
         var name = $('#inputName').val(window.localStorage.name);
@@ -23,10 +29,22 @@ $(document).ready(function() {
         updateState();
       } else if (thrownError === 'Forbidden') {
         var errorMessage = 'Du hast nicht die benötigten Berechtigungen, um diese Aktion durchzuführen. Sag mit Bescheid, wenn du glaubst, dass dies ein Fehler ist.';
-        alert(errorMessage);
+        $('#errorMessage').text(errorMessage);
+        if (showErrorPage) {
+            $('#errorMessage').text(errorMessage);
+            showTab('#error');
+        } else {
+          alert(errorMessage);
+        }
       } else {
         var errorMessage = 'Unbekannter Fehler: ' + thrownError;
-        alert(errorMessage);
+        if (showErrorPage) {
+            $('#errorMessage').text(errorMessage);
+            showTab('#error');
+            // TODO refresh button
+        } else {
+          alert(errorMessage);
+        }
       }
     };
   
@@ -106,7 +124,7 @@ $(document).ready(function() {
             $('#publish-changes').show();
             $('#publishing-changes').hide();
           
-            handleError(errorThrown);
+            handleError(errorThrown, false);
         });
         
         // TODO dismiss should cancel request
@@ -294,7 +312,7 @@ $(document).ready(function() {
             updateState();
         })
         .fail(function( jqXHR, textStatus, errorThrown) {
-            handleError(errorThrown);
+            handleError(errorThrown, true);
         });
         return;
       }
@@ -352,7 +370,7 @@ $(document).ready(function() {
               if (errorThrown === 'Not Found') {
                   showTab('#not-found');
               } else {
-                handleError(errorThrown);
+                handleError(errorThrown, true);
               }
           });
           return;
@@ -388,7 +406,7 @@ $(document).ready(function() {
               if (errorThrown === 'Not Found') {
                   showTab('#not-found');
               } else {
-                handleError(errorThrown);
+                handleError(errorThrown, true);
               }
           });
           return;
@@ -418,7 +436,7 @@ $(document).ready(function() {
               }            
           })
           .fail(function( jqXHR, textStatus, errorThrown) {
-              handleError(errorThrown);
+              handleError(errorThrown, true);
           });
           
           showTab('#history');
@@ -445,7 +463,7 @@ $(document).ready(function() {
               if (errorThrown === 'Not Found') {
                   showTab('#not-found');
               } else {
-                handleError(errorThrown);
+                handleError(errorThrown, true);
               }
           });
           return;
@@ -478,7 +496,7 @@ $(document).ready(function() {
                   if (errorThrown === 'Not Found') {
                       showTab('#not-found');
                   } else {
-                    handleError(errorThrown);
+                    handleError(errorThrown, true);
                   }
               });
           })
@@ -486,7 +504,7 @@ $(document).ready(function() {
               if (errorThrown === 'Not Found') {
                   showTab('#not-found');
               } else {
-                handleError(errorThrown);
+                handleError(errorThrown, true);
               }
           });
           return;
@@ -534,7 +552,7 @@ $(document).ready(function() {
               $('#search-results').stop().fadeIn();
       })
       .fail(function( jqXHR, textStatus, errorThrown) {
-          handleError(errorThrown);
+          handleError(errorThrown, true);
       });
     });
     
@@ -579,14 +597,14 @@ $(document).ready(function() {
                     if (errorThrown === 'Forbidden') {
                       alert('Ungültige Zugangsdaten!');
                     } else {
-                      handleError(errorThrown);
+                      handleError(errorThrown, true);
                     }
                 }).always(function () {
                   $('#login-button').prop("disabled",false).html('Anmelden');
                 });
             } else {
               $('#login-button').prop("disabled",false).html('Anmelden');
-              handleError(errorThrown);
+              handleError(errorThrown, true);
             }
         });
         
