@@ -152,9 +152,13 @@
                         $("#formula").find("*").off();
                         window.formula = null;
                         
+                        var parentNode = document.createElement('span');
+                        parentNode.appendChild(document.createTextNode(' '));
+                        parentNode.appendChild(node);
+                        parentNode.appendChild(document.createTextNode(' '));
+                        
                         MathLive.renderMathInElement(node);
-                       // node.contentEditable = false;
-                        $('article').summernote('insertNode', node);
+                        $('article').summernote('insertNode', parentNode);
                     });
                 };
                 this.editMath = function () {
