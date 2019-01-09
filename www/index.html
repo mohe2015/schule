@@ -10,7 +10,7 @@
   </head>
   <body>
       <template id="search-result-template">
-        <a class="list-group-item list-group-item-action">
+        <a class="list-group-item list-group-item-action history-pushState">
           <div class="media">
             <img src="/64.png" class="mr-3" alt="...">
             <div class="media-body">
@@ -37,12 +37,12 @@
     </template>
   
     <nav class="navbar navbar-expand-md navbar-light bg-light">
-      <a class="navbar-brand" href="/wiki/Startseite"><!-- TODO use history.pushState -->
+      <a class="navbar-brand history-pushState" href="#" data-href="/wiki/Startseite">
       Spickipedia
       </a>
       <div class="login-hide">
         <a class="btn d-inline d-md-none edit-button"><i class="fas fa-pen"></i></a>
-        <a class="btn d-inline d-md-none search-button" href="/search"><i class="fas fa-search"></i></a><!-- TODO use history.pushState -->
+        <a class="btn d-inline d-md-none search-button history-pushState" href="#" data-href="/search"><i class="fas fa-search"></i></a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
         </button>
@@ -50,16 +50,13 @@
       <div class="collapse navbar-collapse login-hide" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item d-none d-md-block">
-            <a class="nav-link search-button" href="/search">Suchen</a><!-- TODO use history.pushState -->
+            <a class="nav-link search-button history-pushState" href="#" data-href="/search">Suchen</a>
           </li>
           <li class="nav-item d-none d-md-block">
             <a class="nav-link edit-button" href="#">Bearbeiten</a><!-- TODO only enable when showing an article-->
           </li>
-          <!--<li class="nav-item">
-            <a class="nav-link" href="/settings" id="nav-username"></a>
-          </li>-->
           <li class="nav-item">
-            <a class="nav-link" href="/logout" id="logout">Abmelden</a><!-- use history.pushState --><!-- TODO LOGOUT -->
+            <a class="nav-link history-pushState" href="#" data-href="/logout" id="logout">Abmelden</a>
           </li>
         </ul>
       </div>
@@ -67,7 +64,7 @@
     <div>
     <div style="display: none;" class="container my-tab position-absolute col-sm-6 offset-sm-3 col-md-4 offset-md-4 text-center" id="login">
       
-        <h1>Anmelden</h1>
+      <h1>Anmelden</h1>
       <form id="login-form">
       
         <div class="form-group">
@@ -94,7 +91,7 @@
         <button type="button" class="btn btn-outline-primary">Diskussion</button>
         <button id="show-history" type="button" class="btn btn-outline-primary">Änderungsverlauf</button>
       </div>
-      <small>Dieses Werk ist lizenziert unter einer <a target="_blank" rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/deed.de">Creative Commons Namensnennung - Weitergabe unter gleichen Bedingungen 4.0 International Lizenz</a>.</small>
+      <small>Dieses Werk ist lizenziert unter einer <a target="_blank" rel="license noopener" href="http://creativecommons.org/licenses/by-sa/4.0/deed.de">Creative Commons Namensnennung - Weitergabe unter gleichen Bedingungen 4.0 International Lizenz</a>.</small>
     </div>
     <div style="display: none;" class="container-fluid my-tab position-absolute" id="not-found">
       <div class="alert alert-danger" role="alert">
@@ -127,7 +124,7 @@
           </div>
           <div style="display: none;" class="text-center" id="no-search-results">
             <div class="alert alert-danger" role="alert">
-              Der Artikel konnte nicht gefunden werden. Möchtest du ihn <a id="search-create-article" href="#" class="alert-link">erstellen</a>?
+              Der Artikel konnte nicht gefunden werden. Möchtest du ihn <a id="search-create-article" href="#" class="alert-link history-pushState">erstellen</a>?
             </div>
           </div>
         </div>
@@ -161,7 +158,7 @@
                 <textarea class="form-control" id="change-summary" rows="3"></textarea>
               </div>
             </form>
-            <p>Mit dem Veröffentlichen dieses Artikels garantierst du, dass er nicht die Rechte anderer verletzt und bist damit einverstanden, ihn unter der <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.de">Creative Commons Namensnennung - Weitergabe unter gleichen Bedingungen 4.0 International Lizenz</a> zu veröffentlichen.</p>
+            <p>Mit dem Veröffentlichen dieses Artikels garantierst du, dass er nicht die Rechte anderer verletzt und bist damit einverstanden, ihn unter der <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-sa/4.0/deed.de">Creative Commons Namensnennung - Weitergabe unter gleichen Bedingungen 4.0 International Lizenz</a> zu veröffentlichen.</p>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Bearbeitung fortsetzen</button>
@@ -201,7 +198,7 @@
     <script src="/summernote-bs4.js?v=85d051158de318c2ae12f5d0fa8bfdb07d52bf6170b224f9931b3fe9543665148c876cb90875fc1e939ea52e73c8f0ac969364bc0d3183fe62396c49bf9c087a"></script>
     <script src="/summernote-math.js?v=117df0f8f2a8f8b45625943c5d61b0db3bb68ed1f86edb12a6afcbb88c02e928f97ef507cb088ba5e6853e3a52a1018b2833c5610cd9ca434f131e15c64f65c1"></script>
     
-    <script src="/index.js?v=e790682295f9bb85d8ba2038e1972b007e6132021d8d2f810c642001de1f1bd38f1e011c0285f6705f0c83d0e3a91cf14a86555ade7d29ee9a7e729ae9d9db07"></script>
+    <script src="/index.js?v=99496cf291716ea10b42eac87234a8433dd1149043748744c4b989948a92efc3d113d0939053d56e98fb2508b2451408519b74068a978334de67154de590767d"></script>
      
     <script src="/visual-diff.js?v=746ca5b1538531791b329ce68e8fc243bbbe6a445ecc8c4798a0d57b9fc7d4b2dead5bc75d66294edf2ba73229625e4621d4e2a193b967b8a27e1e7ed8c39abf"></script>
   </body>

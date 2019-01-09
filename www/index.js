@@ -7,9 +7,11 @@ $(document).ready(function() {
 
   // TODO big issue - this code does never reload the page and therefore doesnt ask for an updated page....f
   
-    $("body").on("click",".history-pushState",function() {
+    $("body").on("click",".history-pushState",function(e) {
+        e.preventDefault();
         window.history.pushState(null, null, $(this).data('href'));
         updateState();
+        return false;
     });
   
     function handleError (thrownError) {
@@ -214,7 +216,8 @@ $(document).ready(function() {
     
     $("#create-article").click(function(e) {
         e.preventDefault();
-        window.history.pushState(null, null, window.location.pathname + "/create");
+        var pathname = window.location.pathname.split('/');
+        window.history.pushState(null, null, "/wiki/" + pathname[2] + "/create");
         updateState();
         return false;
     });
@@ -506,13 +509,13 @@ $(document).ready(function() {
                 for (var page of data) {
                   var t = $($('#search-result-template').html());
                   t.find('.s-title').text(page.title);
-                  t.attr('href', "/wiki/" + page.title);
+                  t.data('href', "/wiki/" + page.title);
                   t.find('.search-result-summary').html(page.summary);
                   
                   $('#search-results-content').append(t);
                 }
               } else {
-                $('#search-create-article').attr('href', "/wiki/" + $('#search-query').val() + "/create");
+                $('#search-create-article').attr('data-href', "/wiki/" + $('#search-query').val() + "/create");
                 $('#no-search-results').show();
               }
               
