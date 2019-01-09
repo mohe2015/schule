@@ -321,6 +321,7 @@ $(document).ready(function() {
       if (pathname.length > 1 && pathname[1] == 'wiki') {
         if (pathname.length == 3) { // /wiki/:name
           $('#is-outdated-article').addClass('d-none');
+          $('#wiki-article-title').text(pathname[2]);
           cleanup();
           
           $.get("/api/wiki/" + pathname[2], function(data) {
@@ -332,8 +333,6 @@ $(document).ready(function() {
               });
       
               showTab('#page');
-              
-              window.history.replaceState({ currentState: 'show-article' }, null, null);
           })
           .fail(function(jqXHR, textStatus, errorThrown) {
               if (errorThrown === 'Not Found') {
@@ -346,7 +345,7 @@ $(document).ready(function() {
         }
         if (pathname.length == 4 && pathname[3] == 'create') {
           $('#is-outdated-article').addClass('d-none');
-          $('article').html("<h1>" + pathname[2] + "</h1>");
+          $('article').html("");
       
           showEditor();
           
@@ -396,6 +395,7 @@ $(document).ready(function() {
       // /wiki/:page/history/:id
       if (pathname.length == 5 && pathname[3] == 'history') {
           cleanup();
+          $('#wiki-article-title').text(pathname[2]);
           
           $.get("/api/revision/" + pathname[4], function(data) {
               $('#is-outdated-article').removeClass('d-none');
