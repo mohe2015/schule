@@ -380,6 +380,7 @@ $(document).ready(function() {
                 t.find('.history-characters').text(page.size);
                 
                 t.find('.history-show').data('href', "/wiki/" + articlePath + "/history/" + page.id);
+                t.find('.history-diff').data('href', "/wiki/" + articlePath + "/history/" + page.id + "/changes");
                 
                 $('#history-list').append(t);
               }            
@@ -417,26 +418,25 @@ $(document).ready(function() {
       }
       // /wiki/:page/history/:id/changes
       if (pathname.length == 6 && pathname[3] == 'history' && pathname[5] == 'changes') {
+          $('#is-outdated-article').removeClass('d-none');
           cleanup();
           
+          var currentRevision = null;
+          var previousRevision = null;
+          
           $.get("/api/revision/" + pathname[4], function(data) {
-              $('#is-outdated-article').removeClass('d-none');
-              $('article').html(data);
+              currentRevision = data;
 
-              $(".formula").each(function() {
-                MathLive.renderMathInElement(this);
-              });
-      
-              showTab('#page');
-              
               $.get("/api/previous-revision/" + pathname[4], function(data) {
-                    $('#is-outdated-article').removeClass('d-none');
-                    $('article').html(data);
+                    previousRevision = data;
 
-                    $(".formula").each(function() {
-                      MathLive.renderMathInElement(this);
-                    });
+                    //$(".formula").each(function() {
+                    //  MathLive.renderMathInElement(this);
+                    //});
             
+                    var diffHTML = htmldiff(previousRevision, currentRevision);
+                    $('article').html(diffHTML);
+                    
                     showTab('#page'); 
               })
               .fail(function(jqXHR, textStatus, errorThrown) {

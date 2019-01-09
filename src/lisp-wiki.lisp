@@ -52,8 +52,11 @@
 (defget previous-revision-handler
   (let* ((id (parse-integer (subseq (script-name* *REQUEST*) 23)))
 	 (query (dbi:prepare *connection* "SELECT id FROM wiki_article_revision WHERE article_id = (SELECT article_id FROM wiki_article_revision WHERE id = ?) and id < ? ORDER BY id DESC LIMIT 1;"))
-	 (result (dbi:execute query id id)))
-    (format nil "~a" (getf (dbi:fetch result) :|id|))))
+	 (result (dbi:execute query id id))
+	 (previous-id (getf (dbi:fetch result) :|id|)))
+    (if previous-id
+	(clean (wiki-article-revision-content (mito:find-dao 'wiki-article-revision :id previous-id)) *sanitize-spickipedia*)
+	nil)))
 
 (defpost post-wiki-page 
   (let* ((title (subseq (script-name* *REQUEST*) 10)) (article (mito:find-dao 'wiki-article :title title)))
