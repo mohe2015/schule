@@ -57,7 +57,9 @@ $(document).ready(function() {
             contents: '<i class="fa fa-times"/>',
             tooltip: 'Abbrechen',
             click: function() {
-                window.history.back();
+                if (confirm('Möchtest du die Änderung wirklich verwerfen?')) {
+                  window.history.back();
+                }
             }
         });
 
