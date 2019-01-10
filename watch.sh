@@ -20,6 +20,7 @@ update_hashes () {
 	update_hash 'index.js'
 	update_hash 'mathlive.js'
 	update_hash 'summernote-math.js'
+	update_hash 'summernote-cleaner.js'
 }
 
 update_hashes
