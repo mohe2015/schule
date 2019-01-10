@@ -163,16 +163,17 @@
               var text = e.originalEvent.clipboardData.getData(options.cleaner.keepHtml ? 'text/html' : 'text/plain');
             if (text) {
               if (msie || ffox) {
-                setTimeout(function(){$note.summernote('pasteHTML', cleanText(text, options.cleaner.newline));}, 1);
+                setTimeout(function(){
+                  var nodes = $.parseHTML(cleanText(text, options.cleaner.newline));
+                  nodes.forEach(function (item) {
+                    $note.summernote('insertNode', item);
+                  });
+                }, 1);
               } else {
-                var resultingHtml = cleanText(text, options.cleaner.newline);
-                
-                var nodes = $.parseHTML(resultingHtml);
+                var nodes = $.parseHTML(cleanText(text, options.cleaner.newline));
                 nodes.forEach(function (item) {
                   $note.summernote('insertNode', item);
                 });
-                
-                //$note.summernote('pasteHTML', resultingHtml);
               }
               if ($editor.find('.note-status-output').length > 0)
                 $editor.find('.note-status-output').html('<div class="summernote-cleanerAlert alert alert-success">' + lang.cleaner.not + '</div>');
