@@ -522,14 +522,20 @@ $(document).ready(function() {
     }
     
     $('#button-search').click(function() {
-      // TODO update url / only update when search button clicked
+      $('#search-create-article').attr('data-href', "/wiki/" + $('#search-query').val() + "/create");
+      
+      window.history.replaceState(null, null, "/search/" + $('#search-query').val());
       
       $('#search-results-loading').stop().fadeIn();
       $('#search-results').stop().fadeOut();
       
-      // TODO cancel previous requests
-      $.get("/api/search/" + $('#search-query').val(), function(data) {
-              console.log(data);
+      if (window.searchXhr !== undefined) {
+        //console.log("abort");
+        window.searchXhr.abort(); 
+      }
+      
+      window.searchXhr = $.get("/api/search/" + $('#search-query').val(), function(data) {
+              //console.log(data);
               
               $('#search-results-content').html('');
               
@@ -544,7 +550,6 @@ $(document).ready(function() {
                   $('#search-results-content').append(t);
                 }
               } else {
-                $('#search-create-article').attr('data-href', "/wiki/" + $('#search-query').val() + "/create");
                 $('#no-search-results').show();
               }
               
@@ -552,7 +557,9 @@ $(document).ready(function() {
               $('#search-results').stop().fadeIn();
       })
       .fail(function( jqXHR, textStatus, errorThrown) {
-          handleError(errorThrown, true);
+        if (textStatus !== 'abort') {
+            handleError(errorThrown, true);
+          }
       });
     });
     
