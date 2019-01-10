@@ -522,9 +522,10 @@ $(document).ready(function() {
     }
     
     $('#button-search').click(function() {
-      $('#search-create-article').attr('data-href', "/wiki/" + $('#search-query').val() + "/create");
+      var query = $('#search-query').val();
+      $('#search-create-article').attr('data-href', "/wiki/" + query + "/create");
       
-      window.history.replaceState(null, null, "/search/" + $('#search-query').val());
+      window.history.replaceState(null, null, "/search/" + query);
       
       $('#search-results-loading').stop().fadeIn();
       $('#search-results').stop().fadeOut();
@@ -534,14 +535,17 @@ $(document).ready(function() {
         window.searchXhr.abort(); 
       }
       
-      window.searchXhr = $.get("/api/search/" + $('#search-query').val(), function(data) {
+      window.searchXhr = $.get("/api/search/" + query, function(data) {
               //console.log(data);
               
               $('#search-results-content').html('');
               
+              var resultsContainQuery = false;
               if (data != null) {
-                $('#no-search-results').hide();
                 for (var page of data) {
+                  if (page.title == query) {
+                      resultsContainQuery = true;
+                  }
                   var t = $($('#search-result-template').html());
                   t.find('.s-title').text(page.title);
                   t.data('href', "/wiki/" + page.title);
@@ -549,6 +553,9 @@ $(document).ready(function() {
                   
                   $('#search-results-content').append(t);
                 }
+              }
+              if (resultsContainQuery) {
+                $('#no-search-results').hide();
               } else {
                 $('#no-search-results').show();
               }
