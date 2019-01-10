@@ -18,6 +18,9 @@ del {
  margin-bottom: 0;
  height: 100%;
 }
+.word-wrap {
+  word-wrap: break-word; 
+}
 
 /* editor improvements */
 .note-editable img {
