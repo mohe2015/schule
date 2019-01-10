@@ -523,7 +523,8 @@ $(document).ready(function() {
     
     $('#button-search').click(function() {
       var query = $('#search-query').val();
-      $('#search-create-article').attr('data-href', "/wiki/" + query + "/create");
+      console.log("query: " + query);
+      $('#search-create-article').data('href', "/wiki/" + query + "/create");
       
       window.history.replaceState(null, null, "/search/" + query);
       
