@@ -359,6 +359,7 @@ $(document).ready(function() {
           $('.login-hide').fadeOut(function() {
               $('.login-hide').attr("style", "display: none !important");
           });
+          $('.navbar-collapse').removeClass('show');
           return;
       } else {
           if (window.localStorage.name === undefined) {
@@ -366,7 +367,7 @@ $(document).ready(function() {
               updateState();
               return;
           }
-          $('.login-hide').fadeIn(); 
+          $('.login-hide').fadeIn();
       }
       
       if (pathname.length > 1 && pathname[1] == 'wiki') {
