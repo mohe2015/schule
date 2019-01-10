@@ -162,10 +162,18 @@
             else
               var text = e.originalEvent.clipboardData.getData(options.cleaner.keepHtml ? 'text/html' : 'text/plain');
             if (text) {
-              if (msie || ffox)
+              if (msie || ffox) {
                 setTimeout(function(){$note.summernote('pasteHTML', cleanText(text, options.cleaner.newline));}, 1);
-              else
-                $note.summernote('pasteHTML', cleanText(text, options.cleaner.newline));
+              } else {
+                var resultingHtml = cleanText(text, options.cleaner.newline);
+                
+                var nodes = $.parseHTML(resultingHtml);
+                nodes.forEach(function (item) {
+                  $note.summernote('insertNode', item);
+                });
+                
+                //$note.summernote('pasteHTML', resultingHtml);
+              }
               if ($editor.find('.note-status-output').length > 0)
                 $editor.find('.note-status-output').html('<div class="summernote-cleanerAlert alert alert-success">' + lang.cleaner.not + '</div>');
               else
