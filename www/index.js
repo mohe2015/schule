@@ -653,6 +653,10 @@ $(document).ready(function() {
         });
         return;
       }
+      if (pathname.length == 4 && pathname[1] === 'quiz' && pathname[3] === 'edit') {
+       showTab('#edit-quiz');
+       return;
+      }
       
       $('#errorMessage').text("Pfad nicht gefunden! Hast du dich vielleicht vertippt?");
       showTab('#error');
@@ -781,7 +785,7 @@ $(document).ready(function() {
     window.onbeforeunload = function() {
       var pathname = window.location.pathname.split('/');
       console.log(pathname);
-      if ((pathname.length == 4 && pathname[3] == 'create') || (pathname.length == 4 && pathname[3] == 'edit')) {
+      if (pathname.length == 4 && pathname[1] == 'wiki' && (pathname[3] == 'create' || pathname[3] == 'edit')) {
         return true;
       }
     }
