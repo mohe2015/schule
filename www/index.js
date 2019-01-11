@@ -216,6 +216,9 @@ $(document).ready(function() {
               onImageUpload: function(files) {
                 sendFile(files[0]);
               },
+              onChange: function(contents, $editable) {
+                window.history.replaceState({content: contents}, null, null);
+              }
               /*onPaste: function (e) {
                   var bufferText = ((e.originalEvent || e).clipboardData || window.clipboardData).getData('text/html');
                   e.preventDefault();
@@ -439,7 +442,12 @@ $(document).ready(function() {
         if (pathname.length == 4 && pathname[3] == 'create') {
           $(".edit-button").addClass('disabled')
           $('#is-outdated-article').addClass('d-none');
-          $('article').html("");
+          
+          if (window.history.state != null && window.history.state.content != null) {
+            $('article').html(window.history.state.content);
+          } else {
+            $('article').html("");
+          }
       
           showEditor();
           
@@ -452,24 +460,40 @@ $(document).ready(function() {
           $('#wiki-article-title').text(pathname[2]);
           cleanup();
           
-          $.get("/api/wiki/" + pathname[2], function(data) {
-              $('article').html(data);
+          if (window.history.state != null && window.history.state.content != null) {
+            $('article').html(window.history.state.content);
 
-              $(".formula").each(function() {
-                MathLive.renderMathInElement(this);
-              });
-              
-              showEditor();
-              
-              showTab('#page');
-          })
-          .fail(function(jqXHR, textStatus, errorThrown) {
-              if (errorThrown === 'Not Found') {
-                  showTab('#not-found');
-              } else {
-                handleError(errorThrown, true);
-              }
-          });
+            $(".formula").each(function() {
+              MathLive.renderMathInElement(this);
+            });
+                        
+            showEditor();
+            
+            showTab('#page');
+          } else {
+            showTab('#loading');
+            
+            $.get("/api/wiki/" + pathname[2], function(data) {
+                $('article').html(data);
+
+                $(".formula").each(function() {
+                  MathLive.renderMathInElement(this);
+                });
+                
+                window.history.replaceState({content: data}, null, null);
+                
+                showEditor();
+                
+                showTab('#page');
+            })
+            .fail(function(jqXHR, textStatus, errorThrown) {
+                if (errorThrown === 'Not Found') {
+                    showTab('#not-found');
+                } else {
+                  handleError(errorThrown, true);
+                }
+            });
+          }
           return;
         }
         if (pathname.length == 4 && pathname[3] == 'history') {
@@ -706,13 +730,10 @@ $(document).ready(function() {
     
     window.onbeforeunload = function() {
       var pathname = window.location.pathname.split('/');
-      if (pathname.length == 4 && pathname[3] == 'create') {
+      console.log(pathname);
+      if ((pathname.length == 4 && pathname[3] == 'create') || (pathname.length == 4 && pathname[3] == 'edit')) {
         return true;
       }
-      if (pathname.length == 4 && pathname[3] == 'edit') {
-        return true;
-      }
-      return false; 
     }
     
     $(document).on("input", "#search-query", function(e){
