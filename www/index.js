@@ -362,11 +362,6 @@ $(document).ready(function() {
       
       if (pathname.length == 2 && pathname[1] == 'login') {
           $(".edit-button").addClass('disabled')
-          if (window.localStorage.name !== undefined) {
-            window.history.replaceState(null, null, "/wiki/Hauptseite");
-            updateState();
-            return;
-          }
           
           $('#publish-changes-modal').modal('hide');
           
@@ -376,6 +371,10 @@ $(document).ready(function() {
           if (urlUsername !== undefined && urlPassword !== undefined) {
             $('#inputName').val(urlUsername);
             $('#inputPassword').val(urlPassword);
+          } else if (window.localStorage.name !== undefined) {
+            window.history.replaceState(null, null, "/wiki/Hauptseite");
+            updateState();
+            return;
           }
         
           showTab('#login');
