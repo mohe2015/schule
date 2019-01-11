@@ -771,6 +771,25 @@ $(document).ready(function() {
       showTab('#edit-question-multiple-choice');
     });
     
+    $('#add-response-possibility').click(function() {
+      var t = $($('#multiple-choice-response-possibility').html());
+      $('#responses').append(t);
+    });
+    
+    $('#add-multiple-choice-question').click(function(e) {
+      e.preventDefault();
+      var question = $('#question').val();
+      console.log("question: " + question);
+      
+      $('#responses').children().each(function() {
+          var isCorrect = $(this).find('.multiple-choice-response-correct').prop('checked');
+          var responseText = $(this).find('.multiple-choice-response-text').val();
+          
+          console.log("response: " + isCorrect + " " + responseText);
+      });
+      return false;
+    });
+    
     window.onpopstate = function (event) {
       if (window.lastURL) {
         var pathname = window.lastURL.split('/');
