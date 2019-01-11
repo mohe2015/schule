@@ -43,6 +43,12 @@
 (defmethod action-allowed-p ((action (eql 'previous-revision-handler)) (group (eql :user))) t)
 (defmethod action-allowed-p ((action (eql 'previous-revision-handler)) group) nil)
 
+
+;; only admins and users can see previous revision
+(defmethod action-allowed-p ((action (eql 'create-quiz-handler)) (group (eql :admin))) t)
+(defmethod action-allowed-p ((action (eql 'create-quiz-handler)) (group (eql :user))) t)
+(defmethod action-allowed-p ((action (eql 'create-quiz-handler)) group) nil)
+
 (defun can (user action)
   (if user
       (action-allowed-p action (user-group user))

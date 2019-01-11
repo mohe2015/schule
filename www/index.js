@@ -638,6 +638,22 @@ $(document).ready(function() {
           return;
       }
       
+      if (pathname.length == 3 && pathname[1] === 'quiz' && pathname[2] === 'create') {
+        showTab('#loading')
+        
+        $.post("/api/quiz/create", { csrf_token: readCookie('CSRF_TOKEN') }, function(data) {
+            
+            console.log(data);
+          
+            window.history.pushState(null, null, "/quiz/" + data + "/edit");
+            updateState();
+        })
+        .fail(function( jqXHR, textStatus, errorThrown) {
+            handleError(errorThrown, true);
+        });
+        return;
+      }
+      
       $('#errorMessage').text("Pfad nicht gefunden! Hast du dich vielleicht vertippt?");
       showTab('#error');
     }

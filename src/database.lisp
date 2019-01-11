@@ -50,6 +50,42 @@
 		     :accessor my-session-user))
     (:metaclass mito:dao-table-class))
 
+  (defclass quiz ()
+    ((name :col-type (:varchar 512)
+	   :initarg :name
+	   :accessor quiz-name)
+     (creator :col-type user
+	      :initarg :creator
+	      :accessor quiz-creator))
+    (:metaclass mito:dao-table-class))
+
+  (defclass question ()
+    ((quiz :col-type quiz
+	   :initarg :quiz
+	   :accessor question-quiz)
+     (type :col-type (:varchar 64)
+	   :initarg :type
+	   :accessor question-type)
+     (data :col-type (:varchar 4096)
+	   :initarg :data
+	   :accessor question-data))
+    (:metaclass mito:dao-table-class))
+
+  (defclass solution ()
+    ((quiz :col-type quiz
+	   :initarg :quiz
+	   :accessor solution-quiz)
+     (question :col-type question
+	       :initarg :question
+	       :accessor solution-question)
+     (user :col-type user
+	   :initarg :user
+	   :accessor solution-user)
+     (response :col-type (:varchar 512)
+	       :initarg :response
+	       :accessor solution-response))
+    (:metaclass mito:dao-table-class))
+
 
   (setf mito:*mito-logger-stream* t)
 
@@ -57,10 +93,16 @@
   (mito:ensure-table-exists 'wiki-article)
   (mito:ensure-table-exists 'wiki-article-revision)
   (mito:ensure-table-exists 'my-session)
+  (mito:ensure-table-exists 'quiz)
+  (mito:ensure-table-exists 'question)
+  (mito:ensure-table-exists 'solution)
   (mito:migrate-table 'user)
   (mito:migrate-table 'wiki-article)
   (mito:migrate-table 'wiki-article-revision)
-  (mito:migrate-table 'my-session))
+  (mito:migrate-table 'my-session)
+  (mito:migrate-table 'quiz)
+  (mito:migrate-table 'question)
+  (mito:migrate-table 'solution))
 
 
 ;; run only once
