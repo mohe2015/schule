@@ -322,6 +322,7 @@ $(document).ready(function() {
     }
     
     function updateState() {
+      window.lastURL = window.location.pathname;
       // TODO maybe use less fading or shorter fading for faster navigation?
       
       if (window.localStorage.name !== undefined) {
@@ -689,14 +690,29 @@ $(document).ready(function() {
     });
     
     window.onpopstate = function (event) {
-      console.log('onpopstate');
+      if (window.lastURL) {
+        var pathname = window.lastURL.split('/');
+        if ((pathname.length == 4 && pathname[3] == 'create') || (pathname.length == 4 && pathname[3] == 'edit')) {
+          if (confirm('Möchtest du die Änderung wirklich verwerfen?')) {
+            updateState();
+          }
+          return;
+        }
+      }
       updateState();
     };
     
     updateState();
     
     window.onbeforeunload = function() {
-        //return false;
+      var pathname = window.location.pathname.split('/');
+      if (pathname.length == 4 && pathname[3] == 'create') {
+        return true;
+      }
+      if (pathname.length == 4 && pathname[3] == 'edit') {
+        return true;
+      }
+      return false; 
     }
     
     $(document).on("input", "#search-query", function(e){
