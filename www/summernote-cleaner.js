@@ -161,6 +161,9 @@
               var text = window.clipboardData.getData("text/html");
             else
               var text = e.originalEvent.clipboardData.getData(options.cleaner.keepHtml ? 'text/html' : 'text/plain');
+            if (text == '') {
+              text = e.originalEvent.clipboardData.getData(options.cleaner.keepHtml ? 'Text' : 'text/plain') 
+            }
             if (text) {
               if (msie || ffox) {
                 setTimeout(function(){
