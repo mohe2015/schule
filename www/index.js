@@ -269,7 +269,7 @@ $(document).ready(function() {
         
         var pathname = window.location.pathname.split('/');
         
-        window.history.pushState(null, null, "/wiki/" + pathname[2] + "/edit");
+        window.history.pushState(window.history.state, null, "/wiki/" + pathname[2] + "/edit");
         updateState();
         return false;
     });
@@ -415,6 +415,7 @@ $(document).ready(function() {
       }
       if (pathname.length > 1 && pathname[1] == 'wiki') {
         if (pathname.length == 3) { // /wiki/:name
+          showTab('#loading');
           $(".edit-button").removeClass('disabled')
           $('#is-outdated-article').addClass('d-none');
           $('#wiki-article-title').text(pathname[2]);
@@ -498,7 +499,7 @@ $(document).ready(function() {
         }
         if (pathname.length == 4 && pathname[3] == 'history') {
           $(".edit-button").removeClass('disabled')
-          showTab('loading');
+          showTab('#loading');
           
           var articlePath = window.location.pathname.substr(6, window.location.pathname.lastIndexOf("/")-6);
           $.get("/api/history/" + articlePath, function(data) {
@@ -518,18 +519,19 @@ $(document).ready(function() {
                 t.find('.history-diff').data('href', "/wiki/" + articlePath + "/history/" + page.id + "/changes");
                 
                 $('#history-list').append(t);
-              }            
+              }
+              showTab('#history');
           })
           .fail(function( jqXHR, textStatus, errorThrown) {
               handleError(errorThrown, true);
           });
           
-          showTab('#history');
           return;
         }
       }
       // /wiki/:page/history/:id
       if (pathname.length == 5 && pathname[3] == 'history') {
+          showTab('#loading');
           $(".edit-button").removeClass('disabled')
           cleanup();
           $('#wiki-article-title').text(pathname[2]);
@@ -538,6 +540,7 @@ $(document).ready(function() {
               $('#currentVersionLink').data('href', "/wiki/" + pathname[2]);
               $('#is-outdated-article').removeClass('d-none');
               $('article').html(data);
+              window.history.replaceState({content: data}, null, null);
 
               $(".formula").each(function() {
                 MathLive.renderMathInElement(this);
