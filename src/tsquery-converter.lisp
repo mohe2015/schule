@@ -60,10 +60,10 @@
 
 
 
-(trace tsquery-convert)
-(trace tsquery-convert-part)
-(trace handle-quoted)
-(trace handle-unquoted)
+;(trace tsquery-convert)
+;(trace tsquery-convert-part)
+;(trace handle-quoted)
+;(trace handle-unquoted)
 
 ;;(defun test (query)
 ;;  (let ((query (tsquery-convert query)))

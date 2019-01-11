@@ -1,7 +1,5 @@
 (in-package :lisp-wiki)
 
-
-
 (defun cache-forever ()
   (setf (header-out "Cache-Control") "max-age: 31536000"))
 
@@ -22,52 +20,58 @@
 
 (defmacro defget-noauth (name &body body) ;; TODO assert that's really a GET request
   `(defun ,name ()
-     (basic-headers)
-     ,@body))
+     (let ((mito:*connection* (dbi:connect-cached :postgres :username "postgres" :database-name "spickipedia")))
+       (basic-headers)
+       ,@body)))
 
 (defmacro defget-noauth-nosession (name &body body) ;; TODO assert that's really a GET request
   `(defun ,name ()
-     (basic-headers-nosession)
-     ,@body))
+     (let ((mito:*connection* (dbi:connect-cached :postgres :username "postgres" :database-name "spickipedia")))
+       (basic-headers-nosession)
+       ,@body)))
 
 (defmacro defget-noauth-cache (name &body body)
   `(defun ,name ()
-     (basic-headers-nosession)
-     (cache-forever)
-     (if (header-in* "If-Modified-Since")
-	 (progn
-	   (setf (return-code*) +http-not-modified+)
-	   nil)
-	 (progn ,@body))))
+     (let ((mito:*connection* (dbi:connect-cached :postgres :username "postgres" :database-name "spickipedia")))
+       (basic-headers-nosession)
+       (cache-forever)
+       (if (header-in* "If-Modified-Since")
+	   (progn
+	     (setf (return-code*) +http-not-modified+)
+	     nil)
+	   (progn ,@body)))))
 
 (defmacro defget (name &body body) ;; TODO assert that's really a GET request
   `(defun ,name ()
-     (basic-headers)
-     (with-user-perm ,name
-       ,@body)))
+     (let ((mito:*connection* (dbi:connect-cached :postgres :username "postgres" :database-name "spickipedia")))
+       (basic-headers)
+       (with-user-perm ,name
+	 ,@body))))
 
 (defmacro defpost-noauth (name &body body)
   `(defun ,name ()
-     (basic-headers)
-     (if (valid-csrf)
-	 (progn ,@body)
-	 (progn
-	   (start-my-session)
-	   (setf (return-code*) +http-forbidden+)
-	   (log-message* :ERROR "POTENTIAL ONGOING CROSS SITE REQUEST FORGERY ATTACK!!!")
-	   nil))))
-
-(defmacro defpost (name &body body) ;; TODO assert that's really a POST REQUEST
-  `(defun ,name ()
-     (basic-headers)
-     (with-user-perm ,name
+     (let ((mito:*connection* (dbi:connect-cached :postgres :username "postgres" :database-name "spickipedia")))
+       (basic-headers)
        (if (valid-csrf)
 	   (progn ,@body)
 	   (progn
 	     (start-my-session)
 	     (setf (return-code*) +http-forbidden+)
-	     (log-message* :ERROR (format nil "POTENTIAL ONGOING CROSS SITE REQUEST FORGERY ATTACK!!! username: ~a" (user-name user)))
+	     (log-message* :ERROR "POTENTIAL ONGOING CROSS SITE REQUEST FORGERY ATTACK!!!")
 	     nil)))))
+
+(defmacro defpost (name &body body) ;; TODO assert that's really a POST REQUEST
+  `(defun ,name ()
+     (let ((mito:*connection* (dbi:connect-cached :postgres :username "postgres" :database-name "spickipedia")))
+       (basic-headers)
+       (with-user-perm ,name
+	 (if (valid-csrf)
+	     (progn ,@body)
+	     (progn
+	       (start-my-session)
+	       (setf (return-code*) +http-forbidden+)
+	       (log-message* :ERROR (format nil "POTENTIAL ONGOING CROSS SITE REQUEST FORGERY ATTACK!!! username: ~a" (user-name user)))
+	       nil))))))
 
 (defun basic-headers-nosession ()
   (track)
