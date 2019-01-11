@@ -369,8 +369,8 @@ $(document).ready(function() {
           var urlPassword = GetURLParameter('password');
           
           if (urlUsername !== undefined && urlPassword !== undefined) {
-            $('#inputName').val(urlUsername);
-            $('#inputPassword').val(urlPassword);
+            $('#inputName').val(decodeURIComponent(urlUsername));
+            $('#inputPassword').val(decodeURIComponent(urlPassword));
           } else if (window.localStorage.name !== undefined) {
             window.history.replaceState(null, null, "/wiki/Hauptseite");
             updateState();
