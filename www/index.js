@@ -417,7 +417,7 @@ $(document).ready(function() {
           showTab('#loading');
           $(".edit-button").removeClass('disabled')
           $('#is-outdated-article').addClass('d-none');
-          $('#wiki-article-title').text(pathname[2]);
+          $('#wiki-article-title').text(decodeURIComponent(pathname[2]));
           cleanup();
           
           $.get("/api/wiki/" + pathname[2], function(data) {
@@ -457,7 +457,7 @@ $(document).ready(function() {
         if (pathname.length == 4 && pathname[3] == 'edit') {
           $(".edit-button").addClass('disabled')
           $('#is-outdated-article').addClass('d-none');
-          $('#wiki-article-title').text(pathname[2]);
+          $('#wiki-article-title').text(decodeURIComponent(pathname[2]));
           cleanup();
           
           if (window.history.state != null && window.history.state.content != null) {
@@ -533,7 +533,7 @@ $(document).ready(function() {
           showTab('#loading');
           $(".edit-button").removeClass('disabled')
           cleanup();
-          $('#wiki-article-title').text(pathname[2]);
+          $('#wiki-article-title').text(decodeURIComponent(pathname[2]));
           
           $.get("/api/revision/" + pathname[4], function(data) {
               $('#currentVersionLink').data('href', "/wiki/" + pathname[2]);
