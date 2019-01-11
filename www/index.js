@@ -767,6 +767,10 @@ $(document).ready(function() {
         return false;
     });
     
+    $('#create-multiple-choice-question').click(function() {
+      showTab('#edit-question-multiple-choice');
+    });
+    
     window.onpopstate = function (event) {
       if (window.lastURL) {
         var pathname = window.lastURL.split('/');
