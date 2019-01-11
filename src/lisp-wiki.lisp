@@ -121,6 +121,9 @@
   (mito:delete-dao *SESSION*)
   (setf *SESSION* nil))
 
+(defget-noauth killswitch-handler
+  (sb-ext:quit))
+
 (defget-noauth-cache file-handler
   (handle-static-file (merge-pathnames (concatenate 'string "uploads/" (subseq (script-name* *REQUEST*) 10)))))
 
@@ -135,6 +138,7 @@
 (setq *dispatch-table*
       (nconc
        (list (create-prefix-dispatcher "/api/wiki" 'wiki-page)
+	     (create-prefix-dispatcher "/api/killswitch" 'killswitch-handler)
 	     (create-prefix-dispatcher "/api/articles" 'article-list-handler)
 	     (create-prefix-dispatcher "/api/history" 'wiki-page-history)
 	     (create-prefix-dispatcher "/api/revision" 'wiki-revision-handler)
