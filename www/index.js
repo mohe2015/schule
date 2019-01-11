@@ -212,11 +212,11 @@ $(document).ready(function() {
                 cancel: CancelButton
             },
             toolbar: [
-                ['style', ['style', 'bold', 'italic', 'underline', 'superscript', 
+                ['style', ['style.h2', 'style.h3', 'superscript', 
 'subscript']],
                 ['para', ['ul', 'ol', 'indent', 'outdent']],
-                ['insert', ['link', 'picture', 'video', 'table', 'math']],
-                ['management', ['undo', 'redo', 'help', 'cancel', 'finished']]
+                ['insert', ['link', 'picture', 'table', 'math']],
+                ['management', ['finished']]
             ],
            cleaner:{
                   action: 'both', // both|button|paste 'button' only cleans via toolbar button, 'paste' only clean when pasting content, both does both options.

@@ -4691,21 +4691,6 @@
       Editor.prototype.onFormatBlock = function (tagName, $target) {
           // [workaround] for MSIE, IE need `<`
           document.execCommand('FormatBlock', false, env.isMSIE ? '<' + tagName + '>' : tagName);
-          // support custom class
-          if ($target && $target.length) {
-              // find the exact element has given tagName
-              if ($target[0].tagName.toUpperCase() !== tagName.toUpperCase()) {
-                  $target = $target.find(tagName);
-              }
-              if ($target && $target.length) {
-                  var className = $target[0].className || '';
-                  if (className) {
-                      var currentRange = this.createRange();
-                      var $parent = $$1([currentRange.sc, currentRange.ec]).closest(tagName);
-                      $parent.addClass(className);
-                  }
-              }
-          }
       };
       Editor.prototype.formatPara = function () {
           this.formatBlock('P');
