@@ -264,6 +264,16 @@ $(document).ready(function() {
                   ['delete', ['deleteRow', 'deleteCol', 'deleteTable']],
                   ['custom', ['tableHeaders']]
                 ],
+                image: [
+                  ['resize', ['resizeFull', 'resizeHalf', 'resizeQuarter', 'resizeNone']],
+                  ['float', ['floatLeft', 'floatRight', 'floatNone']],
+                  ['remove', ['removeMedia']],
+                ],
+              },
+              imageAttributes:{
+                  icon:'<i class="note-icon-pencil"/>',
+                  removeEmpty:false, // true = remove attributes | false = leave empty if present
+                  disableUpload: false // true = don't display Upload Options | Display Upload Options
               }
         });
         setFullscreen(true);
