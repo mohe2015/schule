@@ -240,7 +240,7 @@ $(document).ready(function() {
                 ['insert', ['link', 'picture', 'table', 'math']],
                 ['management', ['undo', 'redo', 'finished']]
             ],
-           cleaner:{
+           cleaner: {
                   action: 'both', // both|button|paste 'button' only cleans via toolbar button, 'paste' only clean when pasting content, both does both options.
                   newline: '<p><br></p>', // Summernote's default is to use '<p><br></p>'
                   notStyle: 'position:absolute;top:0;left:0;right:0', // Position of Notification
@@ -253,7 +253,18 @@ $(document).ready(function() {
                   limitChars: false, // 0/false|# 0/false disables option
                   limitDisplay: 'both', // text|html|both
                   limitStop: false // true/false
-            }
+            },
+            
+             popover: {
+                math: [
+                  ['math', ['edit-math', 'delete-math']],
+                ],
+                table: [
+                  ['add', ['addRowDown', 'addRowUp', 'addColLeft', 'addColRight']],
+                  ['delete', ['deleteRow', 'deleteCol', 'deleteTable']],
+                  ['custom', ['tableHeaders']]
+                ],
+              }
         });
         setFullscreen(true);
     }
