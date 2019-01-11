@@ -90,6 +90,23 @@ $(document).ready(function() {
         return button.render();
     }
     
+    var WikiLinkButton = function(context) {
+        var ui = $.summernote.ui;
+        var button = ui.button({
+            contents: 'S',
+            tooltip: 'Spickipedia-Link einfügen',
+            click: function() {
+
+                $('#spickiLinkModal').on('shown.bs.modal', function() {
+                    $('#article-link-title').trigger('focus')
+                });
+
+                $('#spickiLinkModal').modal('show');
+            }
+        });
+        return button.render();
+    }
+    
     function readCookie(name) {
         var nameEQ = name + "=";
         var ca = document.cookie.split(';');
@@ -210,7 +227,8 @@ $(document).ready(function() {
             focus: true,
             buttons: {
                 finished: FinishedButton,
-                cancel: CancelButton
+                cancel: CancelButton,
+                'wiki-link': WikiLinkButton
             },
             toolbar: [
                 ['style', ['style.p', 'style.h2', 'style.h3', 'superscript', 
