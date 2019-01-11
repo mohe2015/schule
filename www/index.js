@@ -471,6 +471,7 @@ $(document).ready(function() {
           $('#wiki-article-title').text(pathname[2]);
           
           $.get("/api/revision/" + pathname[4], function(data) {
+              $('#currentVersionLink').data('href', "/wiki/" + pathname[2]);
               $('#is-outdated-article').removeClass('d-none');
               $('article').html(data);
 
@@ -492,6 +493,7 @@ $(document).ready(function() {
       // /wiki/:page/history/:id/changes
       if (pathname.length == 6 && pathname[3] == 'history' && pathname[5] == 'changes') {
           $(".edit-button").addClass('disabled')
+          $('#currentVersionLink').data('href', "/wiki/" + pathname[2]);
           $('#is-outdated-article').removeClass('d-none');
           cleanup();
           
