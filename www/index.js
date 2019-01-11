@@ -395,6 +395,9 @@ $(document).ready(function() {
         showTab('#loading');
         
         $.get("/api/articles", function(data) {
+          data.sort(function(a,b) {
+            return a.localeCompare(b);
+          });
           console.log(data);
 
           $('#articles-list').html('');
