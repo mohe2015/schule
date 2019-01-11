@@ -194,6 +194,7 @@ $(document).ready(function() {
     
     function showEditor() {
         $('article').summernote({
+            lang: 'de-DE',
             callbacks: {
               onImageUpload: function(files) {
                 sendFile(files[0]);
