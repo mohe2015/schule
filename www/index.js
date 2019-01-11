@@ -210,6 +210,7 @@ $(document).ready(function() {
 
     
     function showEditor() {
+        var canCall = true;
         $('article').summernote({
             lang: 'de-DE',
             callbacks: {
@@ -217,7 +218,14 @@ $(document).ready(function() {
                 sendFile(files[0]);
               },
               onChange: function(contents, $editable) {
+                if (!canCall) 
+                  return;
+                canCall = false;
+                console.log("replaceState");
                 window.history.replaceState({content: contents}, null, null);
+                setTimeout(function(){
+                    canCall = true;
+                }, 1000);
               }
               /*onPaste: function (e) {
                   var bufferText = ((e.originalEvent || e).clipboardData || window.clipboardData).getData('text/html');
