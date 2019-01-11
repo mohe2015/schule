@@ -20,6 +20,9 @@
 ;; every user can logout
 (defmethod action-allowed-p ((action (eql 'logout-handler)) group) t)
 
+;; every user can list all articles
+(defmethod action-allowed-p ((action (eql 'article-list-handler)) group) t)
+
 ;; only admins and users can edit them
 (defmethod action-allowed-p ((action (eql 'post-wiki-page)) (group (eql :admin))) t)
 (defmethod action-allowed-p ((action (eql 'post-wiki-page)) (group (eql :user))) t)

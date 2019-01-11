@@ -35,6 +35,10 @@
           </div>
         </a>
     </template>
+    
+    <template id="articles-entry">
+      <li><a class="history-pushState" href="#">Hauptseite</a></li>
+    </template>
   
     <nav class="navbar navbar-expand-md navbar-light bg-light">
       <a class="navbar-brand history-pushState" href="#" data-href="/wiki/Hauptseite">
@@ -62,6 +66,12 @@
       </div>
     </nav>
     <div>
+    <div style="display: none;" class="container my-tab position-absolute" id="articles">
+      <h1 class="text-center">Alle Artikel</h1>
+      <ul id="articles-list">
+        
+      </ul>
+    </div>
     <div style="display: none;" class="container my-tab position-absolute col-sm-6 offset-sm-3 col-md-4 offset-md-4 text-center" id="login">
       
       <h1>Anmelden</h1>
@@ -200,7 +210,7 @@
     
     <script src="/summernote-cleaner.js?v=3f2f1d6324ccc2885c8b6140e310409ed2c672e073e8b850455fdc85613f79951a153beb687792c8cd162156d221ef1500f2f7a13fb713c3ebaf6a48f9571182"></script>
     
-    <script src="/index.js?v=1f3185cc1fb13b8a27aae63e9d5b615c068eb4ea72c7cb7b26033c4ab5cf8b41562139cd162e45c288da354f3e986da3cf28d797fc0ec1c71cd0086eca131325"></script>
+    <script src="/index.js?v=a075e298aa65c72fe9f184543536b88f943aa2453119aa0e4c3629ede53ecdddf3be60fdd4c8ad850a54e2ca23d53ac5be5959e6abde294073dddd2d293765c5"></script>
      
     <script src="/visual-diff.js?v=746ca5b1538531791b329ce68e8fc243bbbe6a445ecc8c4798a0d57b9fc7d4b2dead5bc75d66294edf2ba73229625e4621d4e2a193b967b8a27e1e7ed8c39abf"></script>
   </body>

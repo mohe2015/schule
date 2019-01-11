@@ -89,6 +89,11 @@
 							(rank  . ,(getf r :|rank|))
 							(summary . ,(getf r :|ts_headline|)))) (dbi:fetch-all result)))))
 
+(defget article-list-handler
+  (setf (content-type*) "text/json")
+  (let* ((articles (mito:select-dao 'wiki-article)))
+    (json:encode-json-to-string (mapcar 'wiki-article-title articles))))
+
 (defpost upload-handler
   (let* ((filepath (nth 0 (hunchentoot:post-parameter "file")))
 	 ;; (filetype (nth 2 (hunchentoot:post-parameter "file")))
@@ -130,6 +135,7 @@
 (setq *dispatch-table*
       (nconc
        (list (create-prefix-dispatcher "/api/wiki" 'wiki-page)
+	     (create-prefix-dispatcher "/api/articles" 'article-list-handler)
 	     (create-prefix-dispatcher "/api/history" 'wiki-page-history)
 	     (create-prefix-dispatcher "/api/revision" 'wiki-revision-handler)
 	     (create-prefix-dispatcher "/api/previous-revision" 'previous-revision-handler)

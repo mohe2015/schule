@@ -212,11 +212,11 @@ $(document).ready(function() {
                 cancel: CancelButton
             },
             toolbar: [
-                ['style', ['style.h2', 'style.h3', 'superscript', 
+                ['style', ['style.p', 'style.h2', 'style.h3', 'superscript', 
 'subscript']],
                 ['para', ['ul', 'ol', 'indent', 'outdent']],
                 ['insert', ['link', 'picture', 'table', 'math']],
-                ['management', ['finished']]
+                ['management', ['undo', 'redo', 'finished']]
             ],
            cleaner:{
                   action: 'both', // both|button|paste 'button' only cleans via toolbar button, 'paste' only clean when pasting content, both does both options.
@@ -369,7 +369,27 @@ $(document).ready(function() {
           }
           $('.login-hide').fadeIn();
       }
-      
+      if (pathname.length == 2 && pathname[1] === 'articles') {
+        showTab('#loading');
+        
+        $.get("/api/articles", function(data) {
+          console.log(data);
+
+          $('#articles-list').html('');
+          for (var page of data) {
+            var t = $($('#articles-entry').html());
+            
+            t.find('a').text(page);
+            t.find('a').data('href', "/wiki/" + page);
+            $('#articles-list').append(t);
+          }
+          showTab('#articles');
+        }).fail(function( jqXHR, textStatus, errorThrown) {
+            handleError(errorThrown, true);
+        });
+        
+        return;
+      }
       if (pathname.length > 1 && pathname[1] == 'wiki') {
         if (pathname.length == 3) { // /wiki/:name
           $(".edit-button").removeClass('disabled')
