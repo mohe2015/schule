@@ -22,8 +22,12 @@ case the function will also send a session cookie to the browser."
     (set-cookie (session-cookie-name *acceptor*)
                 :value (my-session-cookie session)
                 :path "/"
-                :http-only t)
-    (set-cookie "CSRF_TOKEN" :value (my-session-csrf-token session) :path "/")
+                :http-only t
+		:max-age (* 60 60 24 365))
+    (set-cookie "CSRF_TOKEN"
+		:value (my-session-csrf-token session)
+		:path "/"
+		:max-age (* 60 60 24 365))
     (session-created *acceptor* session)
     (setq *session* session)))
 
@@ -42,5 +46,9 @@ function twice in the same second will regenerate twice the same value."
   (set-cookie (session-cookie-name *acceptor*)
               :value (my-session-cookie session)
               :path "/"
-              :http-only t)
-  (set-cookie "CSRF_TOKEN" :value (my-session-csrf-token session) :path "/"))
+              :http-only t
+	      :max-age (* 60 60 24 365))
+  (set-cookie "CSRF_TOKEN"
+	      :value (my-session-csrf-token session)
+	      :path "/"
+	      :max-age (* 60 60 24 365)))
