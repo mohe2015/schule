@@ -778,15 +778,43 @@ $(document).ready(function() {
     
     $('#add-multiple-choice-question').click(function(e) {
       e.preventDefault();
-      var question = $('#question').val();
-      console.log("question: " + question);
+      
+      var obj = new Object();
+      obj.type = "multiple-choice";
+      
+      obj.question = $('#question').val();
+      console.log("question: " + obj.question);
+      
+      obj.responses = [];
       
       $('#responses').children().each(function() {
           var isCorrect = $(this).find('.multiple-choice-response-correct').prop('checked');
           var responseText = $(this).find('.multiple-choice-response-text').val();
           
+          obj.responses.push({
+            "text": responseText,
+            "isCorrect": isCorrect
+          });
+          
           console.log("response: " + isCorrect + " " + responseText);
       });
+      
+      console.log(JSON.stringify(obj));
+      
+      
+      var pathname = window.location.pathname.split('/');
+      
+      $.post("/api/quiz/question/create/" + pathname[2], { csrf_token: readCookie('CSRF_TOKEN'), data: JSON.stringify(obj) }, function(data) {
+            
+          console.log(data);
+        
+          //window.history.pushState(null, null, "/quiz/" + data + "/edit");
+          //updateState();
+      })
+      .fail(function( jqXHR, textStatus, errorThrown) {
+          handleError(errorThrown, true);
+      });
+      
       return false;
     });
     

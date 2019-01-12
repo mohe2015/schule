@@ -63,9 +63,6 @@
     ((quiz :col-type quiz
 	   :initarg :quiz
 	   :accessor question-quiz)
-     (type :col-type (:varchar 64)
-	   :initarg :type
-	   :accessor question-type)
      (data :col-type (:varchar 4096)
 	   :initarg :data
 	   :accessor question-data))
