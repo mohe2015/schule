@@ -669,13 +669,13 @@ $(document).ready(function() {
           $.get("/api/quiz/" + pathname[2], function(data) {
               console.log(data);
               showTab('#multiple-choice-question-html');
-              var question = data.questions[0];
-              console.log(question);
-              if (question.type == "multiple-choice") {
-                $('.question-html').text(question.question);
+              window.currentQuestion = data.questions[0];
+              console.log(window.currentQuestion);
+              if (window.currentQuestion.type == "multiple-choice") {
+                $('.question-html').text(window.currentQuestion.question);
                 $('#answers-html').text("");
                 var i = 0;
-                for (var answer of question.responses) {
+                for (var answer of window.currentQuestion.responses) {
                     var t = $($('#multiple-choice-answer-html').html());
                     t.find('.custom-control-label').text(answer.text);
                     t.find('.custom-control-label').attr('for', i);
@@ -697,6 +697,20 @@ $(document).ready(function() {
       $('#errorMessage').text("Pfad nicht gefunden! Hast du dich vielleicht vertippt?");
       showTab('#error');
     }
+    
+    $('.multiple-choice-submit-html').click(function() {
+      var i = 0;
+      for (var answer of window.currentQuestion.responses) {
+          $('#' + i).removeClass('is-valid');
+          $('#' + i).removeClass('is-invalid');
+          if (answer.isCorrect == $('#' + i).prop( "checked" )) {
+            $('#' + i).addClass('is-valid');
+          } else {
+            $('#' + i).addClass('is-invalid');
+          }
+          i++;
+      }
+    });
     
     $('#button-search').click(function() {
       var query = $('#search-query').val();
