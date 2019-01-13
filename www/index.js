@@ -775,6 +775,11 @@ $(document).ready(function() {
       $('#questions').append(t); 
     });
     
+    $('.create-text-question').click(function() {
+      var t = $($('#text-question').html());
+      $('#questions').append(t); 
+    });
+    
      $("body").on("click",".add-response-possibility",function(e) {
       var t = $($('#multiple-choice-response-possibility').html());
       $(this).siblings('.responses').append(t);
@@ -786,12 +791,22 @@ $(document).ready(function() {
        $('#questions').children().each(function() {
           if ($(this).attr("class") == 'multiple-choice-question') {
             obj.questions.push(multipleChoiceQuestion($(this)));
+          } else if ($(this).attr("class") == 'text-question') {
+            obj.questions.push(textQuestion($(this)));
           }
        });
       console.log(JSON.stringify(obj));
       
       
      });
+     
+     function textQuestion(element) {
+        var obj = new Object();
+        obj.type = 'text';
+        obj.question = element.find('.question').val();
+        obj.answer = element.find('.answer').val();
+        return obj;
+     }
      
      function multipleChoiceQuestion(element) {
       var obj = new Object();

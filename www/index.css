@@ -7,6 +7,12 @@ del {
   background-color: var(--red);
 }
 
+hr {
+  border-width: 2px;
+  border-style: inset;
+  border-color: black;
+}
+
 .container-fluid {
   padding-left: 10px;
   padding-right: 10px;
