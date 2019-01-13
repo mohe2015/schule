@@ -669,6 +669,24 @@ $(document).ready(function() {
           $.get("/api/quiz/" + pathname[2], function(data) {
               console.log(data);
               showTab('#multiple-choice-question-html');
+              var question = data.questions[0];
+              console.log(question);
+              if (question.type == "multiple-choice") {
+                $('.question-html').text(question.question);
+                $('#answers-html').text("");
+                var i = 0;
+                for (var answer of question.responses) {
+                    var t = $($('#multiple-choice-answer-html').html());
+                    t.find('.custom-control-label').text(answer.text);
+                    t.find('.custom-control-label').attr('for', i);
+                    t.find('.custom-control-input').attr('id', i);
+                    $('#answers-html').append(t);
+                    i++;
+                }
+              }
+              /*
+                
+               * */
           })
           .fail(function(jqXHR, textStatus, errorThrown) {
               handleError(errorThrown, true);
