@@ -795,10 +795,9 @@ $(document).ready(function() {
             obj.questions.push(textQuestion($(this)));
           }
        });
-      console.log(JSON.stringify(obj));
-      
-      $.post("/api/login", { csrf_token: readCookie('CSRF_TOKEN'), "name": name, "password": password }, function(data) {
-            alert(1);
+      var pathname = window.location.pathname.split('/');
+      $.post("/api/quiz/" + pathname[2], { csrf_token: readCookie('CSRF_TOKEN'), "data": JSON.stringify(obj) }, function(data) {
+            alert(data);
         })
         .fail(function( jqXHR, textStatus, errorThrown) {
             handleError(errorThrown, true);

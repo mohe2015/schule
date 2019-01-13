@@ -50,9 +50,9 @@
 (defmethod action-allowed-p ((action (eql 'create-quiz-handler)) group) nil)
 
 ;; only admins and users can create a quiz question
-(defmethod action-allowed-p ((action (eql 'create-question-handler)) (group (eql :admin))) t)
-(defmethod action-allowed-p ((action (eql 'create-question-handler)) (group (eql :user))) t)
-(defmethod action-allowed-p ((action (eql 'create-question-handler)) group) nil)
+(defmethod action-allowed-p ((action (eql 'update-quiz-handler)) (group (eql :admin))) t)
+(defmethod action-allowed-p ((action (eql 'update-quiz-handler)) (group (eql :user))) t)
+(defmethod action-allowed-p ((action (eql 'update-quiz-handler)) group) nil)
 
 (defun can (user action)
   (if user

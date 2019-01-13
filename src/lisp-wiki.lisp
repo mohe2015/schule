@@ -68,10 +68,11 @@
 (defpost create-quiz-handler
     (format nil "~a"(object-id (mito:create-dao 'quiz :creator user))))
 
-(defpost create-question-handler
-  (let* ((quiz-id (parse-integer (subseq (script-name*) 26))))
-    (format nil "~a" (object-id (mito:create-dao 'question :quiz (mito:find-dao 'quiz :id quiz-id) :data (post-parameter "data"))))))
-
+(defpost update-quiz-handler
+  (let* ((quiz-id (parse-integer (subseq (script-name*) 10))))
+    (create-dao 'quiz-revision :quiz (find-dao 'quiz :id quiz-id) :content (post-parameter "data") :author user)
+    nil))
+    
 (defget wiki-page-history
   (setf (content-type*) "text/json")
   (let* ((title (subseq (script-name* *REQUEST*) 13)) (article (mito:find-dao 'wiki-article :title title)))
@@ -155,5 +156,5 @@
 	     (create-prefix-dispatcher "/api/search" 'search-handler)
 	     (create-prefix-dispatcher "/api/login" 'login-handler)
 	     (create-prefix-dispatcher "/api/quiz/create" 'create-quiz-handler)
-	     (create-prefix-dispatcher "/api/quiz/question/create" 'create-question-handler)
+	     (create-prefix-dispatcher "/api/quiz" 'update-quiz-handler)
 	     (create-prefix-dispatcher "/api/logout" 'logout-handler))))
