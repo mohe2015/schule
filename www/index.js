@@ -638,6 +638,7 @@ $(document).ready(function() {
           return;
       }
       
+      // /quiz/create
       if (pathname.length == 3 && pathname[1] === 'quiz' && pathname[2] === 'create') {
         showTab('#loading')
         
@@ -653,12 +654,26 @@ $(document).ready(function() {
         });
         return;
       }
+      
+      // /quiz/:id/edit
       if (pathname.length == 4 && pathname[1] === 'quiz' && pathname[3] === 'edit') {
         
         // TODO load existing quiz
         
        showTab('#edit-quiz');
        return;
+      }
+      
+      // /quiz/:id/edit
+      if (pathname.length == 4 && pathname[1] === 'quiz' && pathname[3] === 'play') {
+          $.get("/api/quiz/" + pathname[2], function(data) {
+              console.log(data);
+              showTab('#multiple-choice-question-html');
+          })
+          .fail(function(jqXHR, textStatus, errorThrown) {
+              handleError(errorThrown, true);
+          });
+          return;
       }
       
       $('#errorMessage').text("Pfad nicht gefunden! Hast du dich vielleicht vertippt?");
