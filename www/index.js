@@ -780,47 +780,35 @@ $(document).ready(function() {
       $(this).siblings('.responses').append(t);
     });
     
-    $('#add-multiple-choice-question').click(function(e) {
-      e.preventDefault();
+     $('.save-quiz').click(function() {
+       var obj = new Object();
+       obj.questions = [];
+       $('#questions').children().each(function() {
+          if ($(this).attr("class") == 'multiple-choice-question') {
+            obj.questions.push(multipleChoiceQuestion($(this)));
+          }
+       });
+      console.log(JSON.stringify(obj));
       
+      
+     });
+     
+     function multipleChoiceQuestion(element) {
       var obj = new Object();
       obj.type = "multiple-choice";
-      
-      obj.question = $('#question').val();
-      console.log("question: " + obj.question);
-      
+      obj.question = element.find('.question').val();
       obj.responses = [];
-      
-      $('#responses').children().each(function() {
+      element.find('.responses').children().each(function() {
           var isCorrect = $(this).find('.multiple-choice-response-correct').prop('checked');
           var responseText = $(this).find('.multiple-choice-response-text').val();
           
           obj.responses.push({
             "text": responseText,
             "isCorrect": isCorrect
-          });
-          
-          console.log("response: " + isCorrect + " " + responseText);
+          });          
       });
-      
-      console.log(JSON.stringify(obj));
-      
-      
-      var pathname = window.location.pathname.split('/');
-      
-      $.post("/api/quiz/question/create/" + pathname[2], { csrf_token: readCookie('CSRF_TOKEN'), data: JSON.stringify(obj) }, function(data) {
-            
-          console.log(data);
-        
-          //window.history.pushState(null, null, "/quiz/" + data + "/edit");
-          //updateState();
-      })
-      .fail(function( jqXHR, textStatus, errorThrown) {
-          handleError(errorThrown, true);
-      });
-      
-      return false;
-    });
+      return obj;
+     }
     
     window.onpopstate = function (event) {
       if (window.lastURL) {
