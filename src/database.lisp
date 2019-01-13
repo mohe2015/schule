@@ -51,10 +51,7 @@
     (:metaclass mito:dao-table-class))
 
   (defclass quiz ()
-    ((name :col-type (:varchar 512)
-	   :initarg :name
-	   :accessor quiz-name)
-     (creator :col-type user
+     ((creator :col-type user
 	      :initarg :creator
 	      :accessor quiz-creator))
     (:metaclass mito:dao-table-class))

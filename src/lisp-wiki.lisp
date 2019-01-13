@@ -66,8 +66,7 @@
     nil))
 
 (defpost create-quiz-handler
-  (let* ((name (subseq (script-name*) 17)))
-    (format nil "~a"(object-id (mito:create-dao 'quiz :name name :creator user)))))
+    (format nil "~a"(object-id (mito:create-dao 'quiz :creator user))))
 
 (defpost create-question-handler
   (let* ((quiz-id (parse-integer (subseq (script-name*) 26))))
