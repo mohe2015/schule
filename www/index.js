@@ -654,6 +654,9 @@ $(document).ready(function() {
         return;
       }
       if (pathname.length == 4 && pathname[1] === 'quiz' && pathname[3] === 'edit') {
+        
+        // TODO load existing quiz
+        
        showTab('#edit-quiz');
        return;
       }
@@ -767,13 +770,14 @@ $(document).ready(function() {
         return false;
     });
     
-    $('#create-multiple-choice-question').click(function() {
-      showTab('#edit-question-multiple-choice');
+    $('.create-multiple-choice-question').click(function() {
+      var t = $($('#multiple-choice-question').html());
+      $('#questions').append(t); 
     });
     
-    $('#add-response-possibility').click(function() {
+     $("body").on("click",".add-response-possibility",function(e) {
       var t = $($('#multiple-choice-response-possibility').html());
-      $('#responses').append(t);
+      $(this).siblings('.responses').append(t);
     });
     
     $('#add-multiple-choice-question').click(function(e) {
