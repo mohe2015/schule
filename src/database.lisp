@@ -51,31 +51,29 @@
     (:metaclass mito:dao-table-class))
 
   (defclass quiz ()
-     ((creator :col-type user
-	      :initarg :creator
-	      :accessor quiz-creator))
+    ()
     (:metaclass mito:dao-table-class))
 
-  (defclass question ()
-    ((quiz :col-type quiz
+  (defclass quiz-revision ()
+    ((author :col-type user
+	     :initarg :author
+	     :accessor quiz-revision-author)
+     (quiz :col-type quiz
 	   :initarg :quiz
-	   :accessor question-quiz)
-     (data :col-type (:varchar 4096)
-	   :initarg :data
-	   :accessor question-data))
+	   :accessor quiz-revision-quiz)
+     (content :col-type (:text)
+	      :initarg :content
+	      :accessor quiz-revision-content))
     (:metaclass mito:dao-table-class))
 
   (defclass solution ()
     ((quiz :col-type quiz
 	   :initarg :quiz
 	   :accessor solution-quiz)
-     (question :col-type question
-	       :initarg :question
-	       :accessor solution-question)
      (user :col-type user
 	   :initarg :user
 	   :accessor solution-user)
-     (response :col-type (:varchar 512)
+     (response :col-type (:text)
 	       :initarg :response
 	       :accessor solution-response))
     (:metaclass mito:dao-table-class))
@@ -88,14 +86,14 @@
   (mito:ensure-table-exists 'wiki-article-revision)
   (mito:ensure-table-exists 'my-session)
   (mito:ensure-table-exists 'quiz)
-  (mito:ensure-table-exists 'question)
+  (mito:ensure-table-exists 'quiz-revision)
   (mito:ensure-table-exists 'solution)
   (mito:migrate-table 'user)
   (mito:migrate-table 'wiki-article)
   (mito:migrate-table 'wiki-article-revision)
   (mito:migrate-table 'my-session)
   (mito:migrate-table 'quiz)
-  (mito:migrate-table 'question)
+  (mito:migrate-table 'quiz-revision)
   (mito:migrate-table 'solution))
 
 

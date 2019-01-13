@@ -797,7 +797,12 @@ $(document).ready(function() {
        });
       console.log(JSON.stringify(obj));
       
-      
+      $.post("/api/login", { csrf_token: readCookie('CSRF_TOKEN'), "name": name, "password": password }, function(data) {
+            alert(1);
+        })
+        .fail(function( jqXHR, textStatus, errorThrown) {
+            handleError(errorThrown, true);
+        });
      });
      
      function textQuestion(element) {
