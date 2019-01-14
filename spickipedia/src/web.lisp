@@ -5,6 +5,7 @@
         :spickipedia.config
         :spickipedia.view
         :spickipedia.db
+	:spickipedia.sanitize
         :mito
         :sxql
 	:ironclad
@@ -32,12 +33,6 @@
 
 ;;
 ;; Routing rules
-
-(defroute "/" ()
-  (render #P"index.html"))
-
-(defroute "/test" (&key |name|)
-  (format nil "Welcome, ~A" |name|))
 
 (defun random-base64 ()
   (usb8-array-to-base64-string (random-data 64)))
@@ -162,8 +157,9 @@
                      :if-does-not-exist :create)
   (format str "~a~%" (json:encode-json-to-string (acons "user" (my-session-user *session*) (headers-in*))))))
 
-
-
+(defroute ("/.*" :regexp t) (&key anything)
+  (format t "~A~%" anything)
+  (render #P"index.html"))
 
 ;;(defroute "/*.*" (&key path)
 ;;  (format nil "~A" path))
