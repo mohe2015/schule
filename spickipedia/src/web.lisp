@@ -43,13 +43,14 @@
   (usb8-array-to-base64-string (random-data 64)))
 
 (defroute ("/api/wiki/:title" :method :GET) (&key title)
-  (let* ((article (mito:find-dao 'wiki-article :title title)))
-    (if (not article)
-        (throw-code 404))
-    (let ((revision (mito:select-dao 'wiki-article-revision (where (:= :article article)) (order-by (:desc :id)) (limit 1))))
-      (if (not revision)
-	  (throw-code 404))
-      (clean (wiki-article-revision-content (car revision)) *sanitize-spickipedia*))))
+  (with-connection (db)
+    (let* ((article (mito:find-dao 'wiki-article :title title)))
+      (if (not article)
+          (throw-code 404))
+      (let ((revision (mito:select-dao 'wiki-article-revision (where (:= :article article)) (order-by (:desc :id)) (limit 1))))
+	(if (not revision)
+	    (throw-code 404))
+	(clean (wiki-article-revision-content (car revision)) *sanitize-spickipedia*)))))
 
 (defroute ("/api/revision/:id" :method :GET) (&key id)
   (let* ((revision (mito:find-dao 'wiki-article-revision :id (parse-integer id))))
@@ -129,15 +130,16 @@
 	 filehash))
 
 ;; noauth
-(defroute ("/api/login" :method :POST) (|name| |password|)
-  (let* ((user (mito:find-dao 'user :name |name|)))
-    (if (and user (password= |password| (user-hash user)))                        ;; TODO prevent timing attack
-	(progn
-	  (regenerate-session *SESSION*)
-	  (setf (my-session-user *SESSION*) user)
-	  (mito:save-dao *SESSION*)
-	  nil)
-	(throw-code 403))))
+(defroute ("/api/login" :method :POST) (&key |name| |password|)
+  (with-connection (db)
+    (format t "~A ~A~%" |name| |password|)
+    (let* ((user (mito:find-dao 'user :name |name|)))
+      (if (and user (password= |password| (user-hash user)))                        ;; TODO prevent timing attack
+	  (progn
+	    ;;(regenerate-session *SESSION*) ;; TODO this is IMPORTANT WE NEED TO FIX THIS THIS IS IMPORTANT WE NEED TO FIX THIS
+	    (setf (gethash :user *SESSION*) (object-id user))
+	    nil)
+	  (throw-code 403)))))
 
 ;; noauth
 (defroute ("/api/logout" :method :POST) ()
