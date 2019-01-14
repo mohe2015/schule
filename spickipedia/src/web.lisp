@@ -26,6 +26,12 @@
 (defroute "/" ()
   (render #P"index.html"))
 
+(defroute "/test" (&key |name|)
+  (format nil "Welcome, ~A" |name|))
+
+;;(defroute "/*.*" (&key path)
+;;  (format nil "~A" path))
+
 ;;
 ;; Error pages
 
