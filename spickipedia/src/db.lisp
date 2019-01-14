@@ -19,6 +19,20 @@
 	   :my-session
 	   :quiz
 	   :quiz-revision
+	   :user-name
+	   :user-group
+	   :user-hash
+	   :wiki-article-title
+	   :wiki-article-revision-author
+	   :wiki-article-revision-article
+	   :wiki-article-revision-summary
+	   :wiki-article-revision-content
+	   :my-session-cookie
+	   :my-session-csrf-token
+	   :my-session-user
+	   :quiz-revision-author
+	   :quiz-revision-quiz
+	   :quiz-revision-content
 	   ))
 (in-package :spickipedia.db)
 

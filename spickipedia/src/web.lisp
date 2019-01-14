@@ -9,6 +9,7 @@
         :sxql
 	:ironclad
 	:sanitize
+	:bcrypt
 	:cl-base64)
   (:export :*web*))
 (in-package :spickipedia.web)
@@ -128,11 +129,9 @@
 	 filehash))
 
 ;; noauth
-(defroute ("/api/login" :method :POST) ()
-  (let* ((name (post-parameter "name"))
-	 (password (post-parameter "password"))
-	 (user (mito:find-dao 'user :name name)))
-    (if (and user (password= password (user-hash user)))                        ;; TODO prevent timing attack
+(defroute ("/api/login" :method :POST) (|name| |password|)
+  (let* ((user (mito:find-dao 'user :name |name|)))
+    (if (and user (password= |password| (user-hash user)))                        ;; TODO prevent timing attack
 	(progn
 	  (regenerate-session *SESSION*)
 	  (setf (my-session-user *SESSION*) user)
