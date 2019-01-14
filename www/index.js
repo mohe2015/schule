@@ -678,7 +678,13 @@ $(document).ready(function() {
       
       // /quiz/:id/play/:index
       if (pathname.length == 5 && pathname[1] === 'quiz' && pathname[3] === 'play') {
-        window.currentQuestion = window.history.state.data.questions[parseInt(pathname[4])];
+        var index = parseInt(pathname[4]);
+        if (window.history.state.data.questions.length == index) {
+          window.history.replaceState(null, null, "/quiz/"+pathname[2]+"/results");
+          updateState();
+          return;
+        }
+        window.currentQuestion = window.history.state.data.questions[index];
         if (window.currentQuestion.type == "multiple-choice") {
           showTab('#multiple-choice-question-html');
           $('.question-html').text(window.currentQuestion.question);
