@@ -712,6 +712,14 @@ $(document).ready(function() {
           }
           i++;
       }
+      $('.multiple-choice-submit-html').hide();
+      $('.next-question').show();
+    });
+    
+    $('.next-question').click(function() {
+      var pathname = window.location.pathname.split('/');
+      window.history.replaceState(window.history.state, null, "/quiz/"+pathname[2]+"/play/"+(parseInt(pathname[4]) + 1));
+      updateState();
     });
     
     $('#button-search').click(function() {
