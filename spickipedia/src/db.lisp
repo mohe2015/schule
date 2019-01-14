@@ -12,7 +12,14 @@
                 #:compose)
   (:export :connection-settings
            :db
-           :with-connection))
+           :with-connection
+	   :user
+	   :wiki-article
+	   :wiki-article-revision
+	   :my-session
+	   :quiz
+	   :quiz-revision
+	   ))
 (in-package :spickipedia.db)
 
 (defun connection-settings (&optional (db :maindb))

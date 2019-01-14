@@ -50,9 +50,8 @@
 	  (throw-code 404))
       (clean (wiki-article-revision-content (car revision)) *sanitize-spickipedia*))))
 
-(defroute ("/api/revision" :method :GET) ()
-  (let* ((id (subseq (script-name* *REQUEST*) 14))
-	 (revision (mito:find-dao 'wiki-article-revision :id (parse-integer id))))
+(defroute ("/api/revision/:id" :method :GET) (&key id)
+  (let* ((revision (mito:find-dao 'wiki-article-revision :id (parse-integer id))))
     (if (not revision)
 	(throw-code 404))
     (clean (wiki-article-revision-content revision) *sanitize-spickipedia*)))
