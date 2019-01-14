@@ -65,11 +65,11 @@
 	(clean (wiki-article-revision-content (mito:find-dao 'wiki-article-revision :id previous-id)) *sanitize-spickipedia*)
 	nil)))
 
-(defroute ("/api/wiki/:title" :method :POST) (&key title |summary|)
+(defroute ("/api/wiki/:title" :method :POST) (&key title |summary| |html|)
   (let* ((article (mito:find-dao 'wiki-article :title title)))
     (if (not article)
 	(setf article (mito:create-dao 'wiki-article :title title)))
-    (mito:create-dao 'wiki-article-revision :article article :author user :summary |summary| :content (post-parameter "html" *request*))
+    (mito:create-dao 'wiki-article-revision :article article :author user :summary |summary| :content |html|)
     nil))
 
 (defroute ("/api/quiz/create" :method :POST) ()
@@ -80,14 +80,14 @@
     (format nil "~a" (object-id (create-dao 'quiz-revision :quiz (find-dao 'quiz :id quiz-id) :content |data| :author user)))))
 
 (defroute ("/api/quiz/:the-id" :method :GET) (&key the-id)
-  (setf (content-type*) "text/json")
+  (setf (getf (response-headers *response*) :content-type) "application/json")
   (let* ((quiz-id (parse-integer the-id))
 	 (revision (mito:select-dao 'quiz-revision (where (:= :quiz (find-dao 'quiz :id quiz-id))) (order-by (:desc :id)) (limit 1))))
     (quiz-revision-content (car revision))))
     
     
 (defroute ("/api/history/:title" :method :GET) (&key title)
-  (setf (content-type*) "text/json")
+  (setf (getf (response-headers *response*) :content-type) "application/json")
   (let* ((article (mito:find-dao 'wiki-article :title title)))
     (if article
 	(json:encode-json-to-string
@@ -100,7 +100,7 @@
 	(throw-code 404))))
 
 (defroute ("/api/search/:query" :method :GET) (&key query)
-  (setf (content-type*) "text/json")
+  (setf (getf (response-headers *response*) :content-type) "application/json")
   (let* ((searchquery (tsquery-convert query))
 	 (query (dbi:prepare *connection* "SELECT a.title, ts_rank_cd((setweight(to_tsvector(a.title), 'A') || setweight(to_tsvector((SELECT content FROM wiki_article_revision WHERE article_id = a.id ORDER BY id DESC LIMIT 1)), 'D')), query) AS rank, ts_headline(a.title || (SELECT content FROM wiki_article_revision WHERE article_id = a.id ORDER BY id DESC LIMIT 1), to_tsquery(?)) FROM wiki_article AS A, to_tsquery(?) query WHERE query @@ (setweight(to_tsvector(a.title), 'A') || setweight(to_tsvector((SELECT content FROM wiki_article_revision WHERE article_id = a.id ORDER BY id DESC LIMIT 1)), 'D')) ORDER BY rank DESC;"))
 	 (result (dbi:execute query searchquery searchquery)))
