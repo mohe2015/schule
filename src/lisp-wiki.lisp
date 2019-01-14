@@ -75,8 +75,7 @@
 
 (defpost update-quiz-handler
   (let* ((quiz-id (parse-integer (subseq (script-name*) 10))))
-    (create-dao 'quiz-revision :quiz (find-dao 'quiz :id quiz-id) :content (post-parameter "data") :author user)
-    nil))
+    (format nil "~a" (object-id (create-dao 'quiz-revision :quiz (find-dao 'quiz :id quiz-id) :content (post-parameter "data") :author user)))))
 
 (defget get-quiz-handler
   (setf (content-type*) "text/json")
