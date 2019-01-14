@@ -35,6 +35,10 @@
 ;;
 ;; Routing rules
 
+(defmacro with-user (&body body)
+  `(let ((user (mito:find-dao 'user :id (gethash :user *SESSION*))))
+     ,@body))
+
 (defun random-base64 ()
   (usb8-array-to-base64-string (random-data 64)))
 
@@ -67,11 +71,13 @@
 	nil)))
 
 (defroute ("/api/wiki/:title" :method :POST) (&key title |summary| |html|)
-  (let* ((article (mito:find-dao 'wiki-article :title title)))
-    (if (not article)
-	(setf article (mito:create-dao 'wiki-article :title title)))
-    (mito:create-dao 'wiki-article-revision :article article :author user :summary |summary| :content |html|)
-    nil))
+  (with-connection (db)
+    (with-user
+      (let* ((article (mito:find-dao 'wiki-article :title title)))
+	(if (not article)
+	    (setf article (mito:create-dao 'wiki-article :title title)))
+	(mito:create-dao 'wiki-article-revision :article article :author user :summary |summary| :content |html|)
+	nil))))
 
 (defroute ("/api/quiz/create" :method :POST) ()
     (format nil "~a" (object-id (mito:create-dao 'quiz :creator user))))

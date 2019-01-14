@@ -18,7 +18,7 @@
 (builder
  (:static
   :path (lambda (path)
-          (if (ppcre:scan "\.(js)|(css)$" path)
+          (if (ppcre:scan "\.(js)|(css)|(ttf)|(woff)|(woff2)$" path)
               path
               nil))
   :root *static-directory*)
