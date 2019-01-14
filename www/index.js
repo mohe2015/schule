@@ -638,9 +638,131 @@ $(document).ready(function() {
           return;
       }
       
+      // /quiz/create
+      if (pathname.length == 3 && pathname[1] === 'quiz' && pathname[2] === 'create') {
+        showTab('#loading')
+        
+        $.post("/api/quiz/create", { csrf_token: readCookie('CSRF_TOKEN') }, function(data) {
+            
+            console.log(data);
+          
+            window.history.pushState(null, null, "/quiz/" + data + "/edit");
+            updateState();
+        })
+        .fail(function( jqXHR, textStatus, errorThrown) {
+            handleError(errorThrown, true);
+        });
+        return;
+      }
+      
+      // /quiz/:id/edit
+      if (pathname.length == 4 && pathname[1] === 'quiz' && pathname[3] === 'edit') {
+        
+        // TODO load existing quiz
+        
+       showTab('#edit-quiz');
+       return;
+      }
+      
+      // /quiz/:id/play
+      if (pathname.length == 4 && pathname[1] === 'quiz' && pathname[3] === 'play') {
+          $.get("/api/quiz/" + pathname[2], function(data) {
+              window.correctResponses = 0;
+              window.wrongResponses = 0;
+              window.history.replaceState({data: data}, null, "/quiz/"+pathname[2]+"/play/0");
+              updateState();
+          })
+          .fail(function(jqXHR, textStatus, errorThrown) {
+              handleError(errorThrown, true);
+          });
+          return;
+      }
+      
+      // /quiz/:id/play/:index
+      if (pathname.length == 5 && pathname[1] === 'quiz' && pathname[3] === 'play') {
+        var index = parseInt(pathname[4]);
+        if (window.history.state.data.questions.length == index) {
+          window.history.replaceState(null, null, "/quiz/"+pathname[2]+"/results");
+          updateState();
+          return;
+        }
+        window.currentQuestion = window.history.state.data.questions[index];
+        if (window.currentQuestion.type == "multiple-choice") {
+          showTab('#multiple-choice-question-html');
+          $('.question-html').text(window.currentQuestion.question);
+          $('#answers-html').text("");
+          var i = 0;
+          for (var answer of window.currentQuestion.responses) {
+              var t = $($('#multiple-choice-answer-html').html());
+              t.find('.custom-control-label').text(answer.text);
+              t.find('.custom-control-label').attr('for', i);
+              t.find('.custom-control-input').attr('id', i);
+              $('#answers-html').append(t);
+              i++;
+          }
+        } else if (window.currentQuestion.type == "text") {
+          showTab('#text-question-html');
+          $('.question-html').text(window.currentQuestion.question);
+          //$('#text-response').text(window.currentQuestion.answer);
+        }
+        return;
+      }
+      
+      // /quiz/:id/results
+      if (pathname.length == 4 && pathname[1] === 'quiz' && pathname[3] === 'results') {
+          showTab('#quiz-results');
+          $('#result').text('Du hast ' + window.correctResponses + ' Fragen richtig und ' + window.wrongResponses + ' falsch beantwortet. Das sind ' + (window.correctResponses/(window.correctResponses+window.wrongResponses)*100).toFixed(1).toLocaleString() + " %");
+          return;
+      }
+      
       $('#errorMessage').text("Pfad nicht gefunden! Hast du dich vielleicht vertippt?");
       showTab('#error');
     }
+    
+    $('.multiple-choice-submit-html').click(function() {
+      var everythingCorrect = true;
+      var i = 0;
+      for (var answer of window.currentQuestion.responses) {
+          $('#' + i).removeClass('is-valid');
+          $('#' + i).removeClass('is-invalid');
+          if (answer.isCorrect == $('#' + i).prop( "checked" )) {
+            $('#' + i).addClass('is-valid');
+          } else {
+            $('#' + i).addClass('is-invalid');
+            everythingCorrect = false;
+          }
+          i++;
+      }
+      if (everythingCorrect) {
+        window.correctResponses++; 
+      } else {
+        window.wrongResponses++;
+      }
+      $('.multiple-choice-submit-html').hide();
+      $('.next-question').show();
+    });
+    
+    $('.text-submit-html').click(function() {
+      if ($('#text-response').val() === window.currentQuestion.answer) {
+          window.correctResponses++; 
+          $('#text-response').addClass('is-valid');
+      } else {
+          window.wrongResponses++;
+          $('#text-response').addClass('is-invalid');
+      }
+      $('.text-submit-html').hide();
+      $('.next-question').show();
+    });
+    
+    $('.next-question').click(function() {
+      $('.next-question').hide();
+      $('.text-submit-html').show();
+      $('.multiple-choice-submit-html').show();
+            
+      var pathname = window.location.pathname.split('/');
+      window.history.replaceState(window.history.state, null, "/quiz/"+pathname[2]+"/play/"+(parseInt(pathname[4]) + 1));
+      updateState();
+    });
     
     $('#button-search').click(function() {
       var query = $('#search-query').val();
@@ -747,6 +869,65 @@ $(document).ready(function() {
         return false;
     });
     
+    $('.create-multiple-choice-question').click(function() {
+      var t = $($('#multiple-choice-question').html());
+      $('#questions').append(t); 
+    });
+    
+    $('.create-text-question').click(function() {
+      var t = $($('#text-question').html());
+      $('#questions').append(t); 
+    });
+    
+     $("body").on("click",".add-response-possibility",function(e) {
+      var t = $($('#multiple-choice-response-possibility').html());
+      $(this).siblings('.responses').append(t);
+    });
+    
+     $('.save-quiz').click(function() {
+       var obj = new Object();
+       obj.questions = [];
+       $('#questions').children().each(function() {
+          if ($(this).attr("class") == 'multiple-choice-question') {
+            obj.questions.push(multipleChoiceQuestion($(this)));
+          } else if ($(this).attr("class") == 'text-question') {
+            obj.questions.push(textQuestion($(this)));
+          }
+       });
+      var pathname = window.location.pathname.split('/');
+      $.post("/api/quiz/" + pathname[2], { csrf_token: readCookie('CSRF_TOKEN'), "data": JSON.stringify(obj) }, function(data) {
+            window.history.replaceState(null, null, "/quiz/"+pathname[2]+"/play");
+        })
+        .fail(function( jqXHR, textStatus, errorThrown) {
+            handleError(errorThrown, true);
+        });
+     });
+     
+     function textQuestion(element) {
+        var obj = new Object();
+        obj.type = 'text';
+        obj.question = element.find('.question').val();
+        obj.answer = element.find('.answer').val();
+        return obj;
+     }
+     
+     function multipleChoiceQuestion(element) {
+      var obj = new Object();
+      obj.type = "multiple-choice";
+      obj.question = element.find('.question').val();
+      obj.responses = [];
+      element.find('.responses').children().each(function() {
+          var isCorrect = $(this).find('.multiple-choice-response-correct').prop('checked');
+          var responseText = $(this).find('.multiple-choice-response-text').val();
+          
+          obj.responses.push({
+            "text": responseText,
+            "isCorrect": isCorrect
+          });          
+      });
+      return obj;
+     }
+    
     window.onpopstate = function (event) {
       if (window.lastURL) {
         var pathname = window.lastURL.split('/');
@@ -765,7 +946,7 @@ $(document).ready(function() {
     window.onbeforeunload = function() {
       var pathname = window.location.pathname.split('/');
       console.log(pathname);
-      if ((pathname.length == 4 && pathname[3] == 'create') || (pathname.length == 4 && pathname[3] == 'edit')) {
+      if (pathname.length == 4 && pathname[1] == 'wiki' && (pathname[3] == 'create' || pathname[3] == 'edit')) {
         return true;
       }
     }

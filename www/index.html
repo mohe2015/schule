@@ -5,14 +5,62 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="/bootstrap.css?v=42791d7848021520c376f389aa4b992b22e594bdd1039b67f72c94c88645248b2805fb053abd89bcdbd84d89d1674b0bd0c7107de20c5c72fafaa23b16842885">
     <link rel="stylesheet" href="/all.css?v=4ba5b2a9a5b791152d59bc2dc55caf0dc55a1da4b91e336a89c299c9fff53735c8e8432f62c548b8b0a3fe719ab2bd6392fd1d46e2bad46be80e3f2988e71b8d">
-    <link rel="stylesheet" href="/index.css?v=50f1091234aafd0c201d4f2c0f3a6a49c185c3eca945b58af63e9d8f1e5275ec88d9e63cc337a12f1c05a6942b40cc605c01064bad14dd765d18bf37ab33f105">
+    <link rel="stylesheet" href="/index.css?v=69c7f2e0f61f31d39ec2107a9ba5c972ece593dda28180f78dc504c2a396bd68f593b09dfaef6bbf92dbbb14a9cc50dedafbb9a10fd6ce9f9bd167c3c678f7f0">
     <title>Spickipedia</title>
   </head>
   <body>
+      <template id="multiple-choice-answer-html">
+        <div class="custom-control custom-checkbox">
+          <input type="checkbox" class="custom-control-input" id="customCheck1">
+          <label class="custom-control-label" for="customCheck1">Check this custom</label>
+        </div>
+      </template>
+  
+      <template id="multiple-choice-question">
+        <div class="multiple-choice-question">
+          <form>
+            <div class="form-group">
+              <input type="text" class="form-control question" placeholder="Frage eingeben">
+            </div>
+          
+          <div class="responses">
+          
+          </div>
+
+            <button type="button" class="btn btn-primary mb-1 add-response-possibility">Antwortmöglichkeit hinzufügen</button>
+        </form>
+        <hr />
+      </div>
+    </template>
+  
+    <template id="text-question">
+      <div class="text-question">
+          <form>
+            <div class="form-group">
+              <input type="text" class="form-control question" placeholder="Frage eingeben">
+            </div>
+            <div class="form-group">
+              <input type="text" class="form-control answer" placeholder="Antwort eingeben">
+            </div>
+        </form>
+        <hr />
+      </div>
+    </template>
+    
+      <template id="multiple-choice-response-possibility">
+       <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <div class="input-group-text">
+              <input class="multiple-choice-response-correct" type="checkbox" aria-label="Checkbox for following text input">
+            </div>
+          </div>
+          <input type="text" class="form-control multiple-choice-response-text" aria-label="Text input with checkbox">
+        </div>
+      </template>
+  
       <template id="search-result-template">
         <a class="list-group-item list-group-item-action history-pushState">
           <div class="">
-            <!--<img src="/64.png" class="mr-3" alt="...">-->
             <div class="">
               <h5 class="mt-0 s-title">Media heading</h5>
               <div class="search-result-summary word-wrap"></div>
@@ -66,11 +114,57 @@
       </div>
     </nav>
     <div>
+    
+    <div style="display: none;" class="container my-tab position-absolution" id="edit-quiz">
+      <h1 class="text-center">Quiz ändern</h1>
+      
+      <div id="questions">
+      
+      </div>
+      
+      <button type="button" class="btn btn-primary mb-1 create-multiple-choice-question">Multiple-Choice-Frage hinzufügen</button>
+      <button type="button" class="btn btn-primary mb-1 create-text-question">Frage mit Textantwort hinzufügen</button>
+      <button type="button" class="btn btn-primary mb-1 save-quiz">Speichern</button>
+    </div>
+    
+   
+      
+    </div>
+    
     <div style="display: none;" class="container my-tab position-absolute" id="articles">
       <h1 class="text-center">Alle Artikel</h1>
       <ul id="articles-list">
         
       </ul>
+    </div>
+    <div style="display: none;" class="container my-tab position-absolute" id="multiple-choice-question-html">
+      <h2 class="text-center question-html">Dies ist eine Testfrage?</h2>
+    
+      <div class="row justify-content-center">
+        <div class="col col-sm-10 col-md-6">
+          <div id="answers-html">
+          </div>
+          <button type="button" class="btn btn-primary mt-1 multiple-choice-submit-html">Absenden</button>
+          <button type="button" style="display: none;" class="btn btn-primary mt-1 next-question">Nächste Frage</button>
+        </div>
+      </div>
+    </div>
+    <div style="display: none;" class="container my-tab position-absolute" id="quiz-results">
+      <h1 class="text-center">Ergebnisse</h1>
+      <p id="result"></p>
+    </div>
+    <div style="display: none;" class="container my-tab position-absolute" id="text-question-html">
+      <h2 class="text-center question-html">Dies ist eine Testfrage?</h2>
+    
+      <div class="row justify-content-center">
+        <div class="col col-sm-10 col-md-6">
+          <div id="answers-html">
+            <input type="text" class="form-control" id="text-response">
+          </div>
+          <button type="button" class="btn btn-primary mt-1 text-submit-html">Absenden</button>
+          <button type="button" style="display: none;" class="btn btn-primary mt-1 next-question">Nächste Frage</button>
+        </div>
+      </div>
     </div>
     <div style="display: none;" class="container my-tab position-absolute col-sm-6 offset-sm-3 col-md-4 offset-md-4 text-center" id="login">
       
@@ -195,10 +289,6 @@
       </div>
     </div>
     
-    
-    
-    
-    
     <div class="modal fade" id="spickiLinkModal" tabindex="-1" role="dialog" aria-hidden="true">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -244,7 +334,7 @@
     
     <script src="/summernote-cleaner.js?v=f1c0603425ee79c60eec33040d94f56a3e9f4080b1a2e3dbde30cfe28f397b7a133ff92385a551c291ed7f07480661ec6f0d75c98d01ce46ca0d3b0296adc4ca"></script>
     
-    <script src="/index.js?v=32bb315c9db55f4bcaab195afa4cffe44960273f92887b9ffd30a5e8dbd892f06efbdf608608c6c87eaa9321e75be0d933c40b45c4d65cf70b49c48ab1c2ba11"></script>
+    <script src="/index.js?v=8bbe5db6326c2a05f2fc650be7244e345f80cfe433fc5634d50e87cd008fbee7d8e2e7bee0123b2a256f7171ec0007bbc2eca40afb3e7f911e750ec34c72a991"></script>
      
     <script src="/visual-diff.js?v=746ca5b1538531791b329ce68e8fc243bbbe6a445ecc8c4798a0d57b9fc7d4b2dead5bc75d66294edf2ba73229625e4621d4e2a193b967b8a27e1e7ed8c39abf"></script>
     
