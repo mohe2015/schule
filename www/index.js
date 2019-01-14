@@ -664,33 +664,35 @@ $(document).ready(function() {
        return;
       }
       
-      // /quiz/:id/edit
+      // /quiz/:id/play
       if (pathname.length == 4 && pathname[1] === 'quiz' && pathname[3] === 'play') {
           $.get("/api/quiz/" + pathname[2], function(data) {
-              console.log(data);
-              showTab('#multiple-choice-question-html');
-              window.currentQuestion = data.questions[0];
-              console.log(window.currentQuestion);
-              if (window.currentQuestion.type == "multiple-choice") {
-                $('.question-html').text(window.currentQuestion.question);
-                $('#answers-html').text("");
-                var i = 0;
-                for (var answer of window.currentQuestion.responses) {
-                    var t = $($('#multiple-choice-answer-html').html());
-                    t.find('.custom-control-label').text(answer.text);
-                    t.find('.custom-control-label').attr('for', i);
-                    t.find('.custom-control-input').attr('id', i);
-                    $('#answers-html').append(t);
-                    i++;
-                }
-              }
-              /*
-                
-               * */
+              window.history.replaceState({data: data}, null, "/quiz/"+pathname[2]+"/play/0");
+              updateState();
           })
           .fail(function(jqXHR, textStatus, errorThrown) {
               handleError(errorThrown, true);
           });
+          return;
+      }
+      
+      // /quiz/:id/play/:index
+      if (pathname.length == 5 && pathname[1] === 'quiz' && pathname[3] === 'play') {
+        window.currentQuestion = window.history.state.data.questions[parseInt(pathname[4])];
+        if (window.currentQuestion.type == "multiple-choice") {
+          showTab('#multiple-choice-question-html');
+          $('.question-html').text(window.currentQuestion.question);
+          $('#answers-html').text("");
+          var i = 0;
+          for (var answer of window.currentQuestion.responses) {
+              var t = $($('#multiple-choice-answer-html').html());
+              t.find('.custom-control-label').text(answer.text);
+              t.find('.custom-control-label').attr('for', i);
+              t.find('.custom-control-input').attr('id', i);
+              $('#answers-html').append(t);
+              i++;
+          }
+        }
           return;
       }
       
@@ -844,7 +846,7 @@ $(document).ready(function() {
        });
       var pathname = window.location.pathname.split('/');
       $.post("/api/quiz/" + pathname[2], { csrf_token: readCookie('CSRF_TOKEN'), "data": JSON.stringify(obj) }, function(data) {
-            alert(data);
+            //alert(data);
         })
         .fail(function( jqXHR, textStatus, errorThrown) {
             handleError(errorThrown, true);
