@@ -860,7 +860,7 @@ $(document).ready(function() {
        });
       var pathname = window.location.pathname.split('/');
       $.post("/api/quiz/" + pathname[2], { csrf_token: readCookie('CSRF_TOKEN'), "data": JSON.stringify(obj) }, function(data) {
-            //alert(data);
+            window.history.replaceState(null, null, "/quiz/"+pathname[2]+"/play");
         })
         .fail(function( jqXHR, textStatus, errorThrown) {
             handleError(errorThrown, true);
