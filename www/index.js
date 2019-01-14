@@ -698,8 +698,12 @@ $(document).ready(function() {
               $('#answers-html').append(t);
               i++;
           }
+        } else if (window.currentQuestion.type == "text") {
+          showTab('#text-question-html');
+          $('.question-html').text(window.currentQuestion.question);
+          //$('#text-response').text(window.currentQuestion.answer);
         }
-          return;
+        return;
       }
       
       $('#errorMessage').text("Pfad nicht gefunden! Hast du dich vielleicht vertippt?");
@@ -722,7 +726,21 @@ $(document).ready(function() {
       $('.next-question').show();
     });
     
+    $('.text-submit-html').click(function() {
+      if ($('#text-response').val() === window.currentQuestion.answer) {
+          $('#text-response').addClass('is-valid');
+      } else {
+          $('#text-response').addClass('is-invalid');
+      }
+      $('.text-submit-html').hide();
+      $('.next-question').show();
+    });
+    
     $('.next-question').click(function() {
+      $('.next-question').hide();
+      $('.text-submit-html').show();
+      $('.multiple-choice-submit-html').show();
+            
       var pathname = window.location.pathname.split('/');
       window.history.replaceState(window.history.state, null, "/quiz/"+pathname[2]+"/play/"+(parseInt(pathname[4]) + 1));
       updateState();
