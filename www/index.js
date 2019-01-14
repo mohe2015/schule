@@ -667,6 +667,8 @@ $(document).ready(function() {
       // /quiz/:id/play
       if (pathname.length == 4 && pathname[1] === 'quiz' && pathname[3] === 'play') {
           $.get("/api/quiz/" + pathname[2], function(data) {
+              window.correctResponses = 0;
+              window.wrongResponses = 0;
               window.history.replaceState({data: data}, null, "/quiz/"+pathname[2]+"/play/0");
               updateState();
           })
@@ -706,11 +708,19 @@ $(document).ready(function() {
         return;
       }
       
+      // /quiz/:id/results
+      if (pathname.length == 4 && pathname[1] === 'quiz' && pathname[3] === 'results') {
+          showTab('#quiz-results');
+          $('#result').text('Du hast ' + window.correctResponses + ' Fragen richtig und ' + window.wrongResponses + ' falsch beantwortet. Das sind ' + (window.correctResponses/(window.correctResponses+window.wrongResponses)*100).toFixed(1).toLocaleString() + " %");
+          return;
+      }
+      
       $('#errorMessage').text("Pfad nicht gefunden! Hast du dich vielleicht vertippt?");
       showTab('#error');
     }
     
     $('.multiple-choice-submit-html').click(function() {
+      var everythingCorrect = true;
       var i = 0;
       for (var answer of window.currentQuestion.responses) {
           $('#' + i).removeClass('is-valid');
@@ -719,8 +729,14 @@ $(document).ready(function() {
             $('#' + i).addClass('is-valid');
           } else {
             $('#' + i).addClass('is-invalid');
+            everythingCorrect = false;
           }
           i++;
+      }
+      if (everythingCorrect) {
+        window.correctResponses++; 
+      } else {
+        window.wrongResponses++;
       }
       $('.multiple-choice-submit-html').hide();
       $('.next-question').show();
@@ -728,8 +744,10 @@ $(document).ready(function() {
     
     $('.text-submit-html').click(function() {
       if ($('#text-response').val() === window.currentQuestion.answer) {
+          window.correctResponses++; 
           $('#text-response').addClass('is-valid');
       } else {
+          window.wrongResponses++;
           $('#text-response').addClass('is-invalid');
       }
       $('.text-submit-html').hide();
