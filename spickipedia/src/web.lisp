@@ -6,6 +6,7 @@
         :spickipedia.view
         :spickipedia.db
 	:spickipedia.sanitize
+	:spickipedia.tsquery-converter
         :mito
         :sxql
 	:ironclad
@@ -109,7 +110,7 @@
 							(summary . ,(getf r :|ts_headline|)))) (dbi:fetch-all result)))))
 
 (defroute ("/api/articles" :method :GET) ()
-  (setf (content-type*) "text/json")
+  (setf (getf (response-headers *response*) :content-type) "application/json")
   (let* ((articles (mito:select-dao 'wiki-article)))
     (json:encode-json-to-string (mapcar 'wiki-article-title articles))))
 

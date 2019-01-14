@@ -8,7 +8,8 @@
 
 (in-package :cl-user)
 (defpackage spickipedia.tsquery-converter
-  (:use :cl))
+  (:use :cl :str)
+  (:export :tsquery-convert))
 (in-package :spickipedia.tsquery-converter)
 
 (defun handle-quoted (query)
