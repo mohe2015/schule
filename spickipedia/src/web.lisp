@@ -65,30 +65,30 @@
 	(clean (wiki-article-revision-content (mito:find-dao 'wiki-article-revision :id previous-id)) *sanitize-spickipedia*)
 	nil)))
 
-(defroute ("/api/wiki/:title" :method :POST) (&key title)
+(defroute ("/api/wiki/:title" :method :POST) (&key title |summary|)
   (let* ((article (mito:find-dao 'wiki-article :title title)))
     (if (not article)
 	(setf article (mito:create-dao 'wiki-article :title title)))
-    (mito:create-dao 'wiki-article-revision :article article :author user :summary (post-parameter "summary") :content (post-parameter "html" *request*))
+    (mito:create-dao 'wiki-article-revision :article article :author user :summary |summary| :content (post-parameter "html" *request*))
     nil))
 
 (defroute ("/api/quiz/create" :method :POST) ()
     (format nil "~a" (object-id (mito:create-dao 'quiz :creator user))))
 
-(defroute ("/api/quiz/:the-quiz-id" :method :POST) (&key the-quiz-id)
+(defroute ("/api/quiz/:the-quiz-id" :method :POST) (&key the-quiz-id |data|)
   (let* ((quiz-id (parse-integer the-quiz-id)))
-    (format nil "~a" (object-id (create-dao 'quiz-revision :quiz (find-dao 'quiz :id quiz-id) :content (post-parameter "data") :author user)))))
+    (format nil "~a" (object-id (create-dao 'quiz-revision :quiz (find-dao 'quiz :id quiz-id) :content |data| :author user)))))
 
-(defroute ("/api/quiz" :method :GET) ()
+(defroute ("/api/quiz/:the-id" :method :GET) (&key the-id)
   (setf (content-type*) "text/json")
-  (let* ((quiz-id (parse-integer (subseq (script-name*) 10)))
+  (let* ((quiz-id (parse-integer the-id))
 	 (revision (mito:select-dao 'quiz-revision (where (:= :quiz (find-dao 'quiz :id quiz-id))) (order-by (:desc :id)) (limit 1))))
     (quiz-revision-content (car revision))))
     
     
-(defroute ("/api/history" :method :GET) ()
+(defroute ("/api/history/:title" :method :GET) (&key title)
   (setf (content-type*) "text/json")
-  (let* ((title (subseq (script-name* *REQUEST*) 13)) (article (mito:find-dao 'wiki-article :title title)))
+  (let* ((article (mito:find-dao 'wiki-article :title title)))
     (if article
 	(json:encode-json-to-string
 	 (mapcar #'(lambda (r) `((id   . ,(object-id r))
@@ -97,9 +97,7 @@
 				 (created . ,(local-time:format-timestring nil (mito:object-created-at r)))
 				 (size    . ,(length (wiki-article-revision-content r)))))
 		 (mito:select-dao 'wiki-article-revision (where (:= :article article)) (order-by (:desc :created-at)))))
-	(progn
-	  (setf (return-code* *reply*) 404)
-	  nil))))
+	(throw-code 404))))
 
 (defroute ("/api/search/:query" :method :GET) (&key query)
   (setf (content-type*) "text/json")
@@ -115,8 +113,8 @@
   (let* ((articles (mito:select-dao 'wiki-article)))
     (json:encode-json-to-string (mapcar 'wiki-article-title articles))))
 
-(defroute ("/api/upload" :method :POST) ()
-  (let* ((filepath (nth 0 (post-parameter "file")))
+(defroute ("/api/upload" :method :POST) (&key |file|)
+  (let* ((filepath (nth 0 |file|))
 	 ;; (filetype (nth 2 (hunchentoot:post-parameter "file")))
 	 (filehash (byte-array-to-hex-string (digest-file :sha512 filepath)))	 ;; TODO whitelist mimetypes TODO verify if mimetype is correct
 	 (newpath (merge-pathnames (concatenate 'string "uploads/" filehash) *default-pathname-defaults*)))
@@ -146,8 +144,8 @@
   (sb-ext:quit))
 
 ;; noauth cache
-(defroute ("/api/file" :method :GET) ()
-  (handle-static-file (merge-pathnames (concatenate 'string "uploads/" (subseq (script-name* *REQUEST*) 10)))))
+(defroute ("/api/file/:name" :method :GET) (&key name)
+  (handle-static-file (merge-pathnames (concatenate 'string "uploads/" name))))
 
 ;; this is used to get the most used browsers to decide for future features (e.g. some browsers don't support new features so I won't use them if many use such a browser)
 (defun track ()
