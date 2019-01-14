@@ -10,6 +10,12 @@
   (:export :*web*))
 (in-package :spickipedia.web)
 
+
+(defparameter *default-cost* 13
+  "The default value for the COST parameter to HASH.")
+
+
+
 ;; for @route annotation
 (syntax:use-syntax :annot)
 
