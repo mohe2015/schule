@@ -1,4 +1,7 @@
-(in-package :lisp-wiki)
+(in-package :cl-user)
+(defpackage spickipedia.route
+  (:use :cl))
+(in-package :spickipedia.route)
 
 (defun cache-forever ()
   (setf (header-out "Cache-Control") "max-age: 31536000"))

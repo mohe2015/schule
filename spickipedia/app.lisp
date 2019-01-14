@@ -34,6 +34,6 @@
      nil
      (lambda (app)
        (lambda (env)
-         (let ((datafly:*trace-sql* t))
+         (let ((mito:*mito-logger-stream* t))
            (funcall app env)))))
  *web*)

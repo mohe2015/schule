@@ -1,4 +1,7 @@
-(in-package :lisp-wiki)
+(in-package :cl-user)
+(defpackage spickipedia.permissions
+  (:use :cl))
+(in-package :spickipedia.permissions)
 
 (defgeneric action-allowed-p (action group))
 

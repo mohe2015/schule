@@ -1,4 +1,7 @@
-(in-package :lisp-wiki)
+(in-package :cl-user)
+(defpackage spickipedia.sanitize
+  (:use :cl :sanitize))
+(in-package :spickipedia.sanitize)
 
 (define-sanitize-mode *sanitize-spickipedia*
     :elements ("h1" "h2" "h3" "h4" "h5" "h6" "p" "strike" "sub" "b" "u" "i" "sup" "table" "tbody" "tr" "td" "ul" "a" "br" "ol" "li" "img" "iframe" "span")

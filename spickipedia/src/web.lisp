@@ -5,7 +5,7 @@
         :spickipedia.config
         :spickipedia.view
         :spickipedia.db
-        :datafly
+        :mito
         :sxql)
   (:export :*web*))
 (in-package :spickipedia.web)

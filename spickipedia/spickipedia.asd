@@ -15,12 +15,25 @@
                ;; HTML Template
                "djula"
 
-               ;; for DB
-               "datafly"
-               "sxql")
+	       :mito
+	       :cl-json
+	       :sanitize
+	       :ironclad
+	       :cl-fad
+	       :cl-base64
+	       :monkeylib-bcrypt
+	       :str
+	       )
   :components ((:module "src"
                 :components
-                ((:file "main" :depends-on ("config" "view" "db"))
+                (
+		 (:file "sanitize")
+		 (:file "permissions")
+		;; (:file "session")
+		 (:file "route")
+		 (:file "tsquery-converter")
+		 
+		 (:file "main" :depends-on ("config" "view" "db"))
                  (:file "web" :depends-on ("view"))
                  (:file "view" :depends-on ("config"))
                  (:file "db" :depends-on ("config"))

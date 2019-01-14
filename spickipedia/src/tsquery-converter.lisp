@@ -6,7 +6,10 @@
 
 ;;(defparameter *query* (dbi:prepare *connection* "SELECT to_tsquery('german', ?), to_tsquery('german', ?) @@ to_tsvector('german', 'Dies ist ein sehr toller Text über Elefanten. Sie können laufen, rennen und trompeten');"))
 
-(in-package :lisp-wiki)
+(in-package :cl-user)
+(defpackage spickipedia.tsquery-converter
+  (:use :cl))
+(in-package :spickipedia.tsquery-converter)
 
 (defun handle-quoted (query)
   (concat "(" (join " <-> " (split " " query)) ")"))

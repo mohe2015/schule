@@ -1,5 +1,7 @@
-(in-package :lisp-wiki)
-
+(in-package :cl-user)
+(defpackage spickipedia.session
+  (:use :cl))
+(in-package :spickipedia.session)
 
 (defmethod session-verify ((request request))
   (let ((mito:*connection* (dbi:connect-cached :postgres :username "postgres" :database-name "spickipedia"))
