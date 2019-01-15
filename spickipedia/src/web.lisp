@@ -55,22 +55,26 @@
 	(clean (wiki-article-revision-content (car revision)) *sanitize-spickipedia*)))))
 
 (defroute ("/api/revision/:id" :method :GET) (&key id)
-  (let* ((revision (mito:find-dao 'wiki-article-revision :id (parse-integer id))))
-    (if (not revision)
-	(throw-code 404))
-    (clean (wiki-article-revision-content revision) *sanitize-spickipedia*)))
+  (with-connection (db)
+    (with-user
+      (let* ((revision (mito:find-dao 'wiki-article-revision :id (parse-integer id))))
+	(if (not revision)
+	    (throw-code 404))
+	(clean (wiki-article-revision-content revision) *sanitize-spickipedia*)))))
 
 ;; SELECT article_id FROM wiki_article_revision WHERE id = 8;
 ;; SELECT id FROM wiki_article_revision WHERE article_id = 1 and id < 8 ORDER BY id DESC LIMIT 1;
 ;; SELECT id FROM wiki_article_revision WHERE article_id = (SELECT article_id FROM wiki_article_revision WHERE id = 8) and id < 8 ORDER BY id DESC LIMIT 1;
 (defroute ("/api/previous-revision/:the-id" :method :GET) (&key the-id)
-  (let* ((id (parse-integer the-id))
-	 (query (dbi:prepare *connection* "SELECT id FROM wiki_article_revision WHERE article_id = (SELECT article_id FROM wiki_article_revision WHERE id = ?) and id < ? ORDER BY id DESC LIMIT 1;"))
-	 (result (dbi:execute query id id))
-	 (previous-id (getf (dbi:fetch result) :|id|)))
-    (if previous-id
-	(clean (wiki-article-revision-content (mito:find-dao 'wiki-article-revision :id previous-id)) *sanitize-spickipedia*)
-	nil)))
+  (with-connection (db)
+    (with-user
+      (let* ((id (parse-integer the-id))
+	     (query (dbi:prepare *connection* "SELECT id FROM wiki_article_revision WHERE article_id = (SELECT article_id FROM wiki_article_revision WHERE id = ?) and id < ? ORDER BY id DESC LIMIT 1;"))
+	     (result (dbi:execute query id id))
+	     (previous-id (getf (dbi:fetch result) :|id|)))
+	(if previous-id
+	    (clean (wiki-article-revision-content (mito:find-dao 'wiki-article-revision :id previous-id)) *sanitize-spickipedia*)
+	    nil)))))
 
 (defroute ("/api/wiki/:title" :method :POST) (&key title |summary| |html|)
   (with-connection (db)
@@ -96,26 +100,30 @@
     
     
 (defroute ("/api/history/:title" :method :GET) (&key title)
-  (setf (getf (response-headers *response*) :content-type) "application/json")
-  (let* ((article (mito:find-dao 'wiki-article :title title)))
-    (if article
-	(json:encode-json-to-string
-	 (mapcar #'(lambda (r) `((id   . ,(object-id r))
-				 (user . ,(user-name (wiki-article-revision-author r)))
-				 (summary . ,(wiki-article-revision-summary r))
-				 (created . ,(local-time:format-timestring nil (mito:object-created-at r)))
-				 (size    . ,(length (wiki-article-revision-content r)))))
-		 (mito:select-dao 'wiki-article-revision (where (:= :article article)) (order-by (:desc :created-at)))))
-	(throw-code 404))))
+  (with-connection (db)
+    (with-user
+      (setf (getf (response-headers *response*) :content-type) "application/json")
+      (let* ((article (mito:find-dao 'wiki-article :title title)))
+	(if article
+	    (json:encode-json-to-string
+	     (mapcar #'(lambda (r) `((id   . ,(object-id r))
+				     (user . ,(user-name (wiki-article-revision-author r)))
+				     (summary . ,(wiki-article-revision-summary r))
+				     (created . ,(local-time:format-timestring nil (mito:object-created-at r)))
+				     (size    . ,(length (wiki-article-revision-content r)))))
+		     (mito:select-dao 'wiki-article-revision (where (:= :article article)) (order-by (:desc :created-at)))))
+	    (throw-code 404))))))
 
 (defroute ("/api/search/:query" :method :GET) (&key query)
-  (setf (getf (response-headers *response*) :content-type) "application/json")
-  (let* ((searchquery (tsquery-convert query))
-	 (query (dbi:prepare *connection* "SELECT a.title, ts_rank_cd((setweight(to_tsvector(a.title), 'A') || setweight(to_tsvector((SELECT content FROM wiki_article_revision WHERE article_id = a.id ORDER BY id DESC LIMIT 1)), 'D')), query) AS rank, ts_headline(a.title || (SELECT content FROM wiki_article_revision WHERE article_id = a.id ORDER BY id DESC LIMIT 1), to_tsquery(?)) FROM wiki_article AS A, to_tsquery(?) query WHERE query @@ (setweight(to_tsvector(a.title), 'A') || setweight(to_tsvector((SELECT content FROM wiki_article_revision WHERE article_id = a.id ORDER BY id DESC LIMIT 1)), 'D')) ORDER BY rank DESC;"))
-	 (result (dbi:execute query searchquery searchquery)))
-    (json:encode-json-to-string (mapcar #'(lambda (r) `((title . ,(getf r :|title|))
-							(rank  . ,(getf r :|rank|))
-							(summary . ,(getf r :|ts_headline|)))) (dbi:fetch-all result)))))
+  (with-connection (db)
+    (with-user
+      (setf (getf (response-headers *response*) :content-type) "application/json")
+      (let* ((searchquery (tsquery-convert query))
+	     (query (dbi:prepare *connection* "SELECT a.title, ts_rank_cd((setweight(to_tsvector(a.title), 'A') || setweight(to_tsvector((SELECT content FROM wiki_article_revision WHERE article_id = a.id ORDER BY id DESC LIMIT 1)), 'D')), query) AS rank, ts_headline(a.title || (SELECT content FROM wiki_article_revision WHERE article_id = a.id ORDER BY id DESC LIMIT 1), to_tsquery(?)) FROM wiki_article AS A, to_tsquery(?) query WHERE query @@ (setweight(to_tsvector(a.title), 'A') || setweight(to_tsvector((SELECT content FROM wiki_article_revision WHERE article_id = a.id ORDER BY id DESC LIMIT 1)), 'D')) ORDER BY rank DESC;"))
+	     (result (dbi:execute query searchquery searchquery)))
+	(json:encode-json-to-string (mapcar #'(lambda (r) `((title . ,(getf r :|title|))
+							    (rank  . ,(getf r :|rank|))
+							    (summary . ,(getf r :|ts_headline|)))) (dbi:fetch-all result)))))))
 
 (defroute ("/api/articles" :method :GET) ()
   (setf (getf (response-headers *response*) :content-type) "application/json")
@@ -145,8 +153,8 @@
 
 ;; noauth
 (defroute ("/api/logout" :method :POST) ()
-  (mito:delete-dao *SESSION*)
-  (setf *SESSION* nil))
+  (setf (gethash :user *SESSION*) nil)
+  nil)
 
 ;; noauth
 (defroute ("/api/killswitch" :method :GET) ()
