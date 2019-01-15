@@ -36,8 +36,10 @@
 ;; Routing rules
 
 (defmacro with-user (&body body)
-  `(let ((user (mito:find-dao 'user :id (gethash :user *SESSION*))))
-     ,@body))
+  `(if (gethash :user *SESSION*)
+       (let ((user (mito:find-dao 'user :id (gethash :user *SESSION*))))
+	 ,@body)
+       (throw-code 401)))
 
 (defun random-base64 ()
   (usb8-array-to-base64-string (random-data 64)))
