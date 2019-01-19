@@ -22,5 +22,5 @@
       (let ((name (chain ($ "#inputName") (val (chain window local-storage name))))
 	    (state (create last-url (chain window location href))))
 	(chain window local-storage (remove-item "name"))
-	(chain window history (push-state state) nil "/login")
+	(chain window history (push-state (create a 1 b 2) nil "/login"))
 	(update-state))))
