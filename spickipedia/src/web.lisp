@@ -1,7 +1,7 @@
 (in-package :cl-user)
 (defpackage spickipedia.web
   (:use :cl
-	:spickipedia.parenscript
+	:parenscript
         :caveman2
         :spickipedia.config
         :spickipedia.view
@@ -17,10 +17,14 @@
 (in-package :spickipedia.web)
 
 
+(defun index-js ()
+  (in-package :spickipedia.web)
+  (ps-compile-file #P"src/index.lisp")
+  (in-package :common-lisp-user))
+
+
 (defparameter *default-cost* 13
   "The default value for the COST parameter to HASH.")
-
-
 
 ;; for @route annotation
 (syntax:use-syntax :annot)
