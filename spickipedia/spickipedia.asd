@@ -23,16 +23,16 @@
 	       :cl-base64
 	       :monkeylib-bcrypt
 	       :str
+	       :parenscript
 	       )
   :components ((:module "src"
                 :components
                 (
 		 (:file "sanitize")
 		 (:file "permissions")
-		;; (:file "session")
 		 (:file "route")
 		 (:file "tsquery-converter")
-		 
+		 (:file "parenscript")
 		 (:file "main" :depends-on ("config" "view" "db"))
                  (:file "web" :depends-on ("view"))
                  (:file "view" :depends-on ("config"))

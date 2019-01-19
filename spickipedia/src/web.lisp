@@ -1,6 +1,7 @@
 (in-package :cl-user)
 (defpackage spickipedia.web
   (:use :cl
+	:spickipedia.parenscript
         :caveman2
         :spickipedia.config
         :spickipedia.view
@@ -8,7 +9,6 @@
 	:spickipedia.sanitize
 	:spickipedia.tsquery-converter
         :mito
-        :sxql
 	:ironclad
 	:sanitize
 	:bcrypt
@@ -86,11 +86,15 @@
 	nil))))
 
 (defroute ("/api/quiz/create" :method :POST) ()
-    (format nil "~a" (object-id (mito:create-dao 'quiz :creator user))))
+  (with-connection (db)
+    (with-user
+    (format nil "~a" (object-id (mito:create-dao 'quiz :creator user))))))
 
 (defroute ("/api/quiz/:the-quiz-id" :method :POST) (&key the-quiz-id |data|)
+  (with-connection (db)
+    (with-user
   (let* ((quiz-id (parse-integer the-quiz-id)))
-    (format nil "~a" (object-id (create-dao 'quiz-revision :quiz (find-dao 'quiz :id quiz-id) :content |data| :author user)))))
+    (format nil "~a" (object-id (create-dao 'quiz-revision :quiz (find-dao 'quiz :id quiz-id) :content |data| :author user)))))))
 
 (defroute ("/api/quiz/:the-id" :method :GET) (&key the-id)
   (setf (getf (response-headers *response*) :content-type) "application/json")
@@ -163,6 +167,9 @@
 ;; noauth cache
 (defroute ("/api/file/:name" :method :GET) (&key name)
   (handle-static-file (merge-pathnames (concatenate 'string "uploads/" name))))
+
+(defroute ("/api/index.js" :method :GET) ()
+  (index-js))
 
 ;; this is used to get the most used browsers to decide for future features (e.g. some browsers don't support new features so I won't use them if many use such a browser)
 (defun track ()
