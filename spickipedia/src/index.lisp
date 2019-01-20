@@ -255,3 +255,45 @@
   (set-fullscreen F)
   (chain ($ "article") (summernote "destroy"))
   (chain ($ ".tooltip") (hide)))
+
+(chain
+ ($ ".edit-button")
+ (click
+  (lambda (e)
+    (chain e (prevent-default))
+    (let ((pathname (chain window location pathname (split "/"))))
+      (chain window history (push-state (chain window history state) nil (concatenate 'string "/wiki/" (chain pathname 2) "/edit")))
+      (update-state)
+      F))))
+
+(chain
+ ($ "#create-article")
+ (click
+  (lambda (e)
+    (chain e (prevent-default))
+    (let ((pathname (chain window location pathname (split "/"))))
+      (chain window history (push-state (chain window history state) nil (concatenate 'string "/wiki/" (chain pathname 2) "/create")))
+      (update-state)
+      F))))
+
+
+(chain
+ ($ "#show-history")
+ (click
+  (lambda (e)
+    (chain e (prevent-default))
+    (let ((pathname (chain window location pathname (split "/"))))
+      (chain window history (push-state (chain window history state) nil (concatenate 'string "/wiki/" (chain pathname 2) "/history")))
+      (update-state)
+      F))))
+
+(defun cleanup ()
+  (set-fullscreen F)
+  (chain ($ "article") (summernote "destroy"))
+  (chain ($ "#publish-changes-modal") (modal "hide"))
+  (chain ($ "#publish-changes") (show))
+  (chain ($ "#publishing-changes") (hide)))
+
+(defun show-tab (id)
+  (chain ($ ".my-tab") (not id) (fade-out))
+  (chain ($ id) (fade-in)))
