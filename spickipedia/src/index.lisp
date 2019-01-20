@@ -130,3 +130,37 @@
 		     (chain ($ "#publishing-changes") (hide))
 		     (handle-error error-thrown F))))
       ))))
+
+(defun send-file (file editor wel-editable)
+  (chain ($ "#uploadProgressModal") (modal "show"))
+  (let ((data (new (-form-data))))
+    (chain data (append "file" file))
+    (chain data (append "csrf_token" (read-cookie "CSRF_TOKEN")))
+    (setf (@ window file-upload-finished) F)
+    (setf
+     (@ window file-upload-xhr)
+     (chain
+      $
+      (ajax
+       (create
+	data data
+	type "POST"
+	xhr (lambda ()
+	      (let ((my-xhr (chain $ ajax-settings (xhr))))
+		(if (chain my-xhr upload)
+		    (chain my-xhr upload (add-event-listener "progress" progress-handling-function F)))
+		my-xhr))
+	url "/api/upload"
+	cache F
+	content-type F
+	process-data F
+	success (lambda (url)
+		  (setf (@ window file-upload-finished) T)
+		  (chain ($ "#uploadProgressModal") (modal "hide"))
+		  (chain ($ "article") (summernote "insertImage" (concatenate 'string "/api/file/" url))))
+	error (lambda ()
+		(if (not (@ window file-upload-finished))
+		    (progn
+		      (setf (@ window file-upload-finished) T)
+		      (chain ($ "#uploadProgressModal") (modal "hide"))
+		      (alert "Fehler beim Upload!"))))))))))
