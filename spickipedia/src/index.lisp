@@ -43,3 +43,22 @@
       (chain ($ "article") (summernote "fullscreen.toggle"))
       (if (and (not value) (= (chain ($ ".fullscreen") length) 1))
 	  (chain ($ "article") (summernote "fullscreen.toggle")))))
+
+(defparameter finished-button
+  (lambda (context)
+    (chain
+     (chain
+      (chain $ summernote ui)
+      (button
+       (create
+	contents "<i class=\"fa fa-check\"/>"
+	tooltip "Fertig"
+	click
+	(lambda ()
+	  (chain
+	   ($ "#publish-changes-modal")
+	   (on "shown.bs.modal"
+	       (lambda ()
+		 (chain ($ "#change-summary") (trigger "focus")))))
+	  (chain ($ "#publish-changes-modal") (modal "show"))))))
+     (render))))
