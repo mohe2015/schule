@@ -17,13 +17,6 @@
   (:export :*web*))
 (in-package :spickipedia.web)
 
-
-(defun index-js ()
-  (in-package :spickipedia.web)
-  (ps-compile-file #P"src/index.lisp")
-  (in-package :common-lisp-user))
-
-
 (defparameter *default-cost* 13
   "The default value for the COST parameter to HASH.")
 
@@ -36,7 +29,6 @@
 (defclass <web> (<app>) ())
 (defvar *web* (make-instance '<web>))
 (clear-routing-rules *web*)
-
 ;;
 ;; Routing rules
 
@@ -175,7 +167,9 @@
 
 (defroute ("/api/index.js" :method :GET) ()
   (setf (getf (response-headers *response*) :content-type) "application/javascript")
-  (index-js))
+  (in-package :spickipedia.web)
+  (ps-compile-file #P"src/index.lisp")
+  (in-package :common-lisp-user))
 
 ;; this is used to get the most used browsers to decide for future features (e.g. some browsers don't support new features so I won't use them if many use such a browser)
 (defun track ()
@@ -185,8 +179,7 @@
                      :if-does-not-exist :create)
   (format str "~a~%" (json:encode-json-to-string (acons "user" (my-session-user *session*) (headers-in*))))))
 
-(defroute ("/" :method :GET) ()
-  (format t "DFJSDOFO")
+(defroute ("/.*" :regexp t :method :GET) ()
   (render #P"index.html"))
 
 ;; Error pages

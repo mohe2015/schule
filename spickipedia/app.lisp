@@ -18,7 +18,6 @@
 (builder
  (:static
   :path (lambda (path)
-	  (format t "~a~%" path)
           (if (and (cl-fad:file-exists-p (concatenate 'string "static" path)) (not (cl-fad:directory-exists-p (concatenate 'string "static" path))))
               path
               nil))

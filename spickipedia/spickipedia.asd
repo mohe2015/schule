@@ -32,7 +32,6 @@
 		 (:file "permissions")
 		 (:file "route")
 		 (:file "tsquery-converter")
-		 (:file "parenscript")
 		 (:file "main" :depends-on ("config" "view" "db"))
                  (:file "web" :depends-on ("view"))
                  (:file "view" :depends-on ("config"))
