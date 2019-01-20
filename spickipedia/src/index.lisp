@@ -62,3 +62,37 @@
 		 (chain ($ "#change-summary") (trigger "focus")))))
 	  (chain ($ "#publish-changes-modal") (modal "show"))))))
      (render))))
+
+(defparameter cancel-button
+  (lambda (context)
+    (chain
+     (chain
+      (chain $ summernote ui)
+      (button
+       (create
+	contents "<i class=\"fa fa-times\"/>"
+	tooltip "Abbrechen"
+	click
+	(lambda ()
+	  (if (confirm "Möchtest du die Änderung wirklich verwerfen?")
+	      (chain window history (back)))))))
+     (render))))
+
+(defparameter wiki-link-button
+  (lambda (context)
+    (chain
+     (chain
+      (chain $ summernote ui)
+      (button
+       (create
+	contents "S"
+	tooltip "Spickipedia-Link einfügen"
+	click
+	(lambda ()
+	  (chain
+	   ($ "#spickiLinkModal")
+	   (on "shown.bs.modal"
+	       (lambda ()
+		 (chain ($ "#article-link-title") (trigger "focus")))))
+	  (chain ($ "#spickiLinkModal") (modal "show"))))))
+     (render))))
