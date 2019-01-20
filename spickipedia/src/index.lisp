@@ -250,3 +250,8 @@
       remove-empty F
       disable-upload F))))
   (set-fullscreen T))
+
+(defun hide-editor ()
+  (set-fullscreen F)
+  (chain ($ "article") (summernote "destroy"))
+  (chain ($ ".tooltip") (hide)))
