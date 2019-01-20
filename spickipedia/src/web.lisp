@@ -168,8 +168,9 @@
 (defroute ("/api/index.js" :method :GET) ()
   (setf (getf (response-headers *response*) :content-type) "application/javascript")
   (in-package :spickipedia.web)
-  (ps-compile-file #P"src/index.lisp")
-  (in-package :common-lisp-user))
+  (let ((content (ps-compile-file #P"src/index.lisp")))
+    (in-package :common-lisp-user)
+    content))
 
 ;; this is used to get the most used browsers to decide for future features (e.g. some browsers don't support new features so I won't use them if many use such a browser)
 (defun track ()
