@@ -103,3 +103,16 @@
     (loop for c in ca do
 	 (if (chain c (trim) (starts-with name-eq))
 	     (return (chain c (substring (chain name-eq length))))))))
+
+
+(chain
+ ($ "#publish-changes")
+ (click
+  (lambda ()
+    (chain ($ "#publish-changes") (hide))
+    (chain ($ "#publishing-changes") (show))
+
+    (let ((change-summary (chain ($ "#change-summary") (val)))
+	  (temp-dom (chain ($ "<output>") (append (chain $ (parse-h-t-m-l (chain ($ "article") (summernote "code"))))))))
+      nil
+    ))))
