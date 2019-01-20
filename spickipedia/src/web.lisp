@@ -9,6 +9,7 @@
 	:spickipedia.sanitize
 	:spickipedia.tsquery-converter
         :mito
+	:sxql
 	:ironclad
 	:sanitize
 	:bcrypt
@@ -184,14 +185,10 @@
                      :if-does-not-exist :create)
   (format str "~a~%" (json:encode-json-to-string (acons "user" (my-session-user *session*) (headers-in*))))))
 
-(defroute ("/.*" :regexp t) (&key anything)
-  (format t "~A~%" anything)
+(defroute ("/" :method :GET) ()
+  (format t "DFJSDOFO")
   (render #P"index.html"))
 
-;;(defroute "/*.*" (&key path)
-;;  (format nil "~A" path))
-
-;;
 ;; Error pages
 
 (defmethod on-exception ((app <web>) (code (eql 404)))
