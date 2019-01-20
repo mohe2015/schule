@@ -113,6 +113,20 @@
     (chain ($ "#publishing-changes") (show))
 
     (let ((change-summary (chain ($ "#change-summary") (val)))
-	  (temp-dom (chain ($ "<output>") (append (chain $ (parse-h-t-m-l (chain ($ "article") (summernote "code"))))))))
-      nil
-    ))))
+	  (temp-dom (chain ($ "<output>") (append (chain $ (parse-h-t-m-l (chain ($ "article") (summernote "code")))))))
+	  (article-path (chain window location pathname (substr 0 (chain window location pathname (last-index-of "/"))))))
+      (chain
+       temp-dom
+       (find ".formula")
+       (each
+	(lambda ()
+	  (setf (@ this inner-h-t-m-l) (concatenate 'string "\\( " (chain -math-live (get-original-content this)) " \\)")))))
+      (chain $ (post (concatenate 'string "/api" article-path) (create summary change-summary html (chain temp-dom (html)) csrf_token (read-cookie "CSRF_TOKEN"))
+		     (lambda (data)
+		       (chain window history (push-state nil nil article-path))
+		       (update-state)))
+	     (fail (lambda (jq-xhr text-status error-thrown)
+		     (chain ($ "#publish-changes") (show))
+		     (chain ($ "#publishing-changes") (hide))
+		     (handle-error error-thrown F))))
+      ))))
