@@ -19,8 +19,27 @@
 
 (defun handle-error (thrown-error show-error-page)
   (if (= thrown-error "Authorization Required")
-      (let ((name (chain ($ "#inputName") (val (chain window local-storage name))))
-	    (state (create last-url (chain window location href))))
+      (let ((name (chain ($ "#inputName") (val (chain window local-storage name)))))
 	(chain window local-storage (remove-item "name"))
-	(chain window history (push-state (create a 1 b 2) nil "/login"))
-	(update-state))))
+	(chain window history (push-state (create last-url (chain window location href) last-state (chain window history state)) nil "/login"))
+	(update-state))
+      (if (= thrown-error "Forbidden")
+	  (let ((error-message "Du hast nicht die benötigten Berechtigungen, um diese Aktion durchzuführen. Sag mir Bescheid, wenn du glaubst, dass dies ein Fehler ist."))
+	    (chain ($ "#errorMessage") (text error-message))
+	    (if show-error-page
+		(progn
+		  (chain ($ "#errorMessage") (text error-message))
+		  (show-tab "#error"))
+		(alert error-message)))
+	  (let ((error-message (concatenate 'string "Unbekannter Fehler: " thrown-error)))
+	    (if show-error-page
+		(progn
+		  (chain ($ "#errorMessage") (text error-message))
+		  (show-tab "#error"))
+		(alert error-message))))))
+
+(defun set-fullscreen (value)
+  (if (and value (= (chain ($ ".fullscreen") length) 0))
+      (chain ($ "article") (summernote "fullscreen.toggle"))
+      (if (and (not value) (= (chain ($ ".fullscreen") length) 1))
+	  (chain ($ "article") (summernote "fullscreen.toggle")))))
