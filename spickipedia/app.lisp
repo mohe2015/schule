@@ -18,7 +18,7 @@
 (builder
  (:static
   :path (lambda (path)
-          (if (ppcre:scan "\.(js)|(css)|(ttf)|(woff)|(woff2)$" path)
+          (if (and (cl-fad:file-exists-p (concatenate 'string "static" path)) (not (cl-fad:directory-exists-p (concatenate 'string "static" path))))
               path
               nil))
   :root *static-directory*)

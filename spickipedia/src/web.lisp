@@ -7,8 +7,9 @@
         :spickipedia.db
 	:spickipedia.sanitize
 	:spickipedia.tsquery-converter
+	:spickipedia.parenscript
         :mito
-        :sxql
+	:sxql
 	:ironclad
 	:sanitize
 	:bcrypt
@@ -16,11 +17,8 @@
   (:export :*web*))
 (in-package :spickipedia.web)
 
-
 (defparameter *default-cost* 13
   "The default value for the COST parameter to HASH.")
-
-
 
 ;; for @route annotation
 (syntax:use-syntax :annot)
@@ -31,7 +29,6 @@
 (defclass <web> (<app>) ())
 (defvar *web* (make-instance '<web>))
 (clear-routing-rules *web*)
-
 ;;
 ;; Routing rules
 
@@ -86,11 +83,15 @@
 	nil))))
 
 (defroute ("/api/quiz/create" :method :POST) ()
-    (format nil "~a" (object-id (mito:create-dao 'quiz :creator user))))
+  (with-connection (db)
+    (with-user
+    (format nil "~a" (object-id (mito:create-dao 'quiz :creator user))))))
 
 (defroute ("/api/quiz/:the-quiz-id" :method :POST) (&key the-quiz-id |data|)
+  (with-connection (db)
+    (with-user
   (let* ((quiz-id (parse-integer the-quiz-id)))
-    (format nil "~a" (object-id (create-dao 'quiz-revision :quiz (find-dao 'quiz :id quiz-id) :content |data| :author user)))))
+    (format nil "~a" (object-id (create-dao 'quiz-revision :quiz (find-dao 'quiz :id quiz-id) :content |data| :author user)))))))
 
 (defroute ("/api/quiz/:the-id" :method :GET) (&key the-id)
   (setf (getf (response-headers *response*) :content-type) "application/json")
@@ -164,6 +165,10 @@
 (defroute ("/api/file/:name" :method :GET) (&key name)
   (handle-static-file (merge-pathnames (concatenate 'string "uploads/" name))))
 
+(defroute ("/api/index.js" :method :GET) ()
+  (setf (getf (response-headers *response*) :content-type) "application/javascript")
+  (index-js-gen))
+
 ;; this is used to get the most used browsers to decide for future features (e.g. some browsers don't support new features so I won't use them if many use such a browser)
 (defun track ()
   (with-open-file (str "track.json"
@@ -172,14 +177,9 @@
                      :if-does-not-exist :create)
   (format str "~a~%" (json:encode-json-to-string (acons "user" (my-session-user *session*) (headers-in*))))))
 
-(defroute ("/.*" :regexp t) (&key anything)
-  (format t "~A~%" anything)
+(defroute ("/.*" :regexp t :method :GET) ()
   (render #P"index.html"))
 
-;;(defroute "/*.*" (&key path)
-;;  (format nil "~A" path))
-
-;;
 ;; Error pages
 
 (defmethod on-exception ((app <web>) (code (eql 404)))
