@@ -305,3 +305,14 @@
 	 (setf parameter-name (chain parameter-name (split "=")))
 	 (if (= (chain parameter-name 0) param)
 	     (return (chain parameter-name 1))))))
+
+(defun update-state ()
+  (setf (chain window last-url) (chain window location pathname))
+  (if (undefined (chain window local-storage name))
+      (chain ($ "#logout") (text (concatenate 'string (chain window local-storage name) " abmelden")))
+      (chain ($ "#logout") (text "Abmelden")))
+  (let ((pathname (chain window location pathname (split "/"))))
+    nil)) ;; TODO implement states
+
+
+;; line 722
