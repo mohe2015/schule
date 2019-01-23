@@ -17,8 +17,7 @@
  (on "click" ".history-pushState"
      (lambda (e)
        (chain e (prevent-default))
-       (chain window history (push-state nil nil (chain ($ this) (data "href"))))
-       (update-state)
+       (push-state (chain ($ this) (data "href")))
        F)))
 
 (chain
@@ -32,8 +31,7 @@
   (if (= thrown-error "Authorization Required")
       (let ((name (chain ($ "#inputName") (val (chain window local-storage name)))))
 	(chain window local-storage (remove-item "name"))
-	(chain window history (push-state (create last-url (chain window location href) last-state (chain window history state)) nil "/login"))
-	(update-state))
+	((push-state "/login" (create last-url (chain window location href) last-state (chain window history state)))))
       (if (= thrown-error "Forbidden")
 	  (let ((error-message "Du hast nicht die benötigten Berechtigungen, um diese Aktion durchzuführen. Sag mir Bescheid, wenn du glaubst, dass dies ein Fehler ist."))
 	    (chain ($ "#errorMessage") (text error-message))
@@ -134,8 +132,7 @@
 	  (setf (@ this inner-h-t-m-l) (concatenate 'string "\\( " (chain -math-live (get-original-content this)) " \\)")))))
       (chain $ (post (concatenate 'string "/api" article-path) (create summary change-summary html (chain temp-dom (html)) csrf_token (read-cookie "CSRF_TOKEN"))
 		     (lambda (data)
-		       (chain window history (push-state nil nil article-path))
-		       (update-state)))
+		      (push-state article-path)))
 	     (fail (lambda (jq-xhr text-status error-thrown)
 		     (chain ($ "#publish-changes") (show))
 		     (chain ($ "#publishing-changes") (hide))
@@ -273,8 +270,7 @@
   (lambda (e)
     (chain e (prevent-default))
     (let ((pathname (chain window location pathname (split "/"))))
-      (chain window history (push-state (chain window history state) nil (concatenate 'string "/wiki/" (chain pathname 2) "/edit")))
-      (update-state)
+      (push-state (concatenate 'string "/wiki/" (chain pathname 2) "/edit") (chain window history state))
       F))))
 
 (chain
@@ -283,8 +279,7 @@
   (lambda (e)
     (chain e (prevent-default))
     (let ((pathname (chain window location pathname (split "/"))))
-      (chain window history (push-state (chain window history state) nil (concatenate 'string "/wiki/" (chain pathname 2) "/create")))
-      (update-state)
+      (push-state (concatenate 'string "/wiki/" (chain pathname 2) "/create") (chain window history state))
       F))))
 
 
@@ -294,8 +289,7 @@
   (lambda (e)
     (chain e (prevent-default))
     (let ((pathname (chain window location pathname (split "/"))))
-      (chain window history (push-state (chain window history state) nil (concatenate 'string "/wiki/" (chain pathname 2) "/history")))
-      (update-state)
+      (push-state (concatenate 'string "/wiki/" (chain pathname 2) "/history") (chain window history state))
       F))))
 
 (defun cleanup ()
@@ -325,8 +319,12 @@
   (let ((pathname (chain window location pathname (split "/"))))
     nil)) ;; TODO implement states
 
-(defun replace-state (url)
-  (chain window history (replace-state nil nil url))
+(defun replace-state (url data)
+  (chain window history (replace-state data nil url))
+  (update-state))
+
+(defun push-state (url data)
+  (chain window history (push-state data nil url))
   (update-state))
 
 (defroute "/"
