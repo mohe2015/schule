@@ -1,17 +1,13 @@
 (defmacro defroute (route &body body)
-  ;;  (all-matches-as-strings ":[^/]*" "/api/wiki/:name/test")
-  ;;  (regex-replace-all ":[^/]*" "/api/wiki/:name/test" "([^/]*)")
-  `(lambda (path)
-     (let* ((regex (new (-Reg-Exp ,(concatenate 'string "^" (regex-replace-all ":[^/]*" route "([^/]*)") "$"))))
-	    (results (chain regex (exec path))))
-       (if (not (null results))
+  `(defun ,(make-symbol (subseq (regex-replace-all "\/:?" "/api/wiki/:name" "-") 1)) (path)
+       (if (not (null (setf results (chain (new (-Reg-Exp ,(concatenate 'string "^" (regex-replace-all ":[^/]*" route "([^/]*)") "$"))) (exec path)))))
 	   (progn
 	     ,@(loop
 		  for variable in (all-matches-as-strings ":[^/]*" route)
 		  for i from 1
 		  collect
 		    `(defparameter ,(make-symbol (string-upcase (subseq variable 1))) (chain results ,i)))
-	     ,@body)))))
+	     ,@body))))
 
 (defroute "/api/wiki/:name"
     (alert name))
