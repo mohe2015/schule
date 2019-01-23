@@ -316,8 +316,11 @@
   (if (undefined (chain window local-storage name))
       (chain ($ "#logout") (text (concatenate 'string (chain window local-storage name) " abmelden")))
       (chain ($ "#logout") (text "Abmelden")))
-  (let ((pathname (chain window location pathname (split "/"))))
-    nil)) ;; TODO implement states
+  (if (undefined (chain window local-storage name))
+      (push-state "/login" (create last-url (chain window location href)
+				   last-state (chain window history state)))
+      (return-from update-state)))
+
 
 (defun replace-state (url data)
   (chain window history (replace-state data nil url))
@@ -331,4 +334,54 @@
   (chain ($ ".edit-button") (remove-class "disabled"))
   (replace-state "/wiki/Hauptseite"))
 
+(defroute "/logout"
+  (chain ($ ".edit-button") (add-class "disabled"))
+  (show-tab "#loading")
+  (chain $ (post "/api/logout" (create csrf_token (read-cookie "CSRF_TOEN"))
+		 (lambda (data)
+		   (chain window local-storage (remove-item "name"))
+		   (replace-state "/login")))
+	 (fail (lambda (jq-xhr text-status error-thrown)
+		 (handle-error error-thrown T)))))
+
+(defroute "/login"
+  (chain ($ ".edit-button") (add-class "disabled"))
+  (chain ($ "#publish-changes-modal") (modal "hide"))
+  (let ((url-username (get-url-parameter "username"))
+	(url-password (get-url-parameter "password")))
+    (if (and (not (undefined url-username)) (not (undefined url-password)))
+	(progn
+	  (chain ($ "#inputName") (val (decode-u-r-i-component url-username)))
+	  (chain ($ "#inputPassword") (val (decode-u-r-i-component url-password))))
+	(if (undefined (chain window local-storage name))
+	    (progn
+	      (replace-state "/wiki/Hauptseite")
+	      (return))))
+
+    (show-tab "#login")
+    (chain ($ ".login-hide")
+	   (fade-out
+	    (lambda ()
+	      (chain ($ ".login-hide") (attr "style" "display: none !important")))))
+    (chain ($ ".navbar-collapse") (remove-class "show"))))
+
+(defroute "/articles"
+  (show-tab "#loading")
+  (chain
+   $
+   (get
+    "/api/articles"
+    (lambda (data)
+      (chain data (sort (lambda (a b)
+			  (chain a (locale-compare b)))))
+      (chain ($ "#articles-list") (html ""))
+      (loop for page in data do
+	   (let ((templ ($ (chain ($ "#articles-entry") (html)))))
+	     (chain templ (find "a") (text page))
+	     (chain templ (find "a") (data "href" (concatenate 'string "/wiki/" page)))
+	     (chain ($ "#articles-list") (append templ))))
+      (show-tab "#articles")))
+   (fail (lambda (jq-xhr text-status error-thrown)
+	   (hande-error error-thrown T)))))
+  
 ;; line 722
