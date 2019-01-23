@@ -2,8 +2,8 @@
   ;;  (all-matches-as-strings ":[^/]*" "/api/wiki/:name/test")
   ;;  (regex-replace-all ":[^/]*" "/api/wiki/:name/test" "([^/]*)")
   `(lambda (path)
-     (let* ((regex (new (-Reg-Exp ,(regex-replace-all ":[^/]*" route "([^/]*)"))))
-	    (results (chain regex (execute path))))
+     (let* ((regex (new (-Reg-Exp ,(concatenate 'string "^" (regex-replace-all ":[^/]*" route "([^/]*)") "$"))))
+	    (results (chain regex (exec path))))
        (if (not (null results))
 	   (progn
 	     ,@(loop
