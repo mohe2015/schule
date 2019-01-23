@@ -367,32 +367,26 @@
 
 (defroute "/articles"
   (show-tab "#loading")
-  (chain
-   $
-   (get
-    "/api/articles"
-    (lambda (data)
-      (chain data (sort (lambda (a b)
-			  (chain a (locale-compare b)))))
-      (chain ($ "#articles-list") (html ""))
-      (loop for page in data do
-	   (let ((templ ($ (chain ($ "#articles-entry") (html)))))
-	     (chain templ (find "a") (text page))
-	     (chain templ (find "a") (data "href" (concatenate 'string "/wiki/" page)))
-	     (chain ($ "#articles-list") (append templ))))
-      (show-tab "#articles")))
-   (fail (lambda (jq-xhr text-status error-thrown)
-	   (hande-error error-thrown T)))))
+   (get "/api/articles" T
+	(chain data (sort (lambda (a b)
+			    (chain a (locale-compare b)))))
+	(chain ($ "#articles-list") (html ""))
+	(loop for page in data do
+	     (let ((templ ($ (chain ($ "#articles-entry") (html)))))
+	       (chain templ (find "a") (text page))
+	       (chain templ (find "a") (data "href" (concatenate 'string "/wiki/" page)))
+	       (chain ($ "#articles-list") (append templ))))
+	(show-tab "#articles")))
 
 (defmacro get (url show-error-page &body body)
   `(chain $
-	  (get url (lambda (data) ,@body))
+	  (get ,url (lambda (data) ,@body))
 	  (fail (lambda (jq-xhr text-status error-thrown)
-		  (handle-error error-thrown show-error-page)))))
+		  (handle-error error-thrown ,show-error-page)))))
 
 (defmacro post (url show-error-page &body body)
   `(chain $
-	  (post url (lambda (data) ,@body))
+	  (post ,url (lambda (data) ,@body))
 	  (fail (lambda (jq-xhr text-status error-thrown)
 		  (handle-error error-thrown show-error-page)))))
 
