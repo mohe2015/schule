@@ -5,12 +5,10 @@
      (let* ((regex (new (-Reg-Exp ,(regex-replace-all ":[^/]*" route "([^/]*)"))))
 	    (results (chain regex (execute path))))
        (if (not (null results))
-	   (let* ,(loop for variable in (all-matches-as-strings ":[^/]*" route)
-		       for i from 1
-		     collect
-		       `(,(make-symbol (subseq variable 1)) (chain results ,i)))
-	     (progn ,@body)
-     )))))
+	   ,`(progn ,@(loop for variable in (all-matches-as-strings ":[^/]*" route)
+			 for i from 1
+			 collect
+			   `(defparameter ,(make-symbol (subseq variable 1)) (chain results ,i))))))))
 
 (defroute "/api/wiki/:name"
     (alert name))
