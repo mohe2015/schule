@@ -10,7 +10,7 @@
 		  for variable in (all-matches-as-strings ":[^/]*" route)
 		  for i from 1
 		  collect
-		    `(defparameter ,(make-symbol (subseq variable 1)) (chain results ,i)))
+		    `(defparameter ,(make-symbol (string-upcase (subseq variable 1))) (chain results ,i)))
 	     ,@body)))))
 
 (defroute "/api/wiki/:name"
