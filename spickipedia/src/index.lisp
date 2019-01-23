@@ -1,5 +1,5 @@
 (defmacro defroute (route &body body)
-  `(defun ,(make-symbol (subseq (regex-replace-all "\/:?" "/api/wiki/:name" "-") 1)) (path)
+  `(defun ,(make-symbol (concatenate 'string "handle-" (subseq (regex-replace-all "\/:?" route "-") 1))) (path)
        (if (not (null (setf results (chain (new (-Reg-Exp ,(concatenate 'string "^" (regex-replace-all ":[^/]*" route "([^/]*)") "$"))) (exec path)))))
 	   (progn
 	     ,@(loop
@@ -8,9 +8,6 @@
 		  collect
 		    `(defparameter ,(make-symbol (string-upcase (subseq variable 1))) (chain results ,i)))
 	     ,@body))))
-
-(defroute "/api/wiki/:name"
-    (alert name))
 
 (setf (chain window onerror) (lambda (message source lineno colno error)
 			   (alert (concatenate 'string "Es ist ein Fehler aufgetreten! Melde ihn bitte dem Entwickler! " message " source: " source " lineno: " lineno " colno: " colno " error: " error))))
@@ -328,5 +325,12 @@
   (let ((pathname (chain window location pathname (split "/"))))
     nil)) ;; TODO implement states
 
+(defun replace-state (url)
+  (chain window history (replace-state nil nil url))
+  (update-state))
+
+(defroute "/"
+  (chain ($ ".edit-button") (remove-class "disabled"))
+  (replace-state "/wiki/Hauptseite"))
 
 ;; line 722
