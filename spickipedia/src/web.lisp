@@ -165,6 +165,8 @@
 (defroute ("/api/file/:name" :method :GET) (&key name)
   (handle-static-file (merge-pathnames (concatenate 'string "uploads/" name))))
 
+
+
 (defroute ("/api/index.js" :method :GET) ()
   (setf (getf (response-headers *response*) :content-type) "application/javascript")
   (index-js-gen))

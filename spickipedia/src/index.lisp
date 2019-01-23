@@ -1,3 +1,16 @@
+(defmacro defroute (route &body body)
+  ;;  (all-matches-as-strings ":[^/]*" "/api/wiki/:name/test")
+  ;;  (regex-replace-all ":[^/]*" "/api/wiki/:name/test" "([^/]*)")
+  `(lambda (path)
+     (let* ((regex (new (-Reg-Exp ,(regex-replace-all ":[^/]*" route "([^/]*)"))))
+	    (results (chain regex (execute path))))
+       (if (not (null results))
+	   (progn ,@body)
+     ))))
+
+(defroute "/api/wiki/:name"
+    1)
+
 (setf (chain window onerror) (lambda (message source lineno colno error)
 			   (alert (concatenate 'string "Es ist ein Fehler aufgetreten! Melde ihn bitte dem Entwickler! " message " source: " source " lineno: " lineno " colno: " colno " error: " error))))
 
