@@ -5,13 +5,15 @@
      (let* ((regex (new (-Reg-Exp ,(regex-replace-all ":[^/]*" route "([^/]*)"))))
 	    (results (chain regex (execute path))))
        (if (not (null results))
-	   (let* ,(loop for variable in (all-matches-as-strings ":[^/]*" route) collect
-		       `(,(ps-gensym (subseq variable 1)) ,(subseq variable 1)))
+	   (let* ,(loop for variable in (all-matches-as-strings ":[^/]*" route)
+		       for i from 1
+		     collect
+		       `(,(make-symbol (subseq variable 1)) (chain results ,i)))
 	     (progn ,@body)
      )))))
 
 (defroute "/api/wiki/:name"
-    1)
+    (alert name))
 
 (setf (chain window onerror) (lambda (message source lineno colno error)
 			   (alert (concatenate 'string "Es ist ein Fehler aufgetreten! Melde ihn bitte dem Entwickler! " message " source: " source " lineno: " lineno " colno: " colno " error: " error))))
