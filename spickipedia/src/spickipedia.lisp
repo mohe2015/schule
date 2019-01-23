@@ -1,6 +1,6 @@
 (in-package :cl-user)
 (defpackage spickipedia.parenscript
-  (:use :cl :parenscript)
+  (:use :cl :parenscript :ppcre)
   (:export :index-js-gen))
 (in-package :spickipedia.parenscript)
 

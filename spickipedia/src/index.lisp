@@ -5,8 +5,10 @@
      (let* ((regex (new (-Reg-Exp ,(regex-replace-all ":[^/]*" route "([^/]*)"))))
 	    (results (chain regex (execute path))))
        (if (not (null results))
-	   (progn ,@body)
-     ))))
+	   (let* ,(loop for variable in (all-matches-as-strings ":[^/]*" route) collect
+		       `(,(ps-gensym (subseq variable 1)) ,(subseq variable 1)))
+	     (progn ,@body)
+     )))))
 
 (defroute "/api/wiki/:name"
     1)
