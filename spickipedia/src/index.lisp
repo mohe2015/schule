@@ -383,5 +383,17 @@
       (show-tab "#articles")))
    (fail (lambda (jq-xhr text-status error-thrown)
 	   (hande-error error-thrown T)))))
-  
+
+(defmacro get (url show-error-page &body body)
+  `(chain $
+	  (get url (lambda (data) ,@body))
+	  (fail (lambda (jq-xhr text-status error-thrown)
+		  (handle-error error-thrown show-error-page)))))
+
+(defmacro post (url show-error-page &body body)
+  `(chain $
+	  (post url (lambda (data) ,@body))
+	  (fail (lambda (jq-xhr text-status error-thrown)
+		  (handle-error error-thrown show-error-page)))))
+
 ;; line 722
