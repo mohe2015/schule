@@ -9,6 +9,8 @@
 		    `(defparameter ,(make-symbol (string-upcase (subseq variable 1))) (chain results ,i)))
 	     ,@body))))
 
+
+
 (setf (chain window onerror) (lambda (message source lineno colno error)
 			   (alert (concatenate 'string "Es ist ein Fehler aufgetreten! Melde ihn bitte dem Entwickler! " message " source: " source " lineno: " lineno " colno: " colno " error: " error))))
 
@@ -417,3 +419,59 @@
 	  (incf (chain window wrong-responses)))
       (chain ($ ".multiple-choice-submit-html") (hide))
       (chain ($ ".next-question") (show))))))
+
+(chain
+ ($ ".text-submit-html")
+ (click
+  (lambda ()
+    (if (= (chain ($ "#text-response") (val)) (chain window current-question answer))
+	(progn
+	  (incf (chain window correct-response))
+	  (chain ($ "#text-response") (add-class "is-valid")))
+	(progn
+	  (incf (chain window wrong-responses))
+	  (chain ($ "#text-response") (add-class "is-invalid"))))
+    (chain ($ ".text-submit-html") (hide))
+    (chain ($ ".next-question") (show)))))
+
+(chain
+ ($ ".next-question")
+ (click
+  (lambda ()
+    (chain ($ ".next-question") (hide))
+    (chain ($ ".text-submit-html") (show))
+    (chain ($ ".multiple-choice-submit-html") (show))
+    (let ((pathname (chain window location pathname (split "/"))))
+      (replace-state (concatenate 'string "/quiz/" (chain pathname 2) "/play/" (1+ (parse-int (chain pathname 4)))))))))
+
+(chain
+ ($ "#button-search")
+ (click
+  (lambda ()
+    (let ((query (chain ($ "#search-query") (val))))
+      (chain ($ "#search-create-article") (data "href" (concatenate 'string "/wiki/" query "/create")))
+      (chain window history (replace-state nil nil (concatenate 'string "/search/" query)))
+      (chain ($ "#search-results-loading") (stop) (fade-in))
+      (chain ($ "#search-results") (stop) (fade-out))
+      (if (undefined (chain window search-xhr))
+	  (chain window search-xhr (abort)))
+      (setf
+       (chain window search-xhr)
+       (get (concatenate 'string "/api/search" query) T
+	    (chain ($ "#search-results-content") (html ""))
+	    (let ((results-contain-query F))
+	      (if (not (null data))
+		  (loop for page in data do
+		       (if (= (chain page title) query)
+			   (setf results-contain-query T))
+		       (let ((template ($ (chain ($ "#search-result-template") (html)))))
+			 (chain template (find ".s-title") (text (chain page title)))
+			 (chain template (data "href" (concatenate 'string "/wiki" (chain page title))))
+			 (chain template (find ".search-result-summary") (html (chain page summary)))
+			 (chain ($ "#search-results-content") (append template)))))
+	      (if results-contain-query
+		  (chain ($ "#no-search-results") (hide))
+		  (chain ($ "#no-search-results") (show)))
+	      (chain ($ "#search-results-loading") (stop) (fade-out))
+	      (chain ($ "#search-results") (stop) (fade-in))
+      )))))))
