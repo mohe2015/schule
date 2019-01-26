@@ -457,21 +457,27 @@
 	  (chain window search-xhr (abort)))
       (setf
        (chain window search-xhr)
-       (get (concatenate 'string "/api/search" query) T
-	    (chain ($ "#search-results-content") (html ""))
-	    (let ((results-contain-query F))
-	      (if (not (null data))
-		  (loop for page in data do
-		       (if (= (chain page title) query)
-			   (setf results-contain-query T))
-		       (let ((template ($ (chain ($ "#search-result-template") (html)))))
-			 (chain template (find ".s-title") (text (chain page title)))
-			 (chain template (data "href" (concatenate 'string "/wiki" (chain page title))))
-			 (chain template (find ".search-result-summary") (html (chain page summary)))
-			 (chain ($ "#search-results-content") (append template)))))
-	      (if results-contain-query
-		  (chain ($ "#no-search-results") (hide))
-		  (chain ($ "#no-search-results") (show)))
-	      (chain ($ "#search-results-loading") (stop) (fade-out))
-	      (chain ($ "#search-results") (stop) (fade-in))
-      )))))))
+       (chain
+	$
+	(get
+	 (concatenate 'string "/api/search" query)
+	 (lambda (data)
+	   (chain ($ "#search-results-content") (html ""))
+	   (let ((results-contain-query F))
+	     (if (not (null data))
+		 (loop for page in data do
+		      (if (= (chain page title) query)
+			  (setf results-contain-query T))
+		      (let ((template ($ (chain ($ "#search-result-template") (html)))))
+			(chain template (find ".s-title") (text (chain page title)))
+			(chain template (data "href" (concatenate 'string "/wiki" (chain page title))))
+			(chain template (find ".search-result-summary") (html (chain page summary)))
+			(chain ($ "#search-results-content") (append template)))))
+	     (if results-contain-query
+		 (chain ($ "#no-search-results") (hide))
+		 (chain ($ "#no-search-results") (show)))
+	     (chain ($ "#search-results-loading") (stop) (fade-out))
+	     (chain ($ "#search-results") (stop) (fade-in)))))
+	(fail (lambda (jq-xhr text-status error-thrown)
+		(if (not (= text-status "abort"))
+		    (handle-error error-thrown T))))))))))
