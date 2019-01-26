@@ -378,6 +378,13 @@
 	       (chain ($ "#articles-list") (append templ))))
 	(show-tab "#articles")))
 
+(defroute "/wiki/:name"
+  (show-tab "#loading")
+  (chain ($ ".edit-button") (remove-class "disabled"))
+  (chain ($ "#is-outdated-article") (add-class "d-none"))
+  (chain ($ "#wiki-article-title") (text (decode-u-r-i-component (chain pathname 2))))
+  (cleanup)) ;; TODO NOT FINISHED YET
+
 (defmacro get (url show-error-page &body body)
   `(chain $
 	  (get ,url (lambda (data) ,@body))
@@ -391,3 +398,22 @@
 		  (handle-error error-thrown show-error-page)))))
 
 ;; line 722
+(chain
+ ($ ".multiple-choice-submit-html")
+ (click
+  (lambda ()
+    (let ((everything-correct T) (i 0))
+      (loop for answer in (chain window current-question responses) do
+	   (chain ($ (concatenate 'string "#" i)) (remove-class "is-valid"))
+	   (chain ($ (concatenate 'string "#" i)) (remove-class "is-invalid"))
+	   (if (= (chain answer is-correct) (chain ($ (concatenate 'string "#" i)) (prop "checked")))
+	       (chain ($ (concatenate 'string "#" i)) (add-class "is-valid"))
+	       (progn
+		 (chain ($ (concatenate 'string "#" i)) (add-class "is-invalid"))
+		 (setf everything-correct F)))
+	   (incf i))
+      (if everything-correct
+	  (incf (chain window correct-responses))
+	  (incf (chain window wrong-responses)))
+      (chain ($ ".multiple-choice-submit-html") (hide))
+      (chain ($ ".next-question") (show))))))
