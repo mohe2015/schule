@@ -521,3 +521,31 @@
 		(chain ($ "#login-button") (prop "disabled" F) (html "Anmelden")))
 	      (login-post T))
 	  (handle-error error-thrown T))))))
+
+(chain
+ ($ ".create-multiple-choice-question")
+ (click
+  (lambda ()
+    (chain ($ "#questions") (append ($ (chain ($ "#multiple-choice-question") (html))))))))
+
+(chain
+ ($ ".create-text-question")
+ (click
+  (lambda ()
+    (chain ($ "#questions") (append ($ (chain ($ "#text-question") (html))))))))
+
+(chain
+ ($ "body")
+ (on
+  "click"
+  ".add-response-possibility"
+  (lambda (e)
+    (chain ($ this) (siblings ".responses") (append ($ (chain ($ "#multiple-choice-response-possibility") (html))))))))
+
+(chain
+ ($ ".save-quiz")
+ (click
+  (lambda ()
+    nil)))
+
+;; 887
