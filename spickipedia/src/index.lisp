@@ -463,6 +463,33 @@
 	      (chain ($ "#history-list") (append template))))
        (show-tab "#history")))
 
+(defroute "/wiki/:page/history/:id"
+  (show-tab "#loading")
+  (chain ($ ".edit-button") (remove-class "disabled"))
+  (cleanup)
+  (chain ($ "#wiki-article-title") (text (decode-u-r-i-component (chain pathname 2))))
+  (chain
+   $
+   (get
+    (concatenate 'string "/api/revision/" id)
+    (lambda (data)
+      (chain ($ "#currentVersionLink") (data "href" (concatenate 'string "/wiki/" page)))
+      (chain ($ "#is-outdated-article") (remove-class "d-none"))
+      (chain ($ "article") (html data))
+      (chain window history (replace-state (create content data) nil nil))
+      (chain
+       ($ ".formula")
+       (each
+	(lambda ()
+	  (chain -math-live (render-math-in-element this)))))
+      (show-tab "#page")
+      ))
+   (fail
+    (lambda (jq-xhr text-status error-thrown)
+      (if (= error-thrown "Not Found")
+	  (show-tab "#not-found")
+	  (handle-error error-thrown T))))))
+
 (defmacro get (url show-error-page &body body)
   `(chain $
 	  (get ,url (lambda (data) ,@body))
