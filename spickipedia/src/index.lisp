@@ -9,8 +9,6 @@
 		    `(defparameter ,(make-symbol (string-upcase (subseq variable 1))) (chain results ,i)))
 	     ,@body))))
 
-
-
 (setf (chain window onerror) (lambda (message source lineno colno error)
 			   (alert (concatenate 'string "Es ist ein Fehler aufgetreten! Melde ihn bitte dem Entwickler! " message " source: " source " lineno: " lineno " colno: " colno " error: " error))))
 
@@ -368,7 +366,7 @@
     (chain ($ ".navbar-collapse") (remove-class "show"))))
 
 (defroute "/articles"
-  (show-tab "#loading")
+   (show-tab "#loading")
    (get "/api/articles" T
 	(chain data (sort (lambda (a b)
 			    (chain a (locale-compare b)))))
@@ -381,11 +379,45 @@
 	(show-tab "#articles")))
 
 (defroute "/wiki/:name"
+  (var pathname (chain window location pathname (split "/")))
   (show-tab "#loading")
   (chain ($ ".edit-button") (remove-class "disabled"))
   (chain ($ "#is-outdated-article") (add-class "d-none"))
   (chain ($ "#wiki-article-title") (text (decode-u-r-i-component (chain pathname 2))))
-  (cleanup)) ;; TODO NOT FINISHED YET
+  (cleanup)
+  
+  (chain
+   $
+   (get
+    (concatenate 'string "/api/wiki/" (chain pathname 2))
+    (lambda (data)
+      (chain ($ "article") (html data))
+      (chain
+       ($ ".formula")
+       (each
+	(lambda ()
+	  (chain -math-live (render-math-in-element this)))))
+      (show-tab "#page")))
+   (fail (lambda (jq-xhr text-status error-thrown)
+	   (if (= error-thrown "Not Found")
+	       (show-tab "#not-found")
+	       (handle-error error-thrown T))))))
+
+(defroute "/wiki/:name/create"
+  (chain ($ ".edit-button") (add-class "disabled"))
+  (chain ($ "#is-outdated-article") (add-class "d-none"))
+
+  (if (and (not (null (chain window history state))) (not (null (chain window history state content))))
+      (chain ($ "article") (html (chain window history state content)))
+      (chain ($ "article") (html "")))
+  (show-editor)
+  (show-tab "#page"))
+
+(defroute "/wiki/:name/edit"
+  (chain ($ ".edit-button") (add-class "disabled"))
+  (chain ($ "#is-outdated-article") (add-class "d-none"))
+  (chain ($ "#wiki-article-title") (text (decode-u-r-i-component (chain pathname 2))))
+   nil)
 
 (defmacro get (url show-error-page &body body)
   `(chain $
@@ -564,8 +596,6 @@
 	     data (chain -J-S-O-N (stringify obj)))
 	    T
 	    (chain window history (replace-state nil nil (concatenate 'string "/quiz/" (chain pathname 2) "/play"))))))))
-
-;; 906
 
 (defun text-question (element)
   (create
