@@ -417,7 +417,51 @@
   (chain ($ ".edit-button") (add-class "disabled"))
   (chain ($ "#is-outdated-article") (add-class "d-none"))
   (chain ($ "#wiki-article-title") (text (decode-u-r-i-component (chain pathname 2))))
-   nil)
+  (cleanup)
+  (if (and (not (null (chain window history state))) (not (null (chain window history state content))))
+      (progn
+	(chain ($ "article") (html (chain window history state content)))
+	(chain ($ ".formula") (each (lambda ()
+				      (chain -math-live (render-math-in-element this)))))
+	(show-editor)
+	(show-tab "#page"))
+      (progn
+	(show-tab "#loading")
+	(chain
+	 $
+	 (get
+	  (concatenate 'string "/api/wiki/" (chain pathname 2))
+	  (lambda (data)
+	    (chain ($ "article") (html data))
+	    (chain
+	     ($ ".formula")
+	     (each (lambda ()
+		     (chain -math-live (render-math-element this)))))
+	    (chain window history (replace-state (create content data) nil nil))
+	    (show-editor)
+	    (show-tab "#page")))
+	 (fail
+	  (lambda (jq-xhr text-status error-thrown)
+	    (if (= error-thrown "Not Found")
+		(show-tab "#not-found")
+		(handle-error error-thrown T))))))))
+
+(defroute "/wiki/:name/history"
+  (chain ($ ".edit-button") (remove-class "disabled"))
+  (show-tab "#loading")
+  (var pathname (chain window location pathname (split "/")))
+  (get (concatenate 'string "/api/history/" (chain pathname 2)) T
+       (chain ($ "#history-list") (html ""))
+       (loop for page in data do
+	    (let ((template ($ (chain ($ "#history-item-template") (html)))))
+	      (chain template (find ".history-username") (text (chain page user)))
+	      (chain template (find ".history-date") (text (new (-Date (chain page created)))))
+	      (chain template (find ".history-summary") (text (chain page summary)))
+	      (chain template (find ".history-characters") (text (chain page size)))
+	      (chain template (find ".history-show") (data "href" (concatenate 'string "/wiki/" (chain pathname 2) "/history/" (chain page id))))
+	      (chain template (find ".history-diff") (data "href" (concatenate 'string "/wiki/" (chain pathname 2) "/history/" (chain page id) "/changes")))
+	      (chain ($ "#history-list") (append template))))
+       (show-tab "#history")))
 
 (defmacro get (url show-error-page &body body)
   `(chain $
