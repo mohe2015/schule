@@ -393,9 +393,9 @@
 	  (fail (lambda (jq-xhr text-status error-thrown)
 		  (handle-error error-thrown ,show-error-page)))))
 
-(defmacro post (url show-error-page &body body)
+(defmacro post (url data show-error-page &body body)
   `(chain $
-	  (post ,url (lambda (data) ,@body))
+	  (post ,url ,data (lambda (data) ,@body))
 	  (fail (lambda (jq-xhr text-status error-thrown)
 		  (handle-error error-thrown show-error-page)))))
 
@@ -546,6 +546,75 @@
  ($ ".save-quiz")
  (click
   (lambda ()
-    nil)))
+    (let ((obj (new (-object)))
+	  (pathname (chain window location pathname (split "/"))))
+      (setf (chain obj questions) (list))
+      (chain
+       ($ "#questions")
+       (children)
+       (each
+	(lambda ()
+	  (if (= (chain ($ this) (attr "class")) "multiple-choice-question")
+	      (chain obj questions (push (multiple-choice-question ($ this)))))
+	  (if (= (chain ($ this) (attr "class")) "text-question")
+	      (chain obj questions (push (text-question ($ this))))))))
+      (post (concatenate 'string "/api/quiz" (chain pathname 2))
+	    (create
+	     csrf_token (read-cookie "CSRF_TOKEN")
+	     data (chain -J-S-O-N (stringify obj)))
+	    T
+	    (chain window history (replace-state nil nil (concatenate 'string "/quiz/" (chain pathname 2) "/play"))))))))
 
-;; 887
+;; 906
+
+(defun text-question (element)
+  (create
+   type "text"
+   question (chain element (find ".question") (val))
+   answer (chain element (find ".answer") (val))))
+
+(defun multiple-choice-question (element)
+  (let ((obj (create
+	      type "multiple-choice"
+	      question (chain element (find ".question") (val))
+	      responses (list))))
+    (chain
+     element
+     (find ".responses")
+     (children)
+     (each
+      (lambda ()
+	(let ((is-correct (chain ($ this) (find ".multiple-choice-response-correct") (prop "checked")))
+	      (response-text (chain ($ this) (find ".multiple-choice-response-text") (val))))
+
+	  (chain obj responses (push (create
+				      text response-text
+				      is-correct is-correct)))))))
+    obj))
+
+(setf
+ (chain window onpopstate)
+ (lambda (event)
+   (if (chain window last-url)
+       (let ((pathname (chain window last-url (split "/"))))
+	 (if (and (= (chain pathname length) 4) (= (chain pathname 1) "wiki") (or (= (chain pathname 3) "create") (= (chain pathname 3) "edit")))
+	     (progn
+	       (if (confirm "Möchtest du die Änderung wirklich verwerfen?")
+		   (update-state))
+	       (return)))))
+   (update-state)))
+
+(update-state)
+
+(setf
+ (chain window onbeforeunload)
+ (lambda ()
+   (let ((pathname (chain window location pathname (split "/"))))
+     (if (and (= (chain pathname length) 4) (= (chain pathname 1) "wiki") (or (= (chain pathname 3) "create") (= (chain pathname 3) "edit")))
+	 T)))) ;; TODO this method is not allowed to return anything if not canceling
+
+(chain
+ ($ document)
+ (on "input" "#search-query"
+     (lambda (e)
+       (chain ($ "#button-search") (click)))))
