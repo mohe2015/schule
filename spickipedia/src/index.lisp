@@ -490,6 +490,40 @@
 	  (show-tab "#not-found")
 	  (handle-error error-thrown T))))))
 
+;; line 592
+(defroute "/wiki/:page/history/:id/changes"
+  (chain ($ ".edit-button") (add-class "disabled"))
+  (chain ($ "#currentVersionLink") (data "href" (concatenate 'string "/wiki/" page)))
+  (chain ($ "#is-outdated-article") (remove-class "d-none"))
+  (cleanup)
+  (var current-revision nil)
+  (var previous-revision nil)
+  (chain
+   $
+   (get
+    (concatenate 'string "/api/revision/" id)
+    (lambda (data)
+      (setf current-revision data)
+      (chain
+       $
+       (get
+	(concatenate 'string "/api/previous-revision/" id)
+	(lambda (data)
+	  (setf previous-revision data)
+	  (var diff-html (htmldiff previous-revision current-revision))
+	  (chain ($ "article") (html diff-html))
+	  (show-tab "#page")))
+       (fail
+	(lambda (jq-xhr text-status error-thrown)
+	  (if (= error-thrown "Not Found")
+	      (show-tab "#not-found")
+	      (handle-error error-thrown T)))))))
+   (fail
+    (lambda (jq-xhr text-status error-thrown)
+      (if (= error-thrown "Not Found")
+	  (show-tab "#not-found")
+	  (handle-error error-thrown T))))))
+
 (defmacro get (url show-error-page &body body)
   `(chain $
 	  (get ,url (lambda (data) ,@body))
