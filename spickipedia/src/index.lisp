@@ -524,6 +524,12 @@
 	  (show-tab "#not-found")
 	  (handle-error error-thrown T))))))
 
+(defroute "/search/:query"
+  (chain ($ ".edit-button") (add-class "disabled"))
+  (show-tab "#search")
+  (chain ($ "#search-query") (val query)))
+
+
 (defmacro get (url show-error-page &body body)
   `(chain $
 	  (get ,url (lambda (data) ,@body))
@@ -534,9 +540,22 @@
   `(chain $
 	  (post ,url ,data (lambda (data) ,@body))
 	  (fail (lambda (jq-xhr text-status error-thrown)
-		  (handle-error error-thrown show-error-page)))))
+		  (handle-error error-thrown ,show-error-page)))))
 
-;; line 722
+(defroute "/quiz/create"
+  (show-tab "#loading")
+  (post "/api/quiz/create" (create 'csrf_token (read-cookie "CSRF_TOKEN")) T
+	(push-state (concatenate 'string "/quiz/" data "/edit"))))
+
+(defroute "/quiz/:id/edit"
+  (show-tab "#edit-quiz"))
+
+(defroute "/quiz/:id/play"
+    (get (concatenate 'string "/api/quiz/" id) T
+	 (setf (chain window correct-responses) 0)
+	 (setf (chain window wrong-responses) 0)
+	 (replace-state (concatenate 'string "/quiz/" id "/play/0") (create data data))))
+
 (chain
  ($ ".multiple-choice-submit-html")
  (click
