@@ -567,18 +567,23 @@
       (progn
 	(show-tab "#multiple-choice-question")
 	(chain ($ ".question-html") (text (chain window current-question question)))
-	(chain ($ "#answers-html") (text))
+	(chain ($ "#answers-html") (text ""))
 	;; TODO this compiles to REALLY shitty code
-	(loop for answer in (chain window current-question responses)
-	   for i from 0 do
-	     (let ((template ($ (chain ($ "#multiple-choice-answer-html") (html)))))
-	       (chain template (find ".custom-control-label") (text (chain answer text)))
-	       (chain template (find ".custom-control-label") (attr "for" i))
-	       (chain template (find ".custom-control-input") (attr "id" i))
-	       (chain ($ "#answers-html") (append template))
-	       )
-	)))
-  )
+	(dotimes (i (chain window current-question responses length))
+	  (let ((answer (elt (chain window current-question responses) i))
+		(template ($ (chain ($ "#multiple-choice-answer-html") (html)))))
+	    (chain template (find ".custom-control-label") (text (chain answer text)))
+	    (chain template (find ".custom-control-label") (attr "for" i))
+	    (chain template (find ".custom-control-input") (attr "id" i))
+	    (chain ($ "#answers-html") (append template))))))
+  (if (= (chain window current-question type) "text")
+      (progn
+	(show-tab "#text-question-html")
+	(chain ($ ".question-html") (text (chain window current-question question))))))
+
+(defroute "/quiz/:id/results"
+  (show-tab "#quiz-results")
+  (chain ($ "#result") (text (concatenate 'string "Du hast " (chain window correct-responses) " Fragen richtig und " (chain window wrong-responses) " Fragen falsch beantwortet. Das sind " (chain (/ (* (chain window correct-responses) 100) (+ (chain window correct-responses) (chain window wrong-responses))) (to-fixed 1) (to-locale-string)) " %"))))
 
 (chain
  ($ ".multiple-choice-submit-html")
