@@ -490,7 +490,6 @@
 	  (show-tab "#not-found")
 	  (handle-error error-thrown T))))))
 
-;; line 592
 (defroute "/wiki/:page/history/:id/changes"
   (chain ($ ".edit-button") (add-class "disabled"))
   (chain ($ "#currentVersionLink") (data "href" (concatenate 'string "/wiki/" page)))
@@ -555,6 +554,31 @@
 	 (setf (chain window correct-responses) 0)
 	 (setf (chain window wrong-responses) 0)
 	 (replace-state (concatenate 'string "/quiz/" id "/play/0") (create data data))))
+
+;; 681
+(defroute "/quiz/:id/play/:index"
+  (setf index (parse-int index))
+  (if (= (chain window history state data questions length) index)
+      (progn
+	(replace-state (concatenate 'string "/quiz/" id "/results"))
+	(return)))
+  (setf (chain window current-question) (elt (chain window history state data questions) index))
+  (if (= (chain window current-question type) "multiple-choice")
+      (progn
+	(show-tab "#multiple-choice-question")
+	(chain ($ ".question-html") (text (chain window current-question question)))
+	(chain ($ "#answers-html") (text))
+	;; TODO this compiles to REALLY shitty code
+	(loop for answer in (chain window current-question responses)
+	   for i from 0 do
+	     (let ((template ($ (chain ($ "#multiple-choice-answer-html") (html)))))
+	       (chain template (find ".custom-control-label") (text (chain answer text)))
+	       (chain template (find ".custom-control-label") (attr "for" i))
+	       (chain template (find ".custom-control-input") (attr "id" i))
+	       (chain ($ "#answers-html") (append template))
+	       )
+	)))
+  )
 
 (chain
  ($ ".multiple-choice-submit-html")
