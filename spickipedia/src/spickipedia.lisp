@@ -33,7 +33,7 @@
       *ROUTES*
    (append `(progn) (mapcar
      #'(lambda (r)
-	 `(if (,(make-symbol (concatenate 'string "handle-" (subseq (regex-replace-all "\/:?" r "-") 1))))
+	 `(if (,(make-symbol (concatenate 'string "handle-" (subseq (regex-replace-all "\/:?" r "-") 1))) (chain window location pathname))
 	      (return-from update-state)))
      (find-defroute (get-sexp "src/index.lisp")))))
   (defparameter *UPDATE-STATE*
