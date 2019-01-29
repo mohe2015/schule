@@ -1,13 +1,15 @@
 (defmacro defroute (route &body body)
   `(defun ,(make-symbol (concatenate 'string "handle-" (subseq (regex-replace-all "\/:?" route "-") 1))) (path)
-       (if (not (null (setf results (chain (new (-Reg-Exp ,(concatenate 'string "^" (regex-replace-all ":[^/]*" route "([^/]*)") "$"))) (exec path)))))
-	   (progn
-	     ,@(loop
-		  for variable in (all-matches-as-strings ":[^/]*" route)
-		  for i from 1
-		  collect
-		    `(defparameter ,(make-symbol (string-upcase (subseq variable 1))) (chain results ,i)))
-	     ,@body))))
+	 (if (not (null (setf results (chain (new (-Reg-Exp ,(concatenate 'string "^" (regex-replace-all ":[^/]*" route "([^/]*)") "$"))) (exec path)))))
+	     (progn
+	       ,@(loop
+		    for variable in (all-matches-as-strings ":[^/]*" route)
+		    for i from 1
+		    collect
+		      `(defparameter ,(make-symbol (string-upcase (subseq variable 1))) (chain results ,i)))
+	       ,@body
+	       (return T)))
+	 (return F)))
 
 (setf (chain window onerror) (lambda (message source lineno colno error)
 			   (alert (concatenate 'string "Es ist ein Fehler aufgetreten! Melde ihn bitte dem Entwickler! " message " source: " source " lineno: " lineno " colno: " colno " error: " error))))
@@ -311,15 +313,7 @@
 	 (if (= (chain parameter-name 0) param)
 	     (return (chain parameter-name 1))))))
 
-(defun update-state ()
-  (setf (chain window last-url) (chain window location pathname))
-  (if (undefined (chain window local-storage name))
-      (chain ($ "#logout") (text (concatenate 'string (chain window local-storage name) " abmelden")))
-      (chain ($ "#logout") (text "Abmelden")))
-  (if (undefined (chain window local-storage name))
-      (push-state "/login" (create last-url (chain window location href)
-				   last-state (chain window history state)))
-      (return-from update-state)))
+(lisp *UPDATE-STATE*)
 
 
 (defun replace-state (url data)
