@@ -31,7 +31,7 @@
   (if (= thrown-error "Authorization Required")
       (let ((name (chain ($ "#inputName") (val (chain window local-storage name)))))
 	(chain window local-storage (remove-item "name"))
-	((push-state "/login" (create last-url (chain window location href) last-state (chain window history state)))))
+	(push-state "/login" (create last-url (chain window location href) last-state (chain window history state))))
       (if (= thrown-error "Forbidden")
 	  (let ((error-message "Du hast nicht die benötigten Berechtigungen, um diese Aktion durchzuführen. Sag mir Bescheid, wenn du glaubst, dass dies ein Fehler ist."))
 	    (chain ($ "#errorMessage") (text error-message))
@@ -254,7 +254,7 @@
 		"remove" ("removeMedia")))
      image-attributes
      (create
-      icon "<i class="note-icon-pencil"/>"
+      icon "<i class=\"note-icon-pencil\"/>"
       remove-empty F
       disable-upload F))))
   (set-fullscreen T))
@@ -565,7 +565,7 @@
   (setf (chain window current-question) (elt (chain window history state data questions) index))
   (if (= (chain window current-question type) "multiple-choice")
       (progn
-	(show-tab "#multiple-choice-question")
+	(show-tab "#multiple-choice-question-html")
 	(chain ($ ".question-html") (text (chain window current-question question)))
 	(chain ($ "#answers-html") (text ""))
 	;; TODO this compiles to REALLY shitty code
