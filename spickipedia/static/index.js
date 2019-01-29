@@ -1,5 +1,4 @@
 window.onerror = function(message, source, lineno, colno, error) {
-  __PS_MV_REG = [];
   return alert(
     'Es ist ein Fehler aufgetreten! Melde ihn bitte dem Entwickler! ' +
       message +
@@ -16,20 +15,17 @@ window.onerror = function(message, source, lineno, colno, error) {
 $('body').on('click', '.history-pushState', function(e) {
   e.preventDefault();
   pushState($(this).data('href'));
-  __PS_MV_REG = [];
   return false;
 });
 $('#refresh').click(function(e) {
   e.preventDefault();
   updateState();
-  __PS_MV_REG = [];
   return false;
 });
 function handleError(thrownError, showErrorPage) {
   if (thrownError === 'Authorization Required') {
     var name353 = $('#inputName').val(window.localStorage.name);
     window.localStorage.removeItem('name');
-    __PS_MV_REG = [];
     return pushState('/login', {
       lastUrl: window.location.href,
       lastState: window.history.state
@@ -41,20 +37,16 @@ function handleError(thrownError, showErrorPage) {
       $('#errorMessage').text(errorMessage);
       if (showErrorPage) {
         $('#errorMessage').text(errorMessage);
-        __PS_MV_REG = [];
         return showTab('#error');
       } else {
-        __PS_MV_REG = [];
         return alert(errorMessage);
       }
     } else {
       var errorMessage354 = 'Unbekannter Fehler: ' + thrownError;
       if (showErrorPage) {
         $('#errorMessage').text(errorMessage354);
-        __PS_MV_REG = [];
         return showTab('#error');
       } else {
-        __PS_MV_REG = [];
         return alert(errorMessage354);
       }
     }
@@ -62,10 +54,8 @@ function handleError(thrownError, showErrorPage) {
 }
 function setFullscreen(value) {
   if (value && $('.fullscreen').length === 0) {
-    __PS_MV_REG = [];
     return $('article').summernote('fullscreen.toggle');
   } else {
-    __PS_MV_REG = [];
     return !value && $('.fullscreen').length === 1
       ? $('article').summernote('fullscreen.toggle')
       : null;
@@ -78,10 +68,8 @@ var finishedButton = function(context) {
       tooltip: 'Fertig',
       click: function() {
         $('#publish-changes-modal').on('shown.bs.modal', function() {
-          __PS_MV_REG = [];
           return $('#change-summary').trigger('focus');
         });
-        __PS_MV_REG = [];
         return $('#publish-changes-modal').modal('show');
       }
     })
@@ -93,7 +81,6 @@ var cancelButton = function(context) {
       contents: '<i class="fa fa-times"/>',
       tooltip: 'Abbrechen',
       click: function() {
-        __PS_MV_REG = [];
         return confirm('Möchtest du die Änderung wirklich verwerfen?')
           ? window.history.back()
           : null;
@@ -108,10 +95,8 @@ var wikiLinkButton = function(context) {
       tooltip: 'Spickipedia-Link einfügen',
       click: function() {
         $('#spickiLinkModal').on('shown.bs.modal', function() {
-          __PS_MV_REG = [];
           return $('#article-link-title').trigger('focus');
         });
-        __PS_MV_REG = [];
         return $('#spickiLinkModal').modal('show');
       }
     })
@@ -143,7 +128,6 @@ $('#publish-changes').click(function() {
     return (this.innerHTML =
       '\\( ' + MathLive.getOriginalContent(this) + ' \\)');
   });
-  __PS_MV_REG = [];
   return $.post(
     '/api' + articlePath,
     {
@@ -152,13 +136,11 @@ $('#publish-changes').click(function() {
       csrf_token: readCookie('CSRF_TOKEN')
     },
     function(data) {
-      __PS_MV_REG = [];
       return pushState(articlePath);
     }
   ).fail(function(jqXhr, textStatus, errorThrown) {
     $('#publish-changes').show();
     $('#publishing-changes').hide();
-    __PS_MV_REG = [];
     return handleError(errorThrown, false);
   });
 });
@@ -168,7 +150,6 @@ function sendFile(file, editor, welEditable) {
   data.append('file', file);
   data.append('csrf_token', readCookie('CSRF_TOKEN'));
   window.fileUploadFinished = false;
-  __PS_MV_REG = [];
   return (window.fileUploadXhr = $.ajax({
     data: data,
     type: 'POST',
@@ -190,27 +171,23 @@ function sendFile(file, editor, welEditable) {
     success: function(url) {
       window.fileUploadFinished = true;
       $('#uploadProgressModal').modal('hide');
-      __PS_MV_REG = [];
       return $('article').summernote('insertImage', '/api/file/' + url);
     },
     error: function() {
       if (!window.fileUploadFinished) {
         window.fileUploadFinished = true;
         $('#uploadProgressModal').modal('hide');
-        __PS_MV_REG = [];
         return alert('Fehler beim Upload!');
       }
     }
   }));
 }
 function progressHandlingFunction(e) {
-  __PS_MV_REG = [];
   return e.lengthComputable
     ? $('#uploadProgress').css('width', 100 * (e.loaded / e.total) + '%')
     : null;
 }
 $('#uploadProgressModal').on('shown.bs.modal', function(e) {
-  __PS_MV_REG = [];
   return window.fileUploadFinished
     ? $('#uploadProgressModal').modal('hide')
     : null;
@@ -222,7 +199,6 @@ $('#uploadProgressModal').on('hide.bs.modal', function(e) {
   }
 });
 $('#uploadProgressModal').on('hidden.bs.modal', function(e) {
-  __PS_MV_REG = [];
   return $('#uploadProgress').attr('width', '0%');
 });
 function showEditor() {
@@ -231,7 +207,6 @@ function showEditor() {
     lang: 'de-DE',
     callbacks: {
       onImageUpload: function(files) {
-        __PS_MV_REG = [];
         return sendFile(files[0]);
       },
       onChange: function(contents, $editable) {
@@ -240,7 +215,6 @@ function showEditor() {
         }
         canCall = false;
         window.history.replaceState({ content: contents }, null, null);
-        __PS_MV_REG = [];
         return setTimeout(function() {
           return (canCall = true);
         }, 1000);
@@ -321,34 +295,29 @@ function showEditor() {
       disableUpload: false
     }
   });
-  __PS_MV_REG = [];
   return setFullscreen(true);
 }
 function hideEditor() {
   setFullscreen(false);
   $('article').summernote('destroy');
-  __PS_MV_REG = [];
   return $('.tooltip').hide();
 }
 $('.edit-button').click(function(e) {
   e.preventDefault();
   var pathname357 = window.location.pathname.split('/');
   pushState('/wiki/' + pathname357[2] + '/edit', window.history.state);
-  __PS_MV_REG = [];
   return false;
 });
 $('#create-article').click(function(e) {
   e.preventDefault();
   var pathname358 = window.location.pathname.split('/');
   pushState('/wiki/' + pathname358[2] + '/create', window.history.state);
-  __PS_MV_REG = [];
   return false;
 });
 $('#show-history').click(function(e) {
   e.preventDefault();
   var pathname359 = window.location.pathname.split('/');
   pushState('/wiki/' + pathname359[2] + '/history', window.history.state);
-  __PS_MV_REG = [];
   return false;
 });
 function cleanup() {
@@ -356,14 +325,12 @@ function cleanup() {
   $('article').summernote('destroy');
   $('#publish-changes-modal').modal('hide');
   $('#publish-changes').show();
-  __PS_MV_REG = [];
   return $('#publishing-changes').hide();
 }
 function showTab(id) {
   $('.my-tab')
     .not(id)
     .fadeOut();
-  __PS_MV_REG = [];
   return $(id).fadeIn();
 }
 function getUrlParameter(param) {
@@ -386,30 +353,25 @@ function updateState() {
     $('#logout').text('Abmelden');
   }
   if ('undefined' === typeof window.localStorage.name) {
-    __PS_MV_REG = [];
     return pushState('/login', {
       lastUrl: window.location.href,
       lastState: window.history.state
     });
   } else {
-    __PS_MV_REG = [];
     return;
   }
 }
 function replaceState(url, data) {
   window.history.replaceState(data, null, url);
-  __PS_MV_REG = [];
   return updateState();
 }
 function pushState(url, data) {
   window.history.pushState(data, null, url);
-  __PS_MV_REG = [];
   return updateState();
 }
 function handle(path) {
   if ((results = new RegExp('^/$').exec(path)) != null) {
     $('.edit-button').removeClass('disabled');
-    __PS_MV_REG = [];
     return replaceState('/wiki/Hauptseite');
   }
 }
@@ -417,17 +379,14 @@ function handleLogout(path) {
   if ((results = new RegExp('^/logout$').exec(path)) != null) {
     $('.edit-button').addClass('disabled');
     showTab('#loading');
-    __PS_MV_REG = [];
     return $.post(
       '/api/logout',
       { csrf_token: readCookie('CSRF_TOEN') },
       function(data) {
         window.localStorage.removeItem('name');
-        __PS_MV_REG = [];
         return replaceState('/login');
       }
     ).fail(function(jqXhr, textStatus, errorThrown) {
-      __PS_MV_REG = [];
       return handleError(errorThrown, true);
     });
   }
@@ -447,23 +406,19 @@ function handleLogin(path) {
     } else {
       if ('undefined' === typeof window.localStorage.name) {
         replaceState('/wiki/Hauptseite');
-        __PS_MV_REG = [];
         return null;
       }
     }
     showTab('#login');
     $('.login-hide').fadeOut(function() {
-      __PS_MV_REG = [];
       return $('.login-hide').attr('style', 'display: none !important');
     });
-    __PS_MV_REG = [];
     return $('.navbar-collapse').removeClass('show');
   }
 }
 function handleArticles(path) {
   if ((results = new RegExp('^/articles$').exec(path)) != null) {
     showTab('#loading');
-    __PS_MV_REG = [];
     return $.get('/api/articles', function(data) {
       data.sort(function(a, b) {
         return a.localeCompare(b);
@@ -477,10 +432,8 @@ function handleArticles(path) {
         templ.find('a').data('href', '/wiki/' + page);
         $('#articles-list').append(templ);
       }
-      __PS_MV_REG = [];
       return showTab('#articles');
     }).fail(function(jqXhr, textStatus, errorThrown) {
-      __PS_MV_REG = [];
       return handleError(errorThrown, true);
     });
   }
@@ -494,16 +447,13 @@ function handleWikiName(path) {
     $('#is-outdated-article').addClass('d-none');
     $('#wiki-article-title').text(decodeURIComponent(pathname[2]));
     cleanup();
-    __PS_MV_REG = [];
     return $.get('/api/wiki/' + pathname[2], function(data) {
       $('article').html(data);
       $('.formula').each(function() {
         return MathLive.renderMathInElement(this);
       });
-      __PS_MV_REG = [];
       return showTab('#page');
     }).fail(function(jqXhr, textStatus, errorThrown) {
-      __PS_MV_REG = [];
       return errorThrown === 'Not Found'
         ? showTab('#not-found')
         : handleError(errorThrown, true);
@@ -521,7 +471,6 @@ function handleWikiNameCreate(path) {
       $('article').html('');
     }
     showEditor();
-    __PS_MV_REG = [];
     return showTab('#page');
   }
 }
@@ -538,11 +487,9 @@ function handleWikiNameEdit(path) {
         return MathLive.renderMathInElement(this);
       });
       showEditor();
-      __PS_MV_REG = [];
       return showTab('#page');
     } else {
       showTab('#loading');
-      __PS_MV_REG = [];
       return $.get('/api/wiki/' + pathname[2], function(data) {
         $('article').html(data);
         $('.formula').each(function() {
@@ -550,10 +497,8 @@ function handleWikiNameEdit(path) {
         });
         window.history.replaceState({ content: data }, null, null);
         showEditor();
-        __PS_MV_REG = [];
         return showTab('#page');
       }).fail(function(jqXhr, textStatus, errorThrown) {
-        __PS_MV_REG = [];
         return errorThrown === 'Not Found'
           ? showTab('#not-found')
           : handleError(errorThrown, true);
@@ -567,7 +512,6 @@ function handleWikiNameHistory(path) {
     $('.edit-button').removeClass('disabled');
     showTab('#loading');
     var pathname = window.location.pathname.split('/');
-    __PS_MV_REG = [];
     return $.get('/api/history/' + pathname[2], function(data) {
       $('#history-list').html('');
       var _js366 = data.length;
@@ -589,10 +533,8 @@ function handleWikiNameHistory(path) {
           );
         $('#history-list').append(template);
       }
-      __PS_MV_REG = [];
       return showTab('#history');
     }).fail(function(jqXhr, textStatus, errorThrown) {
-      __PS_MV_REG = [];
       return handleError(errorThrown, true);
     });
   }
@@ -607,7 +549,6 @@ function handleWikiPageHistoryId(path) {
     $('.edit-button').removeClass('disabled');
     cleanup();
     $('#wiki-article-title').text(decodeURIComponent(pathname[2]));
-    __PS_MV_REG = [];
     return $.get('/api/revision/' + id, function(data) {
       $('#currentVersionLink').data('href', '/wiki/' + page);
       $('#is-outdated-article').removeClass('d-none');
@@ -616,10 +557,8 @@ function handleWikiPageHistoryId(path) {
       $('.formula').each(function() {
         return MathLive.renderMathInElement(this);
       });
-      __PS_MV_REG = [];
       return showTab('#page');
     }).fail(function(jqXhr, textStatus, errorThrown) {
-      __PS_MV_REG = [];
       return errorThrown === 'Not Found'
         ? showTab('#not-found')
         : handleError(errorThrown, true);
@@ -640,23 +579,19 @@ function handleWikiPageHistoryIdChanges(path) {
     cleanup();
     var currentRevision = null;
     var previousRevision = null;
-    __PS_MV_REG = [];
     return $.get('/api/revision/' + id, function(data) {
       currentRevision = data;
       return $.get('/api/previous-revision/' + id, function(data) {
         previousRevision = data;
         var diffHtml = htmldiff(previousRevision, currentRevision);
         $('article').html(diffHtml);
-        __PS_MV_REG = [];
         return showTab('#page');
       }).fail(function(jqXhr, textStatus, errorThrown) {
-        __PS_MV_REG = [];
         return errorThrown === 'Not Found'
           ? showTab('#not-found')
           : handleError(errorThrown, true);
       });
     }).fail(function(jqXhr, textStatus, errorThrown) {
-      __PS_MV_REG = [];
       return errorThrown === 'Not Found'
         ? showTab('#not-found')
         : handleError(errorThrown, true);
@@ -668,23 +603,19 @@ function handleSearchQuery(path) {
     var query = results[1];
     $('.edit-button').addClass('disabled');
     showTab('#search');
-    __PS_MV_REG = [];
     return $('#search-query').val(query);
   }
 }
 function handleQuizCreate(path) {
   if ((results = new RegExp('^/quiz/create$').exec(path)) != null) {
     showTab('#loading');
-    __PS_MV_REG = [];
     return $.post(
       '/api/quiz/create',
       { csrf_token: readCookie('CSRF_TOKEN') },
       function(data) {
-        __PS_MV_REG = [];
         return pushState('/quiz/' + data + '/edit');
       }
     ).fail(function(jqXhr, textStatus, errorThrown) {
-      __PS_MV_REG = [];
       return handleError(errorThrown, true);
     });
   }
@@ -692,21 +623,17 @@ function handleQuizCreate(path) {
 function handleQuizIdEdit(path) {
   if ((results = new RegExp('^/quiz/([^/]*)/edit$').exec(path)) != null) {
     var id = results[1];
-    __PS_MV_REG = [];
     return showTab('#edit-quiz');
   }
 }
 function handleQuizIdPlay(path) {
   if ((results = new RegExp('^/quiz/([^/]*)/play$').exec(path)) != null) {
     var id = results[1];
-    __PS_MV_REG = [];
     return $.get('/api/quiz/' + id, function(data) {
       window.correctResponses = 0;
       window.wrongResponses = 0;
-      __PS_MV_REG = [];
       return replaceState('/quiz/' + id + '/play/0', { data: data });
     }).fail(function(jqXhr, textStatus, errorThrown) {
-      __PS_MV_REG = [];
       return handleError(errorThrown, true);
     });
   }
@@ -720,7 +647,6 @@ function handleQuizIdPlayIndex(path) {
     index = parseInt(index);
     if (window.history.state.data.questions.length === index) {
       replaceState('/quiz/' + id + '/results');
-      __PS_MV_REG = [];
       return null;
     }
     window.currentQuestion = window.history.state.data.questions[index];
@@ -739,7 +665,6 @@ function handleQuizIdPlayIndex(path) {
     }
     if (window.currentQuestion.type === 'text') {
       showTab('#text-question-html');
-      __PS_MV_REG = [];
       return $('.question-html').text(window.currentQuestion.question);
     }
   }
@@ -748,7 +673,6 @@ function handleQuizIdResults(path) {
   if ((results = new RegExp('^/quiz/([^/]*)/results$').exec(path)) != null) {
     var id = results[1];
     showTab('#quiz-results');
-    __PS_MV_REG = [];
     return $('#result').text(
       'Du hast ' +
         window.correctResponses +
@@ -788,7 +712,6 @@ $('.multiple-choice-submit-html').click(function() {
     ++window.wrongResponses;
   }
   $('.multiple-choice-submit-html').hide();
-  __PS_MV_REG = [];
   return $('.next-question').show();
 });
 $('.text-submit-html').click(function() {
@@ -800,7 +723,6 @@ $('.text-submit-html').click(function() {
     $('#text-response').addClass('is-invalid');
   }
   $('.text-submit-html').hide();
-  __PS_MV_REG = [];
   return $('.next-question').show();
 });
 $('.next-question').click(function() {
@@ -808,7 +730,6 @@ $('.next-question').click(function() {
   $('.text-submit-html').show();
   $('.multiple-choice-submit-html').show();
   var pathname370 = window.location.pathname.split('/');
-  __PS_MV_REG = [];
   return replaceState(
     '/quiz/' + pathname370[2] + '/play/' + (parseInt(pathname370[4]) + 1)
   );
@@ -826,7 +747,6 @@ $('#button-search').click(function() {
   if ('undefined' === typeof window.searchXhr) {
     window.searchXhr.abort();
   }
-  __PS_MV_REG = [];
   return (window.searchXhr = $.get('/api/search' + query, function(data) {
     $('#search-results-content').html('');
     var resultsContainQuery = false;
@@ -852,12 +772,10 @@ $('#button-search').click(function() {
     $('#search-results-loading')
       .stop()
       .fadeOut();
-    __PS_MV_REG = [];
     return $('#search-results')
       .stop()
       .fadeIn();
   }).fail(function(jqXhr, textStatus, errorThrown) {
-    __PS_MV_REG = [];
     return textStatus !== 'abort' ? handleError(errorThrown, true) : null;
   }));
 });
@@ -870,11 +788,9 @@ $('#login-form').on('submit', function(e) {
     .html(
       '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Anmelden...'
     );
-  __PS_MV_REG = [];
   return loginPost(false);
 });
 function loginPost(repeated) {
-  __PS_MV_REG = [];
   return $.post(
     '/api/login',
     { csrf_token: readCookie('CSRF_TOKEN'), name: name, password: password },
@@ -884,7 +800,6 @@ function loginPost(repeated) {
         .html('Anmelden');
       $('#inputPassword').val('');
       window.localStorage.name = name;
-      __PS_MV_REG = [];
       return window.history.state != null &&
         'undefined' !== typeof window.history.state.lastState &&
         'undefined' !== typeof window.history.state.lastUrl
@@ -899,30 +814,24 @@ function loginPost(repeated) {
     if (errorThrown === 'Forbidden') {
       if (repeated) {
         alert('Ungültige Zugansdaten!');
-        __PS_MV_REG = [];
         return $('#login-button')
           .prop('disabled', false)
           .html('Anmelden');
       } else {
-        __PS_MV_REG = [];
         return loginPost(true);
       }
     } else {
-      __PS_MV_REG = [];
       return handleError(errorThrown, true);
     }
   });
 }
 $('.create-multiple-choice-question').click(function() {
-  __PS_MV_REG = [];
   return $('#questions').append($($('#multiple-choice-question').html()));
 });
 $('.create-text-question').click(function() {
-  __PS_MV_REG = [];
   return $('#questions').append($($('#text-question').html()));
 });
 $('body').on('click', '.add-response-possibility', function(e) {
-  __PS_MV_REG = [];
   return $(this)
     .siblings('.responses')
     .append($($('#multiple-choice-response-possibility').html()));
@@ -937,12 +846,10 @@ $('.save-quiz').click(function() {
       if ($(this).attr('class') === 'multiple-choice-question') {
         obj.questions.push(multipleChoiceQuestion($(this)));
       }
-      __PS_MV_REG = [];
       return $(this).attr('class') === 'text-question'
         ? obj.questions.push(textQuestion($(this)))
         : null;
     });
-  __PS_MV_REG = [];
   return $.post(
     '/api/quiz' + pathname373[2],
     { csrf_token: readCookie('CSRF_TOKEN'), data: JSON.stringify(obj) },
@@ -954,7 +861,6 @@ $('.save-quiz').click(function() {
       );
     }
   ).fail(function(jqXhr, textStatus, errorThrown) {
-    __PS_MV_REG = [];
     return handleError(errorThrown, true);
   });
 });
@@ -981,7 +887,6 @@ function multipleChoiceQuestion(element) {
       var responseText = $(this)
         .find('.multiple-choice-response-text')
         .val();
-      __PS_MV_REG = [];
       return obj.responses.push({ text: responseText, isCorrect: isCorrect });
     });
   return obj;
@@ -997,11 +902,9 @@ window.onpopstate = function(event) {
       if (confirm('Möchtest du die Änderung wirklich verwerfen?')) {
         updateState();
       }
-      __PS_MV_REG = [];
       return null;
     }
   }
-  __PS_MV_REG = [];
   return updateState();
 };
 updateState();
@@ -1014,6 +917,5 @@ window.onbeforeunload = function() {
     : null;
 };
 $(document).on('input', '#search-query', function(e) {
-  __PS_MV_REG = [];
   return $('#button-search').click();
 });
