@@ -666,40 +666,40 @@
  (on "submit"
      (lambda (e)
      (chain e (prevent-default))
-     (let ((name (chain ($ "#inputName") (val)))
-	   (password (chain ($ "#inputPassword") (val))))
        (chain ($ "#login-button") (prop "disabled" T) (html "<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span> Anmelden..."))
 
-       (login-post F)))))
+       (login-post F))))
      
 (defun login-post (repeated)
-  (chain
-   $
-   (post
-    "/api/login"
-    (create
-     csrf_token (read-cookie "CSRF_TOKEN")
-     name name
-     password password)
-    (lambda (data)
-      (chain ($ "#login-button") (prop "disabled" F) (html "Anmelden"))
-      (chain ($ "#inputPassword") (val ""))
-      (setf (chain window local-storage name) name)
-      (if (and (not (null (chain window history state)))
-	       (not (undefined (chain window history state last-state)))
-	       (not (undefined (chain window history state last-url))))
-	  (replace-state (chain window history state last-url) (chain window history state last-state))
-	  (replace-state "/wiki/Hauptseite"))))
-   (fail
-    (lambda (jq-xhr text-status error-thrown)
-      (chain window local-storage (remove-item "name"))
-      (if (= error-thrown "Forbidden")
-	  (if repeated
-	      (progn
-		(alert "Ungültige Zugansdaten!")
-		(chain ($ "#login-button") (prop "disabled" F) (html "Anmelden")))
-	      (login-post T))
-	  (handle-error error-thrown T))))))
+  (let ((name (chain ($ "#inputName") (val)))
+	(password (chain ($ "#inputPassword") (val))))
+    (chain
+     $
+     (post
+      "/api/login"
+      (create
+       csrf_token (read-cookie "CSRF_TOKEN")
+       name name
+       password password)
+      (lambda (data)
+	(chain ($ "#login-button") (prop "disabled" F) (html "Anmelden"))
+	(chain ($ "#inputPassword") (val ""))
+	(setf (chain window local-storage name) name)
+	(if (and (not (null (chain window history state)))
+		 (not (undefined (chain window history state last-state)))
+		 (not (undefined (chain window history state last-url))))
+	    (replace-state (chain window history state last-url) (chain window history state last-state))
+	    (replace-state "/wiki/Hauptseite"))))
+     (fail
+      (lambda (jq-xhr text-status error-thrown)
+	(chain window local-storage (remove-item "name"))
+	(if (= error-thrown "Forbidden")
+	    (if repeated
+		(progn
+		  (alert "Ungültige Zugansdaten!")
+		  (chain ($ "#login-button") (prop "disabled" F) (html "Anmelden")))
+		(login-post T))
+	    (handle-error error-thrown T)))))))
 
 (chain
  ($ ".create-multiple-choice-question")
