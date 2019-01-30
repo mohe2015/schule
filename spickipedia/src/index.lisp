@@ -306,7 +306,7 @@
   (chain ($ id) (fade-in)))
 
 (defun get-url-parameter (param)
-  (let ((page-url (chain window location search (substring 1)))
+  (let* ((page-url (chain window location search (substring 1)))
 	(url-variables (chain page-url (split "&"))))
     (loop for parameter-name in url-variables do
 	 (setf parameter-name (chain parameter-name (split "=")))
@@ -347,7 +347,7 @@
 	(progn
 	  (chain ($ "#inputName") (val (decode-u-r-i-component url-username)))
 	  (chain ($ "#inputPassword") (val (decode-u-r-i-component url-password))))
-	(if (undefined (chain window local-storage name))
+	(if (not (undefined (chain window local-storage name)))
 	    (progn
 	      (replace-state "/wiki/Hauptseite")
 	      (return))))

@@ -42,9 +42,9 @@
        (if (undefined (chain window local-storage name))
 	   (chain ($ "#logout") (text (concatenate 'string (chain window local-storage name) " abmelden")))
 	   (chain ($ "#logout") (text "Abmelden")))
-       (if (undefined (chain window local-storage name))
+       (if (and (not (= (chain window location pathname) "/login")) (undefined (chain window local-storage name)))
 	   (progn
-	     (push-state "/login" (create last-url (chain window location href)
-					  last-state (chain window history state)))
+	     (chain window history (push-state (create last-url (chain window location href)
+					  last-state (chain window history state)) nil "/login"))
 	     (return-from update-state)))
        ,*ROUTES*)))
