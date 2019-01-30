@@ -4,16 +4,11 @@
   (:export :file-js-gen))
 (in-package :spickipedia.parenscript)
 
-(defun file-get-contents (filename)
-  (with-open-file (stream filename)
-    (let ((contents (make-string (file-length stream))))
-      (read-sequence contents stream)
-      contents)))
-
 (defun file-js-gen (file)
   (in-package :spickipedia.parenscript)
   (get-routes)
-  (with-input-from-string (s (concatenate 'string (file-get-contents #P"js/common.lisp") (file-get-contents file)))
+  (format t "~a" (concatenate 'string (alexandria:read-file-into-string #P"js/common.lisp") (alexandria:read-file-into-string file)))
+  (with-input-from-string (s (concatenate 'string (alexandria:read-file-into-string #P"js/common.lisp") (alexandria:read-file-into-string file)))
     (let ((content (ps-compile-stream s)))
       (in-package :common-lisp-user)
       content)))
