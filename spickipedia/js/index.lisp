@@ -313,9 +313,6 @@
 	 (if (= (chain parameter-name 0) param)
 	     (return (chain parameter-name 1))))))
 
-(lisp *UPDATE-STATE*)
-
-
 (defun replace-state (url data)
   (chain window history (replace-state data nil url))
   (update-state))
@@ -795,3 +792,5 @@
  (on "input" "#search-query"
      (lambda (e)
        (chain ($ "#button-search") (click)))))
+
+(lisp *UPDATE-STATE*)
