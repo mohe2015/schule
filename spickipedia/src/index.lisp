@@ -1,3 +1,16 @@
+(defmacro defroute (route &body body)
+  `(defun ,(make-symbol (concatenate 'string "handle-" (subseq (regex-replace-all "\/:?" route "-") 1))) (path)
+	 (if (not (null (setf results (chain (new (-Reg-Exp ,(concatenate 'string "^" (regex-replace-all ":[^/]*" route "([^/]*)") "$"))) (exec path)))))
+	     (progn
+	       ,@(loop
+		    for variable in (all-matches-as-strings ":[^/]*" route)
+		    for i from 1
+		    collect
+		      `(defparameter ,(make-symbol (string-upcase (subseq variable 1))) (chain results ,i)))
+	       ,@body
+	       (return T)))
+	 (return F)))
+
 (setf (chain window onerror) (lambda (message source lineno colno error)
 			   (alert (concatenate 'string "Es ist ein Fehler aufgetreten! Melde ihn bitte dem Entwickler! " message " source: " source " lineno: " lineno " colno: " colno " error: " error))))
 
@@ -6,8 +19,7 @@
  (on "click" ".history-pushState"
      (lambda (e)
        (chain e (prevent-default))
-       (chain window history (push-state nil nil (chain ($ this) (data "href"))))
-       (update-state)
+       (push-state (chain ($ this) (data "href")))
        F)))
 
 (chain
@@ -21,8 +33,7 @@
   (if (= thrown-error "Authorization Required")
       (let ((name (chain ($ "#inputName") (val (chain window local-storage name)))))
 	(chain window local-storage (remove-item "name"))
-	(chain window history (push-state (create last-url (chain window location href) last-state (chain window history state)) nil "/login"))
-	(update-state))
+	(push-state "/login" (create last-url (chain window location href) last-state (chain window history state))))
       (if (= thrown-error "Forbidden")
 	  (let ((error-message "Du hast nicht die benötigten Berechtigungen, um diese Aktion durchzuführen. Sag mir Bescheid, wenn du glaubst, dass dies ein Fehler ist."))
 	    (chain ($ "#errorMessage") (text error-message))
@@ -123,8 +134,7 @@
 	  (setf (@ this inner-h-t-m-l) (concatenate 'string "\\( " (chain -math-live (get-original-content this)) " \\)")))))
       (chain $ (post (concatenate 'string "/api" article-path) (create summary change-summary html (chain temp-dom (html)) csrf_token (read-cookie "CSRF_TOKEN"))
 		     (lambda (data)
-		       (chain window history (push-state nil nil article-path))
-		       (update-state)))
+		      (push-state article-path)))
 	     (fail (lambda (jq-xhr text-status error-thrown)
 		     (chain ($ "#publish-changes") (show))
 		     (chain ($ "#publishing-changes") (hide))
@@ -246,7 +256,7 @@
 		"remove" ("removeMedia")))
      image-attributes
      (create
-      icon "<i class="note-icon-pencil"/>"
+      icon "<i class=\"note-icon-pencil\"/>"
       remove-empty F
       disable-upload F))))
   (set-fullscreen T))
@@ -262,8 +272,7 @@
   (lambda (e)
     (chain e (prevent-default))
     (let ((pathname (chain window location pathname (split "/"))))
-      (chain window history (push-state (chain window history state) nil (concatenate 'string "/wiki/" (chain pathname 2) "/edit")))
-      (update-state)
+      (push-state (concatenate 'string "/wiki/" (chain pathname 2) "/edit") (chain window history state))
       F))))
 
 (chain
@@ -272,8 +281,7 @@
   (lambda (e)
     (chain e (prevent-default))
     (let ((pathname (chain window location pathname (split "/"))))
-      (chain window history (push-state (chain window history state) nil (concatenate 'string "/wiki/" (chain pathname 2) "/create")))
-      (update-state)
+      (push-state (concatenate 'string "/wiki/" (chain pathname 2) "/create") (chain window history state))
       F))))
 
 
@@ -283,8 +291,7 @@
   (lambda (e)
     (chain e (prevent-default))
     (let ((pathname (chain window location pathname (split "/"))))
-      (chain window history (push-state (chain window history state) nil (concatenate 'string "/wiki/" (chain pathname 2) "/history")))
-      (update-state)
+      (push-state (concatenate 'string "/wiki/" (chain pathname 2) "/history") (chain window history state))
       F))))
 
 (defun cleanup ()
@@ -299,20 +306,492 @@
   (chain ($ id) (fade-in)))
 
 (defun get-url-parameter (param)
-  (let ((page-url (chain window location search (substring 1)))
+  (let* ((page-url (chain window location search (substring 1)))
 	(url-variables (chain page-url (split "&"))))
     (loop for parameter-name in url-variables do
 	 (setf parameter-name (chain parameter-name (split "=")))
 	 (if (= (chain parameter-name 0) param)
 	     (return (chain parameter-name 1))))))
 
-(defun update-state ()
-  (setf (chain window last-url) (chain window location pathname))
-  (if (undefined (chain window local-storage name))
-      (chain ($ "#logout") (text (concatenate 'string (chain window local-storage name) " abmelden")))
-      (chain ($ "#logout") (text "Abmelden")))
-  (let ((pathname (chain window location pathname (split "/"))))
-    nil)) ;; TODO implement states
+(lisp *UPDATE-STATE*)
 
 
-;; line 722
+(defun replace-state (url data)
+  (chain window history (replace-state data nil url))
+  (update-state))
+
+(defun push-state (url data)
+  (chain window history (push-state data nil url))
+  (update-state))
+
+(defroute "/"
+  (chain ($ ".edit-button") (remove-class "disabled"))
+  (replace-state "/wiki/Hauptseite"))
+
+(defroute "/logout"
+  (chain ($ ".edit-button") (add-class "disabled"))
+  (show-tab "#loading")
+  (chain $ (post "/api/logout" (create csrf_token (read-cookie "CSRF_TOEN"))
+		 (lambda (data)
+		   (chain window local-storage (remove-item "name"))
+		   (replace-state "/login")))
+	 (fail (lambda (jq-xhr text-status error-thrown)
+		 (handle-error error-thrown T)))))
+
+(defroute "/login"
+  (chain ($ ".edit-button") (add-class "disabled"))
+  (chain ($ "#publish-changes-modal") (modal "hide"))
+  (let ((url-username (get-url-parameter "username"))
+	(url-password (get-url-parameter "password")))
+    (if (and (not (undefined url-username)) (not (undefined url-password)))
+	(progn
+	  (chain ($ "#inputName") (val (decode-u-r-i-component url-username)))
+	  (chain ($ "#inputPassword") (val (decode-u-r-i-component url-password))))
+	(if (not (undefined (chain window local-storage name)))
+	    (progn
+	      (replace-state "/wiki/Hauptseite")
+	      (return))))
+
+    (show-tab "#login")
+    (chain ($ ".login-hide")
+	   (fade-out
+	    (lambda ()
+	      (chain ($ ".login-hide") (attr "style" "display: none !important")))))
+    (chain ($ ".navbar-collapse") (remove-class "show"))))
+
+(defroute "/articles"
+   (show-tab "#loading")
+   (get "/api/articles" T
+	(chain data (sort (lambda (a b)
+			    (chain a (locale-compare b)))))
+	(chain ($ "#articles-list") (html ""))
+	(loop for page in data do
+	     (let ((templ ($ (chain ($ "#articles-entry") (html)))))
+	       (chain templ (find "a") (text page))
+	       (chain templ (find "a") (data "href" (concatenate 'string "/wiki/" page)))
+	       (chain ($ "#articles-list") (append templ))))
+	(show-tab "#articles")))
+
+(defroute "/wiki/:name"
+  (var pathname (chain window location pathname (split "/")))
+  (show-tab "#loading")
+  (chain ($ ".edit-button") (remove-class "disabled"))
+  (chain ($ "#is-outdated-article") (add-class "d-none"))
+  (chain ($ "#wiki-article-title") (text (decode-u-r-i-component (chain pathname 2))))
+  (cleanup)
+  
+  (chain
+   $
+   (get
+    (concatenate 'string "/api/wiki/" (chain pathname 2))
+    (lambda (data)
+      (chain ($ "article") (html data))
+      (chain
+       ($ ".formula")
+       (each
+	(lambda ()
+	  (chain -math-live (render-math-in-element this)))))
+      (show-tab "#page")))
+   (fail (lambda (jq-xhr text-status error-thrown)
+	   (if (= error-thrown "Not Found")
+	       (show-tab "#not-found")
+	       (handle-error error-thrown T))))))
+
+(defroute "/wiki/:name/create"
+  (chain ($ ".edit-button") (add-class "disabled"))
+  (chain ($ "#is-outdated-article") (add-class "d-none"))
+
+  (if (and (not (null (chain window history state))) (not (null (chain window history state content))))
+      (chain ($ "article") (html (chain window history state content)))
+      (chain ($ "article") (html "")))
+  (show-editor)
+  (show-tab "#page"))
+
+(defroute "/wiki/:name/edit"
+  (chain ($ ".edit-button") (add-class "disabled"))
+  (chain ($ "#is-outdated-article") (add-class "d-none"))
+  (chain ($ "#wiki-article-title") (text (decode-u-r-i-component (chain pathname 2))))
+  (cleanup)
+  (if (and (not (null (chain window history state))) (not (null (chain window history state content))))
+      (progn
+	(chain ($ "article") (html (chain window history state content)))
+	(chain ($ ".formula") (each (lambda ()
+				      (chain -math-live (render-math-in-element this)))))
+	(show-editor)
+	(show-tab "#page"))
+      (progn
+	(show-tab "#loading")
+	(chain
+	 $
+	 (get
+	  (concatenate 'string "/api/wiki/" (chain pathname 2))
+	  (lambda (data)
+	    (chain ($ "article") (html data))
+	    (chain
+	     ($ ".formula")
+	     (each (lambda ()
+		     (chain -math-live (render-math-element this)))))
+	    (chain window history (replace-state (create content data) nil nil))
+	    (show-editor)
+	    (show-tab "#page")))
+	 (fail
+	  (lambda (jq-xhr text-status error-thrown)
+	    (if (= error-thrown "Not Found")
+		(show-tab "#not-found")
+		(handle-error error-thrown T))))))))
+
+(defroute "/wiki/:name/history"
+  (chain ($ ".edit-button") (remove-class "disabled"))
+  (show-tab "#loading")
+  (var pathname (chain window location pathname (split "/")))
+  (get (concatenate 'string "/api/history/" (chain pathname 2)) T
+       (chain ($ "#history-list") (html ""))
+       (loop for page in data do
+	    (let ((template ($ (chain ($ "#history-item-template") (html)))))
+	      (chain template (find ".history-username") (text (chain page user)))
+	      (chain template (find ".history-date") (text (new (-Date (chain page created)))))
+	      (chain template (find ".history-summary") (text (chain page summary)))
+	      (chain template (find ".history-characters") (text (chain page size)))
+	      (chain template (find ".history-show") (data "href" (concatenate 'string "/wiki/" (chain pathname 2) "/history/" (chain page id))))
+	      (chain template (find ".history-diff") (data "href" (concatenate 'string "/wiki/" (chain pathname 2) "/history/" (chain page id) "/changes")))
+	      (chain ($ "#history-list") (append template))))
+       (show-tab "#history")))
+
+(defroute "/wiki/:page/history/:id"
+  (show-tab "#loading")
+  (chain ($ ".edit-button") (remove-class "disabled"))
+  (cleanup)
+  (chain ($ "#wiki-article-title") (text (decode-u-r-i-component (chain pathname 2))))
+  (chain
+   $
+   (get
+    (concatenate 'string "/api/revision/" id)
+    (lambda (data)
+      (chain ($ "#currentVersionLink") (data "href" (concatenate 'string "/wiki/" page)))
+      (chain ($ "#is-outdated-article") (remove-class "d-none"))
+      (chain ($ "article") (html data))
+      (chain window history (replace-state (create content data) nil nil))
+      (chain
+       ($ ".formula")
+       (each
+	(lambda ()
+	  (chain -math-live (render-math-in-element this)))))
+      (show-tab "#page")
+      ))
+   (fail
+    (lambda (jq-xhr text-status error-thrown)
+      (if (= error-thrown "Not Found")
+	  (show-tab "#not-found")
+	  (handle-error error-thrown T))))))
+
+(defroute "/wiki/:page/history/:id/changes"
+  (chain ($ ".edit-button") (add-class "disabled"))
+  (chain ($ "#currentVersionLink") (data "href" (concatenate 'string "/wiki/" page)))
+  (chain ($ "#is-outdated-article") (remove-class "d-none"))
+  (cleanup)
+  (var current-revision nil)
+  (var previous-revision nil)
+  (chain
+   $
+   (get
+    (concatenate 'string "/api/revision/" id)
+    (lambda (data)
+      (setf current-revision data)
+      (chain
+       $
+       (get
+	(concatenate 'string "/api/previous-revision/" id)
+	(lambda (data)
+	  (setf previous-revision data)
+	  (var diff-html (htmldiff previous-revision current-revision))
+	  (chain ($ "article") (html diff-html))
+	  (show-tab "#page")))
+       (fail
+	(lambda (jq-xhr text-status error-thrown)
+	  (if (= error-thrown "Not Found")
+	      (show-tab "#not-found")
+	      (handle-error error-thrown T)))))))
+   (fail
+    (lambda (jq-xhr text-status error-thrown)
+      (if (= error-thrown "Not Found")
+	  (show-tab "#not-found")
+	  (handle-error error-thrown T))))))
+
+(defroute "/search/:query"
+  (chain ($ ".edit-button") (add-class "disabled"))
+  (show-tab "#search")
+  (chain ($ "#search-query") (val query)))
+
+
+(defmacro get (url show-error-page &body body)
+  `(chain $
+	  (get ,url (lambda (data) ,@body))
+	  (fail (lambda (jq-xhr text-status error-thrown)
+		  (handle-error error-thrown ,show-error-page)))))
+
+(defmacro post (url data show-error-page &body body)
+  `(chain $
+	  (post ,url ,data (lambda (data) ,@body))
+	  (fail (lambda (jq-xhr text-status error-thrown)
+		  (handle-error error-thrown ,show-error-page)))))
+
+(defroute "/quiz/create"
+  (show-tab "#loading")
+  (post "/api/quiz/create" (create 'csrf_token (read-cookie "CSRF_TOKEN")) T
+	(push-state (concatenate 'string "/quiz/" data "/edit"))))
+
+(defroute "/quiz/:id/edit"
+  (show-tab "#edit-quiz"))
+
+(defroute "/quiz/:id/play"
+    (get (concatenate 'string "/api/quiz/" id) T
+	 (setf (chain window correct-responses) 0)
+	 (setf (chain window wrong-responses) 0)
+	 (replace-state (concatenate 'string "/quiz/" id "/play/0") (create data data))))
+
+;; 681
+(defroute "/quiz/:id/play/:index"
+  (setf index (parse-int index))
+  (if (= (chain window history state data questions length) index)
+      (progn
+	(replace-state (concatenate 'string "/quiz/" id "/results"))
+	(return)))
+  (setf (chain window current-question) (elt (chain window history state data questions) index))
+  (if (= (chain window current-question type) "multiple-choice")
+      (progn
+	(show-tab "#multiple-choice-question-html")
+	(chain ($ ".question-html") (text (chain window current-question question)))
+	(chain ($ "#answers-html") (text ""))
+	;; TODO this compiles to REALLY shitty code
+	(dotimes (i (chain window current-question responses length))
+	  (let ((answer (elt (chain window current-question responses) i))
+		(template ($ (chain ($ "#multiple-choice-answer-html") (html)))))
+	    (chain template (find ".custom-control-label") (text (chain answer text)))
+	    (chain template (find ".custom-control-label") (attr "for" i))
+	    (chain template (find ".custom-control-input") (attr "id" i))
+	    (chain ($ "#answers-html") (append template))))))
+  (if (= (chain window current-question type) "text")
+      (progn
+	(show-tab "#text-question-html")
+	(chain ($ ".question-html") (text (chain window current-question question))))))
+
+(defroute "/quiz/:id/results"
+  (show-tab "#quiz-results")
+  (chain ($ "#result") (text (concatenate 'string "Du hast " (chain window correct-responses) " Fragen richtig und " (chain window wrong-responses) " Fragen falsch beantwortet. Das sind " (chain (/ (* (chain window correct-responses) 100) (+ (chain window correct-responses) (chain window wrong-responses))) (to-fixed 1) (to-locale-string)) " %"))))
+
+(chain
+ ($ ".multiple-choice-submit-html")
+ (click
+  (lambda ()
+    (let ((everything-correct T) (i 0))
+      (loop for answer in (chain window current-question responses) do
+	   (chain ($ (concatenate 'string "#" i)) (remove-class "is-valid"))
+	   (chain ($ (concatenate 'string "#" i)) (remove-class "is-invalid"))
+	   (if (= (chain answer is-correct) (chain ($ (concatenate 'string "#" i)) (prop "checked")))
+	       (chain ($ (concatenate 'string "#" i)) (add-class "is-valid"))
+	       (progn
+		 (chain ($ (concatenate 'string "#" i)) (add-class "is-invalid"))
+		 (setf everything-correct F)))
+	   (incf i))
+      (if everything-correct
+	  (incf (chain window correct-responses))
+	  (incf (chain window wrong-responses)))
+      (chain ($ ".multiple-choice-submit-html") (hide))
+      (chain ($ ".next-question") (show))))))
+
+(chain
+ ($ ".text-submit-html")
+ (click
+  (lambda ()
+    (if (= (chain ($ "#text-response") (val)) (chain window current-question answer))
+	(progn
+	  (incf (chain window correct-response))
+	  (chain ($ "#text-response") (add-class "is-valid")))
+	(progn
+	  (incf (chain window wrong-responses))
+	  (chain ($ "#text-response") (add-class "is-invalid"))))
+    (chain ($ ".text-submit-html") (hide))
+    (chain ($ ".next-question") (show)))))
+
+(chain
+ ($ ".next-question")
+ (click
+  (lambda ()
+    (chain ($ ".next-question") (hide))
+    (chain ($ ".text-submit-html") (show))
+    (chain ($ ".multiple-choice-submit-html") (show))
+    (let ((pathname (chain window location pathname (split "/"))))
+      (replace-state (concatenate 'string "/quiz/" (chain pathname 2) "/play/" (1+ (parse-int (chain pathname 4)))))))))
+
+(chain
+ ($ "#button-search")
+ (click
+  (lambda ()
+    (let ((query (chain ($ "#search-query") (val))))
+      (chain ($ "#search-create-article") (data "href" (concatenate 'string "/wiki/" query "/create")))
+      (chain window history (replace-state nil nil (concatenate 'string "/search/" query)))
+      (chain ($ "#search-results-loading") (stop) (fade-in))
+      (chain ($ "#search-results") (stop) (fade-out))
+      (if (undefined (chain window search-xhr))
+	  (chain window search-xhr (abort)))
+      (setf
+       (chain window search-xhr)
+       (chain
+	$
+	(get
+	 (concatenate 'string "/api/search" query)
+	 (lambda (data)
+	   (chain ($ "#search-results-content") (html ""))
+	   (let ((results-contain-query F))
+	     (if (not (null data))
+		 (loop for page in data do
+		      (if (= (chain page title) query)
+			  (setf results-contain-query T))
+		      (let ((template ($ (chain ($ "#search-result-template") (html)))))
+			(chain template (find ".s-title") (text (chain page title)))
+			(chain template (data "href" (concatenate 'string "/wiki" (chain page title))))
+			(chain template (find ".search-result-summary") (html (chain page summary)))
+			(chain ($ "#search-results-content") (append template)))))
+	     (if results-contain-query
+		 (chain ($ "#no-search-results") (hide))
+		 (chain ($ "#no-search-results") (show)))
+	     (chain ($ "#search-results-loading") (stop) (fade-out))
+	     (chain ($ "#search-results") (stop) (fade-in)))))
+	(fail (lambda (jq-xhr text-status error-thrown)
+		(if (not (= text-status "abort"))
+		    (handle-error error-thrown T))))))))))
+
+(chain
+ ($ "#login-form")
+ (on "submit"
+     (lambda (e)
+     (chain e (prevent-default))
+       (chain ($ "#login-button") (prop "disabled" T) (html "<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span> Anmelden..."))
+
+       (login-post F))))
+     
+(defun login-post (repeated)
+  (let ((name (chain ($ "#inputName") (val)))
+	(password (chain ($ "#inputPassword") (val))))
+    (chain
+     $
+     (post
+      "/api/login"
+      (create
+       csrf_token (read-cookie "CSRF_TOKEN")
+       name name
+       password password)
+      (lambda (data)
+	(chain ($ "#login-button") (prop "disabled" F) (html "Anmelden"))
+	(chain ($ "#inputPassword") (val ""))
+	(setf (chain window local-storage name) name)
+	(if (and (not (null (chain window history state)))
+		 (not (undefined (chain window history state last-state)))
+		 (not (undefined (chain window history state last-url))))
+	    (replace-state (chain window history state last-url) (chain window history state last-state))
+	    (replace-state "/wiki/Hauptseite"))))
+     (fail
+      (lambda (jq-xhr text-status error-thrown)
+	(chain window local-storage (remove-item "name"))
+	(if (= error-thrown "Forbidden")
+	    (if repeated
+		(progn
+		  (alert "Ungültige Zugansdaten!")
+		  (chain ($ "#login-button") (prop "disabled" F) (html "Anmelden")))
+		(login-post T))
+	    (handle-error error-thrown T)))))))
+
+(chain
+ ($ ".create-multiple-choice-question")
+ (click
+  (lambda ()
+    (chain ($ "#questions") (append ($ (chain ($ "#multiple-choice-question") (html))))))))
+
+(chain
+ ($ ".create-text-question")
+ (click
+  (lambda ()
+    (chain ($ "#questions") (append ($ (chain ($ "#text-question") (html))))))))
+
+(chain
+ ($ "body")
+ (on
+  "click"
+  ".add-response-possibility"
+  (lambda (e)
+    (chain ($ this) (siblings ".responses") (append ($ (chain ($ "#multiple-choice-response-possibility") (html))))))))
+
+(chain
+ ($ ".save-quiz")
+ (click
+  (lambda ()
+    (let ((obj (new (-object)))
+	  (pathname (chain window location pathname (split "/"))))
+      (setf (chain obj questions) (list))
+      (chain
+       ($ "#questions")
+       (children)
+       (each
+	(lambda ()
+	  (if (= (chain ($ this) (attr "class")) "multiple-choice-question")
+	      (chain obj questions (push (multiple-choice-question ($ this)))))
+	  (if (= (chain ($ this) (attr "class")) "text-question")
+	      (chain obj questions (push (text-question ($ this))))))))
+      (post (concatenate 'string "/api/quiz" (chain pathname 2))
+	    (create
+	     csrf_token (read-cookie "CSRF_TOKEN")
+	     data (chain -J-S-O-N (stringify obj)))
+	    T
+	    (chain window history (replace-state nil nil (concatenate 'string "/quiz/" (chain pathname 2) "/play"))))))))
+
+(defun text-question (element)
+  (create
+   type "text"
+   question (chain element (find ".question") (val))
+   answer (chain element (find ".answer") (val))))
+
+(defun multiple-choice-question (element)
+  (let ((obj (create
+	      type "multiple-choice"
+	      question (chain element (find ".question") (val))
+	      responses (list))))
+    (chain
+     element
+     (find ".responses")
+     (children)
+     (each
+      (lambda ()
+	(let ((is-correct (chain ($ this) (find ".multiple-choice-response-correct") (prop "checked")))
+	      (response-text (chain ($ this) (find ".multiple-choice-response-text") (val))))
+
+	  (chain obj responses (push (create
+				      text response-text
+				      is-correct is-correct)))))))
+    obj))
+
+(setf
+ (chain window onpopstate)
+ (lambda (event)
+   (if (chain window last-url)
+       (let ((pathname (chain window last-url (split "/"))))
+	 (if (and (= (chain pathname length) 4) (= (chain pathname 1) "wiki") (or (= (chain pathname 3) "create") (= (chain pathname 3) "edit")))
+	     (progn
+	       (if (confirm "Möchtest du die Änderung wirklich verwerfen?")
+		   (update-state))
+	       (return)))))
+   (update-state)))
+
+(update-state)
+
+(setf
+ (chain window onbeforeunload)
+ (lambda ()
+   (let ((pathname (chain window location pathname (split "/"))))
+     (if (and (= (chain pathname length) 4) (= (chain pathname 1) "wiki") (or (= (chain pathname 3) "create") (= (chain pathname 3) "edit")))
+	 T)))) ;; TODO this method is not allowed to return anything if not canceling
+
+(chain
+ ($ document)
+ (on "input" "#search-query"
+     (lambda (e)
+       (chain ($ "#button-search") (click)))))
