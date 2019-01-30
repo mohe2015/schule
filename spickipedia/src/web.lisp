@@ -167,7 +167,7 @@
 
 (defroute ("/api/index.js" :method :GET) ()
   (setf (getf (response-headers *response*) :content-type) "application/javascript")
-  (index-js-gen))
+  (file-js-gen #P"js/index.lisp"))
 
 ;; this is used to get the most used browsers to decide for future features (e.g. some browsers don't support new features so I won't use them if many use such a browser)
 (defun track ()
