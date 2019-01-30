@@ -410,7 +410,7 @@
 (defroute "/wiki/:name/edit"
   (chain ($ ".edit-button") (add-class "disabled"))
   (chain ($ "#is-outdated-article") (add-class "d-none"))
-  (chain ($ "#wiki-article-title") (text (decode-u-r-i-component (chain pathname 2))))
+  (chain ($ "#wiki-article-title") (text (decode-u-r-i-component name)))
   (cleanup)
   (if (and (not (null (chain window history state))) (not (null (chain window history state content))))
       (progn
@@ -424,7 +424,7 @@
 	(chain
 	 $
 	 (get
-	  (concatenate 'string "/api/wiki/" (chain pathname 2))
+	  (concatenate 'string "/api/wiki/" name)
 	  (lambda (data)
 	    (chain ($ "article") (html data))
 	    (chain
