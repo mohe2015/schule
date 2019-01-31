@@ -1,8 +1,13 @@
 (in-package :cl-user)
 (defpackage spickipedia.parenscript
   (:use :cl :parenscript :ppcre)
-  (:export :file-js-gen))
+  (:export :file-js-gen
+	   :js-files))
 (in-package :spickipedia.parenscript)
+
+(defun js-files ()
+  (loop for parenscript-file in (directory #P"js/*.lisp")
+	      when (not (equal (file-namestring parenscript-file) "common.lisp")) collect parenscript-file))
 
 (defun file-js-gen (file)
   (in-package :spickipedia.parenscript)
