@@ -177,8 +177,19 @@
                      :if-does-not-exist :create)
   (format str "~a~%" (json:encode-json-to-string (acons "user" (my-session-user *session*) (headers-in*))))))
 
+(defparameter *template-registry* (make-hash-table :test 'equal))
+
+(defun render (template-path &optional &rest env)
+  (let ((template (gethash template-path *template-registry*)))
+    (unless template
+      (setf template (djula:compile-template* (princ-to-string template-path)))
+      (setf (gethash template-path *template-registry*) template))
+    (apply #'djula:render-template*
+           template nil
+           env)))
+
 (defroute ("/.*" :regexp t :method :GET) ()
-  (render #P"index.html"))
+  (render #P"index.html" :js-files (js-files)))
 
 ;; Error pages
 
