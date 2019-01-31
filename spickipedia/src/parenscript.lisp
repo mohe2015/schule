@@ -17,10 +17,9 @@
   (get-routes)
   (with-input-from-string (s (concatenate 'string (alexandria:read-file-into-string #P"js/common.lisp") (alexandria:read-file-into-string file)))
     (let ((content (ps-compile-stream s)))
-      (in-package :common-lisp-user)
+      ;;(in-package :common-lisp-user) ;; parallelizing bug
       content)))
   
-
 (defun find-defroute (code)
   (let ((routes ()))
     (loop for list in code do
@@ -44,7 +43,7 @@
      #'(lambda (r)
 	 `(if (,(make-symbol (concatenate 'string "handle-" (subseq (regex-replace-all "\/:?" r "-") 1))) (chain window location pathname))
 	      (return-from update-state)))
-     (find-defroute (get-sexp "js/index.lisp")))))
+     (find-defroute (get-sexp "js/1_index.lisp"))))) ;; TODO FIXME
   (defparameter *UPDATE-STATE*
     `(defun update-state ()
        (setf (chain window last-url) (chain window location pathname))
