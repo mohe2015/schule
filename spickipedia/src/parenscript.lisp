@@ -15,7 +15,6 @@
 (defun file-js-gen (file)
   (in-package :spickipedia.parenscript)
   (get-routes)
-  (format t "~a" (concatenate 'string (alexandria:read-file-into-string #P"js/common.lisp") (alexandria:read-file-into-string file)))
   (with-input-from-string (s (concatenate 'string (alexandria:read-file-into-string #P"js/common.lisp") (alexandria:read-file-into-string file)))
     (let ((content (ps-compile-stream s)))
       (in-package :common-lisp-user)

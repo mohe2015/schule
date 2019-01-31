@@ -165,9 +165,10 @@
 (defroute ("/api/file/:name" :method :GET) (&key name)
   (handle-static-file (merge-pathnames (concatenate 'string "uploads/" name))))
 
-(defroute ("/api/index.js" :method :GET) ()
+(defroute ("/js/:file" :method :GET) (&key file)
   (setf (getf (response-headers *response*) :content-type) "application/javascript")
-  (file-js-gen #P"js/index.lisp"))
+  (print)
+  (file-js-gen (concatenate 'string "js/" (subseq file 0 (- (length file) 3)) ".lisp"))
 
 ;; this is used to get the most used browsers to decide for future features (e.g. some browsers don't support new features so I won't use them if many use such a browser)
 (defun track ()
