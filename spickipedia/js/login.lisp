@@ -11,8 +11,13 @@
 	(if (not (undefined (chain window local-storage name)))
 	    (progn
 	      (replace-state "/wiki/Hauptseite")
-	      (return))))))
- 
+	      (return))))
+    (show-tab "#login")
+    (chain ($ ".login-hide")
+	   (fade-out
+	    (lambda ()
+	      (chain ($ ".login-hide") (attr "style" "display: none !important")))))
+    (chain ($ ".navbar-collapse") (remove-class "show"))))
 
 (chain
  ($ "#login-form")

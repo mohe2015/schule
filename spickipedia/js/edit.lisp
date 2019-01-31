@@ -40,4 +40,4 @@
 	  (lambda (jq-xhr text-status error-thrown)
 	    (if (= error-thrown "Not Found")
 		(show-tab "#not-found")
-		(handle-error error-thrown T)))))))) 
+		(handle-error error-thrown T))))))))

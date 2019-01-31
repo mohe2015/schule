@@ -7,10 +7,3 @@
 		   (replace-state "/login")))
 	 (fail (lambda (jq-xhr text-status error-thrown)
 		 (handle-error error-thrown T)))))
-
-    (show-tab "#login")
-    (chain ($ ".login-hide")
-	   (fade-out
-	    (lambda ()
-	      (chain ($ ".login-hide") (attr "style" "display: none !important")))))
-    (chain ($ ".navbar-collapse") (remove-class "show"))))
