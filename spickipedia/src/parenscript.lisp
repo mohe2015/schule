@@ -6,6 +6,9 @@
 (in-package :spickipedia.parenscript)
 
 (defun js-files ()
+  (mapcar #'(lambda (f) (concatenate 'string "/js/" (pathname-name f) ".js")) (parenscript-files)))
+
+(defun parenscript-files ()
   (loop for parenscript-file in (directory #P"js/*.lisp")
 	      when (not (equal (file-namestring parenscript-file) "common.lisp")) collect parenscript-file))
 

@@ -341,11 +341,9 @@
     <script src="/summernote-de-DE.js?v=1"></script>
     <script src="/summernote-table-headers.js"></script>
 
-    <ul>
     {% for file in js-files %}
-      <li>{{file}}</li>
+      <script src="{{file}}"></script>
     {% endfor %}
-    </ul>
     
     <!--<script src="/summernote-image-captionit.js"></script>-->
     <!--<script src="/summernote-image-attributes.js"></script>-->
