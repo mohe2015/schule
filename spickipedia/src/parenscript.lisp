@@ -42,8 +42,8 @@
     `(defun update-state ()
        (setf (chain window last-url) (chain window location pathname))
        (if (undefined (chain window local-storage name))
-	   (chain ($ "#logout") (text (concatenate 'string (chain window local-storage name) " abmelden")))
-	   (chain ($ "#logout") (text "Abmelden")))
+	   (chain ($ "#logout") (text "Abmelden"))
+	   (chain ($ "#logout") (text (concatenate 'string (chain window local-storage name) " abmelden"))))
        (if (and (not (= (chain window location pathname) "/login")) (undefined (chain window local-storage name)))
 	   (progn
 	     (chain window history (push-state (create last-url (chain window location href)
