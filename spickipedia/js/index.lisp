@@ -458,7 +458,7 @@
   (show-tab "#loading")
   (chain ($ ".edit-button") (remove-class "disabled"))
   (cleanup)
-  (chain ($ "#wiki-article-title") (text (decode-u-r-i-component (chain pathname 2))))
+  (chain ($ "#wiki-article-title") (text (decode-u-r-i-component page)))
   (chain
    $
    (get
@@ -513,6 +513,10 @@
       (if (= error-thrown "Not Found")
 	  (show-tab "#not-found")
 	  (handle-error error-thrown T))))))
+
+(defroute "/search"    
+  (chain ($ ".edit-button") (add-class "disabled"))
+  (show-tab "#search"))
 
 (defroute "/search/:query"
   (chain ($ ".edit-button") (add-class "disabled"))
@@ -629,14 +633,14 @@
       (chain window history (replace-state nil nil (concatenate 'string "/search/" query)))
       (chain ($ "#search-results-loading") (stop) (fade-in))
       (chain ($ "#search-results") (stop) (fade-out))
-      (if (undefined (chain window search-xhr))
+      (if (not (undefined (chain window search-xhr)))
 	  (chain window search-xhr (abort)))
       (setf
        (chain window search-xhr)
        (chain
 	$
 	(get
-	 (concatenate 'string "/api/search" query)
+	 (concatenate 'string "/api/search/" query)
 	 (lambda (data)
 	   (chain ($ "#search-results-content") (html ""))
 	   (let ((results-contain-query F))
