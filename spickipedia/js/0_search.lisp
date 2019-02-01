@@ -40,7 +40,7 @@
 			  (setf results-contain-query T))
 		      (let ((template ($ (chain ($ "#search-result-template") (html)))))
 			(chain template (find ".s-title") (text (chain page title)))
-			(chain template (attr "href" (concatenate 'string "/wiki" (chain page title))))
+			(chain template (attr "href" (concatenate 'string "/wiki/" (chain page title))))
 			(chain template (find ".search-result-summary") (html (chain page summary)))
 			(chain ($ "#search-results-content") (append template)))))
 	     (if results-contain-query
