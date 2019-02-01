@@ -6,7 +6,7 @@
  (on "click" ".history-pushState"
      (lambda (e)
        (chain e (prevent-default))
-       (push-state (chain ($ this) (data "href")))
+       (push-state (chain ($ this) (attr "href")))
        F)))
 
 (chain

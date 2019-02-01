@@ -20,8 +20,8 @@
 	      (chain template (find ".history-date") (text (new (-Date (chain page created)))))
 	      (chain template (find ".history-summary") (text (chain page summary)))
 	      (chain template (find ".history-characters") (text (chain page size)))
-	      (chain template (find ".history-show") (data "href" (concatenate 'string "/wiki/" (chain pathname 2) "/history/" (chain page id))))
-	      (chain template (find ".history-diff") (data "href" (concatenate 'string "/wiki/" (chain pathname 2) "/history/" (chain page id) "/changes")))
+	      (chain template (find ".history-show") (attr "href" (concatenate 'string "/wiki/" (chain pathname 2) "/history/" (chain page id))))
+	      (chain template (find ".history-diff") (attr "href" (concatenate 'string "/wiki/" (chain pathname 2) "/history/" (chain page id) "/changes")))
 	      (chain ($ "#history-list") (append template))))
        (show-tab "#history")))
 
@@ -35,7 +35,7 @@
    (get
     (concatenate 'string "/api/revision/" id)
     (lambda (data)
-      (chain ($ "#currentVersionLink") (data "href" (concatenate 'string "/wiki/" page)))
+      (chain ($ "#currentVersionLink") (attr "href" (concatenate 'string "/wiki/" page)))
       (chain ($ "#is-outdated-article") (remove-class "d-none"))
       (chain ($ "article") (html data))
       (chain window history (replace-state (create content data) nil nil))
@@ -54,7 +54,7 @@
 
 (defroute "/wiki/:page/history/:id/changes"
   (chain ($ ".edit-button") (add-class "disabled"))
-  (chain ($ "#currentVersionLink") (data "href" (concatenate 'string "/wiki/" page)))
+  (chain ($ "#currentVersionLink") (attr "href" (concatenate 'string "/wiki/" page)))
   (chain ($ "#is-outdated-article") (remove-class "d-none"))
   (cleanup)
   (var current-revision nil)

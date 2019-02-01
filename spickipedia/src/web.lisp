@@ -128,8 +128,9 @@
 
 (defroute ("/api/articles" :method :GET) ()
   (setf (getf (response-headers *response*) :content-type) "application/json")
-  (let* ((articles (mito:select-dao 'wiki-article)))
-    (json:encode-json-to-string (mapcar 'wiki-article-title articles))))
+  (with-connection (db)
+    (let* ((articles (mito:select-dao 'wiki-article)))
+      (json:encode-json-to-string (mapcar 'wiki-article-title articles)))))
 
 (defroute ("/api/upload" :method :POST) (&key |file|)
   (let* ((filepath (nth 0 |file|))

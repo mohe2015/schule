@@ -19,7 +19,7 @@
  (click
   (lambda ()
     (let ((query (chain ($ "#search-query") (val))))
-      (chain ($ "#search-create-article") (data "href" (concatenate 'string "/wiki/" query "/create")))
+      (chain ($ "#search-create-article") (attr "href" (concatenate 'string "/wiki/" query "/create")))
       (chain window history (replace-state nil nil (concatenate 'string "/search/" query)))
       (chain ($ "#search-results-loading") (stop) (fade-in))
       (chain ($ "#search-results") (stop) (fade-out))
@@ -40,7 +40,7 @@
 			  (setf results-contain-query T))
 		      (let ((template ($ (chain ($ "#search-result-template") (html)))))
 			(chain template (find ".s-title") (text (chain page title)))
-			(chain template (data "href" (concatenate 'string "/wiki" (chain page title))))
+			(chain template (attr "href" (concatenate 'string "/wiki" (chain page title))))
 			(chain template (find ".search-result-summary") (html (chain page summary)))
 			(chain ($ "#search-results-content") (append template)))))
 	     (if results-contain-query
