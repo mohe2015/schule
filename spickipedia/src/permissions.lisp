@@ -1,6 +1,7 @@
 (in-package :cl-user)
 (defpackage spickipedia.permissions
-  (:use :cl))
+  (:use :cl :mito :spickipedia.db)
+  (:export :can))
 (in-package :spickipedia.permissions)
 
 (defgeneric action-allowed-p (action group))
@@ -8,59 +9,29 @@
 ;; requirement: user is logged in - but still group may be nil
 ;; groups: admin, user, nil / other
 
-;; every user can read wiki pages
-(defmethod action-allowed-p ((action (eql 'get-wiki-page)) group) t)
+(defmacro allow-anonymous (handler)
+  `(defmethod action-allowed-p ((action (eql ,handler)) group) t))
 
-;; every user can see the history
-(defmethod action-allowed-p ((action (eql 'wiki-page-history)) group) t)
+(allow-any-user 'get-wiki-page)
+(allow-any-user 'wiki-page-history)
+(allow-any-user 'file-handler)
+(allow-any-user 'search-handler)
+(allow-any-user 'logout-handler)
+(allow-any-user 'article-list-handler)
 
-;; every user can view the files
-(defmethod action-allowed-p ((action (eql 'file-handler)) group) t)
+(defmacro allow-user (handler)
+  `(progn
+     (defmethod action-allowed-p ((action (eql ,handler)) (group (eql :admin))) t)
+     (defmethod action-allowed-p ((action (eql ,handler)) (group (eql :user))) t)
+     (defmethod action-allowed-p ((action (eql ,handler)) group) nil)))
 
-;; every user can search
-(defmethod action-allowed-p ((action (eql 'search-handler)) group) t)
-
-;; every user can logout
-(defmethod action-allowed-p ((action (eql 'logout-handler)) group) t)
-
-;; every user can list all articles
-(defmethod action-allowed-p ((action (eql 'article-list-handler)) group) t)
-
-;; only admins and users can edit them
-(defmethod action-allowed-p ((action (eql 'post-wiki-page)) (group (eql :admin))) t)
-(defmethod action-allowed-p ((action (eql 'post-wiki-page)) (group (eql :user))) t)
-(defmethod action-allowed-p ((action (eql 'post-wiki-page)) group) nil)
-
-;; only admins and users can upload images
-(defmethod action-allowed-p ((action (eql 'upload-handler)) (group (eql :admin))) t)
-(defmethod action-allowed-p ((action (eql 'upload-handler)) (group (eql :user))) t)
-(defmethod action-allowed-p ((action (eql 'upload-handler)) group) nil)
-
-;; only admins and users can see revisions
-(defmethod action-allowed-p ((action (eql 'wiki-revision-handler)) (group (eql :admin))) t)
-(defmethod action-allowed-p ((action (eql 'wiki-revision-handler)) (group (eql :user))) t)
-(defmethod action-allowed-p ((action (eql 'wiki-revision-handler)) group) nil)
-
-;; only admins and users can see previous revision
-(defmethod action-allowed-p ((action (eql 'previous-revision-handler)) (group (eql :admin))) t)
-(defmethod action-allowed-p ((action (eql 'previous-revision-handler)) (group (eql :user))) t)
-(defmethod action-allowed-p ((action (eql 'previous-revision-handler)) group) nil)
-
-
-;; only admins and users can create a quiz
-(defmethod action-allowed-p ((action (eql 'create-quiz-handler)) (group (eql :admin))) t)
-(defmethod action-allowed-p ((action (eql 'create-quiz-handler)) (group (eql :user))) t)
-(defmethod action-allowed-p ((action (eql 'create-quiz-handler)) group) nil)
-
-;; only admins and users can create a quiz question
-(defmethod action-allowed-p ((action (eql 'update-quiz-handler)) (group (eql :admin))) t)
-(defmethod action-allowed-p ((action (eql 'update-quiz-handler)) (group (eql :user))) t)
-(defmethod action-allowed-p ((action (eql 'update-quiz-handler)) group) nil)
-
-;; only admins and users can create a quiz question
-(defmethod action-allowed-p ((action (eql 'get-quiz-handler)) (group (eql :admin))) t)
-(defmethod action-allowed-p ((action (eql 'get-quiz-handler)) (group (eql :user))) t)
-(defmethod action-allowed-p ((action (eql 'get-quiz-handler)) group) nil)
+(allow-user 'post-wiki-page)
+(allow-user 'upload-handler)
+(allow-user 'wiki-revision-handler)
+(allow-user 'previous-revision-handler)
+(allow-user 'create-quiz-handler)
+(allow-user 'update-quiz-handler)
+(allow-user 'get-quiz-handler)
 
 (defun can (user action)
   (if user
