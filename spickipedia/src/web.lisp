@@ -8,6 +8,7 @@
 	:spickipedia.sanitize
 	:spickipedia.tsquery-converter
 	:spickipedia.parenscript
+	:spickipedia.permissions
         :mito
 	:sxql
 	:ironclad
@@ -43,13 +44,15 @@
 
 (defroute ("/api/wiki/:title" :method :GET) (&key title)
   (with-connection (db)
-    (let* ((article (mito:find-dao 'wiki-article :title title)))
-      (if (not article)
-          (throw-code 404))
-      (let ((revision (mito:select-dao 'wiki-article-revision (where (:= :article article)) (order-by (:desc :id)) (limit 1))))
-	(if (not revision)
-	    (throw-code 404))
-	(clean (wiki-article-revision-content (car revision)) *sanitize-spickipedia*)))))
+    (with-user
+      (with-group '(:admin :user :anonymous)
+	(let* ((article (mito:find-dao 'wiki-article :title title)))
+	  (if (not article)
+              (throw-code 404))
+	  (let ((revision (mito:select-dao 'wiki-article-revision (where (:= :article article)) (order-by (:desc :id)) (limit 1))))
+	    (if (not revision)
+		(throw-code 404))
+	    (clean (wiki-article-revision-content (car revision)) *sanitize-spickipedia*)))))))
 
 (defroute ("/api/revision/:id" :method :GET) (&key id)
   (with-connection (db)
