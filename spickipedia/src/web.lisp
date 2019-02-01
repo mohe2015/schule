@@ -165,9 +165,9 @@
 (defroute ("/api/file/:name" :method :GET) (&key name)
   (handle-static-file (merge-pathnames (concatenate 'string "uploads/" name))))
 
-(defroute ("/api/index.js" :method :GET) ()
+(defroute ("/js/:file" :method :GET) (&key file)
   (setf (getf (response-headers *response*) :content-type) "application/javascript")
-  (file-js-gen #P"js/index.lisp"))
+  (file-js-gen (concatenate 'string "js/" (subseq file 0 (- (length file) 3)) ".lisp")))
 
 ;; this is used to get the most used browsers to decide for future features (e.g. some browsers don't support new features so I won't use them if many use such a browser)
 (defun track ()
@@ -177,8 +177,19 @@
                      :if-does-not-exist :create)
   (format str "~a~%" (json:encode-json-to-string (acons "user" (my-session-user *session*) (headers-in*))))))
 
+(defparameter *template-registry* (make-hash-table :test 'equal))
+
+(defun render (template-path &optional &rest env)
+  (let ((template (gethash template-path *template-registry*)))
+    (unless template
+      (setf template (djula:compile-template* (princ-to-string template-path)))
+      (setf (gethash template-path *template-registry*) template))
+    (apply #'djula:render-template*
+           template nil
+           env)))
+
 (defroute ("/.*" :regexp t :method :GET) ()
-  (render #P"index.html"))
+  (render #P"index.html" :js-files (js-files)))
 
 ;; Error pages
 
