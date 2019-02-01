@@ -30,10 +30,10 @@
     routes))
 
 (defun get-sexp (file)
-   (with-open-file (stream file)
-    (loop for line = (read stream)
-       collect line
-       while (peek-char nil stream nil nil t))))
+  (with-open-file (stream file)
+    (loop for line = (read stream nil)
+       while line
+       collect line)))
 
 ;; THIS IS AN UGLY HACK
 (defun get-routes ()
@@ -43,7 +43,7 @@
      #'(lambda (r)
 	 `(if (,(make-symbol (concatenate 'string "handle-" (subseq (regex-replace-all "\/:?" r "-") 1))) (chain window location pathname))
 	      (return-from update-state)))
-     (find-defroute (get-sexp "js/1_index.lisp"))))) ;; TODO FIXME
+     (find-defroute (loop for file in (parenscript-files) collect (get-sexp file))))))
   (defparameter *UPDATE-STATE*
     `(defun update-state ()
        (setf (chain window last-url) (chain window location pathname))
