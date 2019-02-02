@@ -42,6 +42,17 @@
 (defun random-base64 ()
   (usb8-array-to-base64-string (random-data 64)))
 
+(defmacro with-group (groups &body body)
+  `(if (member (user-group user) ,groups)
+       (progn
+	 ,@body)
+       (throw-code 403)))
+
+(defmacro my-defroute (method path &body body)
+  `(setf (ningle/app:route ,(caveman2.app:find-package-app *package*) ,path :method ,method)
+	(lambda ()
+	  ,@body)))
+
 (defroute ("/api/wiki/:title" :method :GET) (&key title)
   (with-connection (db)
     (with-user
