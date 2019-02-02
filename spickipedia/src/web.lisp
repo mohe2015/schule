@@ -49,7 +49,7 @@
        (throw-code 403)))
 
 (defmacro my-defroute (method path permissions params &body body)
-  `(setf (ningle/app:route ,(caveman2.app:find-package-app *package*) ,path :method ,method)
+  `(setf (ningle/app:route *web* ,path :method ,method)
 	 (lambda (params) ;; TODO gensym
 	   (with-connection (db)
 	     (with-user
