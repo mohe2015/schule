@@ -48,10 +48,16 @@
 	 ,@body)
        (throw-code 403)))
 
-(defmacro my-defroute (method path &body body)
+(defmacro my-defroute (method path permissions params &body body)
   `(setf (ningle/app:route ,(caveman2.app:find-package-app *package*) ,path :method ,method)
-	(lambda ()
-	  ,@body)))
+	 (lambda ,params
+	   (with-connection (db)
+	     (with-user
+	       (with-group ',permissions
+		 ,@body))))))
+
+(my-defroute :GET "/secret" :allow-admins (test)
+  "jo")
 
 (defroute ("/api/wiki/:title" :method :GET) (&key title)
   (with-connection (db)
