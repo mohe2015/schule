@@ -56,8 +56,7 @@
 	       (with-group ',permissions
 		 ,@body))))))
 
-;;(my-defroute :GET "/secret" (:allow-admins) (test)
-;;  "jo")
+(my-defroute :GET "/secret" (:allow-admins) (test) "jo")
 
 (defroute ("/api/wiki/:title" :method :GET) (&key title)
   (with-connection (db)
