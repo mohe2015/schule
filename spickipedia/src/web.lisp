@@ -50,14 +50,14 @@
 
 (defmacro my-defroute (method path permissions params &body body)
   `(setf (ningle/app:route ,(caveman2.app:find-package-app *package*) ,path :method ,method)
-	 (lambda ,params
+	 (lambda (params) ;; TODO gensym
 	   (with-connection (db)
 	     (with-user
 	       (with-group ',permissions
 		 ,@body))))))
 
-(my-defroute :GET "/secret" :allow-admins (test)
-  "jo")
+;;(my-defroute :GET "/secret" (:allow-admins) (test)
+;;  "jo")
 
 (defroute ("/api/wiki/:title" :method :GET) (&key title)
   (with-connection (db)
