@@ -8,6 +8,7 @@
 
 ## Installation
 
+```bash
 sudo pacman -S --needed postgresql
 sudo -iu postgres
 initdb -D /var/lib/postgres/data
@@ -29,17 +30,14 @@ sudo ldconfig
 
 ln -s $PWD/monkeylib-bcrypt/monkeylib-bcrypt.asd ~/quicklisp/quicklisp/
 
-
 git clone https://github.com/phppgadmin/phppgadmin /usr/share/nginx/phppgadmin
 
 (mito:create-dao 'user :name "Administrator" :hash (hash "xfg3zte94h62j392h") :group "admin")
 (mito:create-dao 'user :name "Anonymous" :hash (hash "xfg3zte94h") :group nil)
 (mito:create-dao 'user :name "<your name>" :hash (hash "fjd8sh3l2h") :group "user")
 
-
-
 psql -U postgres -d spickipedia
-
+```
 
 ```bash
 npm install html-minifier -g
@@ -47,3 +45,4 @@ html-minifier --collapse-boolean-attributes --collapse-inline-tag-whitespace --c
 java -jar closure-compiler-v20181210.jar --js_output_file=www/s/result.js --externs externs/jquery-3.3.js www/s/jquery-3.3.1.js www/s/popper.js www/s/bootstrap.js www/s/summernote-bs4.js www/s/visual-diff.js www/s/index.js
 npm i -g purgecss
 purgecss --content www/index.html --css www/s/all.css --css www/s/bootstrap.min.css --css www/s/index.css --css www/s/summernote-bs4.css -o www/s/ --content www/s/*.js
+```
