@@ -71,9 +71,6 @@
 			 (with-group ',permissions
 			   ,@body))
 		      `(progn ,@body))))))))
-  
-(my-defroute :GET "/secret/:test" nil (test)
-  (format nil "~a" test))
 
 (my-defroute :GET "/api/wiki/:title" (:admin :user :anonymous) (title)
   (let* ((article (mito:find-dao 'wiki-article :title title)))
@@ -116,7 +113,7 @@
   (let* ((quiz-id (parse-integer the-quiz-id)))
     (format nil "~a" (object-id (create-dao 'quiz-revision :quiz (find-dao 'quiz :id quiz-id) :content |data| :author user)))))
 
-(my-defroute :GET "/api/quiz/:the-id" (:admin :user) (the-id)
+(my-defroute :GET "/api/quiz/:the-id" (:admin :user) (the-id) nil
   (setf (getf (response-headers *response*) :content-type) "application/json")
   (let* ((quiz-id (parse-integer the-id))
 	 (revision (mito:select-dao 'quiz-revision (where (:= :quiz (find-dao 'quiz :id quiz-id))) (order-by (:desc :id)) (limit 1))))
@@ -176,7 +173,7 @@
   nil)
 
 ;; noauth
-(my-defroute :GET "/api/killswitch" (:admin :user :anonymous :nil) ()
+(my-defroute :GET "/api/killswitch" nil ()
   (sb-ext:quit))
 
 ;; noauth cache
