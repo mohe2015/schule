@@ -44,19 +44,9 @@
 
 (defmacro make-keyword (name) (values (intern (string name) "KEYWORD")))
 
-(defun parse-key-arguments (lambda-list)
-  (loop for (arg . rest-args) on lambda-list
-        if (eq arg 'cl:&key)
-          do (return
-               (loop for arg in rest-args
-                     until (and (symbolp arg)
-                                (eq (symbol-package arg) (find-package :common-lisp))
-                                (char= (aref (symbol-name arg) 0) #\&))
-collect arg))))
-
 (defun params-form (params-symb lambda-list)
   (let ((pair (gensym "PAIR")))
-    `(nconc ,@(loop for arg in (parse-key-arguments lambda-list)
+    `(nconc ,@(loop for arg in lambda-list
                  collect (destructuring-bind (arg &optional default specified)
                              (if (consp arg) arg (list arg))
                            (declare (ignore default specified))
@@ -74,7 +64,8 @@ collect arg))))
   (let ((params-var (gensym "PARAMS")))
     `(setf (ningle/app:route *web* ,path :method ,method)
 	   (lambda (,params-var)
-	     (destructuring-bind ,params ,(params-form params-var params)
+	     (print ,params-var)
+	     (destructuring-bind (&key ,@params &allow-other-keys) ,(params-form params-var params)
 	       (with-connection (db)
 		 ,(if permissions
 		      `(with-user
@@ -82,10 +73,10 @@ collect arg))))
 			   ,@body))
 		      `(progn ,@body))))))))
   
-(my-defroute :GET "/secret/:test" nil (&key test)
+(my-defroute :GET "/secret/:test" nil (test)
   (format nil "~a" test))
 
-(my-defroute :GET "/api/wiki/:title" (:admin :user :anonymous) (&key title)
+(my-defroute :GET "/api/wiki/:title" (:admin :user :anonymous) (title)
   (let* ((article (mito:find-dao 'wiki-article :title title)))
     (if (not article)
         (throw-code 404))
@@ -94,7 +85,7 @@ collect arg))))
 	  (throw-code 404))
       (clean (wiki-article-revision-content (car revision)) *sanitize-spickipedia*))))
 
-(my-defroute :GET "/api/revision/:id" (:admin :user) (&key id)
+(my-defroute :GET "/api/revision/:id" (:admin :user) (id)
   (let* ((revision (mito:find-dao 'wiki-article-revision :id (parse-integer id))))
     (if (not revision)
 	(throw-code 404))
@@ -103,7 +94,7 @@ collect arg))))
 ;; SELECT article_id FROM wiki_article_revision WHERE id = 8;
 ;; SELECT id FROM wiki_article_revision WHERE article_id = 1 and id < 8 ORDER BY id DESC LIMIT 1;
 ;; SELECT id FROM wiki_article_revision WHERE article_id = (SELECT article_id FROM wiki_article_revision WHERE id = 8) and id < 8 ORDER BY id DESC LIMIT 1;
-(my-defroute :GET "/api/previous-revision/:the-id" (:admin :user) (&key the-id)
+(my-defroute :GET "/api/previous-revision/:the-id" (:admin :user) (the-id)
   (let* ((id (parse-integer the-id))
 	 (query (dbi:prepare *connection* "SELECT id FROM wiki_article_revision WHERE article_id = (SELECT article_id FROM wiki_article_revision WHERE id = ?) and id < ? ORDER BY id DESC LIMIT 1;"))
 	 (result (dbi:execute query id id))
@@ -112,7 +103,7 @@ collect arg))))
 	(clean (wiki-article-revision-content (mito:find-dao 'wiki-article-revision :id previous-id)) *sanitize-spickipedia*)
 	nil)))
 
-(my-defroute :POST "/api/wiki/:title" (:admin :user) (&key title |summary| |html|)
+(my-defroute :POST "/api/wiki/:title" (:admin :user) (title |summary| |html|)
   (let* ((article (mito:find-dao 'wiki-article :title title)))
     (if (not article)
 	(setf article (mito:create-dao 'wiki-article :title title)))
@@ -122,18 +113,18 @@ collect arg))))
 (my-defroute :POST "/api/quiz/create" (:admin :user) ()
   (format nil "~a" (object-id (mito:create-dao 'quiz :creator user))))
 
-(my-defroute :POST "/api/quiz/:the-quiz-id" (:admin :user) (&key the-quiz-id |data|)
+(my-defroute :POST "/api/quiz/:the-quiz-id" (:admin :user) (the-quiz-id |data|)
   (let* ((quiz-id (parse-integer the-quiz-id)))
     (format nil "~a" (object-id (create-dao 'quiz-revision :quiz (find-dao 'quiz :id quiz-id) :content |data| :author user)))))
 
-(my-defroute :GET "/api/quiz/:the-id" (:admin :user) (&key the-id)
+(my-defroute :GET "/api/quiz/:the-id" (:admin :user) (the-id)
   (setf (getf (response-headers *response*) :content-type) "application/json")
   (let* ((quiz-id (parse-integer the-id))
 	 (revision (mito:select-dao 'quiz-revision (where (:= :quiz (find-dao 'quiz :id quiz-id))) (order-by (:desc :id)) (limit 1))))
     (quiz-revision-content (car revision))))
     
     
-(my-defroute :GET "/api/history/:title" (:admin :user) (&key title)
+(my-defroute :GET "/api/history/:title" (:admin :user) (title)
   (setf (getf (response-headers *response*) :content-type) "application/json")
   (let* ((article (mito:find-dao 'wiki-article :title title)))
     (if article
@@ -146,7 +137,7 @@ collect arg))))
 		 (mito:select-dao 'wiki-article-revision (where (:= :article article)) (order-by (:desc :created-at)))))
 	(throw-code 404))))
 
-(my-defroute :GET "/api/search/:query" (:admin :user :anonymous) (&key query)
+(my-defroute :GET "/api/search/:query" (:admin :user :anonymous) (query)
   (setf (getf (response-headers *response*) :content-type) "application/json")
   (let* ((searchquery (tsquery-convert query))
 	 (query (dbi:prepare *connection* "SELECT a.title, ts_rank_cd((setweight(to_tsvector(a.title), 'A') || setweight(to_tsvector((SELECT content FROM wiki_article_revision WHERE article_id = a.id ORDER BY id DESC LIMIT 1)), 'D')), query) AS rank, ts_headline(a.title || (SELECT content FROM wiki_article_revision WHERE article_id = a.id ORDER BY id DESC LIMIT 1), to_tsquery(?)) FROM wiki_article AS A, to_tsquery(?) query WHERE query @@ (setweight(to_tsvector(a.title), 'A') || setweight(to_tsvector((SELECT content FROM wiki_article_revision WHERE article_id = a.id ORDER BY id DESC LIMIT 1)), 'D')) ORDER BY rank DESC;"))
@@ -160,7 +151,7 @@ collect arg))))
   (let* ((articles (mito:select-dao 'wiki-article)))
     (json:encode-json-to-string (mapcar 'wiki-article-title articles))))
 
-(my-defroute :POST "/api/upload" (:admin :user) (&key |file|)
+(my-defroute :POST "/api/upload" (:admin :user) (|file|)
   (let* ((filepath (nth 0 |file|))
 	 ;; (filetype (nth 2 (hunchentoot:post-parameter "file")))
 	 (filehash (byte-array-to-hex-string (digest-file :sha512 filepath)))	 ;; TODO whitelist mimetypes TODO verify if mimetype is correct
@@ -170,7 +161,7 @@ collect arg))))
 	 filehash))
 
 ;; noauth
-(my-defroute :POST "/api/login" (:admin :user :anonymous :nil) (&key |name| |password|)
+(my-defroute :POST "/api/login" (:admin :user :anonymous :nil) (|name| |password|)
   (format t "~A ~A~%" |name| |password|)
   (let* ((user (mito:find-dao 'user :name |name|)))
     (if (and user (password= |password| (user-hash user)))                        ;; TODO prevent timing attack
@@ -190,10 +181,10 @@ collect arg))))
   (sb-ext:quit))
 
 ;; noauth cache
-(my-defroute :GET "/api/file/:name" (:admin :user :anonymous) (&key name)
+(my-defroute :GET "/api/file/:name" (:admin :user :anonymous) (name)
   (handle-static-file (merge-pathnames (concatenate 'string "uploads/" name))))
 
-(my-defroute :GET "/js/:file" nil (&key file)
+(my-defroute :GET "/js/:file" nil (file)
   (setf (getf (response-headers *response*) :content-type) "application/javascript")
   (file-js-gen (concatenate 'string "js/" (subseq file 0 (- (length file) 3)) ".lisp")))
 
