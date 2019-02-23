@@ -32,9 +32,10 @@ ln -s $PWD/monkeylib-bcrypt/monkeylib-bcrypt.asd ~/quicklisp/quicklisp/
 
 git clone https://github.com/phppgadmin/phppgadmin /usr/share/nginx/phppgadmin
 
-(mito:create-dao 'user :name "Administrator" :hash (hash "xfg3zte94h62j392h") :group "admin")
-(mito:create-dao 'user :name "Anonymous" :hash (hash "xfg3zte94h") :group nil)
-(mito:create-dao 'user :name "<your name>" :hash (hash "fjd8sh3l2h") :group "user")
+(with-connection (db)
+  (mito:create-dao 'user :name "Administrator" :hash (hash "xfg3zte94h62j392h") :group "admin")
+  (mito:create-dao 'user :name "Anonymous" :hash (hash "xfg3zte94h") :group nil)
+  (mito:create-dao 'user :name "<your name>" :hash (hash "fjd8sh3l2h") :group "user"))
 
 psql -U postgres -d spickipedia
 ```
