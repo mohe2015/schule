@@ -18,6 +18,8 @@
   (:export :*web*))
 (in-package :spickipedia.web)
 
+(declaim (optimize (debug 3)))
+
 (defparameter *default-cost* 13
   "The default value for the COST parameter to HASH.")
 
@@ -40,19 +42,48 @@
 	 ,@body)
        (throw-code 403)))
 
-;; (let ((params (gensym "PARAMS"))))
-(defmacro my-defroute (method path permissions params &body body)
-  `(setf (ningle/app:route *web* ,path :method ,method)
-	 (lambda (params) ;; TODO gensym
-	   (with-connection (db)
-	     ,(if permissions
-		  `(with-user
-		     (with-group ',permissions
-		       ,@body))
-		  `(progn ,@body))))))
+(defmacro make-keyword (name) (values (intern (string name) "KEYWORD")))
 
-(my-defroute :GET "/secret/:test" nil (test)
-  (format nil "~a" params))
+(defun parse-key-arguments (lambda-list)
+  (loop for (arg . rest-args) on lambda-list
+        if (eq arg 'cl:&key)
+          do (return
+               (loop for arg in rest-args
+                     until (and (symbolp arg)
+                                (eq (symbol-package arg) (find-package :common-lisp))
+                                (char= (aref (symbol-name arg) 0) #\&))
+collect arg))))
+
+(defun params-form (params-symb lambda-list)
+  (let ((pair (gensym "PAIR")))
+    `(nconc ,@(loop for arg in (parse-key-arguments lambda-list)
+                 collect (destructuring-bind (arg &optional default specified)
+                             (if (consp arg) arg (list arg))
+                           (declare (ignore default specified))
+                           `(let ((,pair (assoc ,(if (or (string= arg :captures)
+                                                         (string= arg :splat))
+                                                     (intern (symbol-name arg) :keyword)
+                                                     (symbol-name arg))
+                                                ,params-symb
+                                                :test #'string=)))
+                              (if ,pair
+                                  (list ,(intern (symbol-name arg) :keyword) (cdr ,pair))
+				  nil)))))))
+
+(defmacro my-defroute (method path permissions params &body body)
+  (let ((params-var (gensym "PARAMS")))
+    `(setf (ningle/app:route *web* ,path :method ,method)
+	   (lambda (,params-var)
+	     (destructuring-bind ,params ,(params-form params-var params)
+	       (with-connection (db)
+		 ,(if permissions
+		      `(with-user
+			 (with-group ',permissions
+			   ,@body))
+		      `(progn ,@body))))))))
+  
+(my-defroute :GET "/secret/:test" nil (&key test)
+  (format nil "~a" test))
 
 (my-defroute :GET "/api/wiki/:title" (:admin :user :anonymous) (&key title)
   (let* ((article (mito:find-dao 'wiki-article :title title)))
