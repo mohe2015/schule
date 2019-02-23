@@ -64,7 +64,6 @@
   (let ((params-var (gensym "PARAMS")))
     `(setf (ningle/app:route *web* ,path :method ,method)
 	   (lambda (,params-var)
-	     (print ,params-var)
 	     (destructuring-bind (&key ,@params &allow-other-keys) ,(params-form params-var params)
 	       (with-connection (db)
 		 ,(if permissions
@@ -161,7 +160,7 @@
 	 filehash))
 
 ;; noauth
-(my-defroute :POST "/api/login" (:admin :user :anonymous :nil) (|name| |password|)
+(my-defroute :POST "/api/login" nil (|name| |password|)
   (format t "~A ~A~%" |name| |password|)
   (let* ((user (mito:find-dao 'user :name |name|)))
     (if (and user (password= |password| (user-hash user)))                        ;; TODO prevent timing attack
