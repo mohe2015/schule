@@ -16,9 +16,9 @@
   (in-package :spickipedia.parenscript)
   (get-routes)
   (with-input-from-string (s (concatenate 'string (alexandria:read-file-into-string #P"js/common.lisp") (alexandria:read-file-into-string file)))
-    (let ((content (ps-compile-stream s)))
-      ;;(in-package :common-lisp-user) ;; parallelizing bug
-      content)))
+    (handler-bind ((simple-condition #'muffle-warning))
+      (let ((content (ps-compile-stream s)))
+	content))))
   
 (defun find-defroute (code)
   (let ((routes ()))
