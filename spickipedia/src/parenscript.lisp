@@ -16,7 +16,7 @@
   (in-package :spickipedia.parenscript)
   (get-routes)
   (with-input-from-string (s (concatenate 'string (alexandria:read-file-into-string #P"js/common.lisp") (alexandria:read-file-into-string file)))
-    (handler-bind ((simple-condition #'muffle-warning))
+    (handler-bind ((simple-warning #'(lambda (e) (if (equal "Returning from unknown block ~A" (simple-condition-format-control e)) (muffle-warning)))))
       (let ((content (ps-compile-stream s)))
 	content))))
   
