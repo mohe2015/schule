@@ -86,8 +86,6 @@
 	       (return)))))
    (update-state)))
 
-(update-state)
-
 (setf
  (chain window onbeforeunload)
  (lambda ()
@@ -96,3 +94,5 @@
 	 T)))) ;; TODO this method is not allowed to return anything if not canceling
 
 (lisp *UPDATE-STATE*)
+
+(update-state)
