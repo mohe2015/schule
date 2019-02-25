@@ -1,12 +1,12 @@
 (in-package :cl-user)
 (defpackage spickipedia.parenscript
-  (:use :cl :parenscript :ppcre)
+  (:use :cl :parenscript :ppcre :ironclad)
   (:export :file-js-gen
 	   :js-files))
 (in-package :spickipedia.parenscript)
 
 (defun js-files ()
-  (mapcar #'(lambda (f) (concatenate 'string "/js/" (pathname-name f) ".js")) (parenscript-files)))
+  (mapcar #'(lambda (f) (concatenate 'string "/js/" (pathname-name f) ".js?v=" (byte-array-to-hex-string (digest-file :sha512 (concatenate 'string "js/" (pathname-name f) ".lisp"))))) (parenscript-files)))
 
 (defun parenscript-files ()
   (loop for parenscript-file in (directory #P"js/*.lisp")
