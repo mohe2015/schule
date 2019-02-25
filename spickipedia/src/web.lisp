@@ -44,7 +44,7 @@
 
 (defmacro make-keyword (name) (values (intern (string name) "KEYWORD")))
 
-(defun params-form (params-symb lambda-list)
+(defmacro params-form (params-symb lambda-list)
   (let ((pair (gensym "PAIR")))
     `(nconc ,@(loop for arg in lambda-list
                  collect (destructuring-bind (arg &optional default specified)
@@ -70,7 +70,7 @@
     `(setf (ningle/app:route *web* ,path :method ,method)
 	   (lambda (,params-var)
 	     (setf (getf (response-headers *response*) :content-type) ,content-type)
-	     (destructuring-bind (&key ,@params &allow-other-keys) ,(params-form params-var params)
+	     (destructuring-bind (&key ,@params &allow-other-keys) (params-form ,params-var ,params)
 	       (with-connection (db)
 		 ,(if permissions
 		      `(with-user
