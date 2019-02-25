@@ -23,38 +23,18 @@
 	  (chain ($ "#publish-changes-modal") (modal "show"))))))
      (render))))
 
-(defparameter cancel-button
+(defparameter settings-button
   (lambda (context)
     (chain
      (chain
       (chain $ summernote ui)
       (button
        (create
-	contents "<i class=\"fa fa-times\"/>"
-	tooltip "Abbrechen"
+	contents "<i class=\"fa fa-cog\"/>"
+	tooltip "Einstellungen"
 	click
 	(lambda ()
-	  (if (confirm "Möchtest du die Änderung wirklich verwerfen?")
-	      (chain window history (back)))))))
-     (render))))
-
-(defparameter wiki-link-button
-  (lambda (context)
-    (chain
-     (chain
-      (chain $ summernote ui)
-      (button
-       (create
-	contents "S"
-	tooltip "Spickipedia-Link einfügen"
-	click
-	(lambda ()
-	  (chain
-	   ($ "#spickiLinkModal")
-	   (on "shown.bs.modal"
-	       (lambda ()
-		 (chain ($ "#article-link-title") (trigger "focus")))))
-	  (chain ($ "#spickiLinkModal") (modal "show"))))))
+	  (alert 1)))))
      (render))))
      
 (chain
@@ -106,13 +86,12 @@
      focus T
      buttons (create
 	      finished finished-button
-	      cancel cancel-button
-	      wiki-link wiki-link-button)
+	      settings settings-button)
      toolbar ([]
 	      ("style" ("style.p" "style.h2" "style.h3" "superscript" "subscript"))
 	      ("para" ("ul" "ol" "indent" "outdent"))
 	      ("insert" ("link" "picture" "table" "math"))
-	      ("management" ("undo" "redo" "finished")))
+	      ("management" ("undo" "redo" "settings" "finished")))
      cleaner
      (create
       action "both"
