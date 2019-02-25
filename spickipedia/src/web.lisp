@@ -27,6 +27,10 @@
 (defvar *web* (make-instance '<web>))
 (clear-routing-rules *web*)
 
+(djula::def-tag-compiler :file-hash (path)
+  (lambda (stream)
+    (princ (byte-array-to-hex-string (digest-file :sha512 path)) stream)))
+
 (defmacro with-user (&body body)
   `(if (gethash :user *SESSION*)
        (let ((user (mito:find-dao 'user :id (gethash :user *SESSION*))))
@@ -44,7 +48,7 @@
 
 (defmacro make-keyword (name) (values (intern (string name) "KEYWORD")))
 
-(defun params-form (params-symb lambda-list)
+(defmacro params-form (params-symb lambda-list)
   (let ((pair (gensym "PAIR")))
     `(nconc ,@(loop for arg in lambda-list
                  collect (destructuring-bind (arg &optional default specified)
@@ -60,12 +64,27 @@
                                   (list ,(intern (symbol-name arg) :keyword) (cdr ,pair))
 				  nil)))))))
 
+(defparameter *VERSION* "1")
+
+(defun cache-forever ()
+  (setf (getf (response-headers *response*) :cache-control) "public, max-age=31556926")
+  (setf (getf (response-headers *response*) :vary) "Accept-Encoding")
+  (setf (getf (response-headers *response*) :etag) *VERSION*)) ;; TODO fix this dirty implementation
+
+(defmacro with-cache (&body body)
+  `(progn
+    (cache-forever)
+    (if (equal (gethash "if-none-match" (request-headers *request*)) *VERSION*)
+	(throw-code 304)
+	(progn
+	  ,@body))))
+
 (defmacro my-defroute (method path permissions params content-type &body body)
   (let ((params-var (gensym "PARAMS")))
     `(setf (ningle/app:route *web* ,path :method ,method)
 	   (lambda (,params-var)
 	     (setf (getf (response-headers *response*) :content-type) ,content-type)
-	     (destructuring-bind (&key ,@params &allow-other-keys) ,(params-form params-var params)
+	     (destructuring-bind (&key ,@params &allow-other-keys) (params-form ,params-var ,params)
 	       (with-connection (db)
 		 ,(if permissions
 		      `(with-user
@@ -178,7 +197,8 @@
   (handle-static-file (merge-pathnames (concatenate 'string "uploads/" name))))
 
 (my-defroute :GET "/js/:file" nil (file) "application/javascript"
-  (file-js-gen (concatenate 'string "js/" (subseq file 0 (- (length file) 3)) ".lisp")))
+  (with-cache
+      (file-js-gen (concatenate 'string "js/" (subseq file 0 (- (length file) 3)) ".lisp"))))
 
 ;; this is used to get the most used browsers to decide for future features (e.g. some browsers don't support new features so I won't use them if many use such a browser)
 (defun track ()
