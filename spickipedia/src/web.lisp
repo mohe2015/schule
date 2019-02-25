@@ -27,6 +27,10 @@
 (defvar *web* (make-instance '<web>))
 (clear-routing-rules *web*)
 
+(djula::def-tag-compiler :file-hash (path)
+  (lambda (stream)
+    (princ (byte-array-to-hex-string (digest-file :sha512 path)) stream)))
+
 (defmacro with-user (&body body)
   `(if (gethash :user *SESSION*)
        (let ((user (mito:find-dao 'user :id (gethash :user *SESSION*))))
