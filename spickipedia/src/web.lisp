@@ -222,7 +222,9 @@
            template nil
            env)))
 
+;; TODO convert this to my-defroute because otherwise we cant use the features of it like 	     (basic-headers)
 (defroute ("/.*" :regexp t :method :GET) ()
+  (basic-headers)
   (render #P"index.html" :js-files (js-files)))
 
 ;; Error pages
