@@ -66,8 +66,11 @@
 
 (defparameter *VERSION* "1")
 
+(defun valid-csrf () ;; TODO secure string compare
+  (string= (my-session-csrf-token *SESSION*) (post-parameter "csrf_token")))
+
 (defun cache-forever ()
-  (setf (getf (response-headers *response*) :cache-control) "public, max-age=31556926")
+  (setf (getf (response-headers *response*) :cache-control) "max-age=31556926")
   (setf (getf (response-headers *response*) :vary) "Accept-Encoding")
   (setf (getf (response-headers *response*) :etag) *VERSION*)) ;; TODO fix this dirty implementation
 
@@ -79,10 +82,18 @@
 	(progn
 	  ,@body))))
 
+(defun basic-headers ()
+  (setf (getf (response-headers *response*) :x-frame-options) "DENY")
+  (setf (getf (response-headers *response*) :content-security-policy) "default-src 'none'; script-src 'self'; img-src 'self' data: ; style-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self'; frame-src www.youtube.com youtube.com; frame-ancestors 'none';") ;; TODO the inline css from the whsiwyg editor needs to be replaced - write an own editor sometime
+  (setf (getf (response-headers *response*) :x-xss-protection) "1; mode=block")
+  (setf (getf (response-headers *response*) :x-content-type-options) "nosniff")
+  (setf (getf (response-headers *response*) :referrer-policy) "no-referrer"))
+
 (defmacro my-defroute (method path permissions params content-type &body body)
   (let ((params-var (gensym "PARAMS")))
     `(setf (ningle/app:route *web* ,path :method ,method)
 	   (lambda (,params-var)
+	     (basic-headers)
 	     (setf (getf (response-headers *response*) :content-type) ,content-type)
 	     (destructuring-bind (&key ,@params &allow-other-keys) (params-form ,params-var ,params)
 	       (with-connection (db)
@@ -199,14 +210,6 @@
 (my-defroute :GET "/js/:file" nil (file) "application/javascript"
   (with-cache
       (file-js-gen (concatenate 'string "js/" (subseq file 0 (- (length file) 3)) ".lisp"))))
-
-;; this is used to get the most used browsers to decide for future features (e.g. some browsers don't support new features so I won't use them if many use such a browser)
-(defun track ()
-  (with-open-file (str "track.json"
-                     :direction :output
-                     :if-exists :append
-                     :if-does-not-exist :create)
-  (format str "~a~%" (json:encode-json-to-string (acons "user" (my-session-user *session*) (headers-in*))))))
 
 (defparameter *template-registry* (make-hash-table :test 'equal))
 
