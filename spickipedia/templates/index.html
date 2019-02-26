@@ -193,41 +193,7 @@
       </article>
       
       
-      
-      
-      
-      
-      <style>
-      
-      .closable-badge {
-        background-color: var(--success);
-        border-radius: .25em;
-        padding: 0.2em;
-        display: inline-block;
-        margin-right: 0.5em;
-        margin-bottom: 0.5em;
-      }
-      
-      .closable-badge-label {
-        margin-right: 0.25em;
-      }
-      
-      </style>
-      
-       
-       
-       
-       
-       <form class="form-inline" id="add-tag-form">
-       
-        <input id="new-category" class="form-control form-control-sm" type="text" placeholder="Kategorie...">
-       </form>
-      
-      
-      
-      
-      
-      
+    
       
       <div>
         <!--<button type="button" class="btn btn-outline-primary">Diskussion</button>-->
@@ -235,43 +201,7 @@
       </div>
       <small>Dieses Werk ist lizenziert unter einer <a target="_blank" rel="license noopener" href="http://creativecommons.org/licenses/by-sa/4.0/deed.de">Creative Commons Namensnennung - Weitergabe unter gleichen Bedingungen 4.0 International Lizenz</a>.</small>
       
-      
-      
-      
-      
-      
-      <!-- Button trigger modal
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-  Launch demo modal
-</button> -->
 
-<!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        
-
-        
-        
-        
-        
-        
-        
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>
-    </div>
-  </div>
-</div>
       
       
       
@@ -403,6 +333,37 @@
         </div>
       </div>
     </div>
+    
+          
+      
+      
+
+<!-- Modal -->
+<div class="modal fade" id="settings-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Kategorien</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Fertig">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      
+       
+       <form class="form-inline" id="add-tag-form">
+       
+        <input id="new-category" class="form-control form-control-sm" type="text" placeholder="Kategorie...">
+       </form>
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fertig</button>
+        <!--<button type="button" class="btn btn-primary">Save changes</button> TODO implement this later that canceling also works -->
+      </div>
+    </div>
+  </div>
+</div>
     
 
     <script src="/jquery-3.3.1.js?v={% file-hash "static/jquery-3.3.1.js" %}"></script>

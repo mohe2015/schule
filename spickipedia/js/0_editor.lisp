@@ -34,7 +34,7 @@
 	tooltip "Einstellungen"
 	click
 	(lambda ()
-	  (alert 1)))))
+	  (chain ($ "#settings-modal") (modal "show"))))))
      (render))))
      
 (chain
