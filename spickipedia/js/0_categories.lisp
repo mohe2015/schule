@@ -3,7 +3,12 @@
  (submit
   (lambda (e)
     (chain e (prevent-default))
-    (alert (chain ($ "#new-category") (val)))
-    (alert (lisp (who-ps-html (:a :href "https://google.de" "Google"))))
-
-    )))
+    (chain
+     ($ "#new-category")
+     (before
+      (who-ps-html
+       (:span :class "closable-badge"
+	      (:span :class "closable-badge-label" (chain ($ "#new-category") (val)))
+	      (:button :type "button" :class "close" :aria-label "Close"
+		       (:span :aria-hidden "true" "&times;"))))))
+    (chain ($ "#new-category") (val "")))))
