@@ -53,7 +53,20 @@
        (each
 	(lambda ()
 	  (setf (@ this inner-h-t-m-l) (concatenate 'string "\\( " (chain -math-live (get-original-content this)) " \\)")))))
-      (chain $ (post (concatenate 'string "/api" article-path) (create summary change-summary html (chain temp-dom (html)) csrf_token (read-cookie "CSRF_TOKEN"))
+
+      (setf categories (chain
+       ($ "#settings-modal")
+       (find ".closable-badge-label")
+       (map
+	(lambda ()
+	  (chain this inner-text)))
+       (get)))
+       
+      (chain $ (post (concatenate 'string "/api" article-path) (create
+								summary change-summary
+								html (chain temp-dom (html))
+								categories categories
+								csrf_token (read-cookie "CSRF_TOKEN"))
 		     (lambda (data)
 		      (push-state article-path)))
 	     (fail (lambda (jq-xhr text-status error-thrown)

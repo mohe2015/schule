@@ -130,7 +130,7 @@
 	(clean (wiki-article-revision-content (mito:find-dao 'wiki-article-revision :id previous-id)) *sanitize-spickipedia*)
 	nil)))
 
-(my-defroute :POST "/api/wiki/:title" (:admin :user) (title |summary| |html|) "text/html"
+(my-defroute :POST "/api/wiki/:title" (:admin :user) (title |summary| |html| |categories|) "text/html"
   (let* ((article (mito:find-dao 'wiki-article :title title)))
     (if (not article)
 	(setf article (mito:create-dao 'wiki-article :title title)))

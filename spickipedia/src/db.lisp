@@ -77,18 +77,12 @@
      (summary :col-type (:varchar 256)
 	      :initarg :summary
 	      :accessor wiki-article-revision-summary)
+     (categories :col-type "text[]"
+		 :initarg :categories
+		 :accessor wiki-article-revision-categories)
      (content :col-type (:text)
 	      :initarg :content
 	      :accessor wiki-article-revision-content))
-    (:metaclass mito:dao-table-class))
-
-  (defclass wiki-article-revision-category ()
-    ((article-revision :col-type wiki-article-revision
-		       :initarg :article-revision
-		       :accesswor wiki-article-revision-category-revision)
-     (category :col-type (:varchar 256)
-	       :initarg :category
-	       :accessor wiki-article-revision-category-category))
     (:metaclass mito:dao-table-class))
 
   (defclass my-session ()
