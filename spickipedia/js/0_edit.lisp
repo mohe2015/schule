@@ -32,7 +32,7 @@
 	    (chain
 	     ($ ".formula")
 	     (each (lambda ()
-		     (chain -math-live (render-math-element this)))))
+		     (chain -math-live (render-math-in-element this)))))
 	    (chain window history (replace-state (create content data) nil nil))
 	    (show-editor)
 	    (show-tab "#page")))

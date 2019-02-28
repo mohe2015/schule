@@ -95,4 +95,7 @@
 
 (lisp *UPDATE-STATE*)
 
-(update-state)
+(setf
+  (chain window onload)
+  (lambda ()
+    (update-state)))
