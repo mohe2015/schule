@@ -108,7 +108,7 @@
 			   ,@body))
 		      `(progn ,@body))))))))
 
-(my-defroute :GET "/api/wiki/:title" (:admin :user :anonymous) (title) "text/html"
+(my-defroute :GET "/api/wiki/:title" (:admin :user :anonymous) (title) "application/json"
   (let* ((article (mito:find-dao 'wiki-article :title title)))
     (if (not article)
         (throw-code 404))
