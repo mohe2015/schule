@@ -55,4 +55,6 @@
 		  (push-state (create
 			       last-url (chain window location href)
 			       last-state (chain window history state)) nil "/login")))
-       ,*ROUTES*)))
+       ,*ROUTES*
+       (chain ($ "#errorMessage") (text "Unbekannter Pfad!"))
+       (show-tab "#error"))))
