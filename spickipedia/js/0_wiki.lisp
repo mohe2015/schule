@@ -12,7 +12,13 @@
     (concatenate 'string "/api/wiki/" (chain pathname 2))
     (lambda (data)
       (chain ($ ".closable-badge") (remove))
+      (chain ($ "#categories") (html ""))
       (loop for category in (chain data categories) do
+	   (chain
+	    ($ "#categories")
+	    (append
+	     (who-ps-html
+	      (:span :class "closable-badge" category))))
 	   (chain
 	    ($ "#new-category")
 	    (before
