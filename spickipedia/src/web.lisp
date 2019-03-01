@@ -139,8 +139,7 @@
   (let* ((article (mito:find-dao 'wiki-article :title title)))
     (if (not article)
 	(setf article (mito:create-dao 'wiki-article :title title)))
-    (print _parsed)
-    (mito:create-dao 'wiki-article-revision :article article :author user :summary |summary| :content |html| :categories _parsed)
+    (mito:create-dao 'wiki-article-revision :article article :author user :summary |summary| :content |html| :categories (cdr (assoc "categories" _parsed :test #'string=)))
     nil))
 
 (my-defroute :POST "/api/quiz/create" (:admin :user) () "text/html"
