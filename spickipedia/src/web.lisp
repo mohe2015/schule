@@ -14,6 +14,7 @@
 	:ironclad
 	:sanitize
 	:bcrypt
+	:cl-fad
 	:cl-base64)
   (:export :*web*))
 (in-package :spickipedia.web)
@@ -67,7 +68,7 @@
 (defparameter *VERSION* "1")
 
 (defun valid-csrf () ;; TODO secure string compare
-  (string= (my-session-csrf-token *SESSION*) (post-parameter "csrf_token")))
+  (string= (my-session-csrf-token *SESSION*) (assoc "csrf_token" (lack.request:request-query-parameters ningle:*request*))))
 
 (defun cache-forever ()
   (setf (getf (response-headers *response*) :cache-control) "max-age=31556926")
@@ -100,7 +101,8 @@
 		 (append (list
                            :_parsed
                            (CAVEMAN2.NESTED-PARAMETER:PARSE-PARAMETERS ,params-var))
-			  (params-form ,params-var ,params))
+			 (params-form ,params-var ,params))
+	       (declare (ignorable _parsed))
 	       (with-connection (db)
 		 ,(if permissions
 		      `(with-user
@@ -215,7 +217,7 @@
 
 ;; noauth cache
 (my-defroute :GET "/api/file/:name" (:admin :user :anonymous) (name) "text/html"
-  (handle-static-file (merge-pathnames (concatenate 'string "uploads/" name))))
+  (merge-pathnames (concatenate 'string "uploads/" name)))
 
 (my-defroute :GET "/js/:file" nil (file) "application/javascript"
   (with-cache

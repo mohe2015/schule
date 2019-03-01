@@ -28,9 +28,9 @@
            template nil
            env)))
 
-(defun render-json (object)
-  (setf (getf (response-headers *response*) :content-type) "application/json")
-  (encode-json object))
+;;(defun render-json (object)
+;;  (setf (getf (response-headers *response*) :content-type) "application/json")
+;;  (encode-json object))
 
 
 ;;

@@ -36,14 +36,15 @@
        collect line)))
 
 ;; THIS IS AN UGLY HACK
+(defparameter
+    *ROUTES*
+  (append `(progn) (mapcar
+		    #'(lambda (r)
+			`(if (,(make-symbol (concatenate 'string "handle-" (subseq (regex-replace-all "\/:?" r "-") 1))) (chain window location pathname))
+			     (return-from update-state)))
+		    (find-defroute (loop for file in (parenscript-files) collect (get-sexp file))))))
+
 (defun get-routes ()
-  (defparameter
-      *ROUTES*
-   (append `(progn) (mapcar
-     #'(lambda (r)
-	 `(if (,(make-symbol (concatenate 'string "handle-" (subseq (regex-replace-all "\/:?" r "-") 1))) (chain window location pathname))
-	      (return-from update-state)))
-     (find-defroute (loop for file in (parenscript-files) collect (get-sexp file))))))
   (defparameter *UPDATE-STATE*
     `(defun update-state ()
        (setf (chain window last-url) (chain window location pathname))
