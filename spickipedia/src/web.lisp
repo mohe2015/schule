@@ -93,6 +93,7 @@
   (let ((params-var (gensym "PARAMS")))
     `(setf (ningle/app:route *web* ,path :method ,method)
 	   (lambda (,params-var)
+	     (print ,params-var)
 	     (basic-headers)
 	     (setf (getf (response-headers *response*) :content-type) ,content-type)
 	     (destructuring-bind (&key ,@params &allow-other-keys) (params-form ,params-var ,params)
@@ -130,11 +131,12 @@
 	(clean (wiki-article-revision-content (mito:find-dao 'wiki-article-revision :id previous-id)) *sanitize-spickipedia*)
 	nil)))
 
-(my-defroute :POST "/api/wiki/:title" (:admin :user) (title |summary| |html| |categories|) "text/html"
+(my-defroute :POST "/api/wiki/:title" (:admin :user) (title _parsed |summary| |html|) "text/html"
   (let* ((article (mito:find-dao 'wiki-article :title title)))
     (if (not article)
 	(setf article (mito:create-dao 'wiki-article :title title)))
-    (mito:create-dao 'wiki-article-revision :article article :author user :summary |summary| :content |html|)
+    (print _parsed)
+    (mito:create-dao 'wiki-article-revision :article article :author user :summary |summary| :content |html| :categories |categories|)
     nil))
 
 (my-defroute :POST "/api/quiz/create" (:admin :user) () "text/html"
