@@ -23,38 +23,18 @@
 	  (chain ($ "#publish-changes-modal") (modal "show"))))))
      (render))))
 
-(defparameter cancel-button
+(defparameter settings-button
   (lambda (context)
     (chain
      (chain
       (chain $ summernote ui)
       (button
        (create
-	contents "<i class=\"fa fa-times\"/>"
-	tooltip "Abbrechen"
+	contents "<i class=\"fa fa-cog\"/>"
+	tooltip "Einstellungen"
 	click
 	(lambda ()
-	  (if (confirm "Möchtest du die Änderung wirklich verwerfen?")
-	      (chain window history (back)))))))
-     (render))))
-
-(defparameter wiki-link-button
-  (lambda (context)
-    (chain
-     (chain
-      (chain $ summernote ui)
-      (button
-       (create
-	contents "S"
-	tooltip "Spickipedia-Link einfügen"
-	click
-	(lambda ()
-	  (chain
-	   ($ "#spickiLinkModal")
-	   (on "shown.bs.modal"
-	       (lambda ()
-		 (chain ($ "#article-link-title") (trigger "focus")))))
-	  (chain ($ "#spickiLinkModal") (modal "show"))))))
+	  (chain ($ "#settings-modal") (modal "show"))))))
      (render))))
      
 (chain
@@ -73,7 +53,20 @@
        (each
 	(lambda ()
 	  (setf (@ this inner-h-t-m-l) (concatenate 'string "\\( " (chain -math-live (get-original-content this)) " \\)")))))
-      (chain $ (post (concatenate 'string "/api" article-path) (create summary change-summary html (chain temp-dom (html)) csrf_token (read-cookie "CSRF_TOKEN"))
+
+      (setf categories (chain
+       ($ "#settings-modal")
+       (find ".closable-badge-label")
+       (map
+	(lambda ()
+	  (chain this inner-text)))
+       (get)))
+       
+      (chain $ (post (concatenate 'string "/api" article-path) (create
+								summary change-summary
+								html (chain temp-dom (html))
+								categories categories
+								csrf_token (read-cookie "CSRF_TOKEN"))
 		     (lambda (data)
 		      (push-state article-path)))
 	     (fail (lambda (jq-xhr text-status error-thrown)
@@ -106,13 +99,12 @@
      focus T
      buttons (create
 	      finished finished-button
-	      cancel cancel-button
-	      wiki-link wiki-link-button)
+	      settings settings-button)
      toolbar ([]
 	      ("style" ("style.p" "style.h2" "style.h3" "superscript" "subscript"))
 	      ("para" ("ul" "ol" "indent" "outdent"))
 	      ("insert" ("link" "picture" "table" "math"))
-	      ("management" ("undo" "redo" "finished")))
+	      ("management" ("undo" "redo" "settings" "finished")))
      cleaner
      (create
       action "both"

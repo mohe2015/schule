@@ -83,3 +83,16 @@ article h5 {
 article h6 {
     text-align: center !important;
 }
+
+ .closable-badge {
+  background-color: var(--success);
+  border-radius: .25em;
+  padding: 0.2em;
+  display: inline-block;
+  margin-right: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+.closable-badge-label {
+  margin-right: 0.25em;
+}

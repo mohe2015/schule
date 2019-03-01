@@ -66,8 +66,11 @@
 
 (defparameter *VERSION* "1")
 
+(defun valid-csrf () ;; TODO secure string compare
+  (string= (my-session-csrf-token *SESSION*) (post-parameter "csrf_token")))
+
 (defun cache-forever ()
-  (setf (getf (response-headers *response*) :cache-control) "public, max-age=31556926")
+  (setf (getf (response-headers *response*) :cache-control) "max-age=31556926")
   (setf (getf (response-headers *response*) :vary) "Accept-Encoding")
   (setf (getf (response-headers *response*) :etag) *VERSION*)) ;; TODO fix this dirty implementation
 
@@ -79,12 +82,25 @@
 	(progn
 	  ,@body))))
 
+(defun basic-headers ()
+  (setf (getf (response-headers *response*) :x-frame-options) "DENY")
+  (setf (getf (response-headers *response*) :content-security-policy) "default-src 'none'; script-src 'self'; img-src 'self' data: ; style-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self'; frame-src www.youtube.com youtube.com; frame-ancestors 'none';") ;; TODO the inline css from the whsiwyg editor needs to be replaced - write an own editor sometime
+  (setf (getf (response-headers *response*) :x-xss-protection) "1; mode=block")
+  (setf (getf (response-headers *response*) :x-content-type-options) "nosniff")
+  (setf (getf (response-headers *response*) :referrer-policy) "no-referrer"))
+
 (defmacro my-defroute (method path permissions params content-type &body body)
   (let ((params-var (gensym "PARAMS")))
     `(setf (ningle/app:route *web* ,path :method ,method)
 	   (lambda (,params-var)
+	     (print ,params-var)
+	     (basic-headers)
 	     (setf (getf (response-headers *response*) :content-type) ,content-type)
-	     (destructuring-bind (&key ,@params &allow-other-keys) (params-form ,params-var ,params)
+	     (destructuring-bind (&key _parsed ,@params &allow-other-keys)
+		 (append (list
+                           :_parsed
+                           (CAVEMAN2.NESTED-PARAMETER:PARSE-PARAMETERS ,params-var))
+			  (params-form ,params-var ,params))
 	       (with-connection (db)
 		 ,(if permissions
 		      `(with-user
@@ -92,14 +108,16 @@
 			   ,@body))
 		      `(progn ,@body))))))))
 
-(my-defroute :GET "/api/wiki/:title" (:admin :user :anonymous) (title) "text/html"
+(my-defroute :GET "/api/wiki/:title" (:admin :user :anonymous) (title) "application/json"
   (let* ((article (mito:find-dao 'wiki-article :title title)))
     (if (not article)
         (throw-code 404))
     (let ((revision (mito:select-dao 'wiki-article-revision (where (:= :article article)) (order-by (:desc :id)) (limit 1))))
       (if (not revision)
 	  (throw-code 404))
-      (clean (wiki-article-revision-content (car revision)) *sanitize-spickipedia*))))
+      (json:encode-json-to-string
+       `((content . ,(clean (wiki-article-revision-content (car revision)) *sanitize-spickipedia*))
+	 (categories . ,(mapcar #'(lambda (v) (wiki-article-revision-category-category v)) (retrieve-dao 'wiki-article-revision-category :revision (car revision)))))))))
 
 (my-defroute :GET "/api/revision/:id" (:admin :user) (id) "text/html"
   (let* ((revision (mito:find-dao 'wiki-article-revision :id (parse-integer id))))
@@ -120,10 +138,13 @@
 	nil)))
 
 (my-defroute :POST "/api/wiki/:title" (:admin :user) (title |summary| |html|) "text/html"
-  (let* ((article (mito:find-dao 'wiki-article :title title)))
+  (let* ((article (mito:find-dao 'wiki-article :title title))
+	 (categories (cdr (assoc "categories" _parsed :test #'string=))))
     (if (not article)
 	(setf article (mito:create-dao 'wiki-article :title title)))
-    (mito:create-dao 'wiki-article-revision :article article :author user :summary |summary| :content |html|)
+    (let ((revision (mito:create-dao 'wiki-article-revision :article article :author user :summary |summary| :content |html|)))
+      (loop for category in categories do
+	   (mito:create-dao 'wiki-article-revision-category :revision revision :category category)))
     nil))
 
 (my-defroute :POST "/api/quiz/create" (:admin :user) () "text/html"
@@ -200,14 +221,6 @@
   (with-cache
       (file-js-gen (concatenate 'string "js/" (subseq file 0 (- (length file) 3)) ".lisp"))))
 
-;; this is used to get the most used browsers to decide for future features (e.g. some browsers don't support new features so I won't use them if many use such a browser)
-(defun track ()
-  (with-open-file (str "track.json"
-                     :direction :output
-                     :if-exists :append
-                     :if-does-not-exist :create)
-  (format str "~a~%" (json:encode-json-to-string (acons "user" (my-session-user *session*) (headers-in*))))))
-
 (defparameter *template-registry* (make-hash-table :test 'equal))
 
 (defun render (template-path &optional &rest env)
@@ -219,7 +232,9 @@
            template nil
            env)))
 
+;; TODO convert this to my-defroute because otherwise we cant use the features of it like 	     (basic-headers)
 (defroute ("/.*" :regexp t :method :GET) ()
+  (basic-headers)
   (render #P"index.html" :js-files (js-files)))
 
 ;; Error pages
