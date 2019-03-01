@@ -33,6 +33,9 @@
 	   :quiz-revision-author
 	   :quiz-revision-quiz
 	   :quiz-revision-content
+	   :wiki-article-revision-category
+	   :wiki-article-revision-category-revision
+	   :wiki-article-revision-category-category
 	   ))
 (in-package :spickipedia.db)
 
@@ -77,12 +80,18 @@
      (summary :col-type (:varchar 256)
 	      :initarg :summary
 	      :accessor wiki-article-revision-summary)
-     (categories :col-type "text[]"
-		 :initarg :categories
-		 :accessor wiki-article-revision-categories)
      (content :col-type (:text)
 	      :initarg :content
 	      :accessor wiki-article-revision-content))
+    (:metaclass mito:dao-table-class))
+
+  (defclass wiki-article-revision-category ()
+    ((article-revision :col-type wiki-article-revision
+		       :initarg :revision
+		       :accesswor wiki-article-revision-category-revision)
+     (category :col-type (:varchar 256)
+	       :initarg :category
+	       :accessor wiki-article-revision-category-category))
     (:metaclass mito:dao-table-class))
 
   (defclass my-session ()
@@ -119,9 +128,11 @@
   (mito:ensure-table-exists 'my-session)
   (mito:ensure-table-exists 'quiz)
   (mito:ensure-table-exists 'quiz-revision)
+  (mito:ensure-table-exists 'wiki-article-revision-category)
   (mito:migrate-table 'user)
   (mito:migrate-table 'wiki-article)
   (mito:migrate-table 'wiki-article-revision)
   (mito:migrate-table 'my-session)
   (mito:migrate-table 'quiz)
-  (mito:migrate-table 'quiz-revision))
+  (mito:migrate-table 'quiz-revision)
+  (mito:migrate-table 'wiki-article-revision-category))

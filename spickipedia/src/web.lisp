@@ -136,10 +136,13 @@
 	nil)))
 
 (my-defroute :POST "/api/wiki/:title" (:admin :user) (title |summary| |html|) "text/html"
-  (let* ((article (mito:find-dao 'wiki-article :title title)))
+  (let* ((article (mito:find-dao 'wiki-article :title title))
+	 (categories (cdr (assoc "categories" _parsed :test #'string=))))
     (if (not article)
 	(setf article (mito:create-dao 'wiki-article :title title)))
-    (mito:create-dao 'wiki-article-revision :article article :author user :summary |summary| :content |html| :categories (cdr (assoc "categories" _parsed :test #'string=)))
+    (let ((revision (mito:create-dao 'wiki-article-revision :article article :author user :summary |summary| :content |html|)))
+      (loop for category in categories do
+	   (mito:create-dao 'wiki-article-revision-category :revision revision :category category)))
     nil))
 
 (my-defroute :POST "/api/quiz/create" (:admin :user) () "text/html"
