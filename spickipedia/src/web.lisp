@@ -96,7 +96,11 @@
 	     (print ,params-var)
 	     (basic-headers)
 	     (setf (getf (response-headers *response*) :content-type) ,content-type)
-	     (destructuring-bind (&key ,@params &allow-other-keys) (params-form ,params-var ,params)
+	     (destructuring-bind (&key _parsed ,@params &allow-other-keys)
+		 (append (list
+                           :_parsed
+                           (CAVEMAN2.NESTED-PARAMETER:PARSE-PARAMETERS ,params-var))
+			  (params-form ,params-var ,params))
 	       (with-connection (db)
 		 ,(if permissions
 		      `(with-user
@@ -131,12 +135,12 @@
 	(clean (wiki-article-revision-content (mito:find-dao 'wiki-article-revision :id previous-id)) *sanitize-spickipedia*)
 	nil)))
 
-(my-defroute :POST "/api/wiki/:title" (:admin :user) (title _parsed |summary| |html|) "text/html"
+(my-defroute :POST "/api/wiki/:title" (:admin :user) (title |summary| |html|) "text/html"
   (let* ((article (mito:find-dao 'wiki-article :title title)))
     (if (not article)
 	(setf article (mito:create-dao 'wiki-article :title title)))
     (print _parsed)
-    (mito:create-dao 'wiki-article-revision :article article :author user :summary |summary| :content |html| :categories |categories|)
+    (mito:create-dao 'wiki-article-revision :article article :author user :summary |summary| :content |html| :categories _parsed)
     nil))
 
 (my-defroute :POST "/api/quiz/create" (:admin :user) () "text/html"
