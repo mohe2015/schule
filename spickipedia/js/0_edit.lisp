@@ -28,7 +28,17 @@
 	 (get
 	  (concatenate 'string "/api/wiki/" name)
 	  (lambda (data)
-	    (chain ($ "article") (html data))
+	    (chain ($ ".closable-badge") (remove))
+	    (loop for category in (chain data categories) do
+		 (chain
+		  ($ "#new-category")
+		  (before
+		   (who-ps-html
+		    (:span :class "closable-badge"
+			   (:span :class "closable-badge-label" category)
+			   (:button :type "button" :class "close close-tag" :aria-label "Close"
+				    (:span :aria-hidden "true" "&times;")))))))
+	    (chain ($ "article") (html (chain data content)))
 	    (chain
 	     ($ ".formula")
 	     (each (lambda ()
