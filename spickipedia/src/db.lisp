@@ -86,9 +86,9 @@
     (:metaclass mito:dao-table-class))
 
   (defclass wiki-article-revision-category ()
-    ((article-revision :col-type wiki-article-revision
+    ((revision :col-type wiki-article-revision
 		       :initarg :revision
-		       :accesswor wiki-article-revision-category-revision)
+		       :accessor wiki-article-revision-category-revision)
      (category :col-type (:varchar 256)
 	       :initarg :category
 	       :accessor wiki-article-revision-category-category))

@@ -115,7 +115,9 @@
     (let ((revision (mito:select-dao 'wiki-article-revision (where (:= :article article)) (order-by (:desc :id)) (limit 1))))
       (if (not revision)
 	  (throw-code 404))
-      (clean (wiki-article-revision-content (car revision)) *sanitize-spickipedia*))))
+      (json:encode-json-to-string
+       `((content . ,(clean (wiki-article-revision-content (car revision)) *sanitize-spickipedia*))
+	 (categories . ,(mapcar #'(lambda (v) (wiki-article-revision-category-category v)) (retrieve-dao 'wiki-article-revision-category :revision (car revision)))))))))
 
 (my-defroute :GET "/api/revision/:id" (:admin :user) (id) "text/html"
   (let* ((revision (mito:find-dao 'wiki-article-revision :id (parse-integer id))))
