@@ -17,8 +17,7 @@
   (if (and (not (null (chain window history state))) (not (null (chain window history state content))))
       (progn
 	(chain ($ "article") (html (chain window history state content)))
-	(chain ($ ".formula") (each (lambda ()
-				      (chain -math-live (render-math-in-element this)))))
+	(render-math)
 	(show-editor)
 	(show-tab "#page"))
       (progn
@@ -40,10 +39,7 @@
 			       (:button :type "button" :class "close close-tag" :aria-label "Close"
 					(:span :aria-hidden "true" "&times;"))))))))
 	    (chain ($ "article") (html (chain data content)))
-	    (chain
-	     ($ ".formula")
-	     (each (lambda ()
-		     (chain -math-live (render-math-in-element this)))))
+	    (render-math)
 	    (chain window history (replace-state (create content data) nil nil))
 	    (show-editor)
 	    (show-tab "#page")))

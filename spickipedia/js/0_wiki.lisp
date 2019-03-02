@@ -29,11 +29,7 @@
 			 (:button :type "button" :class "close close-tag" :aria-label "Close"
 				  (:span :aria-hidden "true" "&times;"))))))))
       (chain ($ "article") (html (chain data content)))      
-      (chain
-       ($ ".formula")
-       (each
-	(lambda ()
-	  (chain -math-live (render-math-in-element this)))))
+      (render-math)
       (show-tab "#page")))
    (fail (lambda (jq-xhr text-status error-thrown)
 	   (if (= error-thrown "Not Found")
