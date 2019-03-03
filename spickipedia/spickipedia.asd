@@ -24,12 +24,12 @@
 	       :monkeylib-bcrypt
 	       :str
 	       :parenscript
+	       :do-urlencode
 	       )
   :components ((:module "src"
                 :components
                 (
 		 (:file "sanitize")
-		 (:file "route")
 		 (:file "parenscript")
 		 (:file "tsquery-converter")
 		 (:file "main" :depends-on ("config" "view" "db"))
