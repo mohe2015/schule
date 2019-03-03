@@ -8,7 +8,6 @@
 	:spickipedia.sanitize
 	:spickipedia.tsquery-converter
 	:spickipedia.parenscript
-	:spickipedia.permissions
         :mito
 	:sxql
 	:ironclad

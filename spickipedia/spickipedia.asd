@@ -29,7 +29,6 @@
                 :components
                 (
 		 (:file "sanitize")
-		 (:file "permissions" :depends-on ("db"))
 		 (:file "route")
 		 (:file "parenscript")
 		 (:file "tsquery-converter")
