@@ -88,7 +88,7 @@
                   this.$dialog = ui.dialog({
                       title: "Formel einfügen",
                       fade: options.dialogsFade,
-                      body: '<span id="formula"> \\( e=mc^2 \\) </span>',
+                      body: '<div class="alert alert-warning" role="alert">Formeln editieren funktioniert nur in Google Chrome zuverlässig!</div><span id="formula"> \\( e=mc^2 \\) </span>',
                       footer: '<button type="button" class="btn btn-secondary" data-dismiss="modal">Abbrechen</button><button type="button" class="btn btn-primary note-mathPlugin-btn">Einfügen</button>'
                   }).render().appendTo($container);
                   
@@ -209,6 +209,7 @@
                             });
                         });
                         ui.onDialogHidden(self.$dialog, function () {
+                            window.formula.hideVirtualKeyboard_()
                             $insertBtn.off('click');
                             if (deferred.state() === 'pending') deferred.reject();
                         });

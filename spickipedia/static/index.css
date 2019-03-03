@@ -96,3 +96,7 @@ article h6 {
 .closable-badge-label {
   margin-right: 0.25em;
 }
+
+.ML__keyboard {
+    z-index: 2000 !important;;
+}
