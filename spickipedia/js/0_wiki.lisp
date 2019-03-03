@@ -13,26 +13,23 @@
     (lambda (data)
       (chain ($ ".closable-badge") (remove))
       (chain ($ "#categories") (html ""))
-      (loop for category in (chain data categories) do
-	   (chain
-	    ($ "#categories")
-	    (append
-	     (who-ps-html
-	      (:span :class "closable-badge" category))))
-	   (chain
-	    ($ "#new-category")
-	    (before
-	     (who-ps-html
-	      (:span :class "closable-badge"
-		     (:span :class "closable-badge-label" category)
-		     (:button :type "button" :class "close close-tag" :aria-label "Close"
-			      (:span :aria-hidden "true" "&times;")))))))
+      (if (chain data categories)
+	  (loop for category in (chain data categories) do
+	       (chain
+		($ "#categories")
+		(append
+		 (who-ps-html
+		  (:span :class "closable-badge" category))))
+	       (chain
+		($ "#new-category")
+		(before
+		 (who-ps-html
+		  (:span :class "closable-badge"
+			 (:span :class "closable-badge-label" category)
+			 (:button :type "button" :class "close close-tag" :aria-label "Close"
+				  (:span :aria-hidden "true" "&times;"))))))))
       (chain ($ "article") (html (chain data content)))      
-      (chain
-       ($ ".formula")
-       (each
-	(lambda ()
-	  (chain -math-live (render-math-in-element this)))))
+      (render-math)
       (show-tab "#page")))
    (fail (lambda (jq-xhr text-status error-thrown)
 	   (if (= error-thrown "Not Found")

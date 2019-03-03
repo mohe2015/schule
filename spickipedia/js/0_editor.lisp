@@ -47,13 +47,7 @@
     (let ((change-summary (chain ($ "#change-summary") (val)))
 	  (temp-dom (chain ($ "<output>") (append (chain $ (parse-h-t-m-l (chain ($ "article") (summernote "code")))))))
 	  (article-path (chain window location pathname (substr 0 (chain window location pathname (last-index-of "/"))))))
-      (chain
-       temp-dom
-       (find ".formula")
-       (each
-	(lambda ()
-	  (setf (@ this inner-h-t-m-l) (concatenate 'string "\\( " (chain -math-live (get-original-content this)) " \\)")))))
-
+      (revert-math temp-dom)
       (setf categories (chain
        ($ "#settings-modal")
        (find ".closable-badge-label")
@@ -121,7 +115,7 @@
       limit-stop F)
      popover
      (create
-      math ([] "math" ("edit-math" "delete-math"))
+      math ([] "edit-math" "delete-math")
       table ([] "add" ("addRowDown" "addRowUp" "addColLeft" "addColRight")
 		"delete" ("deleteRow" "deleteCol" "deleteTable")
 		"custom" ("tableHeaders"))

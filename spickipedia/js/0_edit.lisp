@@ -17,8 +17,7 @@
   (if (and (not (null (chain window history state))) (not (null (chain window history state content))))
       (progn
 	(chain ($ "article") (html (chain window history state content)))
-	(chain ($ ".formula") (each (lambda ()
-				      (chain -math-live (render-math-in-element this)))))
+	(render-math)
 	(show-editor)
 	(show-tab "#page"))
       (progn
@@ -29,20 +28,18 @@
 	  (concatenate 'string "/api/wiki/" name)
 	  (lambda (data)
 	    (chain ($ ".closable-badge") (remove))
-	    (loop for category in (chain data categories) do
-		 (chain
-		  ($ "#new-category")
-		  (before
-		   (who-ps-html
-		    (:span :class "closable-badge"
-			   (:span :class "closable-badge-label" category)
-			   (:button :type "button" :class "close close-tag" :aria-label "Close"
-				    (:span :aria-hidden "true" "&times;")))))))
+	    (if (chain data categories)
+		(loop for category in (chain data categories) do
+		     (chain
+		      ($ "#new-category")
+		      (before
+		       (who-ps-html
+			(:span :class "closable-badge"
+			       (:span :class "closable-badge-label" category)
+			       (:button :type "button" :class "close close-tag" :aria-label "Close"
+					(:span :aria-hidden "true" "&times;"))))))))
 	    (chain ($ "article") (html (chain data content)))
-	    (chain
-	     ($ ".formula")
-	     (each (lambda ()
-		     (chain -math-live (render-math-in-element this)))))
+	    (render-math)
 	    (chain window history (replace-state (create content data) nil nil))
 	    (show-editor)
 	    (show-tab "#page")))

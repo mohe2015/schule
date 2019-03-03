@@ -39,11 +39,7 @@
       (chain ($ "#is-outdated-article") (remove-class "d-none"))
       (chain ($ "article") (html data))
       (chain window history (replace-state (create content data) nil nil))
-      (chain
-       ($ ".formula")
-       (each
-	(lambda ()
-	  (chain -math-live (render-math-in-element this)))))
+      (render-math)
       (show-tab "#page")
       ))
    (fail
