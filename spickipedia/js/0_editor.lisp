@@ -115,7 +115,7 @@
       limit-stop F)
      popover
      (create
-      math ([] "math" ("edit-math" "delete-math"))
+      math ([] "edit-math" "delete-math")
       table ([] "add" ("addRowDown" "addRowUp" "addColLeft" "addColRight")
 		"delete" ("deleteRow" "deleteCol" "deleteTable")
 		"custom" ("tableHeaders"))

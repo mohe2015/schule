@@ -96,7 +96,22 @@
                       className: 'ext-math-popover',
                   }).render().appendTo('body');
                   var $content = self.$popover.find('.popover-content');
-                   context.invoke('buttons.build', $content, options.popover.math);
+                  context.invoke('buttons.build', $content, options.popover.math);
+                   
+                  window.test = self;
+                  
+                  $(document).on('click', '.formula', function(e) {
+                      window.currentMathElement = e.currentTarget;
+                      var pos = dom.posFromPlaceholder(window.currentMathElement);
+                      
+                      window.test.$popover.css({
+                        display: 'block',
+                        left: pos.left,
+                        top: pos.top,
+                      });
+
+                      visible = true;
+                  });
                 }
                 self.update = function() {
                     // Prevent focusing on editable when invoke('code') is executed
@@ -104,10 +119,11 @@
                       self.$popover.hide();
                       return;
                     }
+                    
 
                     var rng = context.invoke('editor.createRange');
                     var visible = false;
-
+                    
                     var formula = $(rng.sc).closest('.formula');
                     if (formula.length == 1) {
                       window.currentMathElement = formula[0];
@@ -147,18 +163,13 @@
                         
                         var node = document.createElement('span');
                         node.className = "formula";
+                        node.contentEditable = false;
                         node.innerHTML = "\\( " + window.formula.$latex() + " \\)";
                         
-                        $("#formula").find("*").off();
                         window.formula = null;
-                        
-                        var parentNode = document.createElement('span');
-                        parentNode.appendChild(document.createTextNode(' '));
-                        parentNode.appendChild(node);
-                        parentNode.appendChild(document.createTextNode(' '));
-                        
+                                                
                         MathLive.renderMathInElement(node);
-                        $('article').summernote('insertNode', parentNode);
+                        $('article').summernote('insertNode', node);
                     });
                 };
                 this.editMath = function () {
@@ -179,7 +190,8 @@
                         window.formula = null;
                         
                         MathLive.renderMathInElement(window.currentMathElement);
-                      //  window.currentMathElement.contentEditable = false;
+                        
+                        $('article').summernote('invoke', 'editor.afterCommand');  // push to history hack
                     });
                 };
                 this.deleteMath = function () {
