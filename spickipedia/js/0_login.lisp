@@ -51,10 +51,10 @@
      (fail
       (lambda (jq-xhr text-status error-thrown)
 	(chain window local-storage (remove-item "name"))
-	(if (= error-thrown "Forbidden")
+	(if (or (= error-thrown "Forbidden") (= error-thrown "Bad Request"))
 	    (if repeated
 		(progn
-		  (alert "Ungültige Zugansdaten!")
+		  (alert "Ungültige Zugangsdaten!")
 		  (chain ($ "#login-button") (prop "disabled" F) (html "Anmelden")))
 		(login-post T))
 	    (handle-error error-thrown T)))))))
