@@ -16,3 +16,6 @@
 [submodule "monkeylib-bcrypt"]
 	path = monkeylib-bcrypt
 	url = https://github.com/mohe2015/monkeylib-bcrypt
+[submodule "lack"]
+	path = lack
+	url = https://github.com/mohe2015/lack
