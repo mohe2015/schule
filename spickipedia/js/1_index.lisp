@@ -41,7 +41,7 @@
 	(ca (chain document cookie (split ";"))))
     (loop for c in ca do
 	 (if (chain c (trim) (starts-with name-eq))
-	     (return (chain c (substring (chain name-eq length))))))))
+	     (return (chain c (trim) (substring (chain name-eq length))))))))
 
 (defun cleanup ()
   (set-fullscreen F)
