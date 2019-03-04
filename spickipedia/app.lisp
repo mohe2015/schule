@@ -30,6 +30,13 @@
        :output ,(getf (config) :error-log))
      nil)
  :session
+ :csrf
+ (lambda (app)
+   (lambda (env)
+     (let* ((res (funcall app env))
+	    (response (lack.response:make-response res)))
+       (setf (getf (lack.response:response-set-cookies response) "_csrf_token") `(:value ,(lack.middleware.csrf:csrf-token (getf env :lack.session))))
+       res)))
  (if (productionp)
      nil
      (lambda (app)
