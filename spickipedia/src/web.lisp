@@ -94,9 +94,6 @@
     `(setf (ningle/app:route *web* ,path :method ,method)
 	   (lambda (,params-var)
 	     (basic-headers)
-	     (if (not (gethash :csrf_token *SESSION*))
-		 (setf (gethash :csrf_token *SESSION*) (random-base64)))
-	     (setf (getf (response-set-cookies *response*) "CSRF_TOKEN") `(:value ,(gethash :csrf_token *SESSION*)))
 	     (setf (getf (response-headers *response*) :content-type) ,content-type)
 	     (destructuring-bind (&key _parsed ,@params &allow-other-keys)
 		 (append (list
