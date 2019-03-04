@@ -50,3 +50,6 @@ java -jar closure-compiler-v20181210.jar --js_output_file=www/s/result.js --exte
 npm i -g purgecss
 purgecss --content www/index.html --css www/s/all.css --css www/s/bootstrap.min.css --css www/s/index.css --css www/s/summernote-bs4.css -o www/s/ --content www/s/*.js
 ```
+
+
+ (spickipedia:start :port 3000 :max-thread-count 100 :max-accept.count 100)
