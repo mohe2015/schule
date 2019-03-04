@@ -36,7 +36,7 @@
      (post
       "/api/login"
       (create
-       csrf_token (read-cookie "CSRF_TOKEN")
+       _csrf_token (read-cookie "_csrf_token")
        name name
        password password)
       (lambda (data)

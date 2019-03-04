@@ -24,6 +24,8 @@
 	       :monkeylib-bcrypt
 	       :str
 	       :parenscript
+	       :lack
+	       :lack-middleware-csrf
 	       )
   :components ((:module "src"
                 :components

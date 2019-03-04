@@ -60,7 +60,7 @@
 								summary change-summary
 								html (chain temp-dom (html))
 								categories categories
-								csrf_token (read-cookie "CSRF_TOKEN"))
+								_csrf_token (read-cookie "_csrf_token"))
 		     (lambda (data)
 		      (push-state article-path)))
 	     (fail (lambda (jq-xhr text-status error-thrown)
