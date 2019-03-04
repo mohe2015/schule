@@ -1,7 +1,7 @@
  (defroute "/logout"
   (chain ($ ".edit-button") (add-class "disabled"))
   (show-tab "#loading")
-  (chain $ (post "/api/logout" (create csrf_token (read-cookie "CSRF_TOEN"))
+  (chain $ (post "/api/logout" (create _csrf_token (read-cookie "_csrf_token"))
 		 (lambda (data)
 		   (chain window local-storage (remove-item "name"))
 		   (replace-state "/login")))

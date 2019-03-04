@@ -24,13 +24,13 @@
 	       :monkeylib-bcrypt
 	       :str
 	       :parenscript
+	       :lack
+	       :lack-middleware-csrf
 	       )
   :components ((:module "src"
                 :components
                 (
 		 (:file "sanitize")
-		 (:file "permissions" :depends-on ("db"))
-		 (:file "route")
 		 (:file "parenscript")
 		 (:file "tsquery-converter")
 		 (:file "main" :depends-on ("config" "view" "db"))

@@ -2,7 +2,7 @@
 
 (defroute "/quiz/create"
   (show-tab "#loading")
-  (post "/api/quiz/create" (create 'csrf_token (read-cookie "CSRF_TOKEN")) T
+  (post "/api/quiz/create" (create '_csrf_token (read-cookie "_csrf_token")) T
 	(push-state (concatenate 'string "/quiz/" data "/edit"))))
 
 (defroute "/quiz/:id/edit"
@@ -127,7 +127,7 @@
 	      (chain obj questions (push (text-question ($ this))))))))
       (post (concatenate 'string "/api/quiz" (chain pathname 2))
 	    (create
-	     csrf_token (read-cookie "CSRF_TOKEN")
+	     _csrf_token (read-cookie "_csrf_token")
 	     data (chain -J-S-O-N (stringify obj)))
 	    T
 	    (chain window history (replace-state nil nil (concatenate 'string "/quiz/" (chain pathname 2) "/play"))))))))

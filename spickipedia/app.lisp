@@ -30,6 +30,7 @@
        :output ,(getf (config) :error-log))
      nil)
  :session
+ :csrf
  (if (productionp)
      nil
      (lambda (app)

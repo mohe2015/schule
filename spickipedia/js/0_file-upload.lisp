@@ -3,7 +3,7 @@
   (chain ($ "#uploadProgressModal") (modal "show"))
   (let ((data (new (-form-data))))
     (chain data (append "file" file))
-    (chain data (append "csrf_token" (read-cookie "CSRF_TOKEN")))
+    (chain data (append "_csrf_token" (read-cookie "_csrf_token")))
     (setf (@ window file-upload-finished) F)
     (setf
      (@ window file-upload-xhr)
