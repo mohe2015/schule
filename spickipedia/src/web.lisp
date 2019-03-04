@@ -14,7 +14,6 @@
 	:sanitize
 	:bcrypt
 	:cl-fad
-	:do-urlencode
 	:cl-base64)
   (:export :*web*))
 (in-package :spickipedia.web)
@@ -90,18 +89,11 @@
   (setf (getf (response-headers *response*) :x-content-type-options) "nosniff")
   (setf (getf (response-headers *response*) :referrer-policy) "no-referrer"))
 
-(defmethod print-object ((object hash-table) stream)
-  (format stream "#HASH{~{~{(~a : ~a)~}~^ ~}}"
-          (loop for key being the hash-keys of object
-             using (hash-value value)
-             collect (list key value))))
-
 (defmacro my-defroute (method path permissions params content-type &body body)
   (let ((params-var (gensym "PARAMS")))
     `(setf (ningle/app:route *web* ,path :method ,method)
 	   (lambda (,params-var)
 	     (basic-headers)
-	     (print *session*)
 	     (if (not (gethash :csrf_token *SESSION*))
 		 (setf (gethash :csrf_token *SESSION*) (random-base64)))
 	     (setf (getf (response-set-cookies *response*) "CSRF_TOKEN") `(:value ,(gethash :csrf_token *SESSION*)))

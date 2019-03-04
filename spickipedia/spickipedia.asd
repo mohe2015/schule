@@ -24,7 +24,6 @@
 	       :monkeylib-bcrypt
 	       :str
 	       :parenscript
-	       :do-urlencode
 	       )
   :components ((:module "src"
                 :components
