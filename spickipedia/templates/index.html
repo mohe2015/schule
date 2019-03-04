@@ -391,6 +391,7 @@
     {% for file in js-files %}
       <script src="{{file}}"></script>
     {% endfor %}
+    <script src="/js/1_index.js?v={% file-hash "js/1_index.lisp" %}{% file-hash "src/parenscript.lisp" %}"></script>
     
     <!--<script src="/summernote-image-captionit.js"></script>-->
     <!--<script src="/summernote-image-attributes.js"></script>-->

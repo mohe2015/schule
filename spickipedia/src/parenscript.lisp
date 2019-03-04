@@ -6,7 +6,11 @@
 (in-package :spickipedia.parenscript)
 
 (defun js-files ()
-  (mapcar #'(lambda (f) (concatenate 'string "/js/" (pathname-name f) ".js?v=" (byte-array-to-hex-string (digest-file :sha512 (concatenate 'string "js/" (pathname-name f) ".lisp"))))) (parenscript-files)))
+  (mapcar #'(lambda (f) (concatenate 'string "/js/" (pathname-name f) ".js?v=" (byte-array-to-hex-string (digest-file :sha512 (concatenate 'string "js/" (pathname-name f) ".lisp"))))) (parenscript-files2)))
+
+(defun parenscript-files2 ()
+  (loop for parenscript-file in (directory #P"js/*.lisp")
+	      when (not (or (equal (file-namestring parenscript-file) "common.lisp") (equal (file-namestring parenscript-file) "1_index.lisp"))) collect parenscript-file))
 
 (defun parenscript-files ()
   (loop for parenscript-file in (directory #P"js/*.lisp")
