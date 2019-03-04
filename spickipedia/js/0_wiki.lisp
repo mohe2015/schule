@@ -32,6 +32,6 @@
       (render-math)
       (show-tab "#page")))
    (fail (lambda (jq-xhr text-status error-thrown)
-	   (if (= error-thrown "Not Found")
+	   (if (= (chain jq-xhr status) 404)
 	       (show-tab "#not-found")
-	       (handle-error error-thrown T)))))) 
+	       (handle-error jq-xhr T)))))) 

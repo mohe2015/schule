@@ -15,10 +15,10 @@
   `(chain $
 	  (get ,url (lambda (data) ,@body))
 	  (fail (lambda (jq-xhr text-status error-thrown)
-		  (handle-error error-thrown ,show-error-page)))))
+		  (handle-error jq-xhr ,show-error-page)))))
 
 (defmacro post (url data show-error-page &body body)
   `(chain $
 	  (post ,url ,data (lambda (data) ,@body))
 	  (fail (lambda (jq-xhr text-status error-thrown)
-		  (handle-error error-thrown ,show-error-page)))))
+		  (handle-error jq-xhr ,show-error-page)))))

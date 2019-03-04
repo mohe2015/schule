@@ -50,4 +50,4 @@
 	     (chain ($ "#search-results") (stop) (fade-in)))))
 	(fail (lambda (jq-xhr text-status error-thrown)
 		(if (not (= text-status "abort"))
-		    (handle-error error-thrown T))))))))))
+		    (handle-error jq-xhr T))))))))))

@@ -6,4 +6,4 @@
 		   (chain window local-storage (remove-item "name"))
 		   (replace-state "/login")))
 	 (fail (lambda (jq-xhr text-status error-thrown)
-		 (handle-error error-thrown T)))))
+		 (handle-error jq-xhr T)))))

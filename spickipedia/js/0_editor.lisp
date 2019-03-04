@@ -66,7 +66,7 @@
 	     (fail (lambda (jq-xhr text-status error-thrown)
 		     (chain ($ "#publish-changes") (show))
 		     (chain ($ "#publishing-changes") (hide))
-		     (handle-error error-thrown F))))
+		     (handle-error jq-xhr F))))
       ))))
  
 
