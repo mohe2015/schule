@@ -185,13 +185,12 @@
     (json:encode-json-to-string (mapcar 'wiki-article-title articles))))
 
 (my-defroute :POST "/api/upload" (:admin :user) (|file|) "text/html"
-  (let* ((filepath (nth 0 |file|))
-	 ;; (filetype (nth 2 (hunchentoot:post-parameter "file")))
-	 (filehash (byte-array-to-hex-string (digest-file :sha512 filepath)))	 ;; TODO whitelist mimetypes TODO verify if mimetype is correct
+  (let* ((filecontents (nth 0 |file|))
+	 (filehash (byte-array-to-hex-string (digest-stream :sha512 filecontents)))	 ;; TODO whitelist mimetypes TODO verify if mimetype is correct
 	 (newpath (merge-pathnames (concatenate 'string "uploads/" filehash) *default-pathname-defaults*)))
-	 (print newpath)
-	 (copy-file filepath newpath :overwrite t)
-	 filehash))
+    (with-open-file (stream newpath :direction :output :if-exists :supersede)
+      (uiop:copy-stream-to-stream filecontents stream))
+    filehash))
 
 ;; noauth
 (my-defroute :POST "/api/login" nil (|name| |password|) "text/html"
