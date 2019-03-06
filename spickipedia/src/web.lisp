@@ -188,8 +188,9 @@
   (let* ((filecontents (nth 0 |file|))
 	 (filehash (byte-array-to-hex-string (digest-stream :sha512 filecontents)))	 ;; TODO whitelist mimetypes TODO verify if mimetype is correct
 	 (newpath (merge-pathnames (concatenate 'string "uploads/" filehash) *default-pathname-defaults*)))
-    (with-open-file (stream newpath :direction :output :if-exists :supersede)
-      (uiop:copy-stream-to-stream filecontents stream))
+   ;; (break)
+    (with-open-file (stream newpath :direction :output :if-exists :supersede :element-type '(unsigned-byte 8))
+      (write-sequence (slot-value filecontents 'vector) stream))
     filehash))
 
 ;; noauth
