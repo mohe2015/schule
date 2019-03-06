@@ -5,7 +5,7 @@
  * Copyright 2013- Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license.
  *
- * Date: 2019-03-06T17:18Z
+ * Date: 2019-03-06T19:50Z
  */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(require('jquery')) :
