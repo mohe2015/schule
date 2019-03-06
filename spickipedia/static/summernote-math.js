@@ -166,8 +166,6 @@
                         node.contentEditable = false;
                         node.innerHTML = "\\( " + window.formula.$latex() + " \\)";
                         
-                        window.formula = null;
-                                                
                         MathLive.renderMathInElement(node);
                         $('article').summernote('insertNode', node);
                     });
@@ -186,9 +184,7 @@
                         
                         window.currentMathElement.innerHTML = "\\( " + window.formula.$latex() + " \\)";
                         
-                        $("#formula").find("*").off();
-                        window.formula = null;
-                        
+                        // TODO maybe doing it twice is a bad idea
                         MathLive.renderMathInElement(window.currentMathElement);
                         
                         $('article').summernote('invoke', 'editor.afterCommand');  // push to history hack
@@ -209,7 +205,8 @@
                             });
                         });
                         ui.onDialogHidden(self.$dialog, function () {
-                            window.formula.hideVirtualKeyboard_()
+                            window.formula.revertToOriginalContent()               
+                            window.formula = null;
                             $insertBtn.off('click');
                             if (deferred.state() === 'pending') deferred.reject();
                         });
