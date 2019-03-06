@@ -84,7 +84,7 @@
 
 (defun basic-headers ()
   (setf (getf (response-headers *response*) :x-frame-options) "DENY")
-  (setf (getf (response-headers *response*) :content-security-policy) "default-src 'none'; script-src 'self'; img-src *; style-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self'; frame-src www.youtube.com youtube.com; frame-ancestors 'none';") ;; TODO the inline css from the whsiwyg editor needs to be replaced - write an own editor sometime ;; WON'T WORK BECAUSE MATH EDITOR ALSO USES IT
+  (setf (getf (response-headers *response*) :content-security-policy) "default-src 'none'; script-src 'self'; img-src * data: ; style-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self'; frame-src www.youtube.com youtube.com; frame-ancestors 'none';") ;; TODO the inline css from the whsiwyg editor needs to be replaced - write an own editor sometime ;; WON'T WORK BECAUSE MATH EDITOR ALSO USES IT
   (setf (getf (response-headers *response*) :x-xss-protection) "1; mode=block")
   (setf (getf (response-headers *response*) :x-content-type-options) "nosniff")
   (setf (getf (response-headers *response*) :referrer-policy) "no-referrer"))
