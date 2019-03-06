@@ -5,7 +5,7 @@
  * Copyright 2013- Alan Hong. and other contributors
  * summernote may be freely distributed under the MIT license.
  *
- * Date: 2019-03-02T00:15Z
+ * Date: 2019-03-06T17:18Z
  */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(require('jquery')) :
@@ -2613,7 +2613,7 @@
           return function (event) {
               event.preventDefault();
               var $target = $$1(event.target);
-              _this.invoke(namespace, value || $target.closest('[data-value]').data('value'), $target);
+              _this.invoke(namespace, value || $target.find('[data-value]').addBack('[data-value]').data('value'), $target);
           };
       };
       Context.prototype.invoke = function () {
@@ -2862,15 +2862,27 @@
       WrappedRange.prototype.normalize = function () {
           /**
            * @param {BoundaryPoint} point
-           * @param {Boolean} isLeftToRight
+           * @param {Boolean} isLeftToRight - true: prefer to choose right node
+           *                                - false: prefer to choose left node
            * @return {BoundaryPoint}
            */
           var getVisiblePoint = function (point, isLeftToRight) {
-              if ((dom.isVisiblePoint(point) && !dom.isEdgePoint(point)) ||
-                  (dom.isVisiblePoint(point) && dom.isRightEdgePoint(point) && !isLeftToRight) ||
-                  (dom.isVisiblePoint(point) && dom.isLeftEdgePoint(point) && isLeftToRight) ||
-                  (dom.isVisiblePoint(point) && dom.isBlock(point.node) && dom.isEmpty(point.node))) {
-                  return point;
+              // Just use the given point [XXX:Adhoc]
+              //  - case 01. if the point is on the middle of the node
+              //  - case 02. if the point is on the right edge and prefer to choose left node
+              //  - case 03. if the point is on the left edge and prefer to choose right node
+              //  - case 04. if the point is on the right edge and prefer to choose right node but the node is void
+              //  - case 05. if the point is on the left edge and prefer to choose left node but the node is void
+              //  - case 06. if the point is on the block node and there is no children
+              if (dom.isVisiblePoint(point)) {
+                  if (!dom.isEdgePoint(point) ||
+                      (dom.isRightEdgePoint(point) && !isLeftToRight) ||
+                      (dom.isLeftEdgePoint(point) && isLeftToRight) ||
+                      (dom.isRightEdgePoint(point) && isLeftToRight && dom.isVoid(point.node.nextSibling)) ||
+                      (dom.isLeftEdgePoint(point) && !isLeftToRight && dom.isVoid(point.node.previousSibling)) ||
+                      (dom.isBlock(point.node) && dom.isEmpty(point.node))) {
+                      return point;
+                  }
               }
               // point on block's edge
               var block = dom.ancestor(point.node, dom.isBlock);
