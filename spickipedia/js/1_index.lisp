@@ -45,8 +45,6 @@
 	     (return (chain c (trim) (substring (chain name-eq length))))))))
 
 (defun cleanup ()
-  (set-fullscreen F)
-  (chain ($ "article") (summernote "destroy"))
   (chain ($ "#publish-changes-modal") (modal "hide"))
   (chain ($ "#publish-changes") (show))
   (chain ($ "#publishing-changes") (hide)))

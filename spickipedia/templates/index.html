@@ -375,26 +375,12 @@
         
     <script src="/popper.js?v={% file-hash "static/popper.js" %}"></script>
     <script src="/bootstrap.js?v={% file-hash "static/bootstrap.js" %}"></script>
-    
-    <link rel="stylesheet" href="/summernote-bs4.css?v={% file-hash "static/summernote-bs4.css" %}">
-    <script src="/summernote-bs4.js?v={% file-hash "static/summernote-bs4.js" %}"></script>
-    <script src="/summernote-math.js?v={% file-hash "static/summernote-math.js" %}"></script>
-    
-    <script src="/summernote-cleaner.js?v={% file-hash "static/summernote-cleaner.js" %}"></script>
-    
      
     <script src="/visual-diff.js?v={% file-hash "static/visual-diff.js" %}"></script>
     
-    <script src="/summernote-de-DE.js?v={% file-hash "static/summernote-de-DE.js" %}"></script>
-    <script src="/summernote-table-headers.js?v={% file-hash "static/summernote-table-headers.js" %}"></script>
-
     {% for file in js-files %}
       <script src="{{file}}"></script>
     {% endfor %}
     <script src="/js/1_index.js?v={% file-hash "js/1_index.lisp" %}{% file-hash "src/parenscript.lisp" %}"></script>
-    
-    <!--<script src="/summernote-image-captionit.js"></script>-->
-    <!--<script src="/summernote-image-attributes.js"></script>-->
-    <!--<script src="/summernote-image-title.js"></script>-->
-  </body>
+    </body>
 </html>
