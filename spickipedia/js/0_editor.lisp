@@ -36,7 +36,7 @@
 	(lambda ()
 	  (chain ($ "#settings-modal") (modal "show"))))))
      (render))))
-     
+
 (chain
  ($ "#publish-changes")
  (click
@@ -45,35 +45,93 @@
     (chain ($ "#publishing-changes") (show))
 
     (let ((change-summary (chain ($ "#change-summary") (val)))
-	  (temp-dom (chain ($ "<output>") (append (chain $ (parse-h-t-m-l (chain ($ "article") (summernote "code")))))))
-	  (article-path (chain window location pathname (substr 0 (chain window location pathname (last-index-of "/"))))))
+	  (temp-dom (chain ($ "<output>") (append (chain $ (parse-h-t-m-l (chain ($ "article") 
+										 (summernote "code")))))))
+	  (article-path (chain window location pathname (substr 0 (chain window location pathname 
+									 (last-index-of "/"))))))
       (revert-math temp-dom)
       (setf categories (chain
-       ($ "#settings-modal")
-       (find ".closable-badge-label")
-       (map
-	(lambda ()
-	  (chain this inner-text)))
-       (get)))
-       
+			($ "#settings-modal")
+			(find ".closable-badge-label")
+			(map
+			 (lambda ()
+			   (chain this inner-text)))
+			(get)))
+      
       (chain $ (post (concatenate 'string "/api" article-path) (create
 								summary change-summary
 								html (chain temp-dom (html))
 								categories categories
-								_csrf_token (read-cookie "_csrf_token"))
+								_csrf_token (read-cookie 
+									     "_csrf_token"))
 		     (lambda (data)
-		      (push-state article-path)))
+		       (push-state article-path)))
 	     (fail (lambda (jq-xhr text-status error-thrown)
 		     (chain ($ "#publish-changes") (show))
 		     (chain ($ "#publishing-changes") (hide))
 		     (handle-error jq-xhr F))))
       ))))
- 
+
 
 (defun show-editor ()
+  (var can-call T)
   (chain
    ($ "article")
-   (summernote)))
+   (summernote
+    (create
+     lang "de-DE"
+     callbacks
+     (create
+      on-image-upload (lambda (files)
+			(send-file (chain files 0)))
+      on-change (lambda (contents $editable)
+		  (if (not can-call)
+		      return)
+		  (setf can-call F)
+		  (chain window history (replace-state (create content contents) nil nil))
+		  (set-timeout (lambda ()
+				 (setf can-call T))
+			       1000)))
+     dialogs-fade T
+     focus T
+     buttons (create
+	      finished finished-button
+	      settings settings-button)
+     toolbar ([]
+	      ("style" ("style.p" "style.h2" "style.h3" "superscript" "subscript"))
+	      ("para" ("ul" "ol" "indent" "outdent"))
+	      ("insert" ("link" "picture" "table" "math"))
+	      ("management" ("undo" "redo" "settings" "finished")))
+     cleaner
+     (create
+      action "both"
+      newline "<p><br></p>"
+      not-style "position:absolute;top:0;left:0;right:0"
+      icon "<i class=\"note-icon\">[Your Button]</i>"
+      keep-html T
+      keep-only-tabs ([] "<h1>" "<h2>" "<h3>" "<h4>" "<h5>" "<h6>" "<p>" "<br>" "<ol>" "<ul>" "<li>" 
+			 "<b>" "<strong>" "<i>" "<a>" "<sup>" "<sub>" "<img>")
+      keep-classes F
+      bad-tags ([] "style" "script" "applet" "embed" "noframes" "noscript")
+      bad-attributes ([] "style" "start")
+      limit-chars F
+      limit-display "both"
+      limit-stop F)
+     popover
+     (create
+      math ([] ("edit-math" "delete-math"))
+      table ([] ("add" ("addRowDown" "addRowUp" "addColLeft" "addColRight"))
+		("delete" ("deleteRow" "deleteCol" "deleteTable"))
+		("custom" ("tableHeaders")))
+      image ([] ("resize" ("resizeFull" "resizeHalf" "resizeQuarter" "resizeNone"))
+		("float" ("floatLeft" "floatRight" "floatNone"))
+		("remove" ("removeMedia"))))
+     image-attributes
+     (create
+      icon "<i class=\"note-icon-pencil\"/>"
+      remove-empty F
+      disable-upload F))))
+  (set-fullscreen T))
 
 (defun hide-editor ()
   (set-fullscreen F)
