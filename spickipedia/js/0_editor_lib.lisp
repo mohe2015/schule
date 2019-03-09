@@ -63,8 +63,10 @@
   (lambda (event)
     (chain ($ "#link-modal") (modal "hide"))
     (chain document (get-elements-by-tag-name "article") 0 (focus))
-    (chain document (exec-command "createLink" F "https://selfmade4u.de")))))
-      
+    ;; TODO replace article titles with /wiki/title
+    ;; TODO this makes the links working in history etc.
+    (chain document (exec-command "createLink" F (chain ($ "#link") (val)))))))
+
 ;; TODO image
 ;; TODO table
 ;; TODO formula
