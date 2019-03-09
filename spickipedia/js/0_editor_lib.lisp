@@ -45,7 +45,7 @@
 
 (tool "createLink"
       (chain ($ "#link-modal") (modal "show")))
-;; document.getSelection()
+
 (chain
  ($ "#link")
  (typeahead
@@ -68,7 +68,26 @@
     (chain document (exec-command "createLink" F (chain ($ "#link") (val)))))))
 
 ;; TODO image
+
+
 ;; TODO table
+(tool "table"
+      (chain ($ "#table-modal") (modal "show")))
+
+(chain
+ ($ "#update-table")
+ (click
+  (lambda (event)
+    (chain ($ "#table-modal") (modal "hide"))
+    (chain document (get-elements-by-tag-name "article") 0 (focus))
+    (let* ((columns (parse-int (chain ($ "#table-columns") (val))))
+	   (rows (parse-int (chain ($ "#table-rows") (val))))
+	   (row-html (chain "<td></td>" (repeat columns)))
+	   (inner-table-html (chain (concatenate 'string "<tr>" row-html "</tr>") (repeat rows)))
+	   (table-html (concatenate 'string "<div class=\"table-responsive\"><table class=\"table table-bordered\">" inner-table-html "</table></div>")))
+      (chain console (log table-html))
+      (chain document (exec-command "insertHTML" F table-html))))))
+
 ;; TODO formula
 
 (stool "undo")
