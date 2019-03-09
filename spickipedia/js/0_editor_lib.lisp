@@ -35,7 +35,34 @@
 (stool "indent")
 (stool "outdent")
 
-;; TODO link
+;;var engine = new Bloodhound({
+;;  local: ['dog', 'pig', 'moose'],
+;;  queryTokenizer: Bloodhound.tokenizers.whitespace,
+;;  datumTokenizer: Bloodhound.tokenizers.whitespace
+;;}).get
+
+(setf
+ (chain window engine)
+ (new (-bloodhound
+      (create
+       local ([] "dog" "pig" "moose")
+       query-tokenizer (chain -bloodhound tokenizers whitespace)
+       datum-tokenizer (chain -bloodhound tokenizers whitespace)
+       ))))
+
+(tool "createLink"
+      (chain ($ "#link-modal") (modal "show")))
+
+(chain
+ ($ "#link")
+ (typeahead
+  (create
+   )
+  (create
+   name "my-dataset"
+   source (chain window engine))))
+
+      
 ;; TODO image
 ;; TODO table
 ;; TODO formula
