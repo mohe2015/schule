@@ -9,95 +9,95 @@
     <title>Spickipedia</title>
   </head>
   <body>
-      <template id="multiple-choice-answer-html">
-        <div class="custom-control custom-checkbox">
-          <input type="checkbox" class="custom-control-input" id="customCheck1">
-          <label class="custom-control-label" for="customCheck1">Check this custom</label>
-        </div>
-      </template>
-  
-      <template id="multiple-choice-question">
-        <div class="multiple-choice-question">
-          <form>
-            <div class="form-group">
-              <input type="text" class="form-control question" placeholder="Frage eingeben">
-            </div>
-          
-          <div class="responses">
-          
-          </div>
-
-            <button type="button" class="btn btn-primary mb-1 add-response-possibility">Antwortmöglichkeit hinzufügen</button>
-        </form>
-        <hr />
+    <template id="multiple-choice-answer-html">
+      <div class="custom-control custom-checkbox">
+        <input type="checkbox" class="custom-control-input" id="customCheck1">
+        <label class="custom-control-label" for="customCheck1">Check this custom</label>
       </div>
     </template>
-  
-    <template id="text-question">
-      <div class="text-question">
-          <form>
-            <div class="form-group">
-              <input type="text" class="form-control question" placeholder="Frage eingeben">
-            </div>
-            <div class="form-group">
-              <input type="text" class="form-control answer" placeholder="Antwort eingeben">
-            </div>
+    
+    <template id="multiple-choice-question">
+      <div class="multiple-choice-question">
+        <form>
+          <div class="form-group">
+            <input type="text" class="form-control question" placeholder="Frage eingeben">
+          </div>
+          
+          <div class="responses">
+            
+          </div>
+
+          <button type="button" class="btn btn-primary mb-1 add-response-possibility">Antwortmöglichkeit hinzufügen</button>
         </form>
         <hr />
       </div>
     </template>
     
-      <template id="multiple-choice-response-possibility">
-       <div class="input-group mb-3">
-          <div class="input-group-prepend">
-            <div class="input-group-text">
-              <input class="multiple-choice-response-correct" type="checkbox" aria-label="Checkbox for following text input">
-            </div>
+    <template id="text-question">
+      <div class="text-question">
+        <form>
+          <div class="form-group">
+            <input type="text" class="form-control question" placeholder="Frage eingeben">
           </div>
-          <input type="text" class="form-control multiple-choice-response-text" aria-label="Text input with checkbox">
+          <div class="form-group">
+            <input type="text" class="form-control answer" placeholder="Antwort eingeben">
+          </div>
+        </form>
+        <hr />
+      </div>
+    </template>
+    
+    <template id="multiple-choice-response-possibility">
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <div class="input-group-text">
+            <input class="multiple-choice-response-correct" type="checkbox" aria-label="Checkbox for following text input">
+          </div>
         </div>
-      </template>
-  
-      <template id="search-result-template">
-        <a class="list-group-item list-group-item-action history-pushState">
+        <input type="text" class="form-control multiple-choice-response-text" aria-label="Text input with checkbox">
+      </div>
+    </template>
+    
+    <template id="search-result-template">
+      <a class="list-group-item list-group-item-action history-pushState">
+        <div class="">
           <div class="">
-            <div class="">
-              <h5 class="mt-0 s-title">Media heading</h5>
-              <div class="search-result-summary word-wrap"></div>
-            </div>
+            <h5 class="mt-0 s-title">Media heading</h5>
+            <div class="search-result-summary word-wrap"></div>
           </div>
-        </a>
+        </div>
+      </a>
     </template>
     
     <template id="history-item-template">
       <a class="list-group-item list-group-item-action">
-          <div class="d-flex w-100 justify-content-between">
-            <h5 class="mb-1 history-username">Moritz Hedtke</h5>
-            <small class="history-date">vor 3 Tagen</small>
-          </div>
-          <p class="mb-1 history-summary">Ein paar wichtige Infos hinzugefügt</p>
-          <small><span class="history-characters">50.322</span> Zeichen<span class="text-success d-none">+ 50 Zeichen</span></small>
-          <div class="btn-group w-100" role="group" aria-label="Basic example">
-            <button type="button" class="btn btn-outline-dark history-show history-pushState"><i class="fas fa-eye"></i></button>
-            <button type="button" class="btn btn-outline-dark history-diff history-pushState"><i class="fas fa-columns"></i></button>
-          </div>
-        </a>
+        <div class="d-flex w-100 justify-content-between">
+          <h5 class="mb-1 history-username">Moritz Hedtke</h5>
+          <small class="history-date">vor 3 Tagen</small>
+        </div>
+        <p class="mb-1 history-summary">Ein paar wichtige Infos hinzugefügt</p>
+        <small><span class="history-characters">50.322</span> Zeichen<span class="text-success d-none">+ 50 Zeichen</span></small>
+        <div class="btn-group w-100" role="group" aria-label="Basic example">
+          <button type="button" class="btn btn-outline-dark history-show history-pushState"><i class="fas fa-eye"></i></button>
+          <button type="button" class="btn btn-outline-dark history-diff history-pushState"><i class="fas fa-columns"></i></button>
+        </div>
+      </a>
     </template>
     
     <template id="articles-entry">
       <li><a class="history-pushState" href="#">Hauptseite</a></li>
     </template>
-  
+    
     <nav class="navbar navbar-expand-md navbar-light bg-light">
       <a class="navbar-brand history-pushState" href="/wiki/Hauptseite">
-      Spickipedia
+	Spickipedia
       </a>
       <div class="login-hide">
         <a class="btn d-inline d-md-none edit-button"><i class="fas fa-pen"></i></a>
         <a class="btn d-inline d-md-none search-button history-pushState" href="/search"><i class="fas fa-search"></i></a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
+	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+	</button>
       </div>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
@@ -114,20 +114,20 @@
       </div>
     </nav>
     <div>
-    
-    <div style="display: none;" class="container my-tab position-absolution" id="edit-quiz">
-      <h1 class="text-center">Quiz ändern</h1>
       
-      <div id="questions">
-      
+      <div style="display: none;" class="container my-tab position-absolution" id="edit-quiz">
+	<h1 class="text-center">Quiz ändern</h1>
+	
+	<div id="questions">
+	  
+	</div>
+	
+	<button type="button" class="btn btn-primary mb-1 create-multiple-choice-question">Multiple-Choice-Frage hinzufügen</button>
+	<button type="button" class="btn btn-primary mb-1 create-text-question">Frage mit Textantwort hinzufügen</button>
+	<button type="button" class="btn btn-primary mb-1 save-quiz">Speichern</button>
       </div>
       
-      <button type="button" class="btn btn-primary mb-1 create-multiple-choice-question">Multiple-Choice-Frage hinzufügen</button>
-      <button type="button" class="btn btn-primary mb-1 create-text-question">Frage mit Textantwort hinzufügen</button>
-      <button type="button" class="btn btn-primary mb-1 save-quiz">Speichern</button>
-    </div>
-    
-   
+      
       
     </div>
     
@@ -139,7 +139,7 @@
     </div>
     <div style="display: none;" class="container my-tab position-absolute" id="multiple-choice-question-html">
       <h2 class="text-center question-html">Dies ist eine Testfrage?</h2>
-    
+      
       <div class="row justify-content-center">
         <div class="col col-sm-10 col-md-6">
           <div id="answers-html">
@@ -155,7 +155,7 @@
     </div>
     <div style="display: none;" class="container my-tab position-absolute" id="text-question-html">
       <h2 class="text-center question-html">Dies ist eine Testfrage?</h2>
-    
+      
       <div class="row justify-content-center">
         <div class="col col-sm-10 col-md-6">
           <div id="answers-html">
@@ -170,17 +170,17 @@
       
       <h1>Anmelden</h1>
       <form id="login-form">
-      
+	
         <div class="form-group">
           <input type="text" id="inputName" class="form-control" placeholder="Name" required autofocus>
         </div>
-  
-      <div class="form-group">
-        <input type="password" id="inputPassword" class="form-control" placeholder="Passwort" required>
-      </div>
-  
-      <button class="btn btn-primary" type="submit" id="login-button">Anmelden</button>
-    </form>
+	
+	<div class="form-group">
+          <input type="password" id="inputPassword" class="form-control" placeholder="Passwort" required>
+	</div>
+	
+	<button class="btn btn-primary" type="submit" id="login-button">Anmelden</button>
+      </form>
 
       
     </div>
@@ -189,7 +189,31 @@
         Dies zeigt den Artikel zu einem bestimmten Zeitpunkt und ist somit nicht unbedingt aktuell! <a href="#" id="currentVersionLink" class="alert-link history-pushState">Zur aktuellen Version</a> 
       </div>
       <h1 class="text-center" id="wiki-article-title">title</h1>
+      
+      
+      
+      <div class="editor">
+	<a href="#" id="format-p" data-cmd="formatBlock" data-arg="<p>"><span class="fas fa-paragraph"></span></a>
+	<a id="format-h2" data-cmd="formatBlock" data-arg="<h2>"><span class="fas fa-heading"></a>
+	<a id="format-h3" href="#" data-cmd="formatBlock" data-arg="<h3>"><span class="fas fa-heading"></a>
+	<a href="#" data-cmd="superscript"><span class="fas fa-superscript"></a>
+	<a href="#" data-cmd="subscript"><span class="fas fa-subscript"></a>
+	<a href="#" data-cmd="insertUnorderedList"><span class="fas fa-list-ul"></a>
+	<a href="#" data-cmd="insertOrderedList"><span class="fas fa-list-ol"></a>
+	<a href="#" data-cmd="indent"><span class="fas fa-indent"></a>
+	<a href="#" data-cmd="outdent"><span class="fas fa-outdent"></a>
+	<a href="#" data-cmd="createLink" data-arg="https://selfmade4u.de/"><span class="fas fa-link"></a>
+	<a href="#" data-cmd="insertImage" data-arg="https://static.techspot.com/images2/news/bigimage/2018/09/2018-09-04-image-6.png"><span class="fas fa-image"></a>
+	<a href="#" data-cmd="insertHTML" data-arg="<table><tbody><tr><td>123</td></tr></tbody></table>"><span class="fas fa-table"></a>
+	<a href="#"><span class="fas fa-calculator"></a>
+	<a href="#" data-cmd="undo"><span class="fas fa-undo"></a>
+	<a href="#" data-cmd="redo"><span class="fas fa-redo"></a>
+	<a href="#"><span class="fas fa-check"></a>
+      </div>
+      
+      
       <article>
+	
       </article>
       
       
@@ -269,7 +293,7 @@
           <div class="modal-header">
             <h5 class="modal-title">Änderungen veröffentlichen</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
+              <span aria-hidden="true">&times;</span>
             </button>
           </div>
           <div class="modal-body">
@@ -285,8 +309,8 @@
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Bearbeitung fortsetzen</button>
             <button type="button" class="btn btn-primary" id="publish-changes">Änderungen veröffentlichen</button>
             <button id="publishing-changes" class="btn btn-primary" style="display: none;" type="button" disabled>
-            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-            Veröffentlichen...
+              <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+              Veröffentlichen...
             </button>
             <!-- TODO Überprüfe deine Änderungen (diff) -->
           </div>
@@ -312,7 +336,7 @@
           <div class="modal-header">
             <h5 class="modal-title">Spickipedia-Link einfügen</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
+              <span aria-hidden="true">&times;</span>
             </button>
           </div>
           <div class="modal-body">
@@ -334,36 +358,36 @@
       </div>
     </div>
     
-          
-      
-      
+    
+    
+    
 
-<!-- Modal -->
-<div class="modal fade" id="settings-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Kategorien</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Fertig">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-      
-       
-       <form class="form-inline" id="add-tag-form">
-       
-        <input id="new-category" class="form-control form-control-sm" type="text" placeholder="Kategorie...">
-       </form>
-        
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fertig</button>
-        <!--<button type="button" class="btn btn-primary">Save changes</button> TODO implement this later that canceling also works -->
+    <!-- Modal -->
+    <div class="modal fade" id="settings-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+	<div class="modal-content">
+	  <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Kategorien</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Fertig">
+              <span aria-hidden="true">&times;</span>
+            </button>
+	  </div>
+	  <div class="modal-body">
+	    
+	    
+	    <form class="form-inline" id="add-tag-form">
+	      
+              <input id="new-category" class="form-control form-control-sm" type="text" placeholder="Kategorie...">
+	    </form>
+            
+	  </div>
+	  <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Fertig</button>
+            <!--<button type="button" class="btn btn-primary">Save changes</button> TODO implement this later that canceling also works -->
+	  </div>
+	</div>
       </div>
     </div>
-  </div>
-</div>
     
 
     <script src="/jquery-3.3.1.js?v={% file-hash "static/jquery-3.3.1.js" %}"></script>
@@ -372,15 +396,15 @@
     <link rel="stylesheet" href="/mathlive.core.css?v={% file-hash "static/mathlive.core.css" %}">
     <link rel="stylesheet" href="/mathlive.css?v={% file-hash "static/mathlive.css" %}">
     <script src="/mathlive.js?v={% file-hash "static/mathlive.js" %}"></script>
-        
+    
     <script src="/popper.js?v={% file-hash "static/popper.js" %}"></script>
     <script src="/bootstrap.js?v={% file-hash "static/bootstrap.js" %}"></script>
-     
+    
     <script src="/visual-diff.js?v={% file-hash "static/visual-diff.js" %}"></script>
     
     {% for file in js-files %}
-      <script src="{{file}}"></script>
+    <script src="{{file}}"></script>
     {% endfor %}
     <script src="/js/1_index.js?v={% file-hash "js/1_index.lisp" %}{% file-hash "src/parenscript.lisp" %}"></script>
-    </body>
+  </body>
 </html>
