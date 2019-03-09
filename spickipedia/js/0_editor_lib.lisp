@@ -45,18 +45,25 @@
 
 (tool "createLink"
       (chain ($ "#link-modal") (modal "show")))
-
+;; document.getSelection()
 (chain
  ($ "#link")
  (typeahead
   (create
    class-names (create
 		dataset "dropdown-menu show"
-		suggestion "dropdown-item")
-   )
+		suggestion "dropdown-item"))
   (create
    name "articles"
    source (chain window engine))))
+
+(chain
+ ($ "#update-link")
+ (click
+  (lambda (event)
+    (chain ($ "#link-modal") (modal "hide"))
+    (chain document (get-elements-by-tag-name "article") 0 (focus))
+    (chain document (exec-command "createLink" F "https://selfmade4u.de")))))
       
 ;; TODO image
 ;; TODO table
