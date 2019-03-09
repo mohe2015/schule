@@ -50,9 +50,12 @@
  ($ "#link")
  (typeahead
   (create
+   class-names (create
+		dataset "dropdown-menu show"
+		suggestion "dropdown-item")
    )
   (create
-   name "my-dataset"
+   name "articles"
    source (chain window engine))))
       
 ;; TODO image
