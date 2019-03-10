@@ -93,12 +93,27 @@
 	   (row-html (chain "<td></td>" (repeat columns)))
 	   (inner-table-html (chain (concatenate 'string "<tr>" row-html "</tr>") (repeat rows)))
 	   (table-html (concatenate 'string "<div class=\"table-responsive\"><table class=\"table table-bordered\">" inner-table-html "</table></div>")))
-      (chain console (log table-html))
       (chain document (exec-command "insertHTML" F table-html))))))
 
 ;; TODO formula
 (tool "insertFormula"
-      (chain ($ "#formula-modal") (modal "show")))
+      (chain ($ "#formula-modal") (modal "show"))
+      (setf (chain window mathfield) (chain -math-live (make-math-field (chain document (get-element-by-id "formula")) (create virtual-keyboard-mode "manual")))))
+
+;; window.mathfield.latex()
+;; window.mathfield.revertToOriginalContent()
+
+(chain
+ ($ "#update-formula")
+ (click
+  (lambda (event)
+    (chain ($ "#formula-modal") (modal "hide"))
+    (chain document (get-elements-by-tag-name "article") 0 (focus))
+    (let ((latex (chain window mathfield (latex))))
+      (chain window mathfield (revert-to-original-content))
+      (chain document (exec-command "insertHTML" F (concatenate 'string "<span class=\"formula\" contenteditable=\"false\">\\(" latex "\\)</span>")))
+      (loop for element in (chain document (get-elements-by-class-name "formula")) do
+	   (chain -math-live (render-math-in-element element)))))))
 
 (stool "undo")
 (stool "redo")
