@@ -125,41 +125,7 @@
 	 (= key "ArrowUp")
 	 (= key "ArrowDown"))
 	(return))
-    (if (chain selection is-collapsed)
-	(progn
-	  ;; TODO check anchorOffset 0
-	  ;; TODO check anchorNode nextSilbling until class ML__base exclusive
-	  ;; TODO then do action before formula
-	  (if (= (chain selection anchor-offset) 0)
-	      (do ((element (chain selection anchor-node) (chain element parent-node)))
-		  ((or (null element) (defined (chain element next-silbling))))
-		(if (and (chain element class-list) (chain element class-list (contains "ML__base")))
-
-		    ;; find the formula element
-		    (do ((formula-element element (chain formula-element parent-node)))
-			((= formula-element nil))
-		      (if (and (chain formula-element class-list) (chain formula-element class-list (contains "formula")))
-			  (progn
-			    ;;(chain selection (collapse formula-element))
-			    ;;(chain console (log "jo"))
-			    
-			  
-			    (return-from check-key-down)
-			  
-			  )))
-
-		    
-		    )))
-
-
-
-
-	  
-	  ;; check if it has no next silbling until reached the formula node
-	  ;; THEN the cursor is on the last char of the formula and we could insert text after it
-	  (chain console (log  selection))
-	  )
-	)
+   
     (do ((element (chain selection anchor-node) (chain element parent-node)))
 	((= element nil))
       (if (and (chain element class-list) (chain element class-list (contains "formula")))
@@ -177,6 +143,30 @@
  0
  onkeydown)
 check-key-down)
+
+(defun handle-selection-change (event)
+  (let ((selection (chain window (get-selection))))
+    (if (not (chain selection is-collapsed))
+	(return-from handle-selection-change))
+    (if (not (= (chain selection anchor-offset) 0))
+	(return-from handle-selection-change))
+
+    
+    (do ((element (chain selection anchor-node) (chain element parent-node)))
+	((or (null element) (defined (chain element next-silbling))))
+      (if (and (chain element class-list) (chain element class-list (contains "ML__base")))
+	  (do ((formula-element element (chain formula-element parent-node)))
+	      ((= formula-element nil))
+	    (if (and (chain formula-element class-list (contains "formula")))
+		(progn
+		  (chain selection (select-all-children (chain formula-element parent-node) 0))
+		  (chain console (log "jo"))
+		  (return-from handle-selection-change))))))))
+;; check if it has no next silbling until reached the formula node
+;; THEN the cursor is on the last char of the formula and we could insert text after it
+
+
+(chain document (add-event-listener "selectionchange" handle-selection-change))
 
 
 (stool "undo")
