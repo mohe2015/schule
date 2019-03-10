@@ -115,7 +115,8 @@
 ;;    event.preventDefault()
 ;;};
 
-(defun check-key-down (event)   
+(defun check-key-down (event)
+  (chain console (log this))
   (let ((selection (chain window (get-selection)))
 	(key (chain event key)))
     (if (or
@@ -133,7 +134,21 @@
 	      (do ((element (chain selection anchor-node) (chain element parent-node)))
 		  ((or (null element) (defined (chain element next-silbling))))
 		(if (and (chain element class-list) (chain element class-list (contains "ML__base")))
-		    (return-from check-key-down)
+
+		    ;; find the formula element
+		    (do ((formula-element element (chain formula-element parent-node)))
+			((= formula-element nil))
+		      (if (and (chain formula-element class-list) (chain formula-element class-list (contains "formula")))
+			  (progn
+			    ;;(chain selection (collapse formula-element))
+			    ;;(chain console (log "jo"))
+			    
+			  
+			    (return-from check-key-down)
+			  
+			  )))
+
+		    
 		    )))
 
 
