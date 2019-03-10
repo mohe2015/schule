@@ -95,13 +95,9 @@
 	   (table-html (concatenate 'string "<div class=\"table-responsive\"><table class=\"table table-bordered\">" inner-table-html "</table></div>")))
       (chain document (exec-command "insertHTML" F table-html))))))
 
-;; TODO formula
 (tool "insertFormula"
       (chain ($ "#formula-modal") (modal "show"))
       (setf (chain window mathfield) (chain -math-live (make-math-field (chain document (get-element-by-id "formula")) (create virtual-keyboard-mode "manual")))))
-
-;; window.mathfield.latex()
-;; window.mathfield.revertToOriginalContent()
 
 (chain
  ($ "#update-formula")
@@ -111,9 +107,62 @@
     (chain document (get-elements-by-tag-name "article") 0 (focus))
     (let ((latex (chain window mathfield (latex))))
       (chain window mathfield (revert-to-original-content))
-      (chain document (exec-command "insertHTML" F (concatenate 'string "<span class=\"formula\" contenteditable=\"false\">\\(" latex "\\)</span>")))
+      (chain document (exec-command "insertHTML" F (concatenate 'string "<span class=\"formula\">\\(" latex "\\)</span>")))
       (loop for element in (chain document (get-elements-by-class-name "formula")) do
 	   (chain -math-live (render-math-in-element element)))))))
+
+;; document.getElementsByTagName("article")[0].onkeydown = function(event) {
+;;    event.preventDefault()
+;;};
+
+(defun check-key-down (event)   
+  (let ((selection (chain window (get-selection)))
+	(key (chain event key)))
+    (if (or
+	 (= key "ArrowLeft")
+	 (= key "ArrowRight")
+	 (= key "ArrowUp")
+	 (= key "ArrowDown"))
+	(return))
+    (if (chain selection is-collapsed)
+	(progn
+	  ;; TODO check anchorOffset 0
+	  ;; TODO check anchorNode nextSilbling until class ML__base exclusive
+	  ;; TODO then do action before formula
+	  (if (= (chain selection anchor-offset) 0)
+	      (do ((element (chain selection anchor-node) (chain element parent-node)))
+		  ((or (null element) (defined (chain element next-silbling))))
+		(if (and (chain element class-list) (chain element class-list (contains "ML__base")))
+		    (return-from check-key-down)
+		    )))
+
+
+
+
+	  
+	  ;; check if it has no next silbling until reached the formula node
+	  ;; THEN the cursor is on the last char of the formula and we could insert text after it
+	  (chain console (log  selection))
+	  )
+	)
+    (do ((element (chain selection anchor-node) (chain element parent-node)))
+	((= element nil))
+      (if (and (chain element class-list) (chain element class-list (contains "formula")))
+	  (chain event (prevent-default))))
+    (do ((element (chain selection focus-node) (chain element parent-node)))
+	((= element nil))
+      (if (and (chain element class-list) (chain element class-list (contains "formula")))
+	  (chain event (prevent-default))))
+    ))
+
+(setf
+(chain
+ document
+ (get-elements-by-tag-name "article")
+ 0
+ onkeydown)
+check-key-down)
+
 
 (stool "undo")
 (stool "redo")
