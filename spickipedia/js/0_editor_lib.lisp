@@ -125,7 +125,6 @@
 	 (= key "ArrowUp")
 	 (= key "ArrowDown"))
 	(return))
-   
     (do ((element (chain selection anchor-node) (chain element parent-node)))
 	((= element nil))
       (if (and (chain element class-list) (chain element class-list (contains "formula")))
@@ -150,7 +149,6 @@ check-key-down)
 	(return-from handle-selection-change))
     (if (not (= (chain selection anchor-offset) 0))
 	(return-from handle-selection-change))
-
     
     (do ((element (chain selection anchor-node) (chain element parent-node)))
 	((or (null element) (defined (chain element next-silbling))))
@@ -159,14 +157,13 @@ check-key-down)
 	      ((= formula-element nil))
 	    (if (and (chain formula-element class-list (contains "formula")))
 		(progn
-		  (chain selection (select-all-children (chain formula-element parent-node) 0))
+		  (chain selection (collapse (chain formula-element parent-node) 0))
 		  (chain console (log "jo"))
 		  (return-from handle-selection-change))))))))
 ;; check if it has no next silbling until reached the formula node
 ;; THEN the cursor is on the last char of the formula and we could insert text after it
 
-
-(chain document (add-event-listener "selectionchange" handle-selection-change))
+;;(chain document (add-event-listener "selectionchange" handle-selection-change))
 
 
 (stool "undo")
