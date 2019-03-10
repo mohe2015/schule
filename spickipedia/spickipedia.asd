@@ -26,6 +26,7 @@
 	       :parenscript
 	       :lack
 	       :lack-middleware-csrf
+	       :trivial-mimes
 	       )
   :components ((:module "src"
                 :components

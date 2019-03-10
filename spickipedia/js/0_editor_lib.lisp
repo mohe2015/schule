@@ -68,9 +68,17 @@
     (chain document (exec-command "createLink" F (chain ($ "#link") (val)))))))
 
 ;; TODO image
+(tool "insertImage"
+      (chain ($ "#image-modal") (modal "show")))
 
+(chain
+ ($ "#update-image")
+ (click
+  (lambda (event)
+    (chain ($ "#image-modal") (modal "hide"))
+    (chain document (get-elements-by-tag-name "article") 0 (focus))
+    (send-file (chain document (get-element-by-id "image-file") files 0)))))
 
-;; TODO table
 (tool "table"
       (chain ($ "#table-modal") (modal "show")))
 
