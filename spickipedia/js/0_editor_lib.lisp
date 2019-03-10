@@ -67,7 +67,6 @@
     ;; TODO this makes the links working in history etc.
     (chain document (exec-command "createLink" F (chain ($ "#link") (val)))))))
 
-;; TODO image
 (tool "insertImage"
       (chain ($ "#image-modal") (modal "show")))
 
@@ -77,6 +76,7 @@
   (lambda (event)
     (chain ($ "#image-modal") (modal "hide"))
     (chain document (get-elements-by-tag-name "article") 0 (focus))
+    ;; TODO make url working
     (send-file (chain document (get-element-by-id "image-file") files 0)))))
 
 (tool "table"
@@ -97,7 +97,8 @@
       (chain document (exec-command "insertHTML" F table-html))))))
 
 ;; TODO formula
-
+(tool "insertFormula"
+      (chain ($ "#formula-modal") (modal "show")))
 
 (stool "undo")
 (stool "redo")
