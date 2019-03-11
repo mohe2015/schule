@@ -116,9 +116,9 @@
 ;;};
 
 (defun check-key-down (event)
-  (chain console (log this))
   (let ((selection (chain window (get-selection)))
 	(key (chain event key)))
+    (chain console (log (chain selection anchor-node)))
     (if (or
 	 (= key "ArrowLeft")
 	 (= key "ArrowRight")
@@ -151,19 +151,22 @@ check-key-down)
 	(return-from handle-selection-change))
     
     (do ((element (chain selection anchor-node) (chain element parent-node)))
-	((or (null element) (defined (chain element next-silbling))))
-      (if (and (chain element class-list) (chain element class-list (contains "ML__base")))
+	((or (null element) (defined (chain element next-silbling)))) ;; check if last element
+      (if (and (chain element class-list) (chain element class-list (contains "ML__base"))) ;; until parent of formula content
 	  (do ((formula-element element (chain formula-element parent-node)))
 	      ((= formula-element nil))
-	    (if (and (chain formula-element class-list (contains "formula")))
+	    (if (and (chain formula-element class-list (contains "formula"))) ;; find formula element
 		(progn
+		  ;; collapse selection to start of formula (outside of its tag)
 		  (chain selection (collapse (chain formula-element parent-node) 0))
 		  (chain console (log "jo"))
 		  (return-from handle-selection-change))))))))
-;; check if it has no next silbling until reached the formula node
-;; THEN the cursor is on the last char of the formula and we could insert text after it
 
-;;(chain document (add-event-listener "selectionchange" handle-selection-change))
+;; https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver
+;; window.getSelection().collapse(document.getElementsByClassName("formula")[0], 1)
+;; document.execCommand("insertText", false, "hi")
+
+(chain document (add-event-listener "selectionchange" handle-selection-change))
 
 
 (stool "undo")
