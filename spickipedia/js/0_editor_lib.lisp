@@ -107,67 +107,9 @@
     (chain document (get-elements-by-tag-name "article") 0 (focus))
     (let ((latex (chain window mathfield (latex))))
       (chain window mathfield (revert-to-original-content))
-      (chain document (exec-command "insertHTML" F (concatenate 'string "<span class=\"formula\">\\(" latex "\\)</span>")))
+      (chain document (exec-command "insertHTML" F (concatenate 'string "<span class=\"formula\" contenteditable=\"false\">\\(" latex "\\)</span>")))
       (loop for element in (chain document (get-elements-by-class-name "formula")) do
 	   (chain -math-live (render-math-in-element element)))))))
-
-;; document.getElementsByTagName("article")[0].onkeydown = function(event) {
-;;    event.preventDefault()
-;;};
-
-(defun check-key-down (event)
-  (let ((selection (chain window (get-selection)))
-	(key (chain event key)))
-    (chain console (log (chain selection anchor-node)))
-    (if (or
-	 (= key "ArrowLeft")
-	 (= key "ArrowRight")
-	 (= key "ArrowUp")
-	 (= key "ArrowDown"))
-	(return))
-    (do ((element (chain selection anchor-node) (chain element parent-node)))
-	((= element nil))
-      (if (and (chain element class-list) (chain element class-list (contains "formula")))
-	  (chain event (prevent-default))))
-    (do ((element (chain selection focus-node) (chain element parent-node)))
-	((= element nil))
-      (if (and (chain element class-list) (chain element class-list (contains "formula")))
-	  (chain event (prevent-default))))
-    ))
-
-(setf
-(chain
- document
- (get-elements-by-tag-name "article")
- 0
- onkeydown)
-check-key-down)
-
-(defun handle-selection-change (event)
-  (let ((selection (chain window (get-selection))))
-    (if (not (chain selection is-collapsed))
-	(return-from handle-selection-change))
-    (if (not (= (chain selection anchor-offset) 0))
-	(return-from handle-selection-change))
-    
-    (do ((element (chain selection anchor-node) (chain element parent-node)))
-	((or (null element) (defined (chain element next-silbling)))) ;; check if last element
-      (if (and (chain element class-list) (chain element class-list (contains "ML__base"))) ;; until parent of formula content
-	  (do ((formula-element element (chain formula-element parent-node)))
-	      ((= formula-element nil))
-	    (if (and (chain formula-element class-list (contains "formula"))) ;; find formula element
-		(progn
-		  ;; collapse selection to start of formula (outside of its tag)
-		  (chain selection (collapse (chain formula-element parent-node) 0))
-		  (chain console (log "jo"))
-		  (return-from handle-selection-change))))))))
-
-;; https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver
-;; window.getSelection().collapse(document.getElementsByClassName("formula")[0], 1)
-;; document.execCommand("insertText", false, "hi")
-
-(chain document (add-event-listener "selectionchange" handle-selection-change))
-
 
 (stool "undo")
 (stool "redo")
