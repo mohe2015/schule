@@ -25,7 +25,7 @@
 	success (lambda (url)
 		  (setf (@ window file-upload-finished) T)
 		  (chain ($ "#uploadProgressModal") (modal "hide"))
-		  (chain (chain document (exec-command "insertImage" F (concatenate 'string "/api/file/" url)))))
+		  (chain (chain document (exec-command "insertHTML" F (concatenate 'string "<figure class=\"figure\"><img src=\"/api/file/" url "\" class=\"figure-img img-fluid rounded\" alt=\"...\"><figcaption class=\"figure-caption\">A caption for the above image.</figcaption></figure>")))))
 	error (lambda ()
 		(if (not (@ window file-upload-finished))
 		    (progn
