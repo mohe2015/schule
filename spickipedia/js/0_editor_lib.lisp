@@ -116,3 +116,20 @@
 
 ;; TODO settings
 ;; TODO finish
+
+(defun update (event)
+  (let ((target (chain event target)))
+    (do ((element target (chain element parent-node)))
+	((= (chain element tag-name) "ARTICLE"))
+      (chain console (log element))
+      (if (= (chain element tag-name) "A")
+	  (progn
+	    (chain console (log "GOTALINK"))
+	    ;; TODO close
+	    ;; $('body').popover({ html: true,  selector: "a", content: '<a href="#" id="createLink"><span class="fas fa-link"></span></a>', trigger: 'hover' });
+	    ))
+
+
+      )))
+
+(chain document (get-elements-by-tag-name "article") 0 (add-event-listener "click" update))
