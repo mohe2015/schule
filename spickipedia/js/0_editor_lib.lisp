@@ -52,7 +52,9 @@
   (create
    class-names (create
 		dataset "dropdown-menu show"
-		suggestion "dropdown-item"))
+		suggestion "dropdown-item"
+		wrapper "twitter-typeahead d-flex"
+		))
   (create
    name "articles"
    source (chain window engine))))
@@ -140,6 +142,7 @@
 	  (if (not (= (chain event target) target))
 	      (chain ($ target) (popover "hide"))))))
 
+      ;; TODO optimize
       (chain
        ($ target)
        (on
@@ -154,7 +157,10 @@
 	      (lambda (event)
 		(chain event (prevent-default))
 		(chain event (stop-propagation))
-		(alert 1))))
+		(chain ($ target) (popover "hide"))
+		(chain ($ "#link") (val (chain ($ target) (attr "href"))))
+		(chain ($ "#link-modal") (modal "show"))
+		)))
 	  ))))
 	
       (chain ($ target) (popover "show"))))))
