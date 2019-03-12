@@ -117,19 +117,49 @@
 ;; TODO settings
 ;; TODO finish
 
-(defun update (event)
-  (let ((target (chain event target)))
-    (do ((element target (chain element parent-node)))
-	((= (chain element tag-name) "ARTICLE"))
-      (chain console (log element))
-      (if (= (chain element tag-name) "A")
-	  (progn
-	    (chain console (log "GOTALINK"))
-	    ;; TODO close
-	    ;; $('body').popover({ html: true,  selector: "a", content: '<a href="#" id="createLink"><span class="fas fa-link"></span></a>', trigger: 'hover' });
-	    ))
+(chain
+ ($ "body")
+ (on
+  "click"
+  "article a"
+  (lambda (event)
+    (chain event (stop-propagation))
+    (let ((target (chain event target)))
+      (chain
+       ($ target)
+       (popover
+	(create
+	 html T
+	 content "<a href=\"#\" class=\"editLink\"><span class=\"fas fa-link\"></span></a>"
+	 trigger "manual")))
 
+      (chain
+       ($ "body")
+       (click
+	(lambda (event)
+	  (chain ($ target) (popover "hide")))))
 
-      )))
+      (chain
+       ($ target)
+       (on
+	"hidden.bs.popover"
+	(lambda (event)
+	  (chain ($ target) (popover "dispose")))))
 
-(chain document (get-elements-by-tag-name "article") 0 (add-event-listener "click" update))
+      (chain
+       ($ target)
+       (on
+	"inserted.bs.popover"
+	(lambda (event)
+	  (let ((popover ($ (concatenate 'string "#" (chain ($ (chain event target)) (attr "aria-describedby"))))))
+	    (chain
+	     popover
+	     (find ".editLink")
+	     (click
+	      (lambda (event)
+		(chain event (prevent-default))
+		(chain event (stop-propagation))
+		(alert 1))))
+	  ))))
+	
+      (chain ($ target) (popover "show"))))))
