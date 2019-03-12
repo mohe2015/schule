@@ -123,7 +123,7 @@
   "click"
   "article a"
   (lambda (event)
-    (chain event (stop-propagation))
+    ;;(chain event (stop-propagation))
     (let ((target (chain event target)))
       (chain
        ($ target)
@@ -137,14 +137,8 @@
        ($ "body")
        (click
 	(lambda (event)
-	  (chain ($ target) (popover "hide")))))
-
-      (chain
-       ($ target)
-       (on
-	"hidden.bs.popover"
-	(lambda (event)
-	  (chain ($ target) (popover "dispose")))))
+	  (if (not (= (chain event target) target))
+	      (chain ($ target) (popover "hide"))))))
 
       (chain
        ($ target)
