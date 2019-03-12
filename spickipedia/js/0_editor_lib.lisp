@@ -123,7 +123,6 @@
   "click"
   "article a"
   (lambda (event)
-    ;;(chain event (stop-propagation))
     (let ((target (chain event target)))
       (chain
        ($ target)
@@ -133,6 +132,7 @@
 	 content "<a href=\"#\" class=\"editLink\"><span class=\"fas fa-link\"></span></a>"
 	 trigger "manual")))
 
+      ;; TODO optimize
       (chain
        ($ "body")
        (click
@@ -149,6 +149,7 @@
 	    (chain
 	     popover
 	     (find ".editLink")
+	     (off "click")
 	     (click
 	      (lambda (event)
 		(chain event (prevent-default))
