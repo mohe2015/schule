@@ -120,6 +120,14 @@
 ;; TODO settings
 ;; TODO finish
 
+(tool "finish"
+      (chain
+       ($ "#publish-changes-modal")
+       (on "shown.bs.modal"
+	   (lambda ()
+	     (chain ($ "#change-summary") (trigger "focus")))))
+      (chain ($ "#publish-changes-modal") (modal "show")))
+
 (chain
  ($ "body")
  (on
