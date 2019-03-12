@@ -44,6 +44,17 @@
 	datum-tokenizer (chain -bloodhound tokenizers whitespace)))))
 
 (tool "createLink"
+      (chain
+       ($ "#update-link")
+       (off "click")
+       (click
+	(lambda (event)
+	  (chain ($ "#link-modal") (modal "hide"))
+	  (chain document (get-elements-by-tag-name "article") 0 (focus))
+	  ;; TODO replace article titles with /wiki/title
+	  ;; TODO this makes the links working in history etc.
+	  (chain document (exec-command "createLink" F (chain ($ "#link") (val)))))))
+      
       (chain ($ "#link-modal") (modal "show")))
 
 (chain
@@ -58,16 +69,6 @@
   (create
    name "articles"
    source (chain window engine))))
-
-(chain
- ($ "#update-link")
- (click
-  (lambda (event)
-    (chain ($ "#link-modal") (modal "hide"))
-    (chain document (get-elements-by-tag-name "article") 0 (focus))
-    ;; TODO replace article titles with /wiki/title
-    ;; TODO this makes the links working in history etc.
-    (chain document (exec-command "createLink" F (chain ($ "#link") (val)))))))
 
 (tool "insertImage"
       (chain ($ "#image-modal") (modal "show")))
@@ -159,6 +160,19 @@
 		(chain event (stop-propagation))
 		(chain ($ target) (popover "hide"))
 		(chain ($ "#link") (val (chain ($ target) (attr "href"))))
+
+		(chain
+		 ($ "#update-link")
+		 (off "click")
+		 (click
+		  (lambda (event)
+		    (chain ($ "#link-modal") (modal "hide"))
+		    (chain document (get-elements-by-tag-name "article") 0 (focus))
+
+		    ;; TODO update link
+		    )))
+
+		
 		(chain ($ "#link-modal") (modal "show"))
 		)))
 	  ))))
