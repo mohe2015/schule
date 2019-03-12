@@ -168,9 +168,7 @@
 		  (lambda (event)
 		    (chain ($ "#link-modal") (modal "hide"))
 		    (chain document (get-elements-by-tag-name "article") 0 (focus))
-
-		    ;; TODO update link
-		    )))
+		    (chain ($ target) (attr "href" (chain ($ "#link") (val)))))))
 
 		
 		(chain ($ "#link-modal") (modal "show"))
