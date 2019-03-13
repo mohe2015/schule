@@ -24,7 +24,7 @@
 								_csrf_token (read-cookie 
 									     "_csrf_token"))
 		     (lambda (data)
-		       (push-state article-path)))
+		       (push-state (concatenate 'string "/wiki/" article-path))))
 	     (fail (lambda (jq-xhr text-status error-thrown)
 		     (chain ($ "#publish-changes") (show))
 		     (chain ($ "#publishing-changes") (hide))
@@ -33,7 +33,11 @@
 
 
 (defun show-editor ()
-  nil)
+  (chain ($ "#editor") (remove-class "d-none"))
+  (chain ($ "article") (attr "contenteditable" T))
+  (chain ($ ".article-editor") (add-class "fullscreen")))
 
 (defun hide-editor ()
-  nil)
+  (chain ($ "#editor") (add-class "d-none"))
+  (chain ($ "article") (attr "contenteditable" F))
+  (chain ($ ".article-editor") (remove-class "fullscreen")))

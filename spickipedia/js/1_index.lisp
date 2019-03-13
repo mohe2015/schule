@@ -45,6 +45,7 @@
 	     (return (chain c (trim) (substring (chain name-eq length))))))))
 
 (defun cleanup ()
+  (hide-editor)
   (chain ($ "#publish-changes-modal") (modal "hide"))
   (chain ($ "#publish-changes") (show))
   (chain ($ "#publishing-changes") (hide)))

@@ -1,7 +1,6 @@
 ;; TODO only do on edit path
 ;; TODO hide editor if not editing
 ;; TODO show editor in fullscreen
-(setf (chain document (get-elements-by-tag-name "article") 0 content-editable) T)
 
 (defmacro tool (id &body body)
   `(chain

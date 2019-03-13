@@ -100,3 +100,16 @@ article h6 {
 .ML__keyboard {
     z-index: 2000 !important;;
 }
+
+.fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: white;
+}
+
+.fullscreen article {
+    height: 100%;
+}
