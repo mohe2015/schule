@@ -1,7 +1,3 @@
-;; TODO only do on edit path
-;; TODO hide editor if not editing
-;; TODO show editor in fullscreen
-
 (defmacro tool (id &body body)
   `(chain
    document
@@ -42,6 +38,24 @@
 	query-tokenizer (chain -bloodhound tokenizers whitespace)
 	datum-tokenizer (chain -bloodhound tokenizers whitespace)))))
 
+(defun is-valid-url (url)
+  (try
+   (progn
+     (new (-u-r-l url))
+     (return T))
+   (:catch (error)
+     (return F))))
+
+(defun update-link (url)
+  ;;window.getSelection().isCollapsed
+  (if (is-valid-url url)
+      (if (chain window (get-selection) is-collapsed)
+	  (chain document (exec-command "insertHTML" F (concatenate 'string "<a target=\"_blank\" rel=\"noopener noreferrer\" href=\"" url "\">" url "</a>")))
+	  nil) ;; TODO existing selected text
+      (if (chain window (get-selection) is-collapsed)
+	  (chain document (exec-command "insertHTML" F (concatenate 'string "<a href=\"/wiki/" url "\">" url "</a>")))
+	  (chain document (exec-command "createLink" F (concatenate 'string "/wiki/" url))))))
+
 (tool "createLink"
       (chain
        ($ "#update-link")
@@ -50,10 +64,7 @@
 	(lambda (event)
 	  (chain ($ "#link-modal") (modal "hide"))
 	  (chain document (get-elements-by-tag-name "article") 0 (focus))
-	  ;; TODO replace article titles with /wiki/title
-	  ;; TODO this makes the links working in history etc.
-	  (chain document (exec-command "createLink" F (chain ($ "#link") (val)))))))
-      
+	  (update-link (chain ($ "#link") (val))))))
       (chain ($ "#link-modal") (modal "show")))
 
 (chain
@@ -127,6 +138,21 @@
 	     (chain ($ "#change-summary") (trigger "focus")))))
       (chain ($ "#publish-changes-modal") (modal "show")))
 
+(defun random-int ()
+  (chain -math (floor (* (chain -math (random)) 10000000000000000))))
+
+(defun create-popover-for (element content)
+  (if (not (chain element id))
+      (setf (chain element id) (concatenate 'string "popover-target-" (random-int))))
+  (chain
+   ($ element)
+   (popover
+    (create
+     html T
+     template (concatenate 'string "<div data-target=\"#" (chain element id) "\" class=\"popover\" role=\"tooltip\"><div class=\"arrow\"></div><h3 class=\"popover-header\"></h3><div class=\"popover-body\"></div></div>")
+     content content
+     trigger "manual"))))
+
 (chain
  ($ "body")
  (on
@@ -134,13 +160,7 @@
   "article a"
   (lambda (event)
     (let ((target (chain event target)))
-      (chain
-       ($ target)
-       (popover
-	(create
-	 html T
-	 content "<a href=\"#\" class=\"editLink\"><span class=\"fas fa-link\"></span></a>"
-	 trigger "manual")))
+      (create-popover-for target "<a href=\"#\" class=\"editLink\"><span class=\"fas fa-link\"></span></a>")
 
       ;; TODO optimize
       (chain
