@@ -153,6 +153,40 @@
      content content
      trigger "manual"))))
 
+(defun get-popover-target (element)
+  (chain ($ (chain ($ element) (closest ".popover") (data "target"))) 0))
+
+(chain
+ ($ "body")
+ (click
+  (lambda (event)
+    (loop for popover in ($ ".popover") do 
+	 (let ((target (get-popover-target popover)))
+	   (if (not (= (chain event target) target))
+	       (chain ($ target) (popover "hide"))))))))
+
+(chain
+ ($ "body")
+ (on
+  "click"
+  ".editLink"
+  (lambda (event)
+    (chain event (prevent-default))
+    (chain event (stop-propagation))
+    (let ((target (get-popover-target (chain event target))))
+      (chain ($ target) (popover "hide"))
+      (chain ($ "#link") (val (chain ($ target) (attr "href"))))
+
+      (chain
+       ($ "#update-link")
+       (off "click")
+       (click
+	(lambda (event)
+	  (chain ($ "#link-modal") (modal "hide"))
+	  (chain document (get-elements-by-tag-name "article") 0 (focus))
+	  (chain ($ target) (attr "href" (chain ($ "#link") (val)))))))
+      (chain ($ "#link-modal") (modal "show"))))))
+
 (chain
  ($ "body")
  (on
@@ -161,45 +195,5 @@
   (lambda (event)
     (let ((target (chain event target)))
       (create-popover-for target "<a href=\"#\" class=\"editLink\"><span class=\"fas fa-link\"></span></a>")
-
-      ;; TODO optimize
-      (chain
-       ($ "body")
-       (click
-	(lambda (event)
-	  (if (not (= (chain event target) target))
-	      (chain ($ target) (popover "hide"))))))
-
-      ;; TODO optimize
-      (chain
-       ($ target)
-       (on
-	"inserted.bs.popover"
-	(lambda (event)
-	  (let ((popover ($ (concatenate 'string "#" (chain ($ (chain event target)) (attr "aria-describedby"))))))
-	    (chain
-	     popover
-	     (find ".editLink")
-	     (off "click")
-	     (click
-	      (lambda (event)
-		(chain event (prevent-default))
-		(chain event (stop-propagation))
-		(chain ($ target) (popover "hide"))
-		(chain ($ "#link") (val (chain ($ target) (attr "href"))))
-
-		(chain
-		 ($ "#update-link")
-		 (off "click")
-		 (click
-		  (lambda (event)
-		    (chain ($ "#link-modal") (modal "hide"))
-		    (chain document (get-elements-by-tag-name "article") 0 (focus))
-		    (chain ($ target) (attr "href" (chain ($ "#link") (val)))))))
-
-		
-		(chain ($ "#link-modal") (modal "show"))
-		)))
-	  ))))
 	
       (chain ($ target) (popover "show"))))))
