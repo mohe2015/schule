@@ -133,6 +133,17 @@
       (chain ($ "#image-modal") (modal "show")))
 
 (chain
+ ($ "body")
+ (on
+  "click"
+  "article img"
+  (lambda (event)
+    (let ((target (chain event target)))
+      (create-popover-for target "<a href=\"#\" class=\"floatImageLeft\"><span class=\"fas fa-align-left\"></span></a> <a href=\"#\" class=\"floatImageRight\"><span class=\"fas fa-align-right\"></span></a> <a href=\"#\" class=\"resizeImage25\">25%</a> <a href=\"#\" class=\"resizeImage50\">50%</a> <a href=\"#\" class=\"resizeImage100\">100%</a> <a href=\"#\" class=\"deleteImage\"><span class=\"fas fa-trash\"></span></a>")
+
+      (chain ($ target) (popover "show"))))))
+
+(chain
  ($ "#update-image")
  (click
   (lambda (event)
@@ -157,6 +168,16 @@
 	   (inner-table-html (chain (concatenate 'string "<tr>" row-html "</tr>") (repeat rows)))
 	   (table-html (concatenate 'string "<div class=\"table-responsive\"><table class=\"table table-bordered\">" inner-table-html "</table></div>")))
       (chain document (exec-command "insertHTML" F table-html))))))
+
+(chain
+ ($ "body")
+ (on
+  "click"
+  "article td"
+  (lambda (event)
+    (let ((target (chain event target)))
+      (create-popover-for target "table data")
+      (chain ($ target) (popover "show"))))))
 
 (tool "insertFormula"
       (chain ($ "#formula-modal") (modal "show"))
