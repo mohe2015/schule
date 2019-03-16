@@ -58,10 +58,11 @@
 
 (tool "createLink"
       (chain
-       ($ "#update-link")
-       (off "click")
-       (click
+       ($ "#link-form")
+       (off "submit")
+       (submit
 	(lambda (event)
+	  (chain event (prevent-default))
 	  (chain ($ "#link-modal") (modal "hide"))
 	  (chain document (get-elements-by-tag-name "article") 0 (focus))
 	  (update-link (chain ($ "#link") (val))))))
@@ -79,6 +80,41 @@
   (create
    name "articles"
    source (chain window engine))))
+
+
+(chain
+ ($ "body")
+ (on
+  "click"
+  ".editLink"
+  (lambda (event)
+    (chain event (prevent-default))
+    (chain event (stop-propagation))
+    (let ((target (get-popover-target (chain event target))))
+      (chain ($ target) (popover "hide"))
+      (chain ($ "#link") (val (chain ($ target) (attr "href"))))
+
+      (chain
+       ($ "#link-form")
+       (off "submit")
+       (submit
+	(lambda (event)
+	  (chain event (prevent-default))
+	  (chain ($ "#link-modal") (modal "hide"))
+	  (chain document (get-elements-by-tag-name "article") 0 (focus))
+	  (chain ($ target) (attr "href" (chain ($ "#link") (val)))))))
+      (chain ($ "#link-modal") (modal "show"))))))
+
+(chain
+ ($ "body")
+ (on
+  "click"
+  "article a"
+  (lambda (event)
+    (let ((target (chain event target)))
+      (create-popover-for target "<a href=\"#\" class=\"editLink\"><span class=\"fas fa-link\"></span></a>")
+	
+      (chain ($ target) (popover "show"))))))
 
 (tool "insertImage"
       (chain ($ "#image-modal") (modal "show")))
@@ -164,36 +200,3 @@
 	 (let ((target (get-popover-target popover)))
 	   (if (not (= (chain event target) target))
 	       (chain ($ target) (popover "hide"))))))))
-
-(chain
- ($ "body")
- (on
-  "click"
-  ".editLink"
-  (lambda (event)
-    (chain event (prevent-default))
-    (chain event (stop-propagation))
-    (let ((target (get-popover-target (chain event target))))
-      (chain ($ target) (popover "hide"))
-      (chain ($ "#link") (val (chain ($ target) (attr "href"))))
-
-      (chain
-       ($ "#update-link")
-       (off "click")
-       (click
-	(lambda (event)
-	  (chain ($ "#link-modal") (modal "hide"))
-	  (chain document (get-elements-by-tag-name "article") 0 (focus))
-	  (chain ($ target) (attr "href" (chain ($ "#link") (val)))))))
-      (chain ($ "#link-modal") (modal "show"))))))
-
-(chain
- ($ "body")
- (on
-  "click"
-  "article a"
-  (lambda (event)
-    (let ((target (chain event target)))
-      (create-popover-for target "<a href=\"#\" class=\"editLink\"><span class=\"fas fa-link\"></span></a>")
-	
-      (chain ($ target) (popover "show"))))))
