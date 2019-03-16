@@ -138,8 +138,9 @@
   (lambda (event)
     (chain ($ "#image-modal") (modal "hide"))
     (chain document (get-elements-by-tag-name "article") 0 (focus))
-    ;; TODO make url working
-    (send-file (chain document (get-element-by-id "image-file") files 0)))))
+    (if (chain ($ "#image-url") (val))
+	(chain document (exec-command "insertHTML" F (concatenate 'string "<img src=\"" (chain ($ "#image-url") (val)) "\"></img>")))
+	(send-file (chain document (get-element-by-id "image-file") files 0))))))
 
 (tool "table"
       (chain ($ "#table-modal") (modal "show")))
@@ -177,7 +178,6 @@
 (stool "redo")
 
 ;; TODO settings
-;; TODO finish
 
 (tool "finish"
       (chain
