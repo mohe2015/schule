@@ -105,6 +105,19 @@
 	  (chain ($ target) (attr "href" (chain ($ "#link") (val)))))))
       (chain ($ "#link-modal") (modal "show"))))))
 
+
+(chain
+ ($ "body")
+ (on
+  "click"
+  ".deleteLink"
+  (lambda (event)
+    (chain event (prevent-default))
+    (chain event (stop-propagation))
+    (let ((target (get-popover-target (chain event target))))
+      (chain ($ target) (popover "hide"))
+      (chain ($ target) (remove))))))
+
 (chain
  ($ "body")
  (on
@@ -112,8 +125,8 @@
   "article a"
   (lambda (event)
     (let ((target (chain event target)))
-      (create-popover-for target "<a href=\"#\" class=\"editLink\"><span class=\"fas fa-link\"></span></a>")
-	
+      (create-popover-for target "<a href=\"#\" class=\"editLink\"><span class=\"fas fa-link\"></span></a> <a href=\"#\" class=\"deleteLink\"><span class=\"fas fa-unlink\"></span></a>")
+
       (chain ($ target) (popover "show"))))))
 
 (tool "insertImage"
