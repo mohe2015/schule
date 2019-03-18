@@ -132,16 +132,37 @@
 (tool "insertImage"
       (chain ($ "#image-modal") (modal "show")))
 
+;; TODO replace chain event target with chain event current-target
+
 (chain
  ($ "body")
  (on
   "click"
-  "article img"
+  "article figure"
   (lambda (event)
-    (let ((target (chain event target)))
+    (let ((target (chain event current-target)))
       (create-popover-for target "<a href=\"#\" class=\"floatImageLeft\"><span class=\"fas fa-align-left\"></span></a> <a href=\"#\" class=\"floatImageRight\"><span class=\"fas fa-align-right\"></span></a> <a href=\"#\" class=\"resizeImage25\">25%</a> <a href=\"#\" class=\"resizeImage50\">50%</a> <a href=\"#\" class=\"resizeImage100\">100%</a> <a href=\"#\" class=\"deleteImage\"><span class=\"fas fa-trash\"></span></a>")
 
       (chain ($ target) (popover "show"))))))
+
+
+
+
+(chain
+ ($ "body")
+ (on
+  "click"
+  ".floatImageLeft"
+  (lambda (event)
+    (chain event (prevent-default))
+    (chain event (stop-propagation))
+    (let ((target (get-popover-target (chain event current-target))))
+      (chain ($ target) (popover "hide"))
+      (chain document (get-elements-by-tag-name "article") 0 (focus))
+      (chain target class-list (add "float-left"))))))
+
+
+
 
 (chain
  ($ "#update-image")
@@ -226,11 +247,16 @@
 (defun get-popover-target (element)
   (chain ($ (chain ($ element) (closest ".popover") (data "target"))) 0))
 
+(defun remove-old-popovers (event)
+  (loop for popover in ($ ".popover") do 
+       (let ((target (get-popover-target popover)))
+	 (loop for target-parent in (chain ($ (chain event target)) (parents)) do
+	      (if (= target-parent target) ;; TODO target to jquery
+		  (return-from remove-old-popovers)))
+	 (if (= (chain event target) target)
+	     (return-from remove-old-popovers))
+	 (chain ($ target) (popover "hide")))))
+
 (chain
  ($ "body")
- (click
-  (lambda (event)
-    (loop for popover in ($ ".popover") do 
-	 (let ((target (get-popover-target popover)))
-	   (if (not (= (chain event target) target))
-	       (chain ($ target) (popover "hide"))))))))
+ (click remove-old-popovers))
