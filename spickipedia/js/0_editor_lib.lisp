@@ -223,6 +223,19 @@
       (chain target class-list (add "w-100"))))))
 
 (chain
+ ($ "body")
+ (on
+  "click"
+  ".deleteImage"
+  (lambda (event)
+    (chain event (prevent-default))
+    (chain event (stop-propagation))
+    (let ((target (get-popover-target (chain event current-target))))
+      (chain ($ target) (popover "hide"))
+      (chain document (get-elements-by-tag-name "article") 0 (focus))
+      (chain target (remove))))))
+
+(chain
  ($ "#update-image")
  (click
   (lambda (event)
