@@ -1,5 +1,5 @@
 
-(defun send-file (file editor wel-editable)
+(defun send-file (file)
   (chain ($ "#uploadProgressModal") (modal "show"))
   (let ((data (new (-form-data))))
     (chain data (append "file" file))
@@ -25,7 +25,7 @@
 	success (lambda (url)
 		  (setf (@ window file-upload-finished) T)
 		  (chain ($ "#uploadProgressModal") (modal "hide"))
-		  (chain ($ "article") (summernote "insertImage" (concatenate 'string "/api/file/" url))))
+		  (chain (chain document (exec-command "insertHTML" F (concatenate 'string "<figure class=\"figure\"><img src=\"/api/file/" url "\" class=\"figure-img img-fluid rounded\" alt=\"...\"><figcaption class=\"figure-caption\">A caption for the above image.</figcaption></figure>")))))
 	error (lambda ()
 		(if (not (@ window file-upload-finished))
 		    (progn

@@ -94,13 +94,13 @@
     `(setf (ningle/app:route *web* ,path :method ,method)
 	   (lambda (,params-var)
 	     (basic-headers)
-	     (setf (getf (response-headers *response*) :content-type) ,content-type)
 	     (destructuring-bind (&key _parsed ,@params &allow-other-keys)
 		 (append (list
                            :_parsed
                            (CAVEMAN2.NESTED-PARAMETER:PARSE-PARAMETERS ,params-var))
 			 (params-form ,params-var ,params))
 	       (declare (ignorable _parsed))
+	       (setf (getf (response-headers *response*) :content-type) ,content-type)
 	       (with-connection (db)
 		 ,(if permissions
 		      `(with-user
@@ -213,8 +213,21 @@
 (my-defroute :GET "/api/killswitch" nil () "text/html"
   (sb-ext:quit))
 
+(defun starts-with-p (str1 str2)
+  "Determine whether `str1` starts with `str2`"
+  (let ((p (search str2 str1)))
+    (and p (= 0 p))))
+
+(defun get-safe-mime-type (file)
+  (let ((mime-type (mimes:mime file)))
+    (if (starts-with-p mime-type "image/")
+	mime-type
+	(progn
+	  (format t "Forbidden mime-type: ~a~%" mime-type)
+	  "text/plain"))))
+
 ;; noauth cache
-(my-defroute :GET "/api/file/:name" (:admin :user :anonymous) (name) "text/html"
+(my-defroute :GET "/api/file/:name" (:admin :user :anonymous) (name) (get-safe-mime-type (merge-pathnames (concatenate 'string "uploads/" name)))
   (merge-pathnames (concatenate 'string "uploads/" name)))
 
 (my-defroute :GET "/js/:file" nil (file) "application/javascript"
