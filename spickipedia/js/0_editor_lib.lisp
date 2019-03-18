@@ -159,10 +159,68 @@
     (let ((target (get-popover-target (chain event current-target))))
       (chain ($ target) (popover "hide"))
       (chain document (get-elements-by-tag-name "article") 0 (focus))
+      (chain target class-list (remove "float-right"))
       (chain target class-list (add "float-left"))))))
 
+(chain
+ ($ "body")
+ (on
+  "click"
+  ".floatImageRight"
+  (lambda (event)
+    (chain event (prevent-default))
+    (chain event (stop-propagation))
+    (let ((target (get-popover-target (chain event current-target))))
+      (chain ($ target) (popover "hide"))
+      (chain document (get-elements-by-tag-name "article") 0 (focus))
+      (chain target class-list (remove "float-left"))
+      (chain target class-list (add "float-right"))))))
 
 
+(chain
+ ($ "body")
+ (on
+  "click"
+  ".resizeImage25"
+  (lambda (event)
+    (chain event (prevent-default))
+    (chain event (stop-propagation))
+    (let ((target (get-popover-target (chain event current-target))))
+      (chain ($ target) (popover "hide"))
+      (chain document (get-elements-by-tag-name "article") 0 (focus))
+      (chain target class-list (remove "w-50"))
+      (chain target class-list (remove "w-100"))
+      (chain target class-list (add "w-25"))))))
+
+(chain
+ ($ "body")
+ (on
+  "click"
+  ".resizeImage50"
+  (lambda (event)
+    (chain event (prevent-default))
+    (chain event (stop-propagation))
+    (let ((target (get-popover-target (chain event current-target))))
+      (chain ($ target) (popover "hide"))
+      (chain document (get-elements-by-tag-name "article") 0 (focus))
+      (chain target class-list (remove "w-25"))
+      (chain target class-list (remove "w-100"))
+      (chain target class-list (add "w-50"))))))
+
+(chain
+ ($ "body")
+ (on
+  "click"
+  ".resizeImage100"
+  (lambda (event)
+    (chain event (prevent-default))
+    (chain event (stop-propagation))
+    (let ((target (get-popover-target (chain event current-target))))
+      (chain ($ target) (popover "hide"))
+      (chain document (get-elements-by-tag-name "article") 0 (focus))
+      (chain target class-list (remove "w-25"))
+      (chain target class-list (remove "w-50"))
+      (chain target class-list (add "w-100"))))))
 
 (chain
  ($ "#update-image")
