@@ -1,3 +1,13 @@
+(defun save-range ()
+  (chain document (get-elements-by-tag-name "article") 0 (focus))
+  (setf (chain window saved-range)
+	(chain window (get-selection) (get-range-at 0))))
+
+(defun restore-range ()
+  (chain document (get-elements-by-tag-name "article") 0 (focus))
+  (chain window (get-selection) (remove-all-ranges))
+  (chain window (get-selection) (add-range (chain window saved-range))))
+
 (defmacro tool (id &body body)
   `(chain
    document
@@ -6,8 +16,8 @@
     "click"
     (lambda (event)
       (chain event (prevent-default))
+      (save-range)
       ,@body
-      (chain document (get-elements-by-tag-name "article") 0 (focus))
       F))))
 
 (defmacro stool (id)
@@ -47,7 +57,6 @@
      (return F))))
 
 (defun update-link (url)
-  ;;window.getSelection().isCollapsed
   (if (is-valid-url url)
       (if (chain window (get-selection) is-collapsed)
 	  (chain document (exec-command "insertHTML" F (concatenate 'string "<a target=\"_blank\" rel=\"noopener noreferrer\" href=\"" url "\">" url "</a>")))
@@ -64,7 +73,7 @@
 	(lambda (event)
 	  (chain event (prevent-default))
 	  (chain ($ "#link-modal") (modal "hide"))
-	  (chain document (get-elements-by-tag-name "article") 0 (focus))
+	  (restore-range)
 	  (update-link (chain ($ "#link") (val))))))
       (chain ($ "#link-modal") (modal "show")))
 
@@ -75,8 +84,7 @@
    class-names (create
 		dataset "dropdown-menu show"
 		suggestion "dropdown-item"
-		wrapper "twitter-typeahead d-flex"
-		))
+		wrapper "twitter-typeahead d-flex"))
   (create
    name "articles"
    source (chain window engine))))
