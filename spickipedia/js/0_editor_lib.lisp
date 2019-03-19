@@ -122,7 +122,7 @@
  ($ "body")
  (on
   "click"
-  "article a"
+  "article[contenteditable=true] a"
   (lambda (event)
     (let ((target (chain event target)))
       (create-popover-for target "<a href=\"#\" class=\"editLink\"><span class=\"fas fa-link\"></span></a> <a href=\"#\" class=\"deleteLink\"><span class=\"fas fa-unlink\"></span></a>")
@@ -138,7 +138,7 @@
  ($ "body")
  (on
   "click"
-  "article figure"
+  "article[contenteditable=true] figure"
   (lambda (event)
     (let ((target (chain event current-target)))
       (create-popover-for target "<a href=\"#\" class=\"floatImageLeft\"><span class=\"fas fa-align-left\"></span></a> <a href=\"#\" class=\"floatImageRight\"><span class=\"fas fa-align-right\"></span></a> <a href=\"#\" class=\"resizeImage25\">25%</a> <a href=\"#\" class=\"resizeImage50\">50%</a> <a href=\"#\" class=\"resizeImage100\">100%</a> <a href=\"#\" class=\"deleteImage\"><span class=\"fas fa-trash\"></span></a>")
@@ -265,7 +265,7 @@
  ($ "body")
  (on
   "click"
-  "article td"
+  "article[contenteditable=true] td"
   (lambda (event)
     (let ((target (chain event target)))
       (create-popover-for target "table data")
@@ -321,6 +321,10 @@
 (defun remove-old-popovers (event)
   (loop for popover in ($ ".popover") do 
        (let ((target (get-popover-target popover)))
+	 (if (undefined target)
+	     (progn
+	       (chain popover (remove))
+	       (return-from remove-old-popovers)))
 	 (loop for target-parent in (chain ($ (chain event target)) (parents)) do
 	      (if (= target-parent target) ;; TODO target to jquery
 		  (return-from remove-old-popovers)))
