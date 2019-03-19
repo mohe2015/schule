@@ -48,22 +48,26 @@
 	query-tokenizer (chain -bloodhound tokenizers whitespace)
 	datum-tokenizer (chain -bloodhound tokenizers whitespace)))))
 
-(defun is-valid-url (url)
+(defun get-url (url)
+  (new (-u-r-l url (chain window location origin))))
+
+(defun is-local-url (url)
   (try
-   (progn
-     (new (-u-r-l url))
-     (return T))
+   (let ((url (get-url)))
+     (return (= (chain url origin) (chain window location origin))))
    (:catch (error)
      (return F))))
 
+;; TODO handle full urls to local wiki page
 (defun update-link (url)
-  (if (is-valid-url url)
-      (if (chain window (get-selection) is-collapsed)
+  (if (is-local-url url)
+      (let ((parsed-url (get-url)))
+	(if (chain window (get-selection) is-collapsed)
+	    (chain document (exec-command "insertHTML" F (concatenate 'string "<a href=\"" (chain parsed-url pathname) "\">" url "</a>")))
+	    (chain document (exec-command "createLink" F (chain parsed-url pathname)))))
+       (if (chain window (get-selection) is-collapsed)
 	  (chain document (exec-command "insertHTML" F (concatenate 'string "<a target=\"_blank\" rel=\"noopener noreferrer\" href=\"" url "\">" url "</a>")))
-	  (chain document (exec-command "createLink" F url))) ;; TODO add target _blank
-      (if (chain window (get-selection) is-collapsed)
-	  (chain document (exec-command "insertHTML" F (concatenate 'string "<a href=\"/wiki/" url "\">" url "</a>")))
-	  (chain document (exec-command "createLink" F (concatenate 'string "/wiki/" url))))))
+	  (chain document (exec-command "createLink" F url))))) ;; TODO add target _blank
 
 (tool "createLink"
       (chain
@@ -87,7 +91,13 @@
 		wrapper "twitter-typeahead d-flex"))
   (create
    name "articles"
-   source (chain window engine))))
+   source (chain window engine)
+   templates
+   (create
+    suggestion (lambda (title)
+		 (concatenate 'string "<div>" title "</div>")))
+   display (lambda (title)
+	     (concatenate 'string "/wiki/" title)))))
 
 
 (chain
