@@ -60,7 +60,7 @@
   (if (is-valid-url url)
       (if (chain window (get-selection) is-collapsed)
 	  (chain document (exec-command "insertHTML" F (concatenate 'string "<a target=\"_blank\" rel=\"noopener noreferrer\" href=\"" url "\">" url "</a>")))
-	  nil) ;; TODO existing selected text
+	  (chain document (exec-command "createLink" F url))) ;; TODO add target _blank
       (if (chain window (get-selection) is-collapsed)
 	  (chain document (exec-command "insertHTML" F (concatenate 'string "<a href=\"/wiki/" url "\">" url "</a>")))
 	  (chain document (exec-command "createLink" F (concatenate 'string "/wiki/" url))))))
