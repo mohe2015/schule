@@ -63,7 +63,7 @@
   (if (is-local-url url)
 
       ;; local url
-      (let ((parsed-url (get-url)))
+      (let ((parsed-url (get-url url)))
 	(if (chain window (get-selection) is-collapsed)
 	    (chain document (exec-command "insertHTML" F (concatenate 'string "<a href=\"" (chain parsed-url pathname) "\">" url "</a>")))
 	    (chain document (exec-command "createLink" F (chain parsed-url pathname)))))
