@@ -1,5 +1,3 @@
-"use strict"
-
 (defun save-range ()
   (chain document (get-elements-by-tag-name "article") 0 (focus))
   (setf (chain window saved-range)

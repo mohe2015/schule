@@ -1,6 +1,9 @@
+"use strict"
+(var __-p-s_-m-v_-r-e-g)
+
 (defmacro defroute (route &body body)
   `(defun ,(make-symbol (concatenate 'string "handle-" (subseq (regex-replace-all "\/:?" route "-") 1))) (path)
-	 (if (not (null (setf results (chain (new (-Reg-Exp ,(concatenate 'string "^" (regex-replace-all ":[^/]*" route "([^/]*)") "$"))) (exec path)))))
+	 (if (not (null (var results (chain (new (-Reg-Exp ,(concatenate 'string "^" (regex-replace-all ":[^/]*" route "([^/]*)") "$"))) (exec path)))))
 	     (progn
 	       ,@(loop
 		    for variable in (all-matches-as-strings ":[^/]*" route)
