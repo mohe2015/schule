@@ -304,11 +304,25 @@
       (chain ($ target) (popover "show"))))))
 
 (tool "insertFormula"
+      (chain
+       ($ "#update-formula")
+       (off "click")
+       (click
+	(lambda (event)
+	  (chain ($ "#formula-modal") (modal "hide"))
+	  (chain document (get-elements-by-tag-name "article") 0 (focus))
+	  (let ((latex (chain window mathfield (latex))))
+	    (chain window mathfield (revert-to-original-content))
+	    (chain document (exec-command "insertHTML" F (concatenate 'string "<span class=\"formula\" contenteditable=\"false\">\\(" latex "\\)</span>")))
+	    (loop for element in (chain document (get-elements-by-class-name "formula")) do
+		 (chain -math-live (render-math-in-element element)))))))
+      
       (chain ($ "#formula-modal") (modal "show"))
       (setf (chain window mathfield) (chain -math-live (make-math-field (chain document (get-element-by-id "formula")) (create virtual-keyboard-mode "manual")))))
 
 (chain
  ($ "#update-formula")
+ (off "click")
  (click
   (lambda (event)
     (chain ($ "#formula-modal") (modal "hide"))
@@ -405,16 +419,20 @@
       (chain ($ target) (popover "hide"))
       (chain document (get-elements-by-tag-name "article") 0 (focus))
 
-
-      ;; TODO disable mathfield first?
       (setf (chain document (get-element-by-id "formula") inner-h-t-m-l) (concatenate 'string "\\( " content " \\)"))
       (setf (chain window mathfield) (chain -math-live (make-math-field (chain document (get-element-by-id "formula")) (create virtual-keyboard-mode "manual"))))
       (chain ($ "#formula-modal") (modal "show"))
 
+      (chain
+       ($ "#update-formula")
+       (off "click")
+       (click
+	(lambda (event)
+	  (chain ($ "#formula-modal") (modal "hide"))
+	  (chain document (get-elements-by-tag-name "article") 0 (focus))
+	  (let ((latex (chain window mathfield (latex))))
+	    (chain window mathfield (revert-to-original-content))
+	    (setf (chain target inner-h-t-m-l) (concatenate 'string "\\( " latex " \\)"))
+	    (loop for element in (chain document (get-elements-by-class-name "formula")) do
+		 (chain -math-live (render-math-in-element element)))))))
       ))))
-
-;(let ((latex (chain window mathfield (latex))))
-;      (chain window mathfield (revert-to-original-content))
-;      (chain document (exec-command "insertHTML" F (concatenate 'string "<span class=\"formula\" contenteditable=\"false\">\\(" latex "\\)</span>")))
-;      (loop for element in (chain document (get-elements-by-class-name "formula")) do
-;	   (chain -math-live (render-math-in-element element))))
