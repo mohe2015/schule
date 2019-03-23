@@ -1,3 +1,5 @@
+"use strict"
+
 (defun save-range ()
   (chain document (get-elements-by-tag-name "article") 0 (focus))
   (setf (chain window saved-range)
@@ -389,3 +391,30 @@
       (chain ($ target) (popover "hide"))
       (chain document (get-elements-by-tag-name "article") 0 (focus))
       (chain target (remove))))))
+
+(chain
+ ($ "body")
+ (on
+  "click"
+  ".editFormula"
+  (lambda (event)
+    (chain event (prevent-default))
+    (chain event (stop-propagation))
+    (let* ((target (get-popover-target (chain event current-target)))
+	   (content (chain -math-live (get-original-content target))))
+      (chain ($ target) (popover "hide"))
+      (chain document (get-elements-by-tag-name "article") 0 (focus))
+
+
+      ;; TODO disable mathfield first?
+      (setf (chain document (get-element-by-id "formula") inner-h-t-m-l) (concatenate 'string "\\( " content " \\)"))
+      (setf (chain window mathfield) (chain -math-live (make-math-field (chain document (get-element-by-id "formula")) (create virtual-keyboard-mode "manual"))))
+      (chain ($ "#formula-modal") (modal "show"))
+
+      ))))
+
+;(let ((latex (chain window mathfield (latex))))
+;      (chain window mathfield (revert-to-original-content))
+;      (chain document (exec-command "insertHTML" F (concatenate 'string "<span class=\"formula\" contenteditable=\"false\">\\(" latex "\\)</span>")))
+;      (loop for element in (chain document (get-elements-by-class-name "formula")) do
+;	   (chain -math-live (render-math-in-element element))))
