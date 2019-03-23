@@ -154,7 +154,7 @@
   "click"
   "article[contenteditable=true] a"
   (lambda (event)
-    (let ((target (chain event target)))
+    (let ((target (chain event current-target)))
       (create-popover-for target "<a href=\"#\" class=\"editLink\"><span class=\"fas fa-link\"></span></a> <a href=\"#\" class=\"deleteLink\"><span class=\"fas fa-unlink\"></span></a>")
 
       (chain ($ target) (popover "show"))))))
@@ -297,7 +297,7 @@
   "click"
   "article[contenteditable=true] td"
   (lambda (event)
-    (let ((target (chain event target)))
+    (let ((target (chain event current-target)))
       (create-popover-for target "table data")
       (chain ($ target) (popover "show"))))))
 
@@ -365,3 +365,27 @@
 (chain
  ($ "body")
  (click remove-old-popovers))
+
+(chain
+ ($ "body")
+ (on
+  "click"
+  "article[contenteditable=true] .formula"
+  (lambda (event)
+    (let ((target (chain event current-target)))
+      (create-popover-for target "<a href=\"#\" class=\"editFormula\"><span class=\"fas fa-pen\"></span></a> <a href=\"#\" class=\"deleteFormula\"><span class=\"fas fa-trash\"></span></a>")
+
+      (chain ($ target) (popover "show"))))))
+
+(chain
+ ($ "body")
+ (on
+  "click"
+  ".deleteFormula"
+  (lambda (event)
+    (chain event (prevent-default))
+    (chain event (stop-propagation))
+    (let ((target (get-popover-target (chain event current-target))))
+      (chain ($ target) (popover "hide"))
+      (chain document (get-elements-by-tag-name "article") 0 (focus))
+      (chain target (remove))))))
