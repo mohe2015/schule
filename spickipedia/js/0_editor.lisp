@@ -35,7 +35,10 @@
 (defun show-editor ()
   (chain ($ "#editor") (remove-class "d-none"))
   (chain ($ "article") (attr "contenteditable" T))
-  (chain ($ ".article-editor") (add-class "fullscreen")))
+  (if (= (chain ($ "article") (html)) "")
+      (chain ($ "article") (html "<p></p>")))
+  (chain ($ ".article-editor") (add-class "fullscreen"))
+  (chain document (exec-command "defaultParagraphSeparator" F "p")))
 
 (defun hide-editor ()
   (chain ($ "#editor") (add-class "d-none"))

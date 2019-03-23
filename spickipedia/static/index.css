@@ -113,3 +113,7 @@ article h6 {
 .fullscreen article {
     height: 100%;
 }
+
+article p {
+    margin-bottom: 0;
+}

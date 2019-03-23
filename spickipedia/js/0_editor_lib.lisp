@@ -1,3 +1,15 @@
+"use strict"
+
+(defun save-range ()
+  (chain document (get-elements-by-tag-name "article") 0 (focus))
+  (setf (chain window saved-range)
+	(chain window (get-selection) (get-range-at 0))))
+
+(defun restore-range ()
+  (chain document (get-elements-by-tag-name "article") 0 (focus))
+  (chain window (get-selection) (remove-all-ranges))
+  (chain window (get-selection) (add-range (chain window saved-range))))
+
 (defmacro tool (id &body body)
   `(chain
    document
@@ -6,8 +18,8 @@
     "click"
     (lambda (event)
       (chain event (prevent-default))
+      (save-range)
       ,@body
-      (chain document (get-elements-by-tag-name "article") 0 (focus))
       F))))
 
 (defmacro stool (id)
@@ -38,23 +50,36 @@
 	query-tokenizer (chain -bloodhound tokenizers whitespace)
 	datum-tokenizer (chain -bloodhound tokenizers whitespace)))))
 
-(defun is-valid-url (url)
+(defun get-url (url)
+  (new (-u-r-l url (chain window location origin))))
+
+(defun is-local-url (url)
   (try
-   (progn
-     (new (-u-r-l url))
-     (return T))
+   (let ((url (get-url url)))
+     (return (= (chain url origin) (chain window location origin))))
    (:catch (error)
      (return F))))
 
+;; TODO allow to edit links
+;; TODO handle full urls to local wiki page
 (defun update-link (url)
-  ;;window.getSelection().isCollapsed
-  (if (is-valid-url url)
+  (if (is-local-url url)
+
+      ;; local url
+      (let ((parsed-url (get-url url)))
+	(if (chain window (get-selection) is-collapsed)
+	    (chain document (exec-command "insertHTML" F (concatenate 'string "<a href=\"" (chain parsed-url pathname) "\">" url "</a>")))
+	    (chain document (exec-command "createLink" F (chain parsed-url pathname)))))
+
+      ;; external url
       (if (chain window (get-selection) is-collapsed)
 	  (chain document (exec-command "insertHTML" F (concatenate 'string "<a target=\"_blank\" rel=\"noopener noreferrer\" href=\"" url "\">" url "</a>")))
-	  nil) ;; TODO existing selected text
-      (if (chain window (get-selection) is-collapsed)
-	  (chain document (exec-command "insertHTML" F (concatenate 'string "<a href=\"/wiki/" url "\">" url "</a>")))
-	  (chain document (exec-command "createLink" F (concatenate 'string "/wiki/" url))))))
+	  (progn
+	    (chain document (exec-command "createLink" F url))
+	    (let* ((selection (chain window (get-selection)))
+		   (link (chain selection focus-node parent-element (closest "a"))))
+	      (setf (chain link target) "_blank")
+	      (setf (chain link rel) "noopener noreferrer"))))))
 
 (tool "createLink"
       (chain
@@ -64,7 +89,7 @@
 	(lambda (event)
 	  (chain event (prevent-default))
 	  (chain ($ "#link-modal") (modal "hide"))
-	  (chain document (get-elements-by-tag-name "article") 0 (focus))
+	  (restore-range)
 	  (update-link (chain ($ "#link") (val))))))
       (chain ($ "#link-modal") (modal "show")))
 
@@ -75,11 +100,16 @@
    class-names (create
 		dataset "dropdown-menu show"
 		suggestion "dropdown-item"
-		wrapper "twitter-typeahead d-flex"
-		))
+		wrapper "twitter-typeahead d-flex"))
   (create
    name "articles"
-   source (chain window engine))))
+   source (chain window engine)
+   templates
+   (create
+    suggestion (lambda (title)
+		 (concatenate 'string "<div>" title "</div>")))
+   display (lambda (title)
+	     (concatenate 'string "/wiki/" title)))))
 
 
 (chain
@@ -92,6 +122,8 @@
     (chain event (stop-propagation))
     (let ((target (get-popover-target (chain event target))))
       (chain ($ target) (popover "hide"))
+
+      ;; TODO
       (chain ($ "#link") (val (chain ($ target) (attr "href"))))
 
       (chain
@@ -122,9 +154,9 @@
  ($ "body")
  (on
   "click"
-  "article a"
+  "article[contenteditable=true] a"
   (lambda (event)
-    (let ((target (chain event target)))
+    (let ((target (chain event current-target)))
       (create-popover-for target "<a href=\"#\" class=\"editLink\"><span class=\"fas fa-link\"></span></a> <a href=\"#\" class=\"deleteLink\"><span class=\"fas fa-unlink\"></span></a>")
 
       (chain ($ target) (popover "show"))))))
@@ -138,7 +170,7 @@
  ($ "body")
  (on
   "click"
-  "article figure"
+  "article[contenteditable=true] figure"
   (lambda (event)
     (let ((target (chain event current-target)))
       (create-popover-for target "<a href=\"#\" class=\"floatImageLeft\"><span class=\"fas fa-align-left\"></span></a> <a href=\"#\" class=\"floatImageRight\"><span class=\"fas fa-align-right\"></span></a> <a href=\"#\" class=\"resizeImage25\">25%</a> <a href=\"#\" class=\"resizeImage50\">50%</a> <a href=\"#\" class=\"resizeImage100\">100%</a> <a href=\"#\" class=\"deleteImage\"><span class=\"fas fa-trash\"></span></a>")
@@ -265,18 +297,32 @@
  ($ "body")
  (on
   "click"
-  "article td"
+  "article[contenteditable=true] td"
   (lambda (event)
-    (let ((target (chain event target)))
+    (let ((target (chain event current-target)))
       (create-popover-for target "table data")
       (chain ($ target) (popover "show"))))))
 
 (tool "insertFormula"
+      (chain
+       ($ "#update-formula")
+       (off "click")
+       (click
+	(lambda (event)
+	  (chain ($ "#formula-modal") (modal "hide"))
+	  (chain document (get-elements-by-tag-name "article") 0 (focus))
+	  (let ((latex (chain window mathfield (latex))))
+	    (chain window mathfield (revert-to-original-content))
+	    (chain document (exec-command "insertHTML" F (concatenate 'string "<span class=\"formula\" contenteditable=\"false\">\\(" latex "\\)</span>")))
+	    (loop for element in (chain document (get-elements-by-class-name "formula")) do
+		 (chain -math-live (render-math-in-element element)))))))
+      
       (chain ($ "#formula-modal") (modal "show"))
       (setf (chain window mathfield) (chain -math-live (make-math-field (chain document (get-element-by-id "formula")) (create virtual-keyboard-mode "manual")))))
 
 (chain
  ($ "#update-formula")
+ (off "click")
  (click
   (lambda (event)
     (chain ($ "#formula-modal") (modal "hide"))
@@ -321,6 +367,10 @@
 (defun remove-old-popovers (event)
   (loop for popover in ($ ".popover") do 
        (let ((target (get-popover-target popover)))
+	 (if (undefined target)
+	     (progn
+	       (chain popover (remove))
+	       (return-from remove-old-popovers)))
 	 (loop for target-parent in (chain ($ (chain event target)) (parents)) do
 	      (if (= target-parent target) ;; TODO target to jquery
 		  (return-from remove-old-popovers)))
@@ -331,3 +381,58 @@
 (chain
  ($ "body")
  (click remove-old-popovers))
+
+(chain
+ ($ "body")
+ (on
+  "click"
+  "article[contenteditable=true] .formula"
+  (lambda (event)
+    (let ((target (chain event current-target)))
+      (create-popover-for target "<a href=\"#\" class=\"editFormula\"><span class=\"fas fa-pen\"></span></a> <a href=\"#\" class=\"deleteFormula\"><span class=\"fas fa-trash\"></span></a>")
+
+      (chain ($ target) (popover "show"))))))
+
+(chain
+ ($ "body")
+ (on
+  "click"
+  ".deleteFormula"
+  (lambda (event)
+    (chain event (prevent-default))
+    (chain event (stop-propagation))
+    (let ((target (get-popover-target (chain event current-target))))
+      (chain ($ target) (popover "hide"))
+      (chain document (get-elements-by-tag-name "article") 0 (focus))
+      (chain target (remove))))))
+
+(chain
+ ($ "body")
+ (on
+  "click"
+  ".editFormula"
+  (lambda (event)
+    (chain event (prevent-default))
+    (chain event (stop-propagation))
+    (let* ((target (get-popover-target (chain event current-target)))
+	   (content (chain -math-live (get-original-content target))))
+      (chain ($ target) (popover "hide"))
+      (chain document (get-elements-by-tag-name "article") 0 (focus))
+
+      (setf (chain document (get-element-by-id "formula") inner-h-t-m-l) (concatenate 'string "\\( " content " \\)"))
+      (setf (chain window mathfield) (chain -math-live (make-math-field (chain document (get-element-by-id "formula")) (create virtual-keyboard-mode "manual"))))
+      (chain ($ "#formula-modal") (modal "show"))
+
+      (chain
+       ($ "#update-formula")
+       (off "click")
+       (click
+	(lambda (event)
+	  (chain ($ "#formula-modal") (modal "hide"))
+	  (chain document (get-elements-by-tag-name "article") 0 (focus))
+	  (let ((latex (chain window mathfield (latex))))
+	    (chain window mathfield (revert-to-original-content))
+	    (setf (chain target inner-h-t-m-l) (concatenate 'string "\\( " latex " \\)"))
+	    (loop for element in (chain document (get-elements-by-class-name "formula")) do
+		 (chain -math-live (render-math-in-element element)))))))
+      ))))
