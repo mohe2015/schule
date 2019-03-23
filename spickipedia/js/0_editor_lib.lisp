@@ -58,6 +58,7 @@
    (:catch (error)
      (return F))))
 
+;; TODO allow to edit links
 ;; TODO handle full urls to local wiki page
 (defun update-link (url)
   (if (is-local-url url)
@@ -69,9 +70,14 @@
 	    (chain document (exec-command "createLink" F (chain parsed-url pathname)))))
 
       ;; external url
-       (if (chain window (get-selection) is-collapsed)
+      (if (chain window (get-selection) is-collapsed)
 	  (chain document (exec-command "insertHTML" F (concatenate 'string "<a target=\"_blank\" rel=\"noopener noreferrer\" href=\"" url "\">" url "</a>")))
-	  (chain document (exec-command "createLink" F url))))) ;; TODO add target _blank
+	  (progn
+	    (chain document (exec-command "createLink" F url))
+	    (let* ((selection (chain window (get-selection)))
+		   (link (chain selection focus-node parent-element (closest "a"))))
+	      (setf (chain link target) "_blank")
+	      (setf (chain link rel) "noopener noreferrer"))))))
 
 (tool "createLink"
       (chain
