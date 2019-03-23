@@ -53,7 +53,7 @@
 
 (defun is-local-url (url)
   (try
-   (let ((url (get-url)))
+   (let ((url (get-url url)))
      (return (= (chain url origin) (chain window location origin))))
    (:catch (error)
      (return F))))
@@ -61,10 +61,14 @@
 ;; TODO handle full urls to local wiki page
 (defun update-link (url)
   (if (is-local-url url)
+
+      ;; local url
       (let ((parsed-url (get-url)))
 	(if (chain window (get-selection) is-collapsed)
 	    (chain document (exec-command "insertHTML" F (concatenate 'string "<a href=\"" (chain parsed-url pathname) "\">" url "</a>")))
 	    (chain document (exec-command "createLink" F (chain parsed-url pathname)))))
+
+      ;; external url
        (if (chain window (get-selection) is-collapsed)
 	  (chain document (exec-command "insertHTML" F (concatenate 'string "<a target=\"_blank\" rel=\"noopener noreferrer\" href=\"" url "\">" url "</a>")))
 	  (chain document (exec-command "createLink" F url))))) ;; TODO add target _blank
