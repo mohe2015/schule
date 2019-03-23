@@ -120,6 +120,8 @@
     (chain event (stop-propagation))
     (let ((target (get-popover-target (chain event target))))
       (chain ($ target) (popover "hide"))
+
+      ;; TODO
       (chain ($ "#link") (val (chain ($ target) (attr "href"))))
 
       (chain
