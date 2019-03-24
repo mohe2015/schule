@@ -543,6 +543,8 @@
     <script src="/visual-diff.js?v={% file-hash "static/visual-diff.js" %}"></script>
 
     <script src="/typeahead.bundle.js?v={% file-hash "static/typeahead.bundle.js" %}"></script>
+
+    <script nomodule src="no_module_support.js"></script>
     
     {% for file in js-files %}
     <script type="module" src="{{file}}"></script>
