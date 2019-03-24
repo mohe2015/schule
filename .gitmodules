@@ -19,3 +19,6 @@
 [submodule "lack"]
 	path = lack
 	url = https://github.com/mohe2015/lack
+[submodule "parenscript"]
+	path = parenscript
+	url = git@github.com:mohe2015/parenscript.git
