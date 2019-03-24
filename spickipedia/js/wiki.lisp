@@ -4,8 +4,7 @@
 (import-default "./cleanup.lisp" "cleanup")
 (import-default "./handle-error.lisp" "handleError")
 
-(export-default
- (defroute "/wiki/:name"
+(defroute "/wiki/:name"
   (var pathname (chain window location pathname (split "/")))
   (show-tab "#loading")
   (chain ($ ".edit-button") (remove-class "disabled"))
@@ -41,4 +40,4 @@
    (fail (lambda (jq-xhr text-status error-thrown)
 	   (if (= (chain jq-xhr status) 404)
 	       (show-tab "#not-found")
-	       (handle-error jq-xhr T)))))))
+	       (handle-error jq-xhr T))))))

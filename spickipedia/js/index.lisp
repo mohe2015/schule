@@ -1,6 +1,10 @@
 (var __-p-s_-m-v_-r-e-g)
 
-(import-default "./wiki.lisp" "handleWikiName")
+(import "./wiki.lisp" "handleWikiName")
+(import "./search.lisp" "handleSearchQuery" "handleSearch")
+(import "./quiz.lisp" "handleQuizIdResults" "handleQuizIdPlayIndex" "handleQuizIdPlay" "handleQuizIdEdit" "handleQuizCreate")
+(import "./logout.lisp" "handleLogout")
+(import "./login.lisp" "handleLogin")
 
 ;;(setf (chain window onerror) (lambda (message source lineno colno error)
 ;;			   (alert (concatenate 'string "Es ist ein Fehler aufgetreten! Melde ihn bitte dem Entwickler! " message " source: " source " lineno: " lineno " colno: " colno " error: " error))))

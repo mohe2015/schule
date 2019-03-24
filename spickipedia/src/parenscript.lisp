@@ -8,7 +8,7 @@
 (defparameter *js-target-version* "1.8.5")
 
 (defpsmacro defroute (route &body body)
-  `(defun ,(make-symbol (concatenate 'string "handle-" (subseq (regex-replace-all "\/:?" route "-") 1))) (path)
+  `(export (defun ,(make-symbol (concatenate 'string "handle-" (subseq (regex-replace-all "\/:?" route "-") 1))) (path)
 	 (if (not (null (var results (chain (new (-Reg-Exp ,(concatenate 'string "^" (regex-replace-all ":[^/]*" route "([^/]*)") "$"))) (exec path)))))
 	     (progn
 	       ,@(loop
@@ -18,7 +18,7 @@
 		      `(defparameter ,(make-symbol (string-upcase (subseq variable 1))) (chain results ,i)))
 	       ,@body
 	       (return T)))
-	 (return F)))
+	 (return F))))
 
 (defpsmacro get (url show-error-page &body body)
   `(chain $
