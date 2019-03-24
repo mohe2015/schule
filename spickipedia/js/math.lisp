@@ -1,4 +1,6 @@
-(defun render-math ()
+(var __-p-s_-m-v_-r-e-g)
+
+(export (defun render-math ()
   (chain
    ($ ".formula")
    (each
@@ -8,12 +10,12 @@
    ($ "article")
    (on "summernote.init"
        (lambda ()
-	 (chain ($ ".formula") (attr "contenteditable" F))))))
+	 (chain ($ ".formula") (attr "contenteditable" F)))))))
 
-(defun revert-math (dom)
+(export (defun revert-math (dom)
   (chain
    dom
    (find ".formula")
    (each
     (lambda ()
-      (setf (@ this inner-h-t-m-l) (concatenate 'string "\\( " (chain -math-live (get-original-content this)) " \\)"))))))
+      (setf (@ this inner-h-t-m-l) (concatenate 'string "\\( " (chain -math-live (get-original-content this)) " \\)")))))))
