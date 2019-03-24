@@ -1,3 +1,5 @@
+(var __-p-s_-m-v_-r-e-g)
+
 (export-default
  (defun hide-editor ()
    (chain ($ "#editor") (add-class "d-none"))

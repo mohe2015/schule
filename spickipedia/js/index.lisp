@@ -26,24 +26,6 @@
 
 
 
-(defun read-cookie (name)
-  (let ((name-eq (concatenate 'string name "="))
-	(ca (chain document cookie (split ";"))))
-    (loop for c in ca do
-	 (if (chain c (trim) (starts-with name-eq))
-	     (return (chain c (trim) (substring (chain name-eq length))))))))
-
-(defun get-url-parameter (param)
-  (let* ((page-url (chain window location search (substring 1)))
-	(url-variables (chain page-url (split "&"))))
-    (loop for parameter-name in url-variables do
-	 (setf parameter-name (chain parameter-name (split "=")))
-	 (if (= (chain parameter-name 0) param)
-	     (return (chain parameter-name 1))))))
-
-(defun replace-state (url data)
-  (chain window history (replace-state data nil url))
-  (update-state))
 
 
 (defroute "/"
