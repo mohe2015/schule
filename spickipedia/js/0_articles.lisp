@@ -1,4 +1,4 @@
-(import "./test.mjs" "jo")
+;;(import "./test.mjs" "jo")
 
 (export-default (lambda (test) nil))
 

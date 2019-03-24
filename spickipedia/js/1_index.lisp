@@ -1,4 +1,5 @@
 (import "./0_wiki.js" "handleWikiName")
+(import-default "./0_wiki.js" "handleWikiName")
 
 ;;(setf (chain window onerror) (lambda (message source lineno colno error)
 ;;			   (alert (concatenate 'string "Es ist ein Fehler aufgetreten! Melde ihn bitte dem Entwickler! " message " source: " source " lineno: " lineno " colno: " colno " error: " error))))
