@@ -232,7 +232,7 @@
 
 (my-defroute :GET "/js/:file" nil (file) "application/javascript"
   (with-cache
-      (file-js-gen (concatenate 'string "js/" (subseq file 0 (- (length file) 3)) ".lisp"))))
+      (file-js-gen (concatenate 'string "js/" file)))) ;; TODO local file inclusion
 
 (defparameter *template-registry* (make-hash-table :test 'equal))
 
@@ -248,7 +248,7 @@
 ;; TODO convert this to my-defroute because otherwise we cant use the features of it like 	     (basic-headers)
 (defroute ("/.*" :regexp t :method :GET) ()
   (basic-headers)
-  (render #P"index.html" :js-files (js-files)))
+  (render #P"index.html"))
 
 ;; Error pages
 

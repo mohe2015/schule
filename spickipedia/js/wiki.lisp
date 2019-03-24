@@ -1,6 +1,6 @@
-(import-default "./0_show_tab.js" "showTab")
-(import-default "./0_cleanup.js" "cleanup")
-(import-default "./0_handle_error.js" "handleError")
+(import-default "./show-tab.lisp" "showTab")
+(import-default "./cleanup.lisp" "cleanup")
+(import-default "./handle-error.lisp" "handleError")
 
 (export-default
  (defroute "/wiki/:name"

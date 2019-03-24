@@ -546,9 +546,6 @@
 
     <script nomodule src="no_module_support.js"></script>
     
-    {% for file in js-files %}
-    <script type="module" src="{{file}}"></script>
-    {% endfor %}
-    <script type="module" src="/js/1_index.js?v={% file-hash "js/1_index.lisp" %}{% file-hash "src/parenscript.lisp" %}"></script>
+    <script type="module" src="/js/index.lisp"></script>
   </body>
 </html>

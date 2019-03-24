@@ -1,4 +1,4 @@
-(import-default "./0_hide_editor.js" "hideEditor")
+(import-default "./hide-editor.lisp" "hideEditor")
 
 (export-default (defun cleanup ()
   (hide-editor)
