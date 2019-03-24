@@ -7,6 +7,8 @@
 
 (defparameter *js-target-version* "1.8.5")
 
+
+
 (defun js-files ()
   (mapcar #'(lambda (f) (concatenate 'string "/js/" (pathname-name f) ".js?v=" (byte-array-to-hex-string (digest-file :sha512 (concatenate 'string "js/" (pathname-name f) ".lisp"))))) (parenscript-files2)))
 
