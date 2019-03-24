@@ -1,7 +1,3 @@
-(export 1)
-
-(export "test")
-
 (export (defun test () nil))
 
 (import "./test.mjs" "jo")

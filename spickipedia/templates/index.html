@@ -545,8 +545,8 @@
     <script src="/typeahead.bundle.js?v={% file-hash "static/typeahead.bundle.js" %}"></script>
     
     {% for file in js-files %}
-    <script src="{{file}}"></script>
+    <script type="module" src="{{file}}"></script>
     {% endfor %}
-    <script src="/js/1_index.js?v={% file-hash "js/1_index.lisp" %}{% file-hash "src/parenscript.lisp" %}"></script>
+    <script type="module" src="/js/1_index.js?v={% file-hash "js/1_index.lisp" %}{% file-hash "src/parenscript.lisp" %}"></script>
   </body>
 </html>
