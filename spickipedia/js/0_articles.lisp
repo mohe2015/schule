@@ -1,5 +1,11 @@
 (export 1)
 
+(export "test")
+
+(export (defun test () nil))
+
+(import "./test.mjs" "jo")
+
 (defroute "/articles"
    (show-tab "#loading")
    (get "/api/articles" T
