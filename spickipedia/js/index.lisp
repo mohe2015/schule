@@ -1,3 +1,5 @@
+(var __-p-s_-m-v_-r-e-g)
+
 (import-default "./wiki.lisp" "handleWikiName")
 
 ;;(setf (chain window onerror) (lambda (message source lineno colno error)
