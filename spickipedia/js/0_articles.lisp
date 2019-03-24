@@ -1,6 +1,4 @@
-(export (defun test () nil))
-
-(import "./test.mjs" "jo")
+;;(import "./test.mjs" "jo")
 
 (defroute "/articles"
    (show-tab "#loading")

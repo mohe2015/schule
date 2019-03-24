@@ -1,5 +1,7 @@
-(setf (chain window onerror) (lambda (message source lineno colno error)
-			   (alert (concatenate 'string "Es ist ein Fehler aufgetreten! Melde ihn bitte dem Entwickler! " message " source: " source " lineno: " lineno " colno: " colno " error: " error))))
+(import "./0_wiki.js" "handleWikiName")
+
+;;(setf (chain window onerror) (lambda (message source lineno colno error)
+;;			   (alert (concatenate 'string "Es ist ein Fehler aufgetreten! Melde ihn bitte dem Entwickler! " message " source: " source " lineno: " lineno " colno: " colno " error: " error))))
 
 (chain
  ($ "body")
@@ -50,9 +52,6 @@
   (chain ($ "#publish-changes") (show))
   (chain ($ "#publishing-changes") (hide)))
 
-(defun show-tab (id)
-  (chain ($ ".my-tab") (not id) (fade-out))
-  (chain ($ id) (fade-in)))
 
 (defun get-url-parameter (param)
   (let* ((page-url (chain window location search (substring 1)))
