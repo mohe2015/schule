@@ -1,4 +1,8 @@
-(export
+(import-default "./0_show_tab.js" "showTab")
+(import-default "./0_cleanup.js" "cleanup")
+(import-default "./0_handle_error.js" "handleError")
+
+(export-default
  (defroute "/wiki/:name"
   (var pathname (chain window location pathname (split "/")))
   (show-tab "#loading")

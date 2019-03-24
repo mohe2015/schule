@@ -1,4 +1,3 @@
-(import "./0_wiki.js" "handleWikiName")
 (import-default "./0_wiki.js" "handleWikiName")
 
 ;;(setf (chain window onerror) (lambda (message source lineno colno error)
@@ -19,26 +18,7 @@
 	  (update-state)
 	  F)))
 
-(defun handle-error (jq-xhr show-error-page)
-  (let ((status (chain jq-xhr status)))
-    (if (= status 401)
-	(let ((name (chain ($ "#inputName") (val (chain window local-storage name)))))
-	  (chain window local-storage (remove-item "name"))
-	  (push-state "/login" (create last-url (chain window location href) last-state (chain window history state))))
-	(if (= jq-xhr 403)
-	    (let ((error-message "Du hast nicht die benötigten Berechtigungen, um diese Aktion durchzuführen. Sag mir Bescheid, wenn du glaubst, dass dies ein Fehler ist."))
-	      (chain ($ "#errorMessage") (text error-message))
-	      (if show-error-page
-		  (progn
-		    (chain ($ "#errorMessage") (text error-message))
-		    (show-tab "#error"))
-		  (alert error-message)))
-	    (let ((error-message (concatenate 'string "Unbekannter Fehler: " (chain jq-xhr status-text))))
-	      (if show-error-page
-		  (progn
-		    (chain ($ "#errorMessage") (text error-message))
-		    (show-tab "#error"))
-		  (alert error-message)))))))
+
 
 (defun read-cookie (name)
   (let ((name-eq (concatenate 'string name "="))
@@ -46,13 +26,6 @@
     (loop for c in ca do
 	 (if (chain c (trim) (starts-with name-eq))
 	     (return (chain c (trim) (substring (chain name-eq length))))))))
-
-(defun cleanup ()
-  (hide-editor)
-  (chain ($ "#publish-changes-modal") (modal "hide"))
-  (chain ($ "#publish-changes") (show))
-  (chain ($ "#publishing-changes") (hide)))
-
 
 (defun get-url-parameter (param)
   (let* ((page-url (chain window location search (substring 1)))
@@ -66,9 +39,6 @@
   (chain window history (replace-state data nil url))
   (update-state))
 
-(defun push-state (url data)
-  (chain window history (push-state data nil url))
-  (update-state))
 
 (defroute "/"
   (chain ($ ".edit-button") (remove-class "disabled"))

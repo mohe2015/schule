@@ -39,8 +39,3 @@
       (chain ($ "article") (html "<p></p>")))
   (chain ($ ".article-editor") (add-class "fullscreen"))
   (chain document (exec-command "defaultParagraphSeparator" F "p")))
-
-(defun hide-editor ()
-  (chain ($ "#editor") (add-class "d-none"))
-  (chain ($ "article") (attr "contenteditable" F))
-  (chain ($ ".article-editor") (remove-class "fullscreen")))
