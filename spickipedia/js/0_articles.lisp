@@ -1,6 +1,8 @@
-;;(import "./test.mjs" "jo")
+(import "./test.mjs" "jo")
 
-(defroute "/articles"
+(export-default (lambda (test) nil))
+
+(export (defroute "/articles"
    (show-tab "#loading")
    (get "/api/articles" T
 	(chain data (sort (lambda (a b)
@@ -11,4 +13,4 @@
 	       (chain templ (find "a") (text page))
 	       (chain templ (find "a") (attr "href" (concatenate 'string "/wiki/" page)))
 	       (chain ($ "#articles-list") (append templ))))
-	(show-tab "#articles"))) 
+	(show-tab "#articles"))))
