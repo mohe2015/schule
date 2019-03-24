@@ -32,6 +32,7 @@ ln -s $PWD/spickipedia/ ~/quicklisp/local-projects/
 ln -s $PWD/monkeylib-bcrypt/ ~/quicklisp/local-projects/
 ln -s $PWD/cl-sanitize/ ~/quicklisp/local-projects/
 ln -s $PWD/lack/ ~/quicklisp/local-projects/
+ln -s $PWD/parenscript/ ~/quicklisp/local-projects/
 
 git clone https://github.com/phppgadmin/phppgadmin /usr/share/nginx/phppgadmin
 
