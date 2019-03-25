@@ -14,6 +14,7 @@
 	:sanitize
 	:bcrypt
 	:cl-fad
+	:alexandria
 	:cl-base64)
   (:export :*web*))
 (in-package :spickipedia.web)
@@ -92,16 +93,15 @@
 	(progn
 	  ,@body))))
 
-(defmacro with-cache (&body body)
+(defmacro with-cache (key &body body)
   `(progn
      (cache)
-     (let* ((content (progn ,@body))
-	    (content-hash (hash-contents content)))
-       (if (equal (gethash "if-none-match" (request-headers *request*)) content-hash)
+     (let* ((key-hash (hash-contents ,key)))
+       (if (equal (gethash "if-none-match" (request-headers *request*)) key-hash)
 	   (throw-code 304)
 	   (progn
-	     (setf (getf (response-headers *response*) :etag) content-hash)
-	     content)))))
+	     (setf (getf (response-headers *response*) :etag) key-hash)
+	     (progn ,@body))))))
 
 (defun basic-headers ()
   (setf (getf (response-headers *response*) :x-frame-options) "DENY")
@@ -252,7 +252,7 @@
   (merge-pathnames (concatenate 'string "uploads/" name)))
 
 (my-defroute :GET "/js/:file" nil (file) "application/javascript"
-  (with-cache
+  (with-cache (read-file-into-string (concatenate 'string "js/" file))
     (file-js-gen (concatenate 'string "js/" file)))) ;; TODO local file inclusion
 
 (defparameter *template-registry* (make-hash-table :test 'equal))
