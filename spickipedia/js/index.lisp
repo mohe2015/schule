@@ -1,8 +1,8 @@
 (var __-p-s_-m-v_-r-e-g)
 
-(import "./replace-state.lisp" "replaceState")
-(import "./update-state.lisp" "updateState")
-(import "./push-state.lisp" "pushState")
+(i "./replace-state.lisp" "replaceState")
+(i "./update-state.lisp" "updateState")
+(i "./push-state.lisp" "pushState")
 
 ;;(setf (chain window onerror) (lambda (message source lineno colno error)
 ;;			   (alert (concatenate 'string "Es ist ein Fehler aufgetreten! Melde ihn bitte dem Entwickler! " message " source: " source " lineno: " lineno " colno: " colno " error: " error))))
