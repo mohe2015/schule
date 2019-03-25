@@ -1,6 +1,6 @@
 (var __-p-s_-m-v_-r-e-g)
 
-(import-default "./show-tab.lisp" "showTab")
+(import "./show-tab.lisp" "showTab")
 (import-default "./cleanup.lisp" "cleanup")
 (import-default "./handle-error.lisp" "handleError")
 (import "./math.lisp" "renderMath")

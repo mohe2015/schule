@@ -64,7 +64,7 @@
 
 (defun get-routes ()
   (defparameter *UPDATE-STATE*
-    `(defun update-state ()
+    `(export (defun update-state ()
        (setf (chain window last-url) (chain window location pathname))
        (if (undefined (chain window local-storage name))
 	   (chain ($ "#logout") (text "Abmelden"))
@@ -78,4 +78,4 @@
 	   (update-state)))
        ,*ROUTES*
        (chain ($ "#errorMessage") (text "Unbekannter Pfad!"))
-       (show-tab "#error"))))
+       (show-tab "#error")))))

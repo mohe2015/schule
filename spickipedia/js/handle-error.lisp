@@ -1,4 +1,6 @@
-(import-default "./push-state.lisp" "pushState")
+(var __-p-s_-m-v_-r-e-g)
+
+(import "./push-state.lisp" "pushState")
 
 (export-default
  (defun handle-error (jq-xhr show-error-page)

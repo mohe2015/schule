@@ -3,7 +3,7 @@
 (import "./get-url-parameter.lisp" "getUrlParameter")
 (import "./read-cookie.lisp" "readCookie")
 (import "./replace-state.lisp" "replaceState")
-(import-default "./show-tab.lisp" "showTab")
+(import "./show-tab.lisp" "showTab")
 
 (defroute "/login"
   (chain ($ ".edit-button") (add-class "disabled"))

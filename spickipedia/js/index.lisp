@@ -1,10 +1,8 @@
 (var __-p-s_-m-v_-r-e-g)
 
-(import "./wiki.lisp" "handleWikiName")
-(import "./search.lisp" "handleSearchQuery" "handleSearch")
-(import "./quiz.lisp" "handleQuizIdResults" "handleQuizIdPlayIndex" "handleQuizIdPlay" "handleQuizIdEdit" "handleQuizCreate")
-(import "./logout.lisp" "handleLogout")
-(import "./login.lisp" "handleLogin")
+(import "./replace-state.lisp" "replaceState")
+(import "./update-state.lisp" "updateState")
+(import "./push-state.lisp" "pushState")
 
 ;;(setf (chain window onerror) (lambda (message source lineno colno error)
 ;;			   (alert (concatenate 'string "Es ist ein Fehler aufgetreten! Melde ihn bitte dem Entwickler! " message " source: " source " lineno: " lineno " colno: " colno " error: " error))))
@@ -23,10 +21,6 @@
 	  (chain e (prevent-default))
 	  (update-state)
 	  F)))
-
-
-
-
 
 (defroute "/"
   (chain ($ ".edit-button") (remove-class "disabled"))
@@ -50,8 +44,6 @@
    (let ((pathname (chain window location pathname (split "/"))))
      (if (and (= (chain pathname length) 4) (= (chain pathname 1) "wiki") (or (= (chain pathname 3) "create") (= (chain pathname 3) "edit")))
 	 T)))) ;; TODO this method is not allowed to return anything if not canceling
-
-(lisp *UPDATE-STATE*)
 
 (setf
   (chain window onload)
