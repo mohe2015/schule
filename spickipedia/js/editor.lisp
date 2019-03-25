@@ -1,5 +1,10 @@
 (var __-p-s_-m-v_-r-e-g)
 
+(import "./editor-lib.lisp")
+(import "./math.lisp" "revertMath")
+(import "./read-cookie.lisp" "readCookie")
+(import "./push-state.lisp" "pushState")
+
 (chain
  ($ "#publish-changes")
  (click

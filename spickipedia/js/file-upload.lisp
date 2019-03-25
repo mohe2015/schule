@@ -1,5 +1,8 @@
+(var __-p-s_-m-v_-r-e-g)
 
-(defun send-file (file)
+(import "./read-cookie.lisp" "readCookie")
+
+(export (defun send-file (file)
   (chain ($ "#uploadProgressModal") (modal "show"))
   (let ((data (new (-form-data))))
     (chain data (append "file" file))
@@ -31,7 +34,7 @@
 		    (progn
 		      (setf (@ window file-upload-finished) T)
 		      (chain ($ "#uploadProgressModal") (modal "hide"))
-		      (alert "Fehler beim Upload!"))))))))))
+		      (alert "Fehler beim Upload!")))))))))))
 
 (defun progress-handling-function (e)
   (if (@ e length-computable)

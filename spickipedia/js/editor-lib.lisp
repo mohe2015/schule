@@ -1,3 +1,7 @@
+(var __-p-s_-m-v_-r-e-g)
+
+(import "./file-upload.lisp" "sendFile")
+
 (defun save-range ()
   (chain document (get-elements-by-tag-name "article") 0 (focus))
   (setf (chain window saved-range)

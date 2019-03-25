@@ -1,5 +1,9 @@
 (var __-p-s_-m-v_-r-e-g)
 
+(import "./show-tab.lisp" "showTab")
+(import "./read-cookie.lisp" "readCookie")
+(import "./replace-state.lisp" "replaceState")
+
 (defroute "/logout"
   (chain ($ ".edit-button") (add-class "disabled"))
   (show-tab "#loading")
