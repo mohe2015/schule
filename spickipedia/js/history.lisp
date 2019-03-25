@@ -1,5 +1,10 @@
 (var __-p-s_-m-v_-r-e-g)
 
+(import "./push-state.lisp" "pushState")
+(import "./show-tab.lisp" "showTab")
+(import "./cleanup.lisp" "cleanup")
+(import "./math.lisp" "renderMath")
+
 (chain
  ($ "#show-history")
  (click

@@ -1,3 +1,5 @@
+(var __-p-s_-m-v_-r-e-g)
+
 (chain
  ($ "#publish-changes")
  (click
@@ -32,10 +34,10 @@
       ))))
 
 
-(defun show-editor ()
+(export (defun show-editor ()
   (chain ($ "#editor") (remove-class "d-none"))
   (chain ($ "article") (attr "contenteditable" T))
   (if (= (chain ($ "article") (html)) "")
       (chain ($ "article") (html "<p></p>")))
   (chain ($ ".article-editor") (add-class "fullscreen"))
-  (chain document (exec-command "defaultParagraphSeparator" F "p")))
+  (chain document (exec-command "defaultParagraphSeparator" F "p"))))
