@@ -1,9 +1,9 @@
 (var __-p-s_-m-v_-r-e-g)
 
-(import "./push-state.lisp" "pushState")
-(import "./show-tab.lisp" "showTab")
-(import "./cleanup.lisp" "cleanup")
-(import "./math.lisp" "renderMath")
+(i "./push-state.lisp" "pushState")
+(i "./show-tab.lisp" "showTab")
+(i "./cleanup.lisp" "cleanup")
+(i "./math.lisp" "renderMath")
 
 (chain
  ($ "#show-history")

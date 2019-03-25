@@ -1,9 +1,9 @@
 (var __-p-s_-m-v_-r-e-g)
 
-(import "./show-tab.lisp" "showTab")
-(import "./cleanup.lisp" "cleanup")
-(import-default "./handle-error.lisp" "handleError")
-(import "./math.lisp" "renderMath")
+(i "./show-tab.lisp" "showTab")
+(i "./cleanup.lisp" "cleanup")
+(i "./handle-error.lisp" "handleError")
+(i "./math.lisp" "renderMath")
 
 (defroute "/wiki/:name"
   (var pathname (chain window location pathname (split "/")))

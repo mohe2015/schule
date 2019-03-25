@@ -1,10 +1,10 @@
 (var __-p-s_-m-v_-r-e-g)
 
-(import "./push-state.lisp" "pushState")
-(import "./cleanup.lisp" "cleanup")
-(import "./show-tab.lisp" "showTab")
-(import "./math.lisp" "renderMath")
-(import "./editor.lisp" "showEditor")
+(i "./push-state.lisp" "pushState")
+(i "./cleanup.lisp" "cleanup")
+(i "./show-tab.lisp" "showTab")
+(i "./math.lisp" "renderMath")
+(i "./editor.lisp" "showEditor")
 
 (chain
  ($ ".edit-button")

@@ -1,9 +1,9 @@
 (var __-p-s_-m-v_-r-e-g)
 
-(import "./editor-lib.lisp")
-(import "./math.lisp" "revertMath")
-(import "./read-cookie.lisp" "readCookie")
-(import "./push-state.lisp" "pushState")
+(i "./editor-lib.lisp")
+(i "./math.lisp" "revertMath")
+(i "./read-cookie.lisp" "readCookie")
+(i "./push-state.lisp" "pushState")
 
 (chain
  ($ "#publish-changes")
