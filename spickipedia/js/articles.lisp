@@ -1,5 +1,7 @@
 (var __-p-s_-m-v_-r-e-g)
 
+(i "./show-tab.lisp" "showTab")
+
 (defroute "/articles"
     (show-tab "#loading")
   (get "/api/articles" T
