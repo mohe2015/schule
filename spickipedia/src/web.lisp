@@ -14,6 +14,7 @@
 	:sanitize
 	:bcrypt
 	:cl-fad
+	:alexandria
 	:cl-base64)
   (:export :*web*))
 (in-package :spickipedia.web)
@@ -69,18 +70,38 @@
 (defun valid-csrf () ;; TODO secure string compare
   (string= (my-session-csrf-token *SESSION*) (assoc "csrf_token" (lack.request:request-query-parameters ningle:*request*))))
 
+(defun hash-contents (content)
+  (ironclad:byte-array-to-hex-string 
+   (ironclad:digest-sequence 
+    :sha256
+    (ironclad:ascii-string-to-byte-array content))))
+
+(defun cache ()
+  (setf (getf (response-headers *response*) :cache-control) "public, max-age=3600") ;; one hour
+  (setf (getf (response-headers *response*) :vary) "Accept-Encoding"))
+
 (defun cache-forever ()
   (setf (getf (response-headers *response*) :cache-control) "max-age=31556926")
   (setf (getf (response-headers *response*) :vary) "Accept-Encoding")
   (setf (getf (response-headers *response*) :etag) *VERSION*)) ;; TODO fix this dirty implementation
 
-(defmacro with-cache (&body body)
+(defmacro with-cache-forever (&body body)
   `(progn
     (cache-forever)
     (if (equal (gethash "if-none-match" (request-headers *request*)) *VERSION*)
 	(throw-code 304)
 	(progn
 	  ,@body))))
+
+(defmacro with-cache (key &body body)
+  `(progn
+     (cache)
+     (let* ((key-hash (hash-contents ,key)))
+       (if (equal (gethash "if-none-match" (request-headers *request*)) key-hash)
+	   (throw-code 304)
+	   (progn
+	     (setf (getf (response-headers *response*) :etag) key-hash)
+	     (progn ,@body))))))
 
 (defun basic-headers ()
   (setf (getf (response-headers *response*) :x-frame-options) "DENY")
@@ -231,8 +252,8 @@
   (merge-pathnames (concatenate 'string "uploads/" name)))
 
 (my-defroute :GET "/js/:file" nil (file) "application/javascript"
-  (with-cache
-      (file-js-gen (concatenate 'string "js/" file)))) ;; TODO local file inclusion
+  (with-cache (read-file-into-string (concatenate 'string "js/" file))
+    (file-js-gen (concatenate 'string "js/" file)))) ;; TODO local file inclusion
 
 (defparameter *template-registry* (make-hash-table :test 'equal))
 

@@ -1,8 +1,8 @@
 (var __-p-s_-m-v_-r-e-g)
 
-(import "./push-state.lisp" "pushState")
+(i "./push-state.lisp" "pushState")
 
-(export-default
+(export
  (defun handle-error (jq-xhr show-error-page)
    (let ((status (chain jq-xhr status)))
      (if (= status 401)

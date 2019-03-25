@@ -1,6 +1,6 @@
 (var __-p-s_-m-v_-r-e-g)
 
-(import "./read-cookie.lisp" "readCookie")
+(i "./read-cookie.lisp" "readCookie")
 
 (export (defun send-file (file)
   (chain ($ "#uploadProgressModal") (modal "show"))

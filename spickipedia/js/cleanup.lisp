@@ -1,6 +1,6 @@
 (var __-p-s_-m-v_-r-e-g)
 
-(import-default "./hide-editor.lisp" "hideEditor")
+(i "./hide-editor.lisp" "hideEditor")
 
 (export (defun cleanup ()
   (hide-editor)

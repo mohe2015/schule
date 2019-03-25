@@ -1,6 +1,6 @@
 (var __-p-s_-m-v_-r-e-g)
 
-(import "./show-tab.lisp" "showTab")
+(i "./show-tab.lisp" "showTab")
 
 (chain
  ($ document)

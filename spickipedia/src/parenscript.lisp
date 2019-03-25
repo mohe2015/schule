@@ -32,10 +32,17 @@
 	  (fail (lambda (jq-xhr text-status error-thrown)
 		  (handle-error jq-xhr ,show-error-page)))))
 
+(defpsmacro i (file &rest contents)
+  `(import ,file ,@contents))
+
+;;(defpsmacro i (file &rest contents)
+;;  `(import ,(concatenate 'string file "?v=" (lisp (byte-array-to-hex-string (digest-file :sha512 (concatenate 'string "js/" file))))) ,@contents)) ;; TODO local file inclusion
+
 (defun file-js-gen (file)
   (in-package :spickipedia.parenscript)
   (get-routes)
   (handler-bind ((simple-warning #'(lambda (e) (if (equal "Returning from unknown block ~A" (simple-condition-format-control e)) (muffle-warning)))))
+    (defparameter *PS-GENSYM-COUNTER* 0)
     (ps-compile-file file)))
 
 (defun find-defroute (code)
