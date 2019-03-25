@@ -42,6 +42,7 @@
   (in-package :spickipedia.parenscript)
   (get-routes)
   (handler-bind ((simple-warning #'(lambda (e) (if (equal "Returning from unknown block ~A" (simple-condition-format-control e)) (muffle-warning)))))
+    (defparameter *PS-GENSYM-COUNTER* 0)
     (ps-compile-file file)))
 
 (defun find-defroute (code)
