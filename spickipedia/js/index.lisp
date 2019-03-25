@@ -4,12 +4,12 @@
 (i "./update-state.lisp" "updateState")
 (i "./push-state.lisp" "pushState")
 
-;;(setf (chain window onerror) (lambda (message source lineno colno error)
-;;			   (alert (concatenate 'string "Es ist ein Fehler aufgetreten! Melde ihn bitte dem Entwickler! " message " source: " source " lineno: " lineno " colno: " colno " error: " error))))
+(setf (chain window onerror) (lambda (message source lineno colno error)
+			       (alert (concatenate 'string "Es ist ein Fehler aufgetreten! Melde ihn bitte dem Entwickler! " message " source: " source " lineno: " lineno " colno: " colno " error: " error))))
 
 (chain
  ($ "body")
- (on "click" ".history-pushState"
+ (on "click" "a"
      (lambda (e)
        (chain e (prevent-default))
        (push-state (chain ($ this) (attr "href")))
