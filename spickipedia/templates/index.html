@@ -59,7 +59,7 @@
     </template>
     
     <template id="search-result-template">
-      <a class="list-group-item list-group-item-action history-pushState">
+      <a class="list-group-item list-group-item-action ">
         <div class="">
           <div class="">
             <h5 class="mt-0 s-title">Media heading</h5>
@@ -78,23 +78,23 @@
         <p class="mb-1 history-summary">Ein paar wichtige Infos hinzugefügt</p>
         <small><span class="history-characters">50.322</span> Zeichen<span class="text-success d-none">+ 50 Zeichen</span></small>
         <div class="btn-group w-100" role="group" aria-label="Basic example">
-          <button type="button" class="btn btn-outline-dark history-show history-pushState"><i class="fas fa-eye"></i></button>
-          <button type="button" class="btn btn-outline-dark history-diff history-pushState"><i class="fas fa-columns"></i></button>
+          <button type="button" class="btn btn-outline-dark history-show "><i class="fas fa-eye"></i></button>
+          <button type="button" class="btn btn-outline-dark history-diff "><i class="fas fa-columns"></i></button>
         </div>
       </a>
     </template>
     
     <template id="articles-entry">
-      <li><a class="history-pushState" href="#">Hauptseite</a></li>
+      <li><a class="" href="#">Hauptseite</a></li>
     </template>
     
     <nav class="navbar navbar-expand-md navbar-light bg-light">
-      <a class="navbar-brand history-pushState" href="/wiki/Hauptseite">
+      <a class="navbar-brand " href="/wiki/Hauptseite">
 	Spickipedia
       </a>
       <div class="login-hide">
         <a class="btn d-inline d-md-none edit-button"><i class="fas fa-pen"></i></a>
-        <a class="btn d-inline d-md-none search-button history-pushState" href="/search"><i class="fas fa-search"></i></a>
+        <a class="btn d-inline d-md-none search-button " href="/search"><i class="fas fa-search"></i></a>
 	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
 	</button>
@@ -102,13 +102,13 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item d-none d-md-block">
-            <a class="nav-link search-button history-pushState" href="/search">Suchen</a>
+            <a class="nav-link search-button " href="/search">Suchen</a>
           </li>
           <li class="nav-item d-none d-md-block">
             <a class="nav-link edit-button" href="#">Bearbeiten</a><!-- TODO only enable when showing an article-->
           </li>
           <li class="nav-item">
-            <a class="nav-link history-pushState" href="/logout" id="logout">Abmelden</a>
+            <a class="nav-link " href="/logout" id="logout">Abmelden</a>
           </li>
         </ul>
       </div>
@@ -186,7 +186,7 @@
     </div>
     <div style="display: none;" class="container-fluid my-tab position-absolute word-wrap" id="page">
       <div class="alert alert-warning mt-1 d-none" id="is-outdated-article" role="alert">
-        Dies zeigt den Artikel zu einem bestimmten Zeitpunkt und ist somit nicht unbedingt aktuell! <a href="#" id="currentVersionLink" class="alert-link history-pushState">Zur aktuellen Version</a> 
+        Dies zeigt den Artikel zu einem bestimmten Zeitpunkt und ist somit nicht unbedingt aktuell! <a href="#" id="currentVersionLink" class="alert-link ">Zur aktuellen Version</a> 
       </div>
       <h1 class="text-center" id="wiki-article-title">title</h1>
       
@@ -265,7 +265,7 @@
         <div style="display: none;" id="search-results">
           <div style="display: none;" class="text-center" id="no-search-results">
             <div class="alert alert-warning" role="alert">
-              Es konnte kein Artikel mit genau diesem Titel gefunden werden. Möchtest du ihn <a id="search-create-article" href="#" class="alert-link history-pushState">erstellen</a>?
+              Es konnte kein Artikel mit genau diesem Titel gefunden werden. Möchtest du ihn <a id="search-create-article" href="#" class="alert-link ">erstellen</a>?
             </div>
           </div>
           <div class="list-group" id="search-results-content">
