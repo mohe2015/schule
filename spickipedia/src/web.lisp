@@ -231,8 +231,7 @@
   (merge-pathnames (concatenate 'string "uploads/" name)))
 
 (my-defroute :GET "/js/:file" nil (file) "application/javascript"
-  (with-cache
-      (file-js-gen (concatenate 'string "js/" file)))) ;; TODO local file inclusion
+  (file-js-gen (concatenate 'string "js/" file))) ;; TODO local file inclusion
 
 (defparameter *template-registry* (make-hash-table :test 'equal))
 

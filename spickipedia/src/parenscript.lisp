@@ -33,7 +33,10 @@
 		  (handle-error jq-xhr ,show-error-page)))))
 
 (defpsmacro i (file &rest contents)
-  `(import ,(concatenate 'string file "?v=" (lisp (byte-array-to-hex-string (digest-file :sha512 (concatenate 'string "js/" file))))) ,@contents)) ;; TODO local file inclusion
+  `(import ,file ,@contents))
+
+;;(defpsmacro i (file &rest contents)
+;;  `(import ,(concatenate 'string file "?v=" (lisp (byte-array-to-hex-string (digest-file :sha512 (concatenate 'string "js/" file))))) ,@contents)) ;; TODO local file inclusion
 
 (defun file-js-gen (file)
   (in-package :spickipedia.parenscript)
