@@ -5,25 +5,39 @@
 	   :js-files))
 (in-package :spickipedia.parenscript)
 
-(defun js-files ()
-  (mapcar #'(lambda (f) (concatenate 'string "/js/" (pathname-name f) ".js?v=" (byte-array-to-hex-string (digest-file :sha512 (concatenate 'string "js/" (pathname-name f) ".lisp"))))) (parenscript-files2)))
+(defparameter *js-target-version* "1.8.5")
 
-(defun parenscript-files2 ()
-  (loop for parenscript-file in (directory #P"js/*.lisp")
-	      when (not (or (equal (file-namestring parenscript-file) "common.lisp") (equal (file-namestring parenscript-file) "1_index.lisp"))) collect parenscript-file))
+(defpsmacro defroute (route &body body)
+  `(export (defun ,(make-symbol (concatenate 'string "handle-" (subseq (regex-replace-all "\/:?" route "-") 1))) (path)
+	 (if (not (null (var results (chain (new (-Reg-Exp ,(concatenate 'string "^" (regex-replace-all ":[^/]*" route "([^/]*)") "$"))) (exec path)))))
+	     (progn
+	       ,@(loop
+		    for variable in (all-matches-as-strings ":[^/]*" route)
+		    for i from 1
+		    collect
+		      `(defparameter ,(make-symbol (string-upcase (subseq variable 1))) (chain results ,i)))
+	       ,@body
+	       (return T)))
+	 (return F))))
 
-(defun parenscript-files ()
-  (loop for parenscript-file in (directory #P"js/*.lisp")
-	      when (not (equal (file-namestring parenscript-file) "common.lisp")) collect parenscript-file))
+(defpsmacro get (url show-error-page &body body)
+  `(chain $
+	  (get ,url (lambda (data) ,@body))
+	  (fail (lambda (jq-xhr text-status error-thrown)
+		  (handle-error jq-xhr ,show-error-page)))))
+
+(defpsmacro post (url data show-error-page &body body)
+  `(chain $
+	  (post ,url ,data (lambda (data) ,@body))
+	  (fail (lambda (jq-xhr text-status error-thrown)
+		  (handle-error jq-xhr ,show-error-page)))))
 
 (defun file-js-gen (file)
   (in-package :spickipedia.parenscript)
   (get-routes)
-  (with-input-from-string (s (concatenate 'string (alexandria:read-file-into-string #P"js/common.lisp") (alexandria:read-file-into-string file)))
-    (handler-bind ((simple-warning #'(lambda (e) (if (equal "Returning from unknown block ~A" (simple-condition-format-control e)) (muffle-warning)))))
-      (let ((content (ps-compile-stream s)))
-	content))))
-  
+  (handler-bind ((simple-warning #'(lambda (e) (if (equal "Returning from unknown block ~A" (simple-condition-format-control e)) (muffle-warning)))))
+    (ps-compile-file file)))
+
 (defun find-defroute (code)
   (let ((routes ()))
     (loop for list in code do
@@ -46,11 +60,11 @@
 		    #'(lambda (r)
 			`(if (,(make-symbol (concatenate 'string "handle-" (subseq (regex-replace-all "\/:?" r "-") 1))) (chain window location pathname))
 			     (return-from update-state)))
-		    (find-defroute (loop for file in (parenscript-files) collect (get-sexp file))))))
+		    (find-defroute (loop for file in (directory #P"js/*.lisp") collect (get-sexp file))))))
 
 (defun get-routes ()
   (defparameter *UPDATE-STATE*
-    `(defun update-state ()
+    `(export (defun update-state ()
        (setf (chain window last-url) (chain window location pathname))
        (if (undefined (chain window local-storage name))
 	   (chain ($ "#logout") (text "Abmelden"))
@@ -64,4 +78,4 @@
 	   (update-state)))
        ,*ROUTES*
        (chain ($ "#errorMessage") (text "Unbekannter Pfad!"))
-       (show-tab "#error"))))
+       (show-tab "#error")))))

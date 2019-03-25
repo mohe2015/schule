@@ -1,3 +1,10 @@
+(var __-p-s_-m-v_-r-e-g)
+
+(import "./editor-lib.lisp")
+(import "./math.lisp" "revertMath")
+(import "./read-cookie.lisp" "readCookie")
+(import "./push-state.lisp" "pushState")
+
 (chain
  ($ "#publish-changes")
  (click
@@ -32,15 +39,10 @@
       ))))
 
 
-(defun show-editor ()
+(export (defun show-editor ()
   (chain ($ "#editor") (remove-class "d-none"))
   (chain ($ "article") (attr "contenteditable" T))
   (if (= (chain ($ "article") (html)) "")
       (chain ($ "article") (html "<p></p>")))
   (chain ($ ".article-editor") (add-class "fullscreen"))
-  (chain document (exec-command "defaultParagraphSeparator" F "p")))
-
-(defun hide-editor ()
-  (chain ($ "#editor") (add-class "d-none"))
-  (chain ($ "article") (attr "contenteditable" F))
-  (chain ($ ".article-editor") (remove-class "fullscreen")))
+  (chain document (exec-command "defaultParagraphSeparator" F "p"))))

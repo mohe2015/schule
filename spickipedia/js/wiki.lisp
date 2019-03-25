@@ -1,3 +1,10 @@
+(var __-p-s_-m-v_-r-e-g)
+
+(import "./show-tab.lisp" "showTab")
+(import "./cleanup.lisp" "cleanup")
+(import-default "./handle-error.lisp" "handleError")
+(import "./math.lisp" "renderMath")
+
 (defroute "/wiki/:name"
   (var pathname (chain window location pathname (split "/")))
   (show-tab "#loading")
@@ -34,4 +41,4 @@
    (fail (lambda (jq-xhr text-status error-thrown)
 	   (if (= (chain jq-xhr status) 404)
 	       (show-tab "#not-found")
-	       (handle-error jq-xhr T)))))) 
+	       (handle-error jq-xhr T))))))
