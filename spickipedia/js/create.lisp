@@ -1,3 +1,4 @@
+(var __-p-s_-m-v_-r-e-g)
 
 (defroute "/wiki/:name/create"
   (chain ($ ".edit-button") (add-class "disabled"))

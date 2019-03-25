@@ -22,9 +22,6 @@
 	  (update-state)
 	  F)))
 
-(defroute "/"
-  (chain ($ ".edit-button") (remove-class "disabled"))
-  (replace-state "/wiki/Hauptseite"))
 
 (setf
  (chain window onpopstate)
