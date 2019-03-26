@@ -28,7 +28,7 @@
 	       :lack-middleware-csrf
 	       :trivial-mimes
 	       :postmodern
-	       :cl-markup
+	       :cl-who
 	       )
   :components ((:module "src"
                 :components
