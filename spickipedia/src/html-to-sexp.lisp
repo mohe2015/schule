@@ -1,20 +1,8 @@
 (ql:quickload :plump)
 (ql:quickload :cl-markup)
+(ql:quickload :alexandria)
 (use-package :plump)
 (use-package :cl-markup)
-
-(defparameter *FILE* (alexandria:read-file-into-string "templates/index.html"))
-(defparameter *DOM* (parse *FILE*))
-(defparameter *SEXP* (to-sexp *DOM*))
-(defparameter *SEXP* (nth 2 *SEXP*))
-
-(let ((*markup-language* :html5))
-  (markup* *SEXP*))
-
-(html5
-  (:html
-   (:head
-    (:title "hi"))))
 
 (defun string->name (string)
   (if (loop for char across string
@@ -43,3 +31,17 @@
         nconc (list (string->name key) val))
      (loop for child across (children node)
 	collect (to-sexp child)))))
+
+
+(defparameter *FILE* (alexandria:read-file-into-string "templates/index.html"))
+(defparameter *DOM* (parse *FILE*))
+(defparameter *SEXP* (to-sexp *DOM*))
+(defparameter *SEXP* (nth 2 *SEXP*))
+
+(let ((*markup-language* :html5))
+  (markup* *SEXP*))
+
+(html5
+  (:html
+   (:head
+    (:title "hi"))))
