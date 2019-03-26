@@ -136,23 +136,21 @@
    (:H1 :CLASS "text-center" :ID "wiki-article-title" "title")
    (:DIV :CLASS "article-editor"
     (:DIV :ID "editor" :CLASS "d-none"
-     (:A :HREF "#" :ID "format-p" (:SPAN :CLASS "fas fa-paragraph"))
-     (:A :HREF "#" :ID "format-h2" (:SPAN :CLASS "fas fa-heading"))
-     (:A :HREF "#" :ID "format-h3" (:SPAN :CLASS "fas fa-heading"))
-     (:A :HREF "#" :ID "superscript" (:SPAN :CLASS "fas fa-superscript"))
-     (:A :HREF "#" :ID "subscript" (:SPAN :CLASS "fas fa-subscript"))
-     (:A :HREF "#" :ID "insertUnorderedList" (:SPAN :CLASS "fas fa-list-ul"))
-     (:A :HREF "#" :ID "insertOrderedList" (:SPAN :CLASS "fas fa-list-ol"))
-     (:A :HREF "#" :ID "indent" (:SPAN :CLASS "fas fa-indent"))
-     (:A :HREF "#" :ID "outdent" (:SPAN :CLASS "fas fa-outdent"))
-     (:A :HREF "#" :ID "createLink" (:SPAN :CLASS "fas fa-link"))
-     (:A :HREF "#" :ID "insertImage" :DATA-ARG
-      "https://static.techspot.com/images2/news/bigimage/2018/09/2018-09-04-image-6.png"
-      (:SPAN :CLASS "fas fa-image"))
-     (:A :HREF "#" :ID "table" (:SPAN :CLASS "fas fa-table"))
-     (:A :HREF "#" :ID "insertFormula" (:SPAN :CLASS "fas fa-calculator"))
-     (:A :HREF "#" :ID "undo" (:SPAN :CLASS "fas fa-undo"))
-     (:A :HREF "#" :ID "redo" (:SPAN :CLASS "fas fa-redo"))
+     (:A :HREF "#" :ID "format-p" (:SPAN :CLASS "fas fa-paragraph")) " "
+     (:A :HREF "#" :ID "format-h2" (:SPAN :CLASS "fas fa-heading")) " "
+     (:A :HREF "#" :ID "format-h3" (:SPAN :CLASS "fas fa-heading")) " "
+     (:A :HREF "#" :ID "superscript" (:SPAN :CLASS "fas fa-superscript")) " "
+     (:A :HREF "#" :ID "subscript" (:SPAN :CLASS "fas fa-subscript")) " "
+     (:A :HREF "#" :ID "insertUnorderedList" (:SPAN :CLASS "fas fa-list-ul")) " "
+     (:A :HREF "#" :ID "insertOrderedList" (:SPAN :CLASS "fas fa-list-ol")) " "
+     (:A :HREF "#" :ID "indent" (:SPAN :CLASS "fas fa-indent")) " "
+     (:A :HREF "#" :ID "outdent" (:SPAN :CLASS "fas fa-outdent")) " "
+     (:A :HREF "#" :ID "createLink" (:SPAN :CLASS "fas fa-link")) " "
+     (:A :HREF "#" :ID "insertImage" (:SPAN :CLASS "fas fa-image")) " "
+     (:A :HREF "#" :ID "table" (:SPAN :CLASS "fas fa-table")) " "
+     (:A :HREF "#" :ID "insertFormula" (:SPAN :CLASS "fas fa-calculator")) " "
+     (:A :HREF "#" :ID "undo" (:SPAN :CLASS "fas fa-undo")) " "
+     (:A :HREF "#" :ID "redo" (:SPAN :CLASS "fas fa-redo")) " "
      (:A :HREF "#" :ID "finish" (:SPAN :CLASS "fas fa-check")))
     (:ARTICLE))
    (:DIV :ID "categories")

@@ -265,12 +265,14 @@
            template nil
            env)))
 
+(SETF (HTML-MODE) :HTML5)
+
 (defmacro sexp-to-html (file)
-  `(with-html-output-to-string (jo)
+  `(with-html-output-to-string (jo nil :prologue t :indent t)
     ,(with-open-file (s file)
 	       (read s))))
 
-;; TODO convert this to my-defroute because otherwise we cant use the features of it like 	     (basic-headers)
+;; TODO convert this to my-defroute because otherwise we cant use the features of it like  (basic-headers)
 (defroute ("/.*" :regexp t :method :GET) ()
   (basic-headers)
   (sexp-to-html "src/index.lisp"))
