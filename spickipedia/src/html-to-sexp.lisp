@@ -5,6 +5,11 @@
 
 (defparameter *FILE* (alexandria:read-file-into-string "templates/index.html"))
 (defparameter *DOM* (parse *FILE*))
+(defparameter *SEXP* (to-sexp *DOM*))
+(defparameter *SEXP* (nth 2 *SEXP*))
+
+(let ((*markup-language* :html5))
+  (markup* *SEXP*))
 
 (html5
   (:html
@@ -32,13 +37,9 @@
     (text node))
   (:method ((node element))
     (append
-     (list
-      (if (< 0 (hash-table-count (attributes node)))
-          (cons (string->name (tag-name node))
-                (loop for key being the hash-keys of (attributes node)
-                   for val being the hash-values of (attributes node)
-                   nconc (list (string->name key) val)))
-          (string->name (tag-name node))))
-     (when (< 0 (length (children node)))
-       (loop for child across (children node)
-	  collect (to-sexp child))))))
+     (list (string->name (tag-name node)))
+     (loop for key being the hash-keys of (attributes node)
+        for val being the hash-values of (attributes node)
+        nconc (list (string->name key) val))
+     (loop for child across (children node)
+	collect (to-sexp child)))))
