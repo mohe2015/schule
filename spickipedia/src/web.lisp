@@ -15,6 +15,7 @@
 	:bcrypt
 	:cl-fad
 	:alexandria
+	:cl-markup
 	:cl-base64)
   (:export :*web*))
 (in-package :spickipedia.web)
@@ -269,7 +270,9 @@
 ;; TODO convert this to my-defroute because otherwise we cant use the features of it like 	     (basic-headers)
 (defroute ("/.*" :regexp t :method :GET) ()
   (basic-headers)
-  (render #P"index.html"))
+  (let ((*markup-language* :html5))
+    (markup* (with-open-file (s "src/index.lisp")
+	       (read s)))))
 
 ;; Error pages
 
