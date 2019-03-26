@@ -5,6 +5,7 @@
 (i "./show-tab.lisp" "showTab")
 (i "./math.lisp" "renderMath")
 (i "./editor.lisp" "showEditor")
+(i "./handle-error.lisp" "handleError")
 
 (chain
  ($ ".edit-button")

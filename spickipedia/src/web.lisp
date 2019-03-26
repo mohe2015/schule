@@ -15,6 +15,7 @@
 	:bcrypt
 	:cl-fad
 	:alexandria
+	:cl-who
 	:cl-base64)
   (:export :*web*))
 (in-package :spickipedia.web)
@@ -46,8 +47,6 @@
        (progn
 	 ,@body)
        (throw-code 403)))
-
-(defmacro make-keyword (name) (values (intern (string name) "KEYWORD")))
 
 (defmacro params-form (params-symb lambda-list)
   (let ((pair (gensym "PAIR")))
@@ -266,10 +265,17 @@
            template nil
            env)))
 
-;; TODO convert this to my-defroute because otherwise we cant use the features of it like 	     (basic-headers)
+(SETF (HTML-MODE) :HTML5)
+
+(defmacro sexp-to-html (file)
+  `(with-html-output-to-string (jo nil :prologue t :indent t)
+    ,(with-open-file (s file)
+	       (read s))))
+
+;; TODO convert this to my-defroute because otherwise we cant use the features of it like  (basic-headers)
 (defroute ("/.*" :regexp t :method :GET) ()
   (basic-headers)
-  (render #P"index.html"))
+  (sexp-to-html "src/index.lisp"))
 
 ;; Error pages
 
