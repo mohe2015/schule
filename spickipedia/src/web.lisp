@@ -96,10 +96,10 @@
   `(progn
      (cache)
      (let* ((key-hash (hash-contents ,key)))
-       (if (equal (gethash "if-none-match" (request-headers *request*)) key-hash)
+       (if (equal (gethash "if-none-match" (request-headers *request*)) (concatenate 'string "W/\"" key-hash "\""))
 	   (throw-code 304)
 	   (progn
-	     (setf (getf (response-headers *response*) :etag) (concatenate 'string "\"" key-hash "\""))
+	     (setf (getf (response-headers *response*) :etag) (concatenate 'string "W/\"" key-hash "\""))
 	     (progn ,@body))))))
 
 (defun basic-headers ()
