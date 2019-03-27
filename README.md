@@ -4,7 +4,7 @@
 
 * sbcl
 * postgresql
-* inotify-tools
+* fcgi
 
 ## Installation
 

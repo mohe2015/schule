@@ -13,10 +13,10 @@
 	:ironclad
 	:sanitize
 	:bcrypt
-	:cl-fad
 	:alexandria
 	:cl-who
 	:cl-base64)
+  (:shadowing-import-from :ironclad :xor)
   (:export :*web*))
 (in-package :spickipedia.web)
 
