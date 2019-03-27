@@ -20,6 +20,7 @@
     "click"
     (lambda (event)
       (chain event (prevent-default))
+      (chain event (stop-propagation))
       (save-range)
       ,@body
       F))))
@@ -90,6 +91,7 @@
        (submit
 	(lambda (event)
 	  (chain event (prevent-default))
+	  (chain event (stop-propagation))
 	  (chain ($ "#link-modal") (modal "hide"))
 	  (restore-range)
 	  (update-link (chain ($ "#link") (val))))))
@@ -134,6 +136,7 @@
        (submit
 	(lambda (event)
 	  (chain event (prevent-default))
+	  (chain event (stop-propagation))
 	  (chain ($ "#link-modal") (modal "hide"))
 	  (chain document (get-elements-by-tag-name "article") 0 (focus))
 	  (chain ($ target) (attr "href" (chain ($ "#link") (val)))))))
@@ -224,7 +227,8 @@
       (chain document (get-elements-by-tag-name "article") 0 (focus))
       (chain target class-list (remove "w-50"))
       (chain target class-list (remove "w-100"))
-      (chain target class-list (add "w-25"))))))
+      (chain target class-list (add "w-25")))
+    F)))
 
 (chain
  ($ "body")

@@ -9,7 +9,23 @@
 
 (chain
  ($ "body")
- (on "click" "a"
+ (on "click" "article[contenteditable=false] a"
+     (lambda (e)
+       (chain e (prevent-default))
+       (push-state (chain ($ this) (attr "href")))
+       F)))
+
+(chain
+ ($ "body")
+ (on "click" "nav a"
+     (lambda (e)
+       (chain e (prevent-default))
+       (push-state (chain ($ this) (attr "href")))
+       F)))
+
+(chain
+ ($ "body")
+ (on "click" "#search a"
      (lambda (e)
        (chain e (prevent-default))
        (push-state (chain ($ this) (attr "href")))
