@@ -99,7 +99,7 @@
        (if (equal (gethash "if-none-match" (request-headers *request*)) key-hash)
 	   (throw-code 304)
 	   (progn
-	     (setf (getf (response-headers *response*) :etag) key-hash)
+	     (setf (getf (response-headers *response*) :etag) (concatenate 'string "\"" key-hash "\""))
 	     (progn ,@body))))))
 
 (defun basic-headers ()
