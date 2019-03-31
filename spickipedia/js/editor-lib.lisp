@@ -56,12 +56,12 @@
 (defun get-url (url)
   (new (-u-r-l url (chain window location origin))))
 
-(defun is-local-url (url)
+(export (defun is-local-url (url)
   (try
    (let ((url (get-url url)))
      (return (= (chain url origin) (chain window location origin))))
    (:catch (error)
-     (return F))))
+     (return F)))))
 
 ;; TODO allow to edit links
 ;; TODO handle full urls to local wiki page

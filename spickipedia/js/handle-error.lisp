@@ -1,6 +1,7 @@
 (var __-p-s_-m-v_-r-e-g)
 
 (i "./push-state.lisp" "pushState")
+(i "./show-tab.lisp" "showTab")
 
 (export
  (defun handle-error (jq-xhr show-error-page)

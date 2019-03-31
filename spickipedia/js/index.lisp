@@ -3,6 +3,7 @@
 (i "./replace-state.lisp" "replaceState")
 (i "./update-state.lisp" "updateState")
 (i "./push-state.lisp" "pushState")
+(i "./editor-lib.lisp" "isLocalUrl")
 
 (setf (chain window onerror) (lambda (message source lineno colno error)
 			       (alert (concatenate 'string "Es ist ein Fehler aufgetreten! Melde ihn bitte dem Entwickler! " message " source: " source " lineno: " lineno " colno: " colno " error: " error))))
@@ -11,25 +12,37 @@
  ($ "body")
  (on "click" "article[contenteditable=false] a"
      (lambda (e)
-       (chain e (prevent-default))
-       (push-state (chain ($ this) (attr "href")))
-       F)))
+       (let ((url (chain ($ this) (attr "href"))))
+	 (if (is-local-url url)
+	     (progn
+	       (chain e (prevent-default))
+	       (push-state url)
+	       F)
+	     T)))))
 
 (chain
  ($ "body")
  (on "click" "nav a"
      (lambda (e)
-       (chain e (prevent-default))
-       (push-state (chain ($ this) (attr "href")))
-       F)))
+       (let ((url (chain ($ this) (attr "href"))))
+	 (if (is-local-url url)
+	     (progn
+	       (chain e (prevent-default))
+	       (push-state url)
+	       F)
+	     T)))))
 
 (chain
  ($ "body")
  (on "click" "#search a"
      (lambda (e)
-       (chain e (prevent-default))
-       (push-state (chain ($ this) (attr "href")))
-       F)))
+       (let ((url (chain ($ this) (attr "href"))))
+	 (if (is-local-url url)
+	     (progn
+	       (chain e (prevent-default))
+	       (push-state url)
+	       F)
+	     T)))))
 
 (chain
  ($ "#refresh")
