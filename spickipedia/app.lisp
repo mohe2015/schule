@@ -16,12 +16,6 @@
 (in-package :spickipedia.app)
 
 (builder
- (:static
-  :path (lambda (path) ;; font/woff
-          (if (and (cl-fad:file-exists-p (concatenate 'string "static" path)) (not (cl-fad:directory-exists-p (concatenate 'string "static" path))))
-              path
-              nil))
-  :root *static-directory*)
  (if (productionp)
      nil
      :accesslog)
