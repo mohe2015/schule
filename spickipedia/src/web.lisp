@@ -256,7 +256,10 @@
 
 (defun get-safe-mime-type (file)
   (let ((mime-type (mimes:mime file)))
-    (if (starts-with-p mime-type "image/")
+    (if (or
+	 (starts-with-p mime-type "image/")
+	 (equal mime-type "text/css")
+	 (equal mime-type "application/javascript"))
 	mime-type
 	(progn
 	  (format t "Forbidden mime-type: ~a~%" mime-type)
@@ -294,7 +297,8 @@
   (let ((path (merge-pathnames *static-directory* (lack.request:request-path-info ningle:*request*))))
     (if (and (cl-fad:file-exists-p path) (not (cl-fad:directory-exists-p path)))
 	(with-cache-vector (read-file-into-byte-vector path)
-	  "path")
+	  (setf (getf (response-headers *response*) :content-type) (get-safe-mime-type path))
+	  path)
 	(sexp-to-html "src/index.lisp"))))
 
 ;; Error pages
