@@ -15,6 +15,7 @@
 	:bcrypt
 	:alexandria
 	:cl-who
+	:cl-fad
 	:cl-base64)
   (:shadowing-import-from :ironclad :xor)
   (:export :*web*))
@@ -258,6 +259,7 @@
   (let ((mime-type (mimes:mime file)))
     (if (or
 	 (starts-with-p mime-type "image/")
+	 (starts-with-p mime-type "font/")
 	 (equal mime-type "text/css")
 	 (equal mime-type "application/javascript"))
 	mime-type
@@ -294,7 +296,7 @@
 ;; TODO convert this to my-defroute because otherwise we cant use the features of it like  (basic-headers)
 (defroute ("/.*" :regexp t :method :GET) ()
   (basic-headers)
-  (let ((path (merge-pathnames *static-directory* (lack.request:request-path-info ningle:*request*))))
+  (let ((path (merge-pathnames-as-file *static-directory* (parse-namestring (subseq (lack.request:request-path-info ningle:*request*) 1)))))
     (if (and (cl-fad:file-exists-p path) (not (cl-fad:directory-exists-p path)))
 	(with-cache-vector (read-file-into-byte-vector path)
 	  (setf (getf (response-headers *response*) :content-type) (get-safe-mime-type path))
