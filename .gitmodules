@@ -22,3 +22,6 @@
 [submodule "parenscript"]
 	path = parenscript
 	url = https://github.com/mohe2015/parenscript.git
+[submodule "clack"]
+	path = clack
+	url = https://github.com/mohe2015/clack
