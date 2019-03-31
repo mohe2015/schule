@@ -75,6 +75,12 @@
     :sha256
     (ironclad:ascii-string-to-byte-array content))))
 
+(defun hash-contents-vector (content)
+  (ironclad:byte-array-to-hex-string 
+   (ironclad:digest-sequence 
+    :sha256
+    content)))
+
 (defun cache ()
   (setf (getf (response-headers *response*) :cache-control) "public, max-age=3600") ;; one hour
   (setf (getf (response-headers *response*) :vary) "Accept-Encoding"))
@@ -96,6 +102,16 @@
   `(progn
      (cache)
      (let* ((key-hash (hash-contents ,key)))
+       (if (equal (gethash "if-none-match" (request-headers *request*)) (concatenate 'string "W/\"" key-hash "\""))
+	   (throw-code 304)
+	   (progn
+	     (setf (getf (response-headers *response*) :etag) (concatenate 'string "W/\"" key-hash "\""))
+	     (progn ,@body))))))
+
+(defmacro with-cache-vector (key &body body)
+  `(progn
+     (cache)
+     (let* ((key-hash (hash-contents-vector ,key)))
        (if (equal (gethash "if-none-match" (request-headers *request*)) (concatenate 'string "W/\"" key-hash "\""))
 	   (throw-code 304)
 	   (progn
@@ -240,7 +256,10 @@
 
 (defun get-safe-mime-type (file)
   (let ((mime-type (mimes:mime file)))
-    (if (starts-with-p mime-type "image/")
+    (if (or
+	 (starts-with-p mime-type "image/")
+	 (equal mime-type "text/css")
+	 (equal mime-type "application/javascript"))
 	mime-type
 	(progn
 	  (format t "Forbidden mime-type: ~a~%" mime-type)
@@ -275,7 +294,12 @@
 ;; TODO convert this to my-defroute because otherwise we cant use the features of it like  (basic-headers)
 (defroute ("/.*" :regexp t :method :GET) ()
   (basic-headers)
-  (sexp-to-html "src/index.lisp"))
+  (let ((path (merge-pathnames *static-directory* (lack.request:request-path-info ningle:*request*))))
+    (if (and (cl-fad:file-exists-p path) (not (cl-fad:directory-exists-p path)))
+	(with-cache-vector (read-file-into-byte-vector path)
+	  (setf (getf (response-headers *response*) :content-type) (get-safe-mime-type path))
+	  path)
+	(sexp-to-html "src/index.lisp"))))
 
 ;; Error pages
 
