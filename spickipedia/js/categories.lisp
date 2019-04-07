@@ -25,6 +25,6 @@
   (lambda (e)
     (chain ($ this) (parent) (remove)))))
 
-(defroute "/tags/:rest"
+(defroute "/tags/.rest"
   (show-tab "#loading")
   (chain console (log rest)))
