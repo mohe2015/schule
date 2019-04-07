@@ -4,6 +4,7 @@
 (i "./cleanup.lisp" "cleanup")
 (i "./handle-error.lisp" "handleError")
 (i "./math.lisp" "renderMath")
+(i "./image-viewer.lisp")
 
 (defroute "/wiki/:name"
   (var pathname (chain window location pathname (split "/")))

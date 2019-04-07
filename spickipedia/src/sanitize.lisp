@@ -24,10 +24,4 @@
     :protocols (("a"           . (("href" . (:ftp :http :https :mailto :relative))))
                 ("img"         . (("src"  . (:http :https :relative))))
 		("iframe"      . (("src"  . (:http :https :relative))))) ;; TODO only https ;; TODO better use a regex as it fails to detect the same protocol url //www.youtube.com
-    :css-attributes (("text-align" . ("center"))
-		     ("float"      . ("left" "right"))
-		     ("width")
-		     ("height")
-		     ("vertical-align")
-		     ("top")
-		     ("margin-right")))
+    )
