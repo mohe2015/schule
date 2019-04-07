@@ -27,4 +27,4 @@
 
 (defroute "/tags/.rest"
   (show-tab "#loading")
-  (chain console (log rest)))
+  (chain console (log (chain rest (split "/")))))
