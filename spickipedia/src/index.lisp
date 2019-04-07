@@ -47,7 +47,7 @@
      (:DIV (:H5 :CLASS "mt-0 s-title" "Media heading")
       (:DIV :CLASS "search-result-summary word-wrap")))))
   (:TEMPLATE :ID "history-item-template" " "
-   (:A :CLASS "list-group-item list-group-item-action"
+   (:DIV :CLASS "list-group-item list-group-item-action"
     (:DIV :CLASS "d-flex w-100 justify-content-between"
      (:H5 :CLASS "mb-1 history-username" "Moritz Hedtke")
      (:SMALL :CLASS "history-date" "vor 3 Tagen"))
@@ -55,9 +55,9 @@
     (:SMALL (:SPAN :CLASS "history-characters" "50.322") " Zeichen"
      (:SPAN :CLASS "text-success d-none" "+ 50 Zeichen"))
     (:DIV :CLASS "btn-group w-100" :ROLE "group" :ARIA-LABEL "Basic example"
-     (:BUTTON :TYPE "button" :CLASS "btn btn-outline-dark history-show"
+     (:A :TYPE "button" :CLASS "btn btn-outline-dark history-show"
       (:I :CLASS "fas fa-eye"))
-     (:BUTTON :TYPE "button" :CLASS "btn btn-outline-dark history-diff"
+     (:A :TYPE "button" :CLASS "btn btn-outline-dark history-diff"
       (:I :CLASS "fas fa-columns")))))
   (:TEMPLATE :ID "articles-entry" (:LI (:A :CLASS "" :HREF "#" "Hauptseite")))
   (:NAV :CLASS "navbar navbar-expand-md navbar-light bg-light"
