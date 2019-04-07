@@ -1,6 +1,7 @@
 (var __-p-s_-m-v_-r-e-g)
 
 (i "./file-upload.lisp" "sendFile")
+(i "./categories.lisp")
 
 (defun save-range ()
   (chain document (get-elements-by-tag-name "article") 0 (focus))
@@ -342,7 +343,8 @@
 (stool "undo")
 (stool "redo")
 
-;; TODO settings
+(tool "settings"
+      (chain ($ "#settings-modal") (modal "show")))
 
 (tool "finish"
       (chain

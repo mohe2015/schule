@@ -151,6 +151,7 @@
      (:A :HREF "#" :ID "insertFormula" (:SPAN :CLASS "fas fa-calculator")) " "
      (:A :HREF "#" :ID "undo" (:SPAN :CLASS "fas fa-undo")) " "
      (:A :HREF "#" :ID "redo" (:SPAN :CLASS "fas fa-redo")) " "
+     (:A :HREF "#" :ID "settings" (:SPAN :CLASS "fas fa-cog")) " "
      (:A :HREF "#" :ID "finish" (:SPAN :CLASS "fas fa-check")))
     (:ARTICLE))
    (:DIV :ID "categories")

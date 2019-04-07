@@ -294,6 +294,8 @@
 	       (read s))))
 
 ;; TODO convert this to my-defroute because otherwise we cant use the features of it like  (basic-headers)
+
+;; TODO automatically reload src/index.lisp
 (defroute ("/.*" :regexp t :method :GET) ()
   (basic-headers)
   (let ((path (merge-pathnames-as-file *static-directory* (parse-namestring (subseq (lack.request:request-path-info ningle:*request*) 1)))))
