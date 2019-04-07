@@ -1,5 +1,7 @@
 (var __-p-s_-m-v_-r-e-g)
 
+(i "./show-tab.lisp" "showTab")
+
 (chain
  ($ "#add-tag-form")
  (submit
@@ -22,3 +24,7 @@
   ".close-tag"
   (lambda (e)
     (chain ($ this) (parent) (remove)))))
+
+(defroute "/tags/:rest"
+  (show-tab "#loading")
+  (chain console (log rest)))
