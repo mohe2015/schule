@@ -311,3 +311,7 @@
   (declare (ignore app))
   (merge-pathnames #P"_errors/404.html"
                    *template-directory*))
+
+(my-defroute :POST "/api/tags" (:admin :user) () "application/json"
+  (print (cdr (assoc "tags" _parsed :test #'string=)))
+  "jo")
