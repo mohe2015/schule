@@ -4,6 +4,7 @@
 (i "./show-tab.lisp" "showTab")
 (i "./read-cookie.lisp" "readCookie")
 (i "./replace-state.lisp" "replaceState")
+(i "./handle-error.lisp" "handleError")
 
 (defroute "/logout"
   (chain ($ ".edit-button") (add-class "disabled"))
