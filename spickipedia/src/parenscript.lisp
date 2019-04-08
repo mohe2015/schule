@@ -66,7 +66,7 @@
     *ROUTES*
   (append `(progn) (mapcar
 		    #'(lambda (r)
-			`(if (,(make-symbol (concatenate 'string "handle-" (subseq (regex-replace-all "\/:?" r "-") 1))) (chain window location pathname))
+			`(if (,(make-symbol (concatenate 'string "handle-" (subseq (regex-replace-all "\/[:\\.]?" r "-") 1))) (chain window location pathname))
 			     (return-from update-state)))
 		    (find-defroute (loop for file in (directory #P"js/*.lisp") collect (get-sexp file))))))
 
