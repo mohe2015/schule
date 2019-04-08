@@ -11,5 +11,6 @@
 (i "./create.lisp" "handleWikiNameCreate")
 (i "./articles.lisp" "handleArticles")
 (i "./show-tab.lisp" "showTab")
+(i "./categories.lisp" "handleTagsRest")
 
 (lisp *UPDATE-STATE*)

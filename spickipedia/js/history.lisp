@@ -4,6 +4,7 @@
 (i "./show-tab.lisp" "showTab")
 (i "./cleanup.lisp" "cleanup")
 (i "./math.lisp" "renderMath")
+(i "./handle-error.lisp" "handleError")
 
 (chain
  ($ "#show-history")

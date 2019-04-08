@@ -294,6 +294,8 @@
 	       (read s))))
 
 ;; TODO convert this to my-defroute because otherwise we cant use the features of it like  (basic-headers)
+
+;; TODO automatically reload src/index.lisp
 (defroute ("/.*" :regexp t :method :GET) ()
   (basic-headers)
   (let ((path (merge-pathnames-as-file *static-directory* (parse-namestring (subseq (lack.request:request-path-info ningle:*request*) 1)))))
@@ -309,3 +311,7 @@
   (declare (ignore app))
   (merge-pathnames #P"_errors/404.html"
                    *template-directory*))
+
+(my-defroute :POST "/api/tags" (:admin :user) () "application/json"
+  (print (cdr (assoc "tags" _parsed :test #'string=)))
+  "jo")
