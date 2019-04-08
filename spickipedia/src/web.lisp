@@ -18,6 +18,8 @@
 	:cl-fad
 	:cl-base64)
   (:shadowing-import-from :ironclad :xor)
+  (:shadowing-import-from :cl-fad :copy-file)
+  (:shadowing-import-from :cl-fad :copy-stream)
   (:export :*web*))
 (in-package :spickipedia.web)
 
