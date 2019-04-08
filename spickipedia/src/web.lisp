@@ -303,7 +303,7 @@
 	(with-cache-vector (read-file-into-byte-vector path)
 	  (setf (getf (response-headers *response*) :content-type) (get-safe-mime-type path))
 	  path)
-	(sexp-to-html "src/index.lisp"))))
+	(eval '(sexp-to-html "src/index.lisp")))))
 
 ;; Error pages
 
