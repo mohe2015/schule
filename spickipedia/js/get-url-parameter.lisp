@@ -1,3 +1,5 @@
+(i "./test.lisp")
+
 (export (defun get-url-parameter (param)
   (let* ((page-url (chain window location search (substring 1)))
 	(url-variables (chain page-url (split "&"))))

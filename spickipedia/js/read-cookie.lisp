@@ -1,3 +1,4 @@
+(i "./test.lisp")
 
 (export (defun read-cookie (name)
   (let ((name-eq (concatenate 'string name "="))
