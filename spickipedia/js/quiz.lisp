@@ -1,5 +1,7 @@
 (var __-p-s_-m-v_-r-e-g) 
 
+(i "./test.lisp")
+
 (defroute "/quiz/create"
   (show-tab "#loading")
   (post "/api/quiz/create" (create '_csrf_token (read-cookie "_csrf_token")) T

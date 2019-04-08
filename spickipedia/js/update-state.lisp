@@ -1,5 +1,6 @@
 (var __-p-s_-m-v_-r-e-g)
 
+(i "./test.lisp")
 (i "./wiki.lisp" "handleWikiName")
 (i "./search.lisp" "handleSearchQuery" "handleSearch")
 (i "./quiz.lisp" "handleQuizIdResults" "handleQuizIdPlayIndex" "handleQuizIdPlay" "handleQuizIdEdit" "handleQuizCreate")
@@ -13,4 +14,21 @@
 (i "./show-tab.lisp" "showTab")
 (i "./categories.lisp" "handleTagsRest")
 
-(lisp *UPDATE-STATE*)
+(export
+ (defun update-state ()
+   (setf (chain window last-url) (chain window location pathname))
+   (if (undefined (chain window local-storage name))
+       (chain ($ "#logout") (text "Abmelden"))
+       (chain ($ "#logout") (text (concatenate 'string (chain window local-storage name) " abmelden"))))
+   (if (and (not (= (chain window location pathname) "/login")) (undefined (chain window local-storage name)))
+       (progn
+	 (chain window history
+		(push-state (create
+			     last-url (chain window location href)
+			     last-state (chain window history state)) nil "/login"))
+	 (update-state)))
+   (loop for route in (chain window routes) do
+	(if (route (chain window location pathname))
+	    (return-from update-state)))
+   (chain ($ "#errorMessage") (text "Unbekannter Pfad!"))
+   (show-tab "#error")))
