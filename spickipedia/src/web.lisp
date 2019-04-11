@@ -277,6 +277,10 @@
   (with-cache (read-file-into-string (concatenate 'string "js/" file))
     (file-js-gen (concatenate 'string "js/" file)))) ;; TODO local file inclusion
 
+(my-defroute :GET "/sw.lisp" nil () "application/javascript"
+  (with-cache (read-file-into-string "js/sw.lisp")
+    (file-js-gen "js/sw.lisp")))
+
 (defparameter *template-registry* (make-hash-table :test 'equal))
 
 (defun render (template-path &optional &rest env)
