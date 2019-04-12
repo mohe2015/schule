@@ -2,6 +2,7 @@
 
 (i "./test.lisp")
 (i "./show-tab.lisp" "showTab")
+(i "./handle-error.lisp" "handleError")
 
 (chain
  ($ document)

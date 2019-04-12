@@ -1,3 +1,7 @@
+;; https://developers.google.com/web/ilt/pwa/caching-files-with-service-worker
+;; https://developers.google.com/web/fundamentals/primers/service-workers/lifecycle#skip_the_waiting_phase
+;; TODO call upate hourly
+
 (var cache-name "my-site-cache-v1")
 (var
  urls-to-cache
@@ -14,6 +18,7 @@
   "/bootstrap.js"
   "/visual-diff.js"
   "/typeahead.bundle.js"
+  "/webfonts/fa-solid-900.woff2"
   "/js/index.lisp"
   "/js/test.lisp"
   "/js/replace-state.lisp"
@@ -49,6 +54,7 @@
  (add-event-listener
   "install"
   (lambda (event)
+    (chain self (skip-waiting))
     (chain
      event
      (wait-until
@@ -58,20 +64,56 @@
        (then (lambda (cache)
 	       (chain cache (add-all urls-to-cache))))))))))
 
+(defun cache-then-network (event)
+  (chain
+   event
+   (respond-with
+    (chain
+     caches
+     (open cache-name)
+     (then
+      (lambda (cache)
+	(chain
+	 cache
+	 (match (chain event request))
+	 (then
+	  (lambda (response)
+	    (or
+	     response
+	     (chain
+	      (fetch (chain event request))
+	      (then (lambda (response)
+		      (chain cache (put (chain event request) (chain response (clone))))
+		      response)))))))))))))
+
+(defun cache-then-fallback (event)
+  (chain
+   event
+   (respond-with
+    (chain
+     caches
+     (open cache-name)
+     (then
+      (lambda (cache)
+	(chain
+	 cache
+	 (match (chain event request))
+	 (then
+	  (lambda (response)
+	    (or
+	     response
+	     (chain cache (match "/"))))))))))))
+
 (chain
  self
  (add-event-listener
   "fetch"
   (lambda (event)
-    (chain console (log event))
-    (chain
-     event
-     (respond-with
-      (chain
-       caches
-       (match (chain event request))
-       (then
-	(lambda (response)
-	  (if response
-	      (return response))
-	  (fetch (chain event request))))))))))
+    ;; (chain console (log event))
+    (let* ((request (chain event request))
+	   (method (chain request method))
+	   (url (new (-u-r-l (chain request url))))
+	   (pathname (chain url pathname)))
+      (if (chain pathname (starts-with "/api"))
+	  (cache-then-network event)
+	  (cache-then-fallback event))))))
