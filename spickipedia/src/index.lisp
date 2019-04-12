@@ -5,6 +5,37 @@
   (:LINK :REL "stylesheet" :HREF "/bootstrap.css")
   (:LINK :REL "stylesheet" :HREF "/all.css")
   (:LINK :REL "stylesheet" :HREF "/index.css")
+  
+  (:LINK :REL "modulepreload" :HREF "/js/index.lisp")
+  (:LINK :REL "modulepreload" :HREF "/js/test.lisp")
+  (:LINK :REL "modulepreload" :HREF "/js/replace-state.lisp")
+  (:LINK :REL "modulepreload" :HREF "/js/update-state.lisp")
+  (:LINK :REL "modulepreload" :HREF "/js/push-state.lisp")
+  (:LINK :REL "modulepreload" :HREF "/js/editor-lib.lisp")
+  (:LINK :REL "modulepreload" :HREF "/js/register-sw.lisp")
+  (:LINK :REL "modulepreload" :HREF "/js/wiki.lisp")
+  (:LINK :REL "modulepreload" :HREF "/js/search.lisp")
+  (:LINK :REL "modulepreload" :HREF "/js/quiz.lisp")
+  (:LINK :REL "modulepreload" :HREF "/js/logout.lisp")
+  (:LINK :REL "modulepreload" :HREF "/js/login.lisp")
+  (:LINK :REL "modulepreload" :HREF "/js/root.lisp")
+  (:LINK :REL "modulepreload" :HREF "/js/history.lisp")
+  (:LINK :REL "modulepreload" :HREF "/js/edit.lisp")
+  (:LINK :REL "modulepreload" :HREF "/js/create.lisp")
+  (:LINK :REL "modulepreload" :HREF "/js/articles.lisp")
+  (:LINK :REL "modulepreload" :HREF "/js/show-tab.lisp")
+  (:LINK :REL "modulepreload" :HREF "/js/categories.lisp")
+  (:LINK :REL "modulepreload" :HREF "/js/file-upload.lisp")
+  (:LINK :REL "modulepreload" :HREF "/js/cleanup.lisp")
+  (:LINK :REL "modulepreload" :HREF "/js/handle-error.lisp")
+  (:LINK :REL "modulepreload" :HREF "/js/math.lisp")
+  (:LINK :REL "modulepreload" :HREF "/js/image-viewer.lisp")
+  (:LINK :REL "modulepreload" :HREF "/js/read-cookie.lisp")
+  (:LINK :REL "modulepreload" :HREF "/js/get-url-parameter.lisp")
+  (:LINK :REL "modulepreload" :HREF "/js/editor.lisp")
+  (:LINK :REL "modulepreload" :HREF "/js/hide-editor.lisp")
+  (:LINK :REL "preload" :AS "font" :crossorigin "" :type "font/woff2" :href "/webfonts/fa-solid-900.woff2")
+
   (:TITLE "Spickipedia"))
  (:BODY
   (:TEMPLATE :ID "multiple-choice-answer-html"
@@ -352,6 +383,7 @@
       (:BUTTON :TYPE "button" :CLASS "btn btn-primary" :ID "update-formula"
        "Ok")))))
   (:SCRIPT :SRC "/jquery-3.3.1.js")
+  ;; load later only when needed
   (:LINK :REL "stylesheet" :HREF "/mathlive.core.css")
   (:LINK :REL "stylesheet" :HREF "/mathlive.css")
   (:SCRIPT :SRC "/mathlive.js")
@@ -360,4 +392,5 @@
   (:SCRIPT :SRC "/visual-diff.js")
   (:SCRIPT :SRC "/typeahead.bundle.js")
   (:SCRIPT :NOMODULE "" :SRC "no_module_support.js")
+  
   (:SCRIPT :TYPE "module" :SRC "/js/index.lisp")))
