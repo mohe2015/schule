@@ -85,7 +85,7 @@
     content)))
 
 (defun cache ()
-  (setf (getf (response-headers *response*) :cache-control) "public, max-age=3600") ;; one hour
+  (setf (getf (response-headers *response*) :cache-control) "public, max-age=0") ;; one hour ;; TODO change on release
   (setf (getf (response-headers *response*) :vary) "Accept-Encoding"))
 
 (defun cache-forever ()
@@ -276,6 +276,10 @@
 (my-defroute :GET "/js/:file" nil (file) "application/javascript"
   (with-cache (read-file-into-string (concatenate 'string "js/" file))
     (file-js-gen (concatenate 'string "js/" file)))) ;; TODO local file inclusion
+
+(my-defroute :GET "/sw.lisp" nil () "application/javascript"
+  (with-cache (read-file-into-string "js/sw.lisp")
+    (file-js-gen "js/sw.lisp")))
 
 (defparameter *template-registry* (make-hash-table :test 'equal))
 

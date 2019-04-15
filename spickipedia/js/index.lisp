@@ -5,9 +5,13 @@
 (i "./update-state.lisp" "updateState")
 (i "./push-state.lisp" "pushState")
 (i "./editor-lib.lisp" "isLocalUrl")
+(i "./register-sw.lisp")
 
 (setf (chain window onerror) (lambda (message source lineno colno error)
 			       (alert (concatenate 'string "Es ist ein Fehler aufgetreten! Melde ihn bitte dem Entwickler! " message " source: " source " lineno: " lineno " colno: " colno " error: " error))))
+
+(if (not (chain window caches))
+    (alert "Kein Support für Cache API, die Seite funktioniert vermutlich nicht. Melde dies dem Entwickler!"))
 
 (chain
  ($ "body")

@@ -2,6 +2,7 @@
 
 (i "./test.lisp")
 (i "./show-tab.lisp" "showTab")
+(i "./handle-error.lisp" "handleError")
 
 (chain
  ($ document)
@@ -25,8 +26,8 @@
     (let ((query (chain ($ "#search-query") (val))))
       (chain ($ "#search-create-article") (attr "href" (concatenate 'string "/wiki/" query "/create")))
       (chain window history (replace-state nil nil (concatenate 'string "/search/" query)))
-      (chain ($ "#search-results-loading") (stop) (fade-in))
-      (chain ($ "#search-results") (stop) (fade-out))
+      (chain ($ "#search-results-loading") (stop) (show))
+      (chain ($ "#search-results") (stop) (hide))
       (if (not (undefined (chain window search-xhr)))
 	  (chain window search-xhr (abort)))
       (setf
@@ -50,8 +51,8 @@
 	     (if results-contain-query
 		 (chain ($ "#no-search-results") (hide))
 		 (chain ($ "#no-search-results") (show)))
-	     (chain ($ "#search-results-loading") (stop) (fade-out))
-	     (chain ($ "#search-results") (stop) (fade-in)))))
+	     (chain ($ "#search-results-loading") (stop) (hide))
+	     (chain ($ "#search-results") (stop) (show)))))
 	(fail (lambda (jq-xhr text-status error-thrown)
 		(if (not (= text-status "abort"))
 		    (handle-error jq-xhr T))))))))))
