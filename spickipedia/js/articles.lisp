@@ -4,7 +4,7 @@
 (i "./show-tab.lisp" "showTab")
 
 (defroute "/articles"
-    (show-tab "#loading")
+  (show-tab "#loading")
   (get "/api/articles" T
        (chain data (sort (lambda (a b)
 			   (chain a (locale-compare b)))))

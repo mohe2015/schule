@@ -85,7 +85,7 @@
     content)))
 
 (defun cache ()
-  (setf (getf (response-headers *response*) :cache-control) "public, max-age=3600") ;; one hour
+  (setf (getf (response-headers *response*) :cache-control) "public, max-age=0") ;; one hour ;; TODO change on release
   (setf (getf (response-headers *response*) :vary) "Accept-Encoding"))
 
 (defun cache-forever ()
