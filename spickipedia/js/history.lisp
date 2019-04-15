@@ -14,7 +14,7 @@
     (chain e (prevent-default))
     (let ((pathname (chain window location pathname (split "/"))))
       (push-state (concatenate 'string "/wiki/" (chain pathname 2) "/history") (chain window history state))
-      F)))) 
+      F))))
 
 (defroute "/wiki/:name/history"
   (chain ($ ".edit-button") (remove-class "disabled"))
@@ -45,7 +45,7 @@
     (lambda (data)
       (chain ($ "#currentVersionLink") (attr "href" (concatenate 'string "/wiki/" page)))
       (chain ($ "#is-outdated-article") (remove-class "d-none"))
-      (chain ($ "article") (html data))
+      (chain ($ "article") (html (chain data content)))
       (chain window history (replace-state (create content data) nil nil))
       (render-math)
       (show-tab "#page")
@@ -75,7 +75,7 @@
 	(concatenate 'string "/api/previous-revision/" id)
 	(lambda (data)
 	  (setf previous-revision data)
-	  (var diff-html (htmldiff previous-revision current-revision))
+	  (var diff-html (htmldiff (chain previous-revision content) (chain current-revision content)))
 	  (chain ($ "article") (html diff-html))
 	  (show-tab "#page")))
        (fail

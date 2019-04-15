@@ -158,22 +158,27 @@
        `((content . ,(clean (wiki-article-revision-content (car revision)) *sanitize-spickipedia*))
 	 (categories . ,(mapcar #'(lambda (v) (wiki-article-revision-category-category v)) (retrieve-dao 'wiki-article-revision-category :revision (car revision)))))))))
 
-(my-defroute :GET "/api/revision/:id" (:admin :user) (id) "text/html"
+(my-defroute :GET "/api/revision/:id" (:admin :user) (id) "application/json"
   (let* ((revision (mito:find-dao 'wiki-article-revision :id (parse-integer id))))
     (if (not revision)
 	(throw-code 404))
-    (clean (wiki-article-revision-content revision) *sanitize-spickipedia*)))
+    (json:encode-json-to-string
+     `((content . ,(clean (wiki-article-revision-content revision) *sanitize-spickipedia*))
+       (categories . ,(mapcar #'(lambda (v) (wiki-article-revision-category-category v)) (retrieve-dao 'wiki-article-revision-category :revision revision)))))))
 
 ;; SELECT article_id FROM wiki_article_revision WHERE id = 8;
 ;; SELECT id FROM wiki_article_revision WHERE article_id = 1 and id < 8 ORDER BY id DESC LIMIT 1;
 ;; SELECT id FROM wiki_article_revision WHERE article_id = (SELECT article_id FROM wiki_article_revision WHERE id = 8) and id < 8 ORDER BY id DESC LIMIT 1;
-(my-defroute :GET "/api/previous-revision/:the-id" (:admin :user) (the-id) "text/html"
+(my-defroute :GET "/api/previous-revision/:the-id" (:admin :user) (the-id) "application/json"
   (let* ((id (parse-integer the-id))
 	 (query (dbi:prepare *connection* "SELECT id FROM wiki_article_revision WHERE article_id = (SELECT article_id FROM wiki_article_revision WHERE id = ?) and id < ? ORDER BY id DESC LIMIT 1;"))
 	 (result (dbi:execute query id id))
 	 (previous-id (getf (dbi:fetch result) :|id|)))
     (if previous-id
-	(clean (wiki-article-revision-content (mito:find-dao 'wiki-article-revision :id previous-id)) *sanitize-spickipedia*)
+	(let ((revision (mito:find-dao 'wiki-article-revision :id previous-id)))
+	  (json:encode-json-to-string
+	   `((content . ,(clean (wiki-article-revision-content revision) *sanitize-spickipedia*))
+	     (categories . ,(mapcar #'(lambda (v) (wiki-article-revision-category-category v)) (retrieve-dao 'wiki-article-revision-category :revision revision))))))
 	nil)))
 
 (my-defroute :POST "/api/wiki/:title" (:admin :user) (title |summary| |html|) "text/html"
