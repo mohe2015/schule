@@ -17,7 +17,7 @@
 	  (temp-dom (chain ($ "article") (clone)))
 	  (article-path (chain window location pathname (split "/") 2)))
       (revert-math temp-dom)
-      (setf categories (chain
+      (var categories (chain
 			($ "#settings-modal")
 			(find ".closable-badge-label")
 			(map

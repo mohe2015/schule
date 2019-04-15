@@ -226,7 +226,7 @@
 (my-defroute :POST "/api/upload" (:admin :user) (|file|) "text/html"
   (let* ((filecontents (nth 0 |file|))
 	 (filehash (byte-array-to-hex-string (digest-stream :sha512 filecontents)))	 ;; TODO whitelist mimetypes TODO verify if mimetype is correct
-	 (newpath (merge-pathnames (concatenate 'string "uploads/" filehash) *default-pathname-defaults*)))
+	 (newpath (merge-pathnames (concatenate 'string "uploads/" filehash) *application-root*)))
    ;; (break)
     (with-open-file (stream newpath :direction :output :if-exists :supersede :element-type '(unsigned-byte 8))
       (write-sequence (slot-value filecontents 'vector) stream))
@@ -274,12 +274,12 @@
   (merge-pathnames (concatenate 'string "uploads/" name)))
 
 (my-defroute :GET "/js/:file" nil (file) "application/javascript"
-  (with-cache (read-file-into-string (concatenate 'string "js/" file))
-    (file-js-gen (concatenate 'string "js/" file)))) ;; TODO local file inclusion
+  (with-cache (read-file-into-string (merge-pathnames (concatenate 'string "js/" file) *application-root*))
+    (file-js-gen (concatenate 'string (namestring *application-root*) "js/" file)))) ;; TODO local file inclusion
 
 (my-defroute :GET "/sw.lisp" nil () "application/javascript"
-  (with-cache (read-file-into-string "js/sw.lisp")
-    (file-js-gen "js/sw.lisp")))
+  (with-cache (read-file-into-string (merge-pathnames "js/sw.lisp" *application-root*))
+    (file-js-gen (concatenate 'string (namestring *application-root*) "js/sw.lisp"))))
 
 (defparameter *template-registry* (make-hash-table :test 'equal))
 
@@ -309,7 +309,7 @@
 	(with-cache-vector (read-file-into-byte-vector path)
 	  (setf (getf (response-headers *response*) :content-type) (get-safe-mime-type path))
 	  path)
-	(eval '(sexp-to-html "src/index.lisp")))))
+	(eval `(sexp-to-html ,(concatenate 'string (namestring *application-root*) "src/index.lisp"))))))
 
 ;; Error pages
 
