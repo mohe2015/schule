@@ -182,7 +182,7 @@
 	  (json:encode-json-to-string
 	   `((content . ,(clean (wiki-article-revision-content revision) *sanitize-spickipedia*))
 	     (categories . ,(list-to-array (mapcar #'(lambda (v) (wiki-article-revision-category-category v)) (retrieve-dao 'wiki-article-revision-category :revision revision)))))))
-	nil)))
+	"{\"content\":\"\", \"categories\": []}")))
 
 (my-defroute :POST "/api/wiki/:title" (:admin :user) (title |summary| |html|) "text/html"
   (let* ((article (mito:find-dao 'wiki-article :title title))
