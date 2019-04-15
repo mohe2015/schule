@@ -164,7 +164,10 @@
 	(throw-code 404))
     (json:encode-json-to-string
      `((content . ,(clean (wiki-article-revision-content revision) *sanitize-spickipedia*))
-       (categories . ,(mapcar #'(lambda (v) (wiki-article-revision-category-category v)) (retrieve-dao 'wiki-article-revision-category :revision revision)))))))
+       (categories . ,(list-to-array (mapcar #'(lambda (v) (wiki-article-revision-category-category v)) (retrieve-dao 'wiki-article-revision-category :revision revision))))))))
+
+(defun list-to-array (list)
+  (make-array (length list) :initial-contents list))
 
 ;; SELECT article_id FROM wiki_article_revision WHERE id = 8;
 ;; SELECT id FROM wiki_article_revision WHERE article_id = 1 and id < 8 ORDER BY id DESC LIMIT 1;
@@ -178,7 +181,7 @@
 	(let ((revision (mito:find-dao 'wiki-article-revision :id previous-id)))
 	  (json:encode-json-to-string
 	   `((content . ,(clean (wiki-article-revision-content revision) *sanitize-spickipedia*))
-	     (categories . ,(mapcar #'(lambda (v) (wiki-article-revision-category-category v)) (retrieve-dao 'wiki-article-revision-category :revision revision))))))
+	     (categories . ,(list-to-array (mapcar #'(lambda (v) (wiki-article-revision-category-category v)) (retrieve-dao 'wiki-article-revision-category :revision revision)))))))
 	nil)))
 
 (my-defroute :POST "/api/wiki/:title" (:admin :user) (title |summary| |html|) "text/html"

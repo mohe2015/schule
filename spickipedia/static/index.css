@@ -85,7 +85,6 @@ article h6 {
 }
 
  .closable-badge {
-  background-color: var(--success);
   border-radius: .25em;
   padding: 0.2em;
   display: inline-block;

@@ -14,7 +14,7 @@
      ($ "#new-category")
      (before
       (who-ps-html
-       (:span :class "closable-badge"
+       (:span :class "closable-badge bg-secondary"
 	      (:span :class "closable-badge-label" (chain ($ "#new-category") (val)))
 	      (:button :type "button" :class "close close-tag" :aria-label "Close"
 		       (:span :aria-hidden "true" "&times;"))))))

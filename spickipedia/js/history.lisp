@@ -45,6 +45,15 @@
     (lambda (data)
       (chain ($ "#currentVersionLink") (attr "href" (concatenate 'string "/wiki/" page)))
       (chain ($ "#is-outdated-article") (remove-class "d-none"))
+
+      (chain ($ "#categories") (html ""))
+      (loop for category in (chain data categories) do
+	   (chain
+	    ($ "#categories")
+	    (append
+	     (who-ps-html
+	      (:span :class "closable-badge bg-secondary" category)))))
+      
       (chain ($ "article") (html (chain data content)))
       (chain window history (replace-state (create content data) nil nil))
       (render-math)
@@ -77,7 +86,31 @@
 	  (setf previous-revision data)
 	  (var diff-html (htmldiff (chain previous-revision content) (chain current-revision content)))
 	  (chain ($ "article") (html diff-html))
-	  (show-tab "#page")))
+	  (let* ((pt (chain previous-revision categories))
+		 (ct (chain current-revision categories))
+		 (both (chain pt (filter (lambda (x) (chain ct (includes x))))))
+		 (removed (chain pt (filter (lambda (x) (not (chain ct (includes x)))))))
+		 (added (chain ct (filter (lambda (x) (not (chain pt (includes x))))))))
+	    (chain ($ "#categories") (html ""))
+	    (loop for category in both do
+		 (chain
+		  ($ "#categories")
+		  (append
+		   (who-ps-html
+		    (:span :class "closable-badge bg-secondary" category)))))
+	   (loop for category in removed do
+		 (chain
+		  ($ "#categories")
+		  (append
+		   (who-ps-html
+		    (:span :class "closable-badge bg-danger" category)))))
+	    (loop for category in added do
+		 (chain
+		  ($ "#categories")
+		  (append
+		   (who-ps-html
+		    (:span :class "closable-badge bg-success" category)))))
+	  (show-tab "#page"))))
        (fail
 	(lambda (jq-xhr text-status error-thrown)
 	  (if (= (chain jq-xhr status) 404)
