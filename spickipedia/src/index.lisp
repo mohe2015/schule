@@ -315,8 +315,9 @@
        (:BUTTON :TYPE "button" :CLASS "close" :DATA-DISMISS "modal" :ARIA-LABEL
         "Close" (:SPAN :ARIA-HIDDEN "true" "×")))
       (:DIV :CLASS "modal-body"
-       (:DIV :CLASS "form-group"
-        (:INPUT :TYPE "text" :ID "link" :CLASS "form-control")))
+	    (:DIV :CLASS "form-group" :style "position: relative; display: inline-block;"
+		  (:INPUT :TYPE "text" :ID "link" :CLASS "form-control" :autocomplete "off")
+		  (:div :class "dropdown-menu" :style "position: absolute; top: 100%; left: 0px; z-index: 100; width: 100%;")))
       (:DIV :CLASS "modal-footer"
        (:BUTTON :TYPE "button" :CLASS "btn btn-secondary" :DATA-DISMISS "modal"
         "Abbrechen")
@@ -390,7 +391,6 @@
   (:SCRIPT :SRC "/popper.js")
   (:SCRIPT :SRC "/bootstrap.js")
   (:SCRIPT :SRC "/visual-diff.js")
-  (:SCRIPT :SRC "/typeahead.bundle.js")
   (:SCRIPT :NOMODULE "" :SRC "no_module_support.js")
   
   (:SCRIPT :TYPE "module" :SRC "/js/index.lisp")))

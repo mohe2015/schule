@@ -18,7 +18,6 @@
   "/popper.js"
   "/bootstrap.js"
   "/visual-diff.js"
-  "/typeahead.bundle.js"
   "/webfonts/fa-solid-900.woff2"
   "/js/index.lisp"
   "/js/test.lisp"

@@ -3,6 +3,7 @@
 (i "./test.lisp")
 (i "./file-upload.lisp" "sendFile")
 (i "./categories.lisp")
+(i "./handle-error.lisp" "handleError")
 
 (defun save-range ()
   (chain document (get-elements-by-tag-name "article") 0 (focus))
@@ -46,14 +47,6 @@
 (stool "insertOrderedList")
 (stool "indent")
 (stool "outdent")
-
-(setf
- (chain window engine)
- (new (-bloodhound
-       (create
-	prefetch "/api/articles"
-	query-tokenizer (chain -bloodhound tokenizers whitespace)
-	datum-tokenizer (chain -bloodhound tokenizers whitespace)))))
 
 (defun get-url (url)
   (new (-u-r-l url (chain window location origin))))
@@ -99,24 +92,71 @@
 	  (update-link (chain ($ "#link") (val))))))
       (chain ($ "#link-modal") (modal "show")))
 
-(chain
- ($ "#link")
- (typeahead
-  (create
-   class-names (create
-		dataset "dropdown-menu show"
-		suggestion "dropdown-item"
-		wrapper "twitter-typeahead d-flex"))
-  (create
-   name "articles"
-   source (chain window engine)
-   templates
-   (create
-    suggestion (lambda (title)
-		 (concatenate 'string "<div>" title "</div>")))
-   display (lambda (title)
-	     (concatenate 'string "/wiki/" title)))))
+(var network-data-received F)
 
+(var articles (array))
+
+;; fetch fresh data
+(var
+ network-update
+ (chain (fetch "/api/articles")
+	(then (lambda (response)
+		(chain response (json))))
+	(then (lambda (data)
+		(setf network-data-received T)
+		(setf articles data)))))
+
+;; fetch cached data
+(chain
+ caches
+ (match "/api/articles")
+ (then (lambda (response)
+	 (if (not response)
+	     (throw (-error "No data"))) ;; is that right syntax?
+	 (chain response (json))))
+ (then (lambda (data)
+	 ;; don't overwrite newer network data
+	 (if (not network-data-received)
+	     (setf articles data))))
+ (catch (lambda ()
+	  ;; we didn't get cached data, the network is our last hope
+	  network-update))
+ (catch (lambda (jq-xhr text-status error-thrown)
+	  (handle-error jq-xhr T))))
+
+(chain
+ document
+ (get-element-by-id "link")
+ (add-event-listener
+  "input"
+  (lambda (event)
+    (chain console (log event))
+    (let* ((input (chain document (get-element-by-id "link")))
+	   (value (chain input value (replace "/wiki/" "")))
+	   (result (chain
+		    articles
+		    (filter
+		     (lambda (article)
+		       (not (= (chain article (to-lower-case) (index-of (chain value (to-lower-case)))) -1)))))))
+      (chain console (log result))
+      (setf (chain input next-element-sibling inner-h-t-m-l) "")
+      (if (> (chain result length) 0)
+	  (chain input next-element-sibling class-list (add "show"))
+	  (chain input next-element-sibling class-list (remove "show")))
+      (loop for article in result do
+	   (let ((element (chain document (create-element "div"))))
+	     (setf (chain element class-name) "dropdown-item")
+	     (setf (chain element inner-h-t-m-l) article) ;; TODO XSS
+	     (chain
+	      element
+	      (add-event-listener
+	       "click"
+	       (lambda (event)
+		 (setf (chain input value) (concatenate 'string "/wiki/" (chain element inner-h-t-m-l)))
+		 (chain input next-element-sibling class-list (remove "show"))
+		 )))
+	     (chain input next-element-sibling (append element))))
+      nil))))
 
 (chain
  ($ "body")
