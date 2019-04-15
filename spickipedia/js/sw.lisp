@@ -2,7 +2,8 @@
 ;; https://developers.google.com/web/fundamentals/primers/service-workers/lifecycle#skip_the_waiting_phase
 ;; TODO call upate hourly
 
-(var cache-name "my-site-cache-v1")
+(var static-cache-name "static-cache-v1")
+(var dynamic-cache-name "dynamic-cache-v1")
 (var
  urls-to-cache
  ([]
@@ -60,11 +61,11 @@
      (wait-until
       (chain
        caches
-       (open cache-name)
+       (open static-cache-name)
        (then (lambda (cache)
 	       (chain cache (add-all urls-to-cache))))))))))
 
-(defun cache-then-network (event)
+(defun cache-then-network (event cache-name)
   (chain
    event
    (respond-with
@@ -86,7 +87,7 @@
 		      (chain cache (put (chain event request) (chain response (clone))))
 		      response)))))))))))))
 
-(defun network (event)
+(defun network (event cache-name)
   (chain
    event
    (respond-with
@@ -101,7 +102,7 @@
 		 (chain cache (put (chain event request) (chain response (clone))))
 		 response)))))))))
 
-(defun cache-then-fallback (event)
+(defun cache-then-fallback (event cache-name)
   (chain
    event
    (respond-with
@@ -130,5 +131,5 @@
 	   (pathname (chain url pathname)))
       (if (chain pathname (starts-with "/api"))
 	  (if (= method "GET")
-	      (network event))
-	  (cache-then-fallback event))))))
+	      (network event dynamic-cache-name))
+	  (cache-then-fallback event static-cache-name))))))
