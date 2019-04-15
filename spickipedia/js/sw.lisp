@@ -133,3 +133,34 @@
 	  (if (= method "GET")
 	      (network event dynamic-cache-name))
 	  (cache-then-fallback event static-cache-name))))))
+
+(chain
+ self
+ (add-event-listener
+  "activate"
+  (lambda (event)
+    (chain
+     event
+     (wait-until
+      (chain
+       caches
+       (keys)
+       (then
+	(lambda (cache-names)
+	  (chain
+	   -promise
+	   (all
+	    (chain
+	     cache-names
+	     (filter
+	      (lambda (cache-name)
+		(if (= cache-name static-cache-name)
+		    (return F))
+		(if (= cache-name dynamic-cache-name)
+		    (return F))
+		T))
+	     (map
+	      (lambda (cache-name)
+		(var fun (chain caches delete))
+		(chain console (log cache-name))
+		(chain fun (call caches cache-name)))))))))))))))
