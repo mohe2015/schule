@@ -328,4 +328,13 @@
 
 (my-defroute :POST "/api/tags" (:admin :user) () "application/json"
   (print (cdr (assoc "tags" _parsed :test #'string=)))
-  "jo")
+
+  (sxql:select
+      (:revision_id (:count :*))
+    (from :wiki_article_revision_category)
+    (where (:in :category '("Physik")))
+    (group-by :revision_id))
+
+  (print (sxql:yield *))
+  
+  "\"hi\"")
