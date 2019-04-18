@@ -14,15 +14,14 @@
 
 (defvar *handler* nil)
 
-(defun start (&rest args &key server port debug &allow-other-keys)
-  (declare (ignore server port debug))
+(defun start ()
   (when *handler*
     (restart-case (error "Server is already running.")
       (restart-server ()
         :report "Restart the server"
         (stop))))
   (setf *handler*
-        (apply #'clackup *appfile-path* args)))
+        (clackup *appfile-path* :server :fcgi)))
 
 (defun stop ()
   (prog1
