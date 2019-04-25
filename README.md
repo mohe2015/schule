@@ -37,6 +37,9 @@ ln -s $PWD/monkeylib-bcrypt/ ~/.roswell/local-projects/
 ln -s $PWD/lack/ ~/.roswell/local-projects/
 ln -s $PWD/parenscript/ ~/.roswell/local-projects/
 
+sudo ln -s $PWD/crypt_blowfish/libbcrypt.so /usr/local/lib/
+sudo ldconfig
+
 git clone https://github.com/phppgadmin/phppgadmin /usr/share/nginx/phppgadmin
 
 (with-connection (db)
