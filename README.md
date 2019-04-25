@@ -7,8 +7,8 @@
 * fcgi
 * roswell
 * https://ultralisp.org/
-* https://github.com/DogLooksGood/parinfer-mode
-* https://stable.melpa.org/#/getting-started
+* Atom (ubuntu install gnome tweaks and change theme to dark)
+* Atom parinfer, atom-slime, language-lisp https://atom.io/packages/atom-slime
 
 ## Installation
 
