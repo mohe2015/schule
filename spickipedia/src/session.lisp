@@ -5,10 +5,10 @@
 
 (defmethod session-verify ((request request))
   (let ((mito:*connection* (dbi:connect-cached :postgres :username "postgres" :database-name "spickipedia"))
-	(session-identifier (cookie-in (session-cookie-name *acceptor*) request)))
+    (session-identifier (cookie-in (session-cookie-name *acceptor*) request)))
     (if session-identifier
-	(mito:find-dao 'my-session :session-cookie session-identifier)
-	nil)))
+    (mito:find-dao 'my-session :session-cookie session-identifier)
+    nil)))
 
 (defmethod session-cookie-value ((my-session my-session))
   (and my-session (my-session-cookie my-session)))
@@ -21,16 +21,16 @@ case the function will also send a session cookie to the browser."
     (when session
       (return-from start-my-session session))
     (setf session (mito:create-dao 'my-session :session-cookie (random-base64) :csrf-token (random-base64))
-	  (session *request*) session)
+      (session *request*) session)
     (set-cookie (session-cookie-name *acceptor*)
                 :value (my-session-cookie session)
                 :path "/"
                 :http-only t
-		:max-age (* 60 60 24 365))
+        :max-age (* 60 60 24 365))
     (set-cookie "_csrf_token"
-		:value (my-session-csrf-token session)
-		:path "/"
-		:max-age (* 60 60 24 365))
+        :value (my-session-csrf-token session)
+        :path "/"
+        :max-age (* 60 60 24 365))
     (session-created *acceptor* session)
     (setq *session* session)))
 
@@ -50,8 +50,8 @@ function twice in the same second will regenerate twice the same value."
               :value (my-session-cookie session)
               :path "/"
               :http-only t
-	      :max-age (* 60 60 24 365))
+          :max-age (* 60 60 24 365))
   (set-cookie "_csrf_token"
-	      :value (my-session-csrf-token session)
-	      :path "/"
-	      :max-age (* 60 60 24 365)))
+          :value (my-session-csrf-token session)
+          :path "/"
+          :max-age (* 60 60 24 365)))

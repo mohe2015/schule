@@ -8,13 +8,13 @@
      (add-event-listener
       "load"
       (lambda ()
-	(chain
-	 navigator
-	 service-worker
-	 (register "/sw.lisp")
-	 (then
-	  (lambda (registration)
-	    nil)
-	  (lambda (err)
-	    nil)))
-	nil))))
+    (chain
+     navigator
+     service-worker
+     (register "/sw.lisp")
+     (then
+      (lambda (registration)
+        nil)
+      (lambda (err)
+        nil)))
+    nil))))

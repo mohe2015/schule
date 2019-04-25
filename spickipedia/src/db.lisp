@@ -13,31 +13,31 @@
   (:export :connection-settings
            :db
            :with-connection
-	   :user
-	   :wiki-article
-	   :wiki-article-revision
-	   :my-session
-	   :quiz
-	   :quiz-revision
-	   :user-name
-	   :user-group
-	   :user-hash
-	   :wiki-article-title
-	   :wiki-article-revision-author
-	   :wiki-article-revision-article
-	   :wiki-article-revision-summary
-	   :wiki-article-revision-content
-	   :my-session-cookie
-	   :my-session-csrf-token
-	   :my-session-user
-	   :quiz-revision-author
-	   :quiz-revision-quiz
-	   :quiz-revision-content
-	   :wiki-article-revision-category
-	   :wiki-article-revision-category-revision
-	   :wiki-article-revision-category-category
-	   :setup-db
-	   ))
+       :user
+       :wiki-article
+       :wiki-article-revision
+       :my-session
+       :quiz
+       :quiz-revision
+       :user-name
+       :user-group
+       :user-hash
+       :wiki-article-title
+       :wiki-article-revision-author
+       :wiki-article-revision-article
+       :wiki-article-revision-summary
+       :wiki-article-revision-content
+       :my-session-cookie
+       :my-session-csrf-token
+       :my-session-user
+       :quiz-revision-author
+       :quiz-revision-quiz
+       :quiz-revision-content
+       :wiki-article-revision-category
+       :wiki-article-revision-category-revision
+       :wiki-article-revision-category-category
+       :setup-db
+       ))
 (in-package :spickipedia.db)
 
 (defun connection-settings (&optional (db :maindb))

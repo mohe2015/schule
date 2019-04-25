@@ -15,28 +15,28 @@
                ;; HTML Template
                "djula"
 
-	       :mito
-	       :cl-json
-	       :sanitize
-	       :ironclad
-	       :cl-fad
-	       :cl-base64
-	       :monkeylib-bcrypt
-	       :str
-	       :parenscript
-	       :lack
-	       :lack-middleware-csrf
-	       :trivial-mimes
-	       :postmodern
-	       :cl-who
-	       )
+           :mito
+           :cl-json
+           :sanitize
+           :ironclad
+           :cl-fad
+           :cl-base64
+           :monkeylib-bcrypt
+           :str
+           :parenscript
+           :lack
+           :lack-middleware-csrf
+           :trivial-mimes
+           :postmodern
+           :cl-who
+           )
   :components ((:module "src"
                 :components
                 (
-		 (:file "sanitize")
-		 (:file "parenscript")
-		 (:file "tsquery-converter")
-		 (:file "main" :depends-on ("config" "view" "db"))
+         (:file "sanitize")
+         (:file "parenscript")
+         (:file "tsquery-converter")
+         (:file "main" :depends-on ("config" "view" "db"))
                  (:file "web" :depends-on ("view" "parenscript"))
                  (:file "view" :depends-on ("config"))
                  (:file "db" :depends-on ("config"))

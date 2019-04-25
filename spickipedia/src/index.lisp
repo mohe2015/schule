@@ -315,9 +315,9 @@
        (:BUTTON :TYPE "button" :CLASS "close" :DATA-DISMISS "modal" :ARIA-LABEL
         "Close" (:SPAN :ARIA-HIDDEN "true" "×")))
       (:DIV :CLASS "modal-body"
-	    (:DIV :CLASS "form-group" :style "position: relative; display: inline-block;"
-		  (:INPUT :TYPE "text" :ID "link" :CLASS "form-control" :autocomplete "off")
-		  (:div :class "dropdown-menu" :style "position: absolute; top: 100%; left: 0px; z-index: 100; width: 100%;")))
+        (:DIV :CLASS "form-group" :style "position: relative; display: inline-block;"
+          (:INPUT :TYPE "text" :ID "link" :CLASS "form-control" :autocomplete "off")
+          (:div :class "dropdown-menu" :style "position: absolute; top: 100%; left: 0px; z-index: 100; width: 100%;")))
       (:DIV :CLASS "modal-footer"
        (:BUTTON :TYPE "button" :CLASS "btn btn-secondary" :DATA-DISMISS "modal"
         "Abbrechen")
@@ -334,7 +334,7 @@
      (:DIV :CLASS "modal-body"
       (:FORM
        (:DIV :CLASS "form-group" (:LABEL :FOR "table-columns" "Spalten:")
-	     (:INPUT :TYPE "number" :ID "table-columns" :CLASS "form-control"))
+         (:INPUT :TYPE "number" :ID "table-columns" :CLASS "form-control"))
        (:DIV :CLASS "form-group" (:LABEL :FOR "table-rows" "Zeilen:") " "
         (:INPUT :TYPE "number" :ID "table-rows" :CLASS "form-control"))))
      (:DIV :CLASS "modal-footer"
