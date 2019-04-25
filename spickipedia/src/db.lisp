@@ -139,3 +139,5 @@
     (mito:migrate-table 'quiz)
     (mito:migrate-table 'quiz-revision)
     (mito:migrate-table 'wiki-article-revision-category)))
+
+(setup-db)

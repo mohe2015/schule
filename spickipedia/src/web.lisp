@@ -285,6 +285,7 @@
   (with-cache (read-file-into-string (merge-pathnames (concatenate 'string "js/" file) *application-root*))
     (file-js-gen (concatenate 'string (namestring *application-root*) "js/" file)))) ;; TODO local file inclusion
 
+;; TODO basically depends on every asset
 (my-defroute :GET "/sw.lisp" nil () "application/javascript"
   (with-cache (read-file-into-string (merge-pathnames "js/sw.lisp" *application-root*))
     (file-js-gen (concatenate 'string (namestring *application-root*) "js/sw.lisp"))))
