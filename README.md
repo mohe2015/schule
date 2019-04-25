@@ -7,6 +7,7 @@
 * fcgi
 * roswell
 * https://ultralisp.org/
+* https://github.com/DogLooksGood/parinfer-mode
 
 ## Installation
 
