@@ -5,6 +5,8 @@
 * sbcl
 * postgresql
 * fcgi
+* roswell
+* https://ultralisp.org/
 
 ## Installation
 
@@ -28,12 +30,10 @@ makepkg -si
 cd ..
 sudo ldconfig
 
-ln -s $PWD/spickipedia/ ~/quicklisp/local-projects/
-ln -s $PWD/monkeylib-bcrypt/ ~/quicklisp/local-projects/
-ln -s $PWD/cl-sanitize/ ~/quicklisp/local-projects/
-ln -s $PWD/lack/ ~/quicklisp/local-projects/
-ln -s $PWD/parenscript/ ~/quicklisp/local-projects/
-ln -s $PWD/clack/ ~/quicklisp/local-projects/
+ln -s $PWD/spickipedia/ ~/.roswell/local-projects/
+ln -s $PWD/monkeylib-bcrypt/ ~/.roswell/local-projects/
+ln -s $PWD/lack/ ~/.roswell/local-projects/
+ln -s $PWD/parenscript/ ~/.roswell/local-projects/
 
 git clone https://github.com/phppgadmin/phppgadmin /usr/share/nginx/phppgadmin
 
