@@ -73,14 +73,14 @@
   (string= (my-session-csrf-token *SESSION*) (assoc "csrf_token" (lack.request:request-query-parameters ningle:*request*))))
 
 (defun hash-contents (content)
-  (ironclad:byte-array-to-hex-string 
-   (ironclad:digest-sequence 
+  (ironclad:byte-array-to-hex-string
+   (ironclad:digest-sequence
     :sha256
     (ironclad:ascii-string-to-byte-array content))))
 
 (defun hash-contents-vector (content)
-  (ironclad:byte-array-to-hex-string 
-   (ironclad:digest-sequence 
+  (ironclad:byte-array-to-hex-string
+   (ironclad:digest-sequence
     :sha256
     content)))
 
@@ -150,21 +150,21 @@
 (my-defroute :GET "/api/wiki/:title" (:admin :user :anonymous) (title) "application/json"
          (let* ((article (mito:find-dao 'wiki-article :title title)))
            (if (not article)
-           (throw-code 404))
+            (throw-code 404))
            (let ((revision (mito:select-dao 'wiki-article-revision (where (:= :article article)) (order-by (:desc :id)) (limit 1))))
-         (if (not revision)
-             (throw-code 404))
-         (json:encode-json-to-string
-          `((content . ,(clean (wiki-article-revision-content (car revision)) *sanitize-spickipedia*))
-            (categories . ,(mapcar #'(lambda (v) (wiki-article-revision-category-category v)) (retrieve-dao 'wiki-article-revision-category :revision (car revision)))))))))
+            (if (not revision)
+                (throw-code 404))
+            (json:encode-json-to-string
+             `((content . ,(clean (wiki-article-revision-content (car revision)) *sanitize-spickipedia*))
+               (categories . ,(mapcar #'(lambda (v) (wiki-article-revision-category-category v)) (retrieve-dao 'wiki-article-revision-category :revision (car revision)))))))))
 
 (my-defroute :GET "/api/revision/:id" (:admin :user) (id) "application/json"
          (let* ((revision (mito:find-dao 'wiki-article-revision :id (parse-integer id))))
            (if (not revision)
-           (throw-code 404))
+            (throw-code 404))
            (json:encode-json-to-string
-        `((content . ,(clean (wiki-article-revision-content revision) *sanitize-spickipedia*))
-          (categories . ,(list-to-array (mapcar #'(lambda (v) (wiki-article-revision-category-category v)) (retrieve-dao 'wiki-article-revision-category :revision revision))))))))
+            `((content . ,(clean (wiki-article-revision-content revision) *sanitize-spickipedia*))
+              (categories . ,(list-to-array (mapcar #'(lambda (v) (wiki-article-revision-category-category v)) (retrieve-dao 'wiki-article-revision-category :revision revision))))))))
 
 (defun list-to-array (list)
   (make-array (length list) :initial-contents list))
@@ -174,24 +174,24 @@
 ;; SELECT id FROM wiki_article_revision WHERE article_id = (SELECT article_id FROM wiki_article_revision WHERE id = 8) and id < 8 ORDER BY id DESC LIMIT 1;
 (my-defroute :GET "/api/previous-revision/:the-id" (:admin :user) (the-id) "application/json"
          (let* ((id (parse-integer the-id))
-            (query (dbi:prepare *connection* "SELECT id FROM wiki_article_revision WHERE article_id = (SELECT article_id FROM wiki_article_revision WHERE id = ?) and id < ? ORDER BY id DESC LIMIT 1;"))
-            (result (dbi:execute query id id))
-            (previous-id (getf (dbi:fetch result) :|id|)))
+                (query (dbi:prepare *connection* "SELECT id FROM wiki_article_revision WHERE article_id = (SELECT article_id FROM wiki_article_revision WHERE id = ?) and id < ? ORDER BY id DESC LIMIT 1;"))
+                (result (dbi:execute query id id))
+                (previous-id (getf (dbi:fetch result) :|id|)))
            (if previous-id
-           (let ((revision (mito:find-dao 'wiki-article-revision :id previous-id)))
-             (json:encode-json-to-string
-              `((content . ,(clean (wiki-article-revision-content revision) *sanitize-spickipedia*))
-            (categories . ,(list-to-array (mapcar #'(lambda (v) (wiki-article-revision-category-category v)) (retrieve-dao 'wiki-article-revision-category :revision revision)))))))
-           "{\"content\":\"\", \"categories\": []}")))
+            (let ((revision (mito:find-dao 'wiki-article-revision :id previous-id)))
+              (json:encode-json-to-string
+               `((content . ,(clean (wiki-article-revision-content revision) *sanitize-spickipedia*))
+                 (categories . ,(list-to-array (mapcar #'(lambda (v) (wiki-article-revision-category-category v)) (retrieve-dao 'wiki-article-revision-category :revision revision)))))))
+            "{\"content\":\"\", \"categories\": []}")))
 
 (my-defroute :POST "/api/wiki/:title" (:admin :user) (title |summary| |html|) "text/html"
          (let* ((article (mito:find-dao 'wiki-article :title title))
-            (categories (cdr (assoc "categories" _parsed :test #'string=))))
+                (categories (cdr (assoc "categories" _parsed :test #'string=))))
            (if (not article)
-           (setf article (mito:create-dao 'wiki-article :title title)))
+            (setf article (mito:create-dao 'wiki-article :title title)))
            (let ((revision (mito:create-dao 'wiki-article-revision :article article :author user :summary |summary| :content |html|)))
-         (loop for category in categories do
-              (mito:create-dao 'wiki-article-revision-category :revision revision :category category)))
+            (loop for category in categories do
+                 (mito:create-dao 'wiki-article-revision-category :revision revision :category category)))
            nil))
 
 (my-defroute :POST "/api/quiz/create" (:admin :user) () "text/html"
@@ -203,29 +203,29 @@
 
 (my-defroute :GET "/api/quiz/:the-id" (:admin :user) (the-id)  "application/json"
          (let* ((quiz-id (parse-integer the-id))
-            (revision (mito:select-dao 'quiz-revision (where (:= :quiz (find-dao 'quiz :id quiz-id))) (order-by (:desc :id)) (limit 1))))
+                (revision (mito:select-dao 'quiz-revision (where (:= :quiz (find-dao 'quiz :id quiz-id))) (order-by (:desc :id)) (limit 1))))
            (quiz-revision-content (car revision))))
 
 
 (my-defroute :GET "/api/history/:title" (:admin :user) (title) "application/json"
          (let* ((article (mito:find-dao 'wiki-article :title title)))
            (if article
-           (json:encode-json-to-string
-            (mapcar #'(lambda (r) `((id   . ,(object-id r))
-                        (user . ,(user-name (wiki-article-revision-author r)))
-                        (summary . ,(wiki-article-revision-summary r))
-                        (created . ,(local-time:format-timestring nil (mito:object-created-at r)))
-                        (size    . ,(length (wiki-article-revision-content r)))))
-                (mito:select-dao 'wiki-article-revision (where (:= :article article)) (order-by (:desc :created-at)))))
-           (throw-code 404))))
+            (json:encode-json-to-string
+             (mapcar #'(lambda (r) `((id   . ,(object-id r))
+                                     (user . ,(user-name (wiki-article-revision-author r)))
+                                     (summary . ,(wiki-article-revision-summary r))
+                                     (created . ,(local-time:format-timestring nil (mito:object-created-at r)))
+                                     (size    . ,(length (wiki-article-revision-content r)))))
+                 (mito:select-dao 'wiki-article-revision (where (:= :article article)) (order-by (:desc :created-at)))))
+            (throw-code 404))))
 
 (my-defroute :GET "/api/search/:query" (:admin :user :anonymous) (query) "application/json"
          (let* ((searchquery (tsquery-convert query))
-            (query (dbi:prepare *connection* "SELECT a.title, ts_rank_cd((setweight(to_tsvector(a.title), 'A') || setweight(to_tsvector((SELECT content FROM wiki_article_revision WHERE article_id = a.id ORDER BY id DESC LIMIT 1)), 'D')), query) AS rank, ts_headline(a.title || (SELECT content FROM wiki_article_revision WHERE article_id = a.id ORDER BY id DESC LIMIT 1), to_tsquery(?)) FROM wiki_article AS A, to_tsquery(?) query WHERE query @@ (setweight(to_tsvector(a.title), 'A') || setweight(to_tsvector((SELECT content FROM wiki_article_revision WHERE article_id = a.id ORDER BY id DESC LIMIT 1)), 'D')) ORDER BY rank DESC;"))
-            (result (dbi:execute query searchquery searchquery)))
+                (query (dbi:prepare *connection* "SELECT a.title, ts_rank_cd((setweight(to_tsvector(a.title), 'A') || setweight(to_tsvector((SELECT content FROM wiki_article_revision WHERE article_id = a.id ORDER BY id DESC LIMIT 1)), 'D')), query) AS rank, ts_headline(a.title || (SELECT content FROM wiki_article_revision WHERE article_id = a.id ORDER BY id DESC LIMIT 1), to_tsquery(?)) FROM wiki_article AS A, to_tsquery(?) query WHERE query @@ (setweight(to_tsvector(a.title), 'A') || setweight(to_tsvector((SELECT content FROM wiki_article_revision WHERE article_id = a.id ORDER BY id DESC LIMIT 1)), 'D')) ORDER BY rank DESC;"))
+                (result (dbi:execute query searchquery searchquery)))
            (json:encode-json-to-string (mapcar #'(lambda (r) `((title . ,(getf r :|title|))
-                                   (rank  . ,(getf r :|rank|))
-                                   (summary . ,(getf r :|ts_headline|)))) (dbi:fetch-all result)))))
+                                                               (rank  . ,(getf r :|rank|))
+                                                               (summary . ,(getf r :|ts_headline|)))) (dbi:fetch-all result)))))
 
 (my-defroute :GET "/api/articles" (:admin :user :anonymous) () "application/json"
          (let* ((articles (mito:select-dao 'wiki-article)))
@@ -233,11 +233,11 @@
 
 (my-defroute :POST "/api/upload" (:admin :user) (|file|) "text/html"
          (let* ((filecontents (nth 0 |file|))
-            (filehash (byte-array-to-hex-string (digest-stream :sha512 filecontents)))      ;; TODO whitelist mimetypes TODO verify if mimetype is correct
-            (newpath (merge-pathnames (concatenate 'string "uploads/" filehash) *application-root*)))
+                (filehash (byte-array-to-hex-string (digest-stream :sha512 filecontents)))      ;; TODO whitelist mimetypes TODO verify if mimetype is correct
+                (newpath (merge-pathnames (concatenate 'string "uploads/" filehash) *application-root*)))
            ;; (break)
            (with-open-file (stream newpath :direction :output :if-exists :supersede :element-type '(unsigned-byte 8))
-         (write-sequence (slot-value filecontents 'vector) stream))
+            (write-sequence (slot-value filecontents 'vector) stream))
            filehash))
 
 ;; noauth
@@ -245,11 +245,11 @@
          (format t "~A ~A~%" |name| |password|)
          (let* ((user (mito:find-dao 'user :name |name|)))
            (if (and user (password= |password| (user-hash user)))                        ;; TODO prevent timing attack
-           (progn
-             ;;(regenerate-session *SESSION*) ;; TODO this is IMPORTANT WE NEED TO FIX THIS THIS IS IMPORTANT WE NEED TO FIX THIS
-             (setf (gethash :user *SESSION*) (object-id user))
-             nil)
-           (throw-code 403))))
+            (progn
+              ;;(regenerate-session *SESSION*) ;; TODO this is IMPORTANT WE NEED TO FIX THIS THIS IS IMPORTANT WE NEED TO FIX THIS
+              (setf (gethash :user *SESSION*) (object-id user))
+              nil)
+            (throw-code 403))))
 
 ;; noauth
 (my-defroute :POST "/api/logout" (:admin :user :anonymous) () "text/html"
@@ -336,5 +336,5 @@
           (group-by :revision_id))
 
          (print (sxql:yield *))
-         
+
          "\"hi\"")
