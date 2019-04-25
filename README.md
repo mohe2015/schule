@@ -8,6 +8,7 @@
 * roswell
 * https://ultralisp.org/
 * https://github.com/DogLooksGood/parinfer-mode
+* https://stable.melpa.org/#/getting-started
 
 ## Installation
 
