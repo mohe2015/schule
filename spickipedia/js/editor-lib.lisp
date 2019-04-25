@@ -17,16 +17,16 @@
 
 (defmacro tool (id &body body)
   `(chain
-   document
-   (get-element-by-id ,id)
-   (add-event-listener
-    "click"
-    (lambda (event)
-      (chain event (prevent-default))
-      (chain event (stop-propagation))
-      (save-range)
-      ,@body
-      F))))
+    document
+    (get-element-by-id ,id)
+    (add-event-listener
+     "click"
+     (lambda (event)
+       (chain event (prevent-default))
+       (chain event (stop-propagation))
+       (save-range)
+       ,@body
+       F))))
 
 (defmacro stool (id)
   `(tool ,id
@@ -52,11 +52,11 @@
   (new (-u-r-l url (chain window location origin))))
 
 (export (defun is-local-url (url)
-  (try
-   (let ((url (get-url url)))
-     (return (= (chain url origin) (chain window location origin))))
-   (:catch (error)
-     (return F)))))
+         (try
+          (let ((url (get-url url)))
+            (return (= (chain url origin) (chain window location origin))))
+          (:catch (error)
+            (return F)))))
 
 ;; TODO allow to edit links
 ;; TODO handle full urls to local wiki page
@@ -65,31 +65,31 @@
 
       ;; local url
       (let ((parsed-url (get-url url)))
-    (if (chain window (get-selection) is-collapsed)
-        (chain document (exec-command "insertHTML" F (concatenate 'string "<a href=\"" (chain parsed-url pathname) "\">" url "</a>")))
-        (chain document (exec-command "createLink" F (chain parsed-url pathname)))))
+       (if (chain window (get-selection) is-collapsed)
+           (chain document (exec-command "insertHTML" F (concatenate 'string "<a href=\"" (chain parsed-url pathname) "\">" url "</a>")))
+           (chain document (exec-command "createLink" F (chain parsed-url pathname)))))
 
-      ;; external url
+         ;; external url
       (if (chain window (get-selection) is-collapsed)
-      (chain document (exec-command "insertHTML" F (concatenate 'string "<a target=\"_blank\" rel=\"noopener noreferrer\" href=\"" url "\">" url "</a>")))
-      (progn
-        (chain document (exec-command "createLink" F url))
-        (let* ((selection (chain window (get-selection)))
-           (link (chain selection focus-node parent-element (closest "a"))))
-          (setf (chain link target) "_blank")
-          (setf (chain link rel) "noopener noreferrer"))))))
+       (chain document (exec-command "insertHTML" F (concatenate 'string "<a target=\"_blank\" rel=\"noopener noreferrer\" href=\"" url "\">" url "</a>")))
+       (progn
+         (chain document (exec-command "createLink" F url))
+         (let* ((selection (chain window (get-selection)))
+                (link (chain selection focus-node parent-element (closest "a"))))
+           (setf (chain link target) "_blank")
+           (setf (chain link rel) "noopener noreferrer"))))))
 
 (tool "createLink"
       (chain
        ($ "#link-form")
        (off "submit")
        (submit
-    (lambda (event)
-      (chain event (prevent-default))
-      (chain event (stop-propagation))
-      (chain ($ "#link-modal") (modal "hide"))
-      (restore-range)
-      (update-link (chain ($ "#link") (val))))))
+        (lambda (event)
+          (chain event (prevent-default))
+          (chain event (stop-propagation))
+          (chain ($ "#link-modal") (modal "hide"))
+          (restore-range)
+          (update-link (chain ($ "#link") (val))))))
       (chain ($ "#link-modal") (modal "show")))
 
 (var network-data-received F)
@@ -101,28 +101,28 @@
  network-update
  (chain (fetch "/api/articles")
     (then (lambda (response)
-        (chain response (json))))
+           (chain response (json))))
     (then (lambda (data)
-        (setf network-data-received T)
-        (setf articles data)))))
+           (setf network-data-received T)
+           (setf articles data)))))
 
 ;; fetch cached data
 (chain
  caches
  (match "/api/articles")
  (then (lambda (response)
-     (if (not response)
-         (throw (-error "No data"))) ;; is that right syntax?
-     (chain response (json))))
+        (if (not response)
+            (throw (-error "No data"))) ;; is that right syntax?
+        (chain response (json))))
  (then (lambda (data)
      ;; don't overwrite newer network data
-     (if (not network-data-received)
-         (setf articles data))))
+        (if (not network-data-received)
+            (setf articles data))))
  (catch (lambda ()
       ;; we didn't get cached data, the network is our last hope
-      network-update))
+         network-update))
  (catch (lambda (jq-xhr text-status error-thrown)
-      (handle-error jq-xhr T))))
+         F)))
 
 (chain
  document
@@ -132,17 +132,17 @@
   (lambda (event)
     (chain console (log event))
     (let* ((input (chain document (get-element-by-id "link")))
-       (value (chain input value (replace "/wiki/" "")))
-       (result (chain
-            articles
-            (filter
-             (lambda (article)
-               (not (= (chain article (to-lower-case) (index-of (chain value (to-lower-case)))) -1)))))))
+           (value (chain input value (replace "/wiki/" "")))
+           (result (chain
+                    articles
+                    (filter
+                     (lambda (article)
+                       (not (= (chain article (to-lower-case) (index-of (chain value (to-lower-case)))) -1)))))))
       (chain console (log result))
       (setf (chain input next-element-sibling inner-h-t-m-l) "")
       (if (> (chain result length) 0)
-      (chain input next-element-sibling class-list (add "show"))
-      (chain input next-element-sibling class-list (remove "show")))
+       (chain input next-element-sibling class-list (add "show"))
+       (chain input next-element-sibling class-list (remove "show")))
       (loop for article in result do
        (let ((element (chain document (create-element "div"))))
          (setf (chain element class-name) "dropdown-item")
@@ -152,9 +152,9 @@
           (add-event-listener
            "click"
            (lambda (event)
-         (setf (chain input value) (concatenate 'string "/wiki/" (chain element inner-h-t-m-l)))
-         (chain input next-element-sibling class-list (remove "show"))
-         )))
+            (setf (chain input value) (concatenate 'string "/wiki/" (chain element inner-h-t-m-l)))
+            (chain input next-element-sibling class-list (remove "show")))))
+
          (chain input next-element-sibling (append element))))
       nil))))
 
@@ -176,12 +176,12 @@
        ($ "#link-form")
        (off "submit")
        (submit
-    (lambda (event)
-      (chain event (prevent-default))
-      (chain event (stop-propagation))
-      (chain ($ "#link-modal") (modal "hide"))
-      (chain document (get-elements-by-tag-name "article") 0 (focus))
-      (chain ($ target) (attr "href" (chain ($ "#link") (val)))))))
+        (lambda (event)
+          (chain event (prevent-default))
+          (chain event (stop-propagation))
+          (chain ($ "#link-modal") (modal "hide"))
+          (chain document (get-elements-by-tag-name "article") 0 (focus))
+          (chain ($ target) (attr "href" (chain ($ "#link") (val)))))))
       (chain ($ "#link-modal") (modal "show"))))))
 
 
@@ -322,8 +322,8 @@
     (chain ($ "#image-modal") (modal "hide"))
     (chain document (get-elements-by-tag-name "article") 0 (focus))
     (if (chain ($ "#image-url") (val))
-    (chain document (exec-command "insertHTML" F (concatenate 'string "<img src=\"" (chain ($ "#image-url") (val)) "\"></img>")))
-    (send-file (chain document (get-element-by-id "image-file") files 0))))))
+     (chain document (exec-command "insertHTML" F (concatenate 'string "<img src=\"" (chain ($ "#image-url") (val)) "\"></img>")))
+     (send-file (chain document (get-element-by-id "image-file") files 0))))))
 
 (tool "table"
       (chain ($ "#table-modal") (modal "show")))
@@ -335,10 +335,10 @@
     (chain ($ "#table-modal") (modal "hide"))
     (chain document (get-elements-by-tag-name "article") 0 (focus))
     (let* ((columns (parse-int (chain ($ "#table-columns") (val))))
-       (rows (parse-int (chain ($ "#table-rows") (val))))
-       (row-html (chain "<td></td>" (repeat columns)))
-       (inner-table-html (chain (concatenate 'string "<tr>" row-html "</tr>") (repeat rows)))
-       (table-html (concatenate 'string "<div class=\"table-responsive\"><table class=\"table table-bordered\">" inner-table-html "</table></div>")))
+           (rows (parse-int (chain ($ "#table-rows") (val))))
+           (row-html (chain "<td></td>" (repeat columns)))
+           (inner-table-html (chain (concatenate 'string "<tr>" row-html "</tr>") (repeat rows)))
+           (table-html (concatenate 'string "<div class=\"table-responsive\"><table class=\"table table-bordered\">" inner-table-html "</table></div>")))
       (chain document (exec-command "insertHTML" F table-html))))))
 
 (chain
@@ -356,15 +356,15 @@
        ($ "#update-formula")
        (off "click")
        (click
-    (lambda (event)
-      (chain ($ "#formula-modal") (modal "hide"))
-      (chain document (get-elements-by-tag-name "article") 0 (focus))
-      (let ((latex (chain window mathfield (latex))))
-        (chain window mathfield (revert-to-original-content))
-        (chain document (exec-command "insertHTML" F (concatenate 'string "<span class=\"formula\" contenteditable=\"false\">\\(" latex "\\)</span>")))
-        (loop for element in (chain document (get-elements-by-class-name "formula")) do
-         (chain -math-live (render-math-in-element element)))))))
-      
+        (lambda (event)
+          (chain ($ "#formula-modal") (modal "hide"))
+          (chain document (get-elements-by-tag-name "article") 0 (focus))
+          (let ((latex (chain window mathfield (latex))))
+            (chain window mathfield (revert-to-original-content))
+            (chain document (exec-command "insertHTML" F (concatenate 'string "<span class=\"formula\" contenteditable=\"false\">\\(" latex "\\)</span>")))
+            (loop for element in (chain document (get-elements-by-class-name "formula")) do
+             (chain -math-live (render-math-in-element element)))))))
+
       (chain ($ "#formula-modal") (modal "show"))
       (setf (chain window mathfield) (chain -math-live (make-math-field (chain document (get-element-by-id "formula")) (create virtual-keyboard-mode "manual")))))
 
@@ -391,8 +391,8 @@
       (chain
        ($ "#publish-changes-modal")
        (on "shown.bs.modal"
-       (lambda ()
-         (chain ($ "#change-summary") (trigger "focus")))))
+        (lambda ()
+          (chain ($ "#change-summary") (trigger "focus")))))
       (chain ($ "#publish-changes-modal") (modal "show")))
 
 (defun random-int ()
@@ -414,18 +414,18 @@
   (chain ($ (chain ($ element) (closest ".popover") (data "target"))) 0))
 
 (defun remove-old-popovers (event)
-  (loop for popover in ($ ".popover") do 
+  (loop for popover in ($ ".popover") do
        (let ((target (get-popover-target popover)))
-     (if (undefined target)
-         (progn
-           (chain popover (remove))
-           (return-from remove-old-popovers)))
-     (loop for target-parent in (chain ($ (chain event target)) (parents)) do
-          (if (= target-parent target) ;; TODO target to jquery
-          (return-from remove-old-popovers)))
-     (if (= (chain event target) target)
-         (return-from remove-old-popovers))
-     (chain ($ target) (popover "hide")))))
+        (if (undefined target)
+            (progn
+              (chain popover (remove))
+              (return-from remove-old-popovers)))
+        (loop for target-parent in (chain ($ (chain event target)) (parents)) do
+             (if (= target-parent target) ;; TODO target to jquery
+              (return-from remove-old-popovers)))
+        (if (= (chain event target) target)
+            (return-from remove-old-popovers))
+        (chain ($ target) (popover "hide")))))
 
 (chain
  ($ "body")
@@ -464,7 +464,7 @@
     (chain event (prevent-default))
     (chain event (stop-propagation))
     (let* ((target (get-popover-target (chain event current-target)))
-       (content (chain -math-live (get-original-content target))))
+           (content (chain -math-live (get-original-content target))))
       (chain ($ target) (popover "hide"))
       (chain document (get-elements-by-tag-name "article") 0 (focus))
 
@@ -476,12 +476,11 @@
        ($ "#update-formula")
        (off "click")
        (click
-    (lambda (event)
-      (chain ($ "#formula-modal") (modal "hide"))
-      (chain document (get-elements-by-tag-name "article") 0 (focus))
-      (let ((latex (chain window mathfield (latex))))
-        (chain window mathfield (revert-to-original-content))
-        (setf (chain target inner-h-t-m-l) (concatenate 'string "\\( " latex " \\)"))
-        (loop for element in (chain document (get-elements-by-class-name "formula")) do
-         (chain -math-live (render-math-in-element element)))))))
-      ))))
+        (lambda (event)
+          (chain ($ "#formula-modal") (modal "hide"))
+          (chain document (get-elements-by-tag-name "article") 0 (focus))
+          (let ((latex (chain window mathfield (latex))))
+            (chain window mathfield (revert-to-original-content))
+            (setf (chain target inner-h-t-m-l) (concatenate 'string "\\( " latex " \\)"))
+            (loop for element in (chain document (get-elements-by-class-name "formula")) do
+             (chain -math-live (render-math-in-element element)))))))))))
