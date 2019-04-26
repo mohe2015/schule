@@ -7,14 +7,16 @@
 (defroute "/teachers/new"
   (show-tab "#create-teacher-tab"))
 
+;; TODO do it like this everywhere
 (chain
   ($ "#create-teacher-form")
   (submit
     (lambda (event)
-      (let ((pathname (chain window location pathname (split "/"))))
-        (chain ($ ".csrf-token") (val (read-cookie "_csrf_token")))
-        (post "/api/teachers"
-              (create
-                _csrf_token (read-cookie "_csrf_token"))
-          T)
-        F))))
+      (let* ((formElement (chain document (query-selector "#create-teacher-form")))
+             (formData (new (-Form-Data formElement)))
+             (request (new -X-M-L-Http-Request)))
+        (chain request (open "POST" "/api/teachers"))
+        (chain formData (append "_csrf_token" (read-cookie "_csrf_token")))
+        (chain request (send formData)))
+        ;; TODO get response
+      F)))

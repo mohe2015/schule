@@ -129,7 +129,6 @@
      (:DIV :CLASS "form-group"
       (:label "Initialien")
       (:INPUT :TYPE "text" :CLASS "form-control" :PLACEHOLDER "Initialien" :name "initial"))
-     (:input :type "hidden" :name "_csrf_token" :class "csrf-token" :value "toolate")
      (:BUTTON :TYPE "submit" :CLASS
       "btn btn-primary"
       "LehrerIn erstellen")))
