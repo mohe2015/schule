@@ -34,6 +34,7 @@
   (:LINK :REL "modulepreload" :HREF "/js/get-url-parameter.lisp")
   (:LINK :REL "modulepreload" :HREF "/js/editor.lisp")
   (:LINK :REL "modulepreload" :HREF "/js/hide-editor.lisp")
+  (:LINK :REL "modulepreload" :HREF "/js/schedule.lisp")
   (:LINK :REL "preload" :AS "font" :crossorigin "" :type "font/woff2" :href "/webfonts/fa-solid-900.woff2")
 
   (:TITLE "Spickipedia"))
@@ -121,13 +122,14 @@
     (:BUTTON :TYPE "button" :CLASS "btn btn-primary mb-1 save-quiz"
      "Speichern")))
   (:div :style "display: none;" :class "container-fluid my-tab position-absolute" :id "create-teacher-tab"
-    (:FORM :method "POST" :action "/api/teachers/new"
+    (:FORM :method "POST" :action "/api/teachers" :id "create-teacher-form"
      (:DIV :CLASS "form-group"
       (:label "Name")
       (:INPUT :TYPE "text" :CLASS "form-control" :PLACEHOLDER "Name" :name "name"))
      (:DIV :CLASS "form-group"
       (:label "Initialien")
       (:INPUT :TYPE "text" :CLASS "form-control" :PLACEHOLDER "Initialien" :name "initial"))
+     (:input :type "hidden" :name "_csrf_token" :class "csrf-token" :value "toolate")
      (:BUTTON :TYPE "submit" :CLASS
       "btn btn-primary"
       "LehrerIn erstellen")))
