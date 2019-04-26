@@ -10,18 +10,18 @@
     :add-attributes (("a"      . (("rel" . "noopener noreferrer"))))
     
     :attributes ((:all          . ("class"))
-		 ("h1"          . ("align" "style"))
-		 ("h2"          . ("align" "style"))
-		 ("h3"          . ("align" "style"))
-		 ("h4"          . ("align" "style"))
-		 ("h5"          . ("align" "style"))
-		 ("h6"          . ("align" "style"))
-		 ("a"           . ("href" "target"))
-		 ("p"           . ("align" "style"))
-		 ("img"         . ("src" "style"))
-		 ("iframe"      . ("src" "width" "height"))) ;; TODO this needs to be checked correctly
+         ("h1"          . ("align" "style"))
+         ("h2"          . ("align" "style"))
+         ("h3"          . ("align" "style"))
+         ("h4"          . ("align" "style"))
+         ("h5"          . ("align" "style"))
+         ("h6"          . ("align" "style"))
+         ("a"           . ("href" "target"))
+         ("p"           . ("align" "style"))
+         ("img"         . ("src" "style"))
+         ("iframe"      . ("src" "width" "height"))) ;; TODO this needs to be checked correctly
 
     :protocols (("a"           . (("href" . (:ftp :http :https :mailto :relative))))
                 ("img"         . (("src"  . (:http :https :relative))))
-		("iframe"      . (("src"  . (:http :https :relative))))) ;; TODO only https ;; TODO better use a regex as it fails to detect the same protocol url //www.youtube.com
+        ("iframe"      . (("src"  . (:http :https :relative))))) ;; TODO only https ;; TODO better use a regex as it fails to detect the same protocol url //www.youtube.com
     )

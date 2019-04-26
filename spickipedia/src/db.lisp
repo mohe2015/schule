@@ -13,31 +13,31 @@
   (:export :connection-settings
            :db
            :with-connection
-	   :user
-	   :wiki-article
-	   :wiki-article-revision
-	   :my-session
-	   :quiz
-	   :quiz-revision
-	   :user-name
-	   :user-group
-	   :user-hash
-	   :wiki-article-title
-	   :wiki-article-revision-author
-	   :wiki-article-revision-article
-	   :wiki-article-revision-summary
-	   :wiki-article-revision-content
-	   :my-session-cookie
-	   :my-session-csrf-token
-	   :my-session-user
-	   :quiz-revision-author
-	   :quiz-revision-quiz
-	   :quiz-revision-content
-	   :wiki-article-revision-category
-	   :wiki-article-revision-category-revision
-	   :wiki-article-revision-category-category
-	   :setup-db
-	   ))
+       :user
+       :wiki-article
+       :wiki-article-revision
+       :my-session
+       :quiz
+       :quiz-revision
+       :user-name
+       :user-group
+       :user-hash
+       :wiki-article-title
+       :wiki-article-revision-author
+       :wiki-article-revision-article
+       :wiki-article-revision-summary
+       :wiki-article-revision-content
+       :my-session-cookie
+       :my-session-csrf-token
+       :my-session-user
+       :quiz-revision-author
+       :quiz-revision-quiz
+       :quiz-revision-content
+       :wiki-article-revision-category
+       :wiki-article-revision-category-revision
+       :wiki-article-revision-category-category
+       :setup-db))
+
 (in-package :spickipedia.db)
 
 (defun connection-settings (&optional (db :maindb))
@@ -54,12 +54,12 @@
   ((name  :col-type (:varchar 64)
     :initarg :name
     :accessor user-name)
-    (group :col-type (:varchar 64)
+   (group :col-type (:varchar 64)
     :initarg :group
     :inflate (compose #'make-keyword #'string-upcase)
-          :deflate #'string-downcase
+         :deflate #'string-downcase
     :accessor user-group)
-    (hash  :col-type (:varchar 512)
+   (hash  :col-type (:varchar 512)
     :initarg :hash
     :accessor user-hash))
   (:metaclass mito:dao-table-class))
@@ -74,36 +74,36 @@
   ((author :col-type user
       :initarg :author
       :accessor wiki-article-revision-author)
-    (article :col-type wiki-article
-:initarg :article
-:accessor wiki-article-revision-article)
-    (summary :col-type (:varchar 256)
-:initarg :summary
-:accessor wiki-article-revision-summary)
-    (content :col-type (:text)
-:initarg :content
-:accessor wiki-article-revision-content))
+   (article :col-type wiki-article
+    :initarg :article
+    :accessor wiki-article-revision-article)
+   (summary :col-type (:varchar 256)
+    :initarg :summary
+    :accessor wiki-article-revision-summary)
+   (content :col-type (:text)
+    :initarg :content
+    :accessor wiki-article-revision-content))
   (:metaclass mito:dao-table-class))
 
 (defclass wiki-article-revision-category ()
   ((revision :col-type wiki-article-revision
-  :initarg :revision
-  :accessor wiki-article-revision-category-revision)
-    (category :col-type (:varchar 256)
-  :initarg :category
-  :accessor wiki-article-revision-category-category))
+    :initarg :revision
+    :accessor wiki-article-revision-category-revision)
+   (category :col-type (:varchar 256)
+    :initarg :category
+    :accessor wiki-article-revision-category-category))
   (:metaclass mito:dao-table-class))
 
 (defclass my-session ()
   ((session-cookie :col-type (:varchar 512)
         :initarg :session-cookie
         :accessor my-session-cookie)
-    (csrf-token     :col-type (:varchar 512)
-        :initarg :csrf-token
-        :accessor my-session-csrf-token)
-    (user           :col-type (or user :null)
-        :initarg  :user
-        :accessor my-session-user))
+   (csrf-token     :col-type (:varchar 512)
+       :initarg :csrf-token
+       :accessor my-session-csrf-token)
+   (user           :col-type (or user :null)
+       :initarg  :user
+       :accessor my-session-user))
   (:metaclass mito:dao-table-class))
 
 (defclass quiz ()
@@ -114,15 +114,15 @@
   ((author :col-type user
       :initarg :author
       :accessor quiz-revision-author)
-    (quiz :col-type quiz
+   (quiz :col-type quiz
     :initarg :quiz
     :accessor quiz-revision-quiz)
-    (content :col-type (:text)
-:initarg :content
-:accessor quiz-revision-content))
+   (content :col-type (:text)
+    :initarg :content
+    :accessor quiz-revision-content))
   (:metaclass mito:dao-table-class))
-    
-     
+
+
 (defun setup-db ()
   (with-connection (db)
     (mito:ensure-table-exists 'user)
@@ -139,3 +139,5 @@
     (mito:migrate-table 'quiz)
     (mito:migrate-table 'quiz-revision)
     (mito:migrate-table 'wiki-article-revision-category)))
+
+(setup-db)

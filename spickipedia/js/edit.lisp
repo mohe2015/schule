@@ -21,14 +21,14 @@
   (chain ($ ".closable-badge") (remove))
   (if (chain data categories)
       (loop for category in (chain data categories) do
-	   (chain
-	    ($ "#new-category")
-	    (before
-	     (who-ps-html
-	      (:span :class "closable-badge bg-secondary"
-		     (:span :class "closable-badge-label" category)
-		     (:button :type "button" :class "close close-tag" :aria-label "Close"
-			      (:span :aria-hidden "true" "&times;"))))))))
+       (chain
+        ($ "#new-category")
+        (before
+         (who-ps-html
+          (:span :class "closable-badge bg-secondary"
+             (:span :class "closable-badge-label" category)
+             (:button :type "button" :class "close close-tag" :aria-label "Close"
+                  (:span :aria-hidden "true" "&times;"))))))))
   (chain ($ "article") (html (chain data content)))
   (render-math)
   (show-editor)
@@ -42,16 +42,16 @@
   (if (not (null (chain window history state)))
       (init-editor (chain window history state))
       (progn
-	(show-tab "#loading")
-	(chain
-	 $
-	 (get
-	  (concatenate 'string "/api/wiki/" name)
-	  (lambda (data)
-	    (init-editor data)
-	    (chain window history (replace-state data nil nil))))
-	 (fail
-	  (lambda (jq-xhr text-status error-thrown)
-	    (if (= (chain jq-xhr status) 404)
-		(show-tab "#not-found")
-		(handle-error jq-xhr T))))))))
+    (show-tab "#loading")
+    (chain
+     $
+     (get
+      (concatenate 'string "/api/wiki/" name)
+      (lambda (data)
+        (init-editor data)
+        (chain window history (replace-state data nil nil))))
+     (fail
+      (lambda (jq-xhr text-status error-thrown)
+        (if (= (chain jq-xhr status) 404)
+        (show-tab "#not-found")
+        (handle-error jq-xhr T))))))))

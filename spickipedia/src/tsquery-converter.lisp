@@ -27,15 +27,15 @@
 
   ;; handle quoted and unquoted parts separately
   (setf query
-	(loop for e in query
-	   for x from 1
-	     
-	   if (oddp x)
-	   do
-	     (setf e (handle-unquoted e))
-	   else do
-	     (setf e (handle-quoted e))
-	   collect e))
+    (loop for e in query
+       for x from 1
+         
+       if (oddp x)
+       do
+         (setf e (handle-unquoted e))
+       else do
+         (setf e (handle-quoted e))
+       collect e))
 
   (setf query (remove "()" query :test #'string=))
 
@@ -52,7 +52,7 @@
   (setf query (split "OR" query))
 
   (setf query (loop for e in query
-		   collect (tsquery-convert-part (trim e) (= 1 (length query)))))
+           collect (tsquery-convert-part (trim e) (= 1 (length query)))))
 
   
   ;; handle logical not operator

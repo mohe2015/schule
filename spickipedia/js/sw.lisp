@@ -62,7 +62,7 @@
        caches
        (open static-cache-name)
        (then (lambda (cache)
-	       (chain cache (add-all urls-to-cache))))))))))
+           (chain cache (add-all urls-to-cache))))))))))
 
 (defun cache-then-network (event cache-name)
   (chain
@@ -73,18 +73,18 @@
      (open cache-name)
      (then
       (lambda (cache)
-	(chain
-	 cache
-	 (match (chain event request))
-	 (then
-	  (lambda (response)
-	    (or
-	     response
-	     (chain
-	      (fetch (chain event request))
-	      (then (lambda (response)
-		      (chain cache (put (chain event request) (chain response (clone))))
-		      response)))))))))))))
+    (chain
+     cache
+     (match (chain event request))
+     (then
+      (lambda (response)
+        (or
+         response
+         (chain
+          (fetch (chain event request))
+          (then (lambda (response)
+              (chain cache (put (chain event request) (chain response (clone))))
+              response)))))))))))))
 
 (defun network (event cache-name)
   (chain
@@ -95,11 +95,11 @@
      (open cache-name)
      (then
       (lambda (cache)
-	(chain
-	 (fetch (chain event request))
-	 (then (lambda (response)
-		 (chain cache (put (chain event request) (chain response (clone))))
-		 response)))))))))
+    (chain
+     (fetch (chain event request))
+     (then (lambda (response)
+         (chain cache (put (chain event request) (chain response (clone))))
+         response)))))))))
 
 (defun cache-then-fallback (event cache-name)
   (chain
@@ -110,14 +110,14 @@
      (open cache-name)
      (then
       (lambda (cache)
-	(chain
-	 cache
-	 (match (chain event request))
-	 (then
-	  (lambda (response)
-	    (or
-	     response
-	     (chain cache (match "/"))))))))))))
+    (chain
+     cache
+     (match (chain event request))
+     (then
+      (lambda (response)
+        (or
+         response
+         (chain cache (match "/"))))))))))))
 
 (chain
  self
@@ -125,13 +125,13 @@
   "fetch"
   (lambda (event)
     (let* ((request (chain event request))
-	   (method (chain request method))
-	   (url (new (-u-r-l (chain request url))))
-	   (pathname (chain url pathname)))
+       (method (chain request method))
+       (url (new (-u-r-l (chain request url))))
+       (pathname (chain url pathname)))
       (if (chain pathname (starts-with "/api"))
-	  (if (= method "GET")
-	      (network event dynamic-cache-name))
-	  (cache-then-fallback event static-cache-name))))))
+      (if (= method "GET")
+          (network event dynamic-cache-name))
+      (cache-then-fallback event static-cache-name))))))
 
 (chain
  self
@@ -145,21 +145,21 @@
        caches
        (keys)
        (then
-	(lambda (cache-names)
-	  (chain
-	   -promise
-	   (all
-	    (chain
-	     cache-names
-	     (filter
-	      (lambda (cache-name)
-		(if (= cache-name static-cache-name)
-		    (return F))
-		(if (= cache-name dynamic-cache-name)
-		    (return F))
-		T))
-	     (map
-	      (lambda (cache-name)
-		(var fun (chain caches delete))
-		(chain console (log cache-name))
-		(chain fun (call caches cache-name)))))))))))))))
+    (lambda (cache-names)
+      (chain
+       -promise
+       (all
+        (chain
+         cache-names
+         (filter
+          (lambda (cache-name)
+        (if (= cache-name static-cache-name)
+            (return F))
+        (if (= cache-name dynamic-cache-name)
+            (return F))
+        T))
+         (map
+          (lambda (cache-name)
+        (var fun (chain caches delete))
+        (chain console (log cache-name))
+        (chain fun (call caches cache-name)))))))))))))))

@@ -5,6 +5,11 @@
 * sbcl
 * postgresql
 * fcgi
+* roswell
+* https://ultralisp.org/
+* Atom (ubuntu install gnome tweaks and change theme to dark)
+* Atom parinfer, atom-slime, language-lisp https://atom.io/packages/atom-slime
+* https://github.com/FiloSottile/mkcert
 
 ## Installation
 
@@ -28,12 +33,13 @@ makepkg -si
 cd ..
 sudo ldconfig
 
-ln -s $PWD/spickipedia/ ~/quicklisp/local-projects/
-ln -s $PWD/monkeylib-bcrypt/ ~/quicklisp/local-projects/
-ln -s $PWD/cl-sanitize/ ~/quicklisp/local-projects/
-ln -s $PWD/lack/ ~/quicklisp/local-projects/
-ln -s $PWD/parenscript/ ~/quicklisp/local-projects/
-ln -s $PWD/clack/ ~/quicklisp/local-projects/
+ln -s $PWD/spickipedia/ ~/.roswell/local-projects/
+ln -s $PWD/monkeylib-bcrypt/ ~/.roswell/local-projects/
+ln -s $PWD/lack/ ~/.roswell/local-projects/
+ln -s $PWD/parenscript/ ~/.roswell/local-projects/
+
+sudo ln -s $PWD/crypt_blowfish/libbcrypt.so /usr/local/lib/
+sudo ldconfig
 
 git clone https://github.com/phppgadmin/phppgadmin /usr/share/nginx/phppgadmin
 
@@ -53,5 +59,7 @@ npm i -g purgecss
 purgecss --content www/index.html --css www/s/all.css --css www/s/bootstrap.min.css --css www/s/index.css --css www/s/summernote-bs4.css -o www/s/ --content www/s/*.js
 ```
 
-(setup-db)
- (spickipedia:start :port 3000 :max-thread-count 100 :max-accept.count 100)
+(spickipedia:start)
+
+(in-package :spickipedia.db)
+(with-connection (spickipedia.db:db) (mito:create-dao 'spickipedia.db:user :name "admin" :hash (bcrypt:hash "admin") :group "admin"))

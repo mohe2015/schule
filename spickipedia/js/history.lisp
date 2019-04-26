@@ -23,14 +23,14 @@
   (get (concatenate 'string "/api/history/" (chain pathname 2)) T
        (chain ($ "#history-list") (html ""))
        (loop for page in data do
-	    (let ((template ($ (chain ($ "#history-item-template") (html)))))
-	      (chain template (find ".history-username") (text (chain page user)))
-	      (chain template (find ".history-date") (text (new (-Date (chain page created)))))
-	      (chain template (find ".history-summary") (text (chain page summary)))
-	      (chain template (find ".history-characters") (text (chain page size)))
-	      (chain template (find ".history-show") (attr "href" (concatenate 'string "/wiki/" (chain pathname 2) "/history/" (chain page id))))
-	      (chain template (find ".history-diff") (attr "href" (concatenate 'string "/wiki/" (chain pathname 2) "/history/" (chain page id) "/changes")))
-	      (chain ($ "#history-list") (append template))))
+        (let ((template ($ (chain ($ "#history-item-template") (html)))))
+          (chain template (find ".history-username") (text (chain page user)))
+          (chain template (find ".history-date") (text (new (-Date (chain page created)))))
+          (chain template (find ".history-summary") (text (chain page summary)))
+          (chain template (find ".history-characters") (text (chain page size)))
+          (chain template (find ".history-show") (attr "href" (concatenate 'string "/wiki/" (chain pathname 2) "/history/" (chain page id))))
+          (chain template (find ".history-diff") (attr "href" (concatenate 'string "/wiki/" (chain pathname 2) "/history/" (chain page id) "/changes")))
+          (chain ($ "#history-list") (append template))))
        (show-tab "#history")))
 
 (defroute "/wiki/:page/history/:id"
@@ -48,11 +48,11 @@
 
       (chain ($ "#categories") (html ""))
       (loop for category in (chain data categories) do
-	   (chain
-	    ($ "#categories")
-	    (append
-	     (who-ps-html
-	      (:span :class "closable-badge bg-secondary" category)))))
+       (chain
+        ($ "#categories")
+        (append
+         (who-ps-html
+          (:span :class "closable-badge bg-secondary" category)))))
       
       (chain ($ "article") (html (chain data content)))
       (chain window history (replace-state (create content data) nil nil))
@@ -62,8 +62,8 @@
    (fail
     (lambda (jq-xhr text-status error-thrown)
       (if (= (chain jq-xhr status) 404)
-	  (show-tab "#not-found")
-	  (handle-error jq-xhr T))))))
+      (show-tab "#not-found")
+      (handle-error jq-xhr T))))))
 
 (defroute "/wiki/:page/history/:id/changes"
   (chain ($ ".edit-button") (add-class "disabled"))
@@ -81,43 +81,43 @@
       (chain
        $
        (get
-	(concatenate 'string "/api/previous-revision/" id)
-	(lambda (data)
-	  (setf previous-revision data)
-	  (var diff-html (htmldiff (chain previous-revision content) (chain current-revision content)))
-	  (chain ($ "article") (html diff-html))
-	  (let* ((pt (chain previous-revision categories))
-		 (ct (chain current-revision categories))
-		 (both (chain pt (filter (lambda (x) (chain ct (includes x))))))
-		 (removed (chain pt (filter (lambda (x) (not (chain ct (includes x)))))))
-		 (added (chain ct (filter (lambda (x) (not (chain pt (includes x))))))))
-	    (chain ($ "#categories") (html ""))
-	    (loop for category in both do
-		 (chain
-		  ($ "#categories")
-		  (append
-		   (who-ps-html
-		    (:span :class "closable-badge bg-secondary" category)))))
-	   (loop for category in removed do
-		 (chain
-		  ($ "#categories")
-		  (append
-		   (who-ps-html
-		    (:span :class "closable-badge bg-danger" category)))))
-	    (loop for category in added do
-		 (chain
-		  ($ "#categories")
-		  (append
-		   (who-ps-html
-		    (:span :class "closable-badge bg-success" category)))))
-	  (show-tab "#page"))))
+    (concatenate 'string "/api/previous-revision/" id)
+    (lambda (data)
+      (setf previous-revision data)
+      (var diff-html (htmldiff (chain previous-revision content) (chain current-revision content)))
+      (chain ($ "article") (html diff-html))
+      (let* ((pt (chain previous-revision categories))
+         (ct (chain current-revision categories))
+         (both (chain pt (filter (lambda (x) (chain ct (includes x))))))
+         (removed (chain pt (filter (lambda (x) (not (chain ct (includes x)))))))
+         (added (chain ct (filter (lambda (x) (not (chain pt (includes x))))))))
+        (chain ($ "#categories") (html ""))
+        (loop for category in both do
+         (chain
+          ($ "#categories")
+          (append
+           (who-ps-html
+            (:span :class "closable-badge bg-secondary" category)))))
+       (loop for category in removed do
+         (chain
+          ($ "#categories")
+          (append
+           (who-ps-html
+            (:span :class "closable-badge bg-danger" category)))))
+        (loop for category in added do
+         (chain
+          ($ "#categories")
+          (append
+           (who-ps-html
+            (:span :class "closable-badge bg-success" category)))))
+      (show-tab "#page"))))
        (fail
-	(lambda (jq-xhr text-status error-thrown)
-	  (if (= (chain jq-xhr status) 404)
-	      (show-tab "#not-found")
-	      (handle-error jq-xhr T)))))))
+    (lambda (jq-xhr text-status error-thrown)
+      (if (= (chain jq-xhr status) 404)
+          (show-tab "#not-found")
+          (handle-error jq-xhr T)))))))
    (fail
     (lambda (jq-xhr text-status error-thrown)
       (if (= (chain jq-xhr status) 404)
-	  (show-tab "#not-found")
-	  (handle-error jq-xhr T))))))
+      (show-tab "#not-found")
+      (handle-error jq-xhr T))))))

@@ -12,7 +12,7 @@
    ($ "article")
    (on "summernote.init"
        (lambda ()
-	 (chain ($ ".formula") (attr "contenteditable" F)))))))
+     (chain ($ ".formula") (attr "contenteditable" F)))))))
 
 (export (defun revert-math (dom)
   (chain
