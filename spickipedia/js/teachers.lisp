@@ -1,4 +1,6 @@
 (var __-p-s_-m-v_-r-e-g)
 
+(i "./show-tab.lisp" "showTab")
+
 (defroute "/teachers/new"
-  (alert 23))
+  (show-tab "#create-teacher-tab"))

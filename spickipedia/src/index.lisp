@@ -120,6 +120,17 @@
      "Frage mit Textantwort hinzufügen")
     (:BUTTON :TYPE "button" :CLASS "btn btn-primary mb-1 save-quiz"
      "Speichern")))
+  (:div :style "display: none;" :class "container-fluid my-tab position-absolute" :id "create-teacher-tab"
+    (:FORM :method "POST" :action "/api/teachers/new"
+     (:DIV :CLASS "form-group"
+      (:label "Name")
+      (:INPUT :TYPE "text" :CLASS "form-control" :PLACEHOLDER "Name" :name "name"))
+     (:DIV :CLASS "form-group"
+      (:label "Initialien")
+      (:INPUT :TYPE "text" :CLASS "form-control" :PLACEHOLDER "Initialien" :name "initial"))
+     (:BUTTON :TYPE "submit" :CLASS
+      "btn btn-primary"
+      "LehrerIn erstellen")))
   (:DIV :STYLE "display: none;" :CLASS "container my-tab position-absolute" :ID "articles"
     (:H1 :CLASS "text-center" "Alle Artikel")
     (:UL :ID "articles-list"))
