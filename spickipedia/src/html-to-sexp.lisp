@@ -30,7 +30,7 @@
         for val being the hash-values of (attributes node)
         nconc (list (string->name key) val))
      (loop for child across (children node)
-    collect (to-sexp child)))))
+      collect (to-sexp child)))))
 
 
 (defparameter *FILE* (alexandria:read-file-into-string "templates/index.html"))

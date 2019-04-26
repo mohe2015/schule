@@ -29,7 +29,7 @@
   (setf query
     (loop for e in query
        for x from 1
-         
+
        if (oddp x)
        do
          (setf e (handle-unquoted e))
@@ -47,19 +47,19 @@
   ;; if query contains an odd amount of qoutes add one at the end
   (if (oddp (count #\" query))
       (setf query (concatenate 'string query "\"")))
-  
+
   ;; split at OR
   (setf query (split "OR" query))
 
   (setf query (loop for e in query
-           collect (tsquery-convert-part (trim e) (= 1 (length query)))))
+               collect (tsquery-convert-part (trim e) (= 1 (length query)))))
 
-  
+
   ;; handle logical not operator
 
   ;; join substrings
   (setf query (join " | " query))
-  
+
   query)
 
 
