@@ -329,16 +329,13 @@
                    *template-directory*))
 
 (my-defroute :POST "/api/tags" (:admin :user) () "application/json"
-  (let ((tags (cdr (assoc "tags" _parsed :test #'string=))))
-    (print "hi")
-    (print tags)
-    (print "jo")
-    (print
-      (mito:retrieve-by-sql
-        (select
-          (:revision_id (:count :*))
-          (from :wiki_article_revision_category)
-          (where (:in :category tags))
-          (group-by :revision_id)))))
-
+  (let* ((tags (cdr (assoc "tags" _parsed :test #'string=)))
+         (result (mito:retrieve-by-sql
+                  (select
+                    (:revision_id (:count :*))
+                    (from :wiki_article_revision_category)
+                    (where (:in :category tags))
+                    (group-by :revision_id)))))
+    (loop for revision in result do
+      (print (mito:find-dao 'wiki-article-revision :id (getf revision :revision-id)))))
   "\"hi\"")
