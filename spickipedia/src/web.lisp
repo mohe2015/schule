@@ -336,6 +336,6 @@
                     (from :wiki_article_revision_category)
                     (where (:in :category tags))
                     (group-by :revision_id)))))
-    (loop for revision in result do
-      (print (wiki-article-title (wiki-article-revision-article (mito:find-dao 'wiki-article-revision :id (getf revision :revision-id)))))))
-  "\"hi\"")
+    (json:encode-json-to-string
+      (loop for revision in result when (= (getf revision :count) (length tags)) collect
+        (wiki-article-title (wiki-article-revision-article (mito:find-dao 'wiki-article-revision :id (getf revision :revision-id))))))))
