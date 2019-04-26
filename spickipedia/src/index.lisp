@@ -5,7 +5,7 @@
   (:LINK :REL "stylesheet" :HREF "/bootstrap.css")
   (:LINK :REL "stylesheet" :HREF "/all.css")
   (:LINK :REL "stylesheet" :HREF "/index.css")
-  
+
   (:LINK :REL "modulepreload" :HREF "/js/index.lisp")
   (:LINK :REL "modulepreload" :HREF "/js/test.lisp")
   (:LINK :REL "modulepreload" :HREF "/js/replace-state.lisp")
@@ -60,7 +60,7 @@
      (:DIV :CLASS "form-group"
       (:INPUT :TYPE "text" :CLASS "form-control question" :PLACEHOLDER
        "Frage eingeben"))
-     (:DIV :CLASS "form-group" 
+     (:DIV :CLASS "form-group"
       (:INPUT :TYPE "text" :CLASS "form-control answer" :PLACEHOLDER
        "Antwort eingeben")))
     (:HR)))
@@ -120,9 +120,12 @@
      "Frage mit Textantwort hinzufügen")
     (:BUTTON :TYPE "button" :CLASS "btn btn-primary mb-1 save-quiz"
      "Speichern")))
-  (:DIV :STYLE "display: none;" :CLASS "container my-tab position-absolute" :ID
-   "articles" (:H1 :CLASS "text-center" "Alle Artikel")
-   (:UL :ID "articles-list"))
+  (:DIV :STYLE "display: none;" :CLASS "container my-tab position-absolute" :ID "articles"
+    (:H1 :CLASS "text-center" "Alle Artikel")
+    (:UL :ID "articles-list"))
+  (:div :style "display:none;" :class "container my-tab position-absolute" :id "tags"
+    (:h1 :class "text-center" "Tags")
+    (:ul :id "tags-list"))
   (:DIV :STYLE "display: none;" :CLASS "container my-tab position-absolute" :ID
    "multiple-choice-question-html"
    (:H2 :CLASS "text-center question-html" "Dies ist eine Testfrage?")
@@ -392,5 +395,5 @@
   (:SCRIPT :SRC "/bootstrap.js")
   (:SCRIPT :SRC "/visual-diff.js")
   (:SCRIPT :NOMODULE "" :SRC "no_module_support.js")
-  
+
   (:SCRIPT :TYPE "module" :SRC "/js/index.lisp")))

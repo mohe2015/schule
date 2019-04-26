@@ -8,7 +8,7 @@
   (show-tab "#loading")
   (get "/api/articles" T
        (chain data (sort (lambda (a b)
-               (chain a (locale-compare b)))))
+                          (chain a (locale-compare b)))))
        (chain ($ "#articles-list") (html ""))
        (loop for page in data do
         (let ((templ ($ (chain ($ "#articles-entry") (html)))))
