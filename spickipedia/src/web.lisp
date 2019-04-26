@@ -10,6 +10,7 @@
         :spickipedia.parenscript
         :mito
         :sxql
+        :sxql.sql-type
         :ironclad
         :sanitize
         :bcrypt
@@ -329,7 +330,10 @@
 
 (my-defroute :POST "/api/tags" (:admin :user) () "application/json"
 ;; https://github.com/fukamachi/sxql/issues/20
-  (let (tags (cdr (assoc "tags" _parsed :test #'string=)))
+  (let ((tags (cdr (assoc "tags" _parsed :test #'string=))))
+    (print "hi")
+    (print tags)
+    (print "jo")
     '(print
       (mito:execute-sql
         (select
@@ -342,7 +346,7 @@
         (make-statement :select
           (make-clause :fields :revision_id (make-op :count :*))
           (make-clause :from :wiki_article_revision_category)
-          (make-clause :where (make-op :in :category tags))
+          (make-clause :where (make-op :in :category (make-sql-variable tags)))
           (make-clause :group-by :revision_id)))))
 
   "\"hi\"")
