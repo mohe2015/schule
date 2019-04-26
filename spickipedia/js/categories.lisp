@@ -33,10 +33,10 @@
   (chain console (log (chain rest (split "/"))))
 
   (chain $ (post "/api/tags"
-         (create _csrf_token (read-cookie "_csrf_token")
-             tags (chain rest (split "/")))
-         (lambda (data)
-           (chain console (log data))
-           ))
-     (fail (lambda (jq-xhr text-status error-thrown)
-         (handle-error jq-xhr T)))))
+             (create _csrf_token  (read-cookie "_csrf_token")
+                     tags         (chain rest (split "/")))
+             (lambda (data)
+               (chain console (log data))
+               (alert data)))
+           (fail (lambda (jq-xhr text-status error-thrown)
+                   (handle-error jq-xhr T)))))
