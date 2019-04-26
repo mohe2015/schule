@@ -34,7 +34,7 @@
   (:LINK :REL "modulepreload" :HREF "/js/get-url-parameter.lisp")
   (:LINK :REL "modulepreload" :HREF "/js/editor.lisp")
   (:LINK :REL "modulepreload" :HREF "/js/hide-editor.lisp")
-  (:LINK :REL "modulepreload" :HREF "/js/schedule.lisp")
+  (:LINK :REL "modulepreload" :HREF "/js/teachers.lisp")
   (:LINK :REL "preload" :AS "font" :crossorigin "" :type "font/woff2" :href "/webfonts/fa-solid-900.woff2")
 
   (:TITLE "Spickipedia"))
