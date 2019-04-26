@@ -329,24 +329,16 @@
                    *template-directory*))
 
 (my-defroute :POST "/api/tags" (:admin :user) () "application/json"
-;; https://github.com/fukamachi/sxql/issues/20
   (let ((tags (cdr (assoc "tags" _parsed :test #'string=))))
     (print "hi")
     (print tags)
     (print "jo")
-    '(print
-      (mito:execute-sql
+    (print
+      (mito:retrieve-by-sql
         (select
           (:revision_id (:count :*))
           (from :wiki_article_revision_category)
           (where (:in :category tags))
-          (group-by :revision_id))))
-    (print
-      (mito:execute-sql
-        (make-statement :select
-          (make-clause :fields :revision_id (make-op :count :*))
-          (make-clause :from :wiki_article_revision_category)
-          (make-clause :where (make-op :in :category (make-sql-variable tags)))
-          (make-clause :group-by :revision_id)))))
+          (group-by :revision_id)))))
 
   "\"hi\"")
