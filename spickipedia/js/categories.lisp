@@ -36,13 +36,15 @@
              (create _csrf_token  (read-cookie "_csrf_token")
                      tags         (chain rest (split "/")))
              (lambda (data)
-               (chain data (sort (lambda (a b) (chain a (locale-compare b)))))
                (chain ($ "#tags-list") (html ""))
-               (loop for page in data do
-                (let ((templ ($ (chain ($ "#articles-entry") (html)))))
-                  (chain templ (find "a") (text page))
-                  (chain templ (find "a") (attr "href" (concatenate 'string "/wiki/" page)))
-                  (chain ($ "#tags-list") (append templ))))
+               (if (not (null data))
+                 (progn
+                   (chain data (sort (lambda (a b) (chain a (locale-compare b)))))
+                   (loop for page in data do
+                    (let ((templ ($ (chain ($ "#articles-entry") (html)))))
+                      (chain templ (find "a") (text page))
+                      (chain templ (find "a") (attr "href" (concatenate 'string "/wiki/" page)))
+                      (chain ($ "#tags-list") (append templ))))))
                (show-tab "#tags")))
            (fail (lambda (jq-xhr text-status error-thrown)
                    (handle-error jq-xhr T)))))
