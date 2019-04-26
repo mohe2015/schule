@@ -52,22 +52,6 @@
          ,@body)
        (throw-code 403)))
 
-(defmacro params-form (params-symb lambda-list)
-  (let ((pair (gensym "PAIR")))
-    `(nconc ,@(loop for arg in lambda-list
-                 collect (destructuring-bind (arg &optional default specified)
-                             (if (consp arg) arg (list arg))
-                           (declare (ignore default specified))
-                           `(let ((,pair (assoc ,(if (or (string= arg :captures)
-                                                         (string= arg :splat))
-                                                     (intern (symbol-name arg) :keyword)
-                                                     (symbol-name arg))
-                                                ,params-symb
-                                                :test #'string=)))
-                              (if ,pair
-                                  (list ,(intern (symbol-name arg) :keyword) (cdr ,pair))
-                                  nil)))))))
-
 (defparameter *VERSION* "1")
 
 (defun valid-csrf () ;; TODO secure string compare
@@ -130,23 +114,15 @@
   (setf (getf (response-headers *response*) :referrer-policy) "no-referrer"))
 
 (defmacro my-defroute (method path permissions params content-type &body body)
-  (let ((params-var (gensym "PARAMS")))
-    `(setf (ningle/app:route *web* ,path :method ,method)
-           (lambda (,params-var)
+  `(defroute (,path :method ,method) (&key ,@params)
              (basic-headers)
-             (destructuring-bind (&key _parsed ,@params &allow-other-keys)
-                 (append (list
-                          :_parsed
-                          (CAVEMAN2.NESTED-PARAMETER:PARSE-PARAMETERS ,params-var))
-                         (params-form ,params-var ,params))
-               (declare (ignorable _parsed))
-               (setf (getf (response-headers *response*) :content-type) ,content-type)
-               (with-connection (db)
-                 ,(if permissions
-                      `(with-user
-                           (with-group ',permissions
-                             ,@body))
-                      `(progn ,@body))))))))
+             (setf (getf (response-headers *response*) :content-type) ,content-type)
+             (with-connection (db)
+               ,(if permissions
+                    `(with-user
+                         (with-group ',permissions
+                           ,@body))
+                    `(progn ,@body)))))
 
 (my-defroute :GET "/api/wiki/:title" (:admin :user :anonymous) (title) "application/json"
   (let* ((article (mito:find-dao 'wiki-article :title title)))
@@ -185,7 +161,7 @@
           (categories . ,(list-to-array (mapcar #'(lambda (v) (wiki-article-revision-category-category v)) (retrieve-dao 'wiki-article-revision-category :revision revision)))))))
      "{\"content\":\"\", \"categories\": []}")))
 
-(my-defroute :POST "/api/wiki/:title" (:admin :user) (title |summary| |html|) "text/html"
+(my-defroute :POST "/api/wiki/:title" (:admin :user) (title |summary| |html| _parsed) "text/html"
   (let* ((article (mito:find-dao 'wiki-article :title title))
          (categories (cdr (assoc "categories" _parsed :test #'string=))))
     (if (not article)
@@ -328,7 +304,7 @@
   (merge-pathnames #P"_errors/404.html"
                    *template-directory*))
 
-(my-defroute :POST "/api/tags" (:admin :user) () "application/json"
+(my-defroute :POST "/api/tags" (:admin :user) (_parsed) "application/json"
   (let* ((tags (cdr (assoc "tags" _parsed :test #'string=)))
          (result (mito:retrieve-by-sql
                   (select
