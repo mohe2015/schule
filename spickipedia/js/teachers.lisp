@@ -15,6 +15,13 @@
       (let* ((formElement (chain document (query-selector "#create-teacher-form")))
              (formData (new (-Form-Data formElement)))
              (request (new -X-M-L-Http-Request)))
+        (setf (chain request onload)
+              (lambda (event)
+                ;; todo check response code
+                (alert "success")))
+        (setf (chain request onerror)
+              (lambda (event)
+                (alert "error")))
         (chain request (open "POST" "/api/teachers"))
         (chain formData (append "_csrf_token" (read-cookie "_csrf_token")))
         (chain request (send formData)))
