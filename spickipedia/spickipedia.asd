@@ -28,18 +28,17 @@
            :lack-middleware-csrf
            :trivial-mimes
            :postmodern
-           :cl-who
-           )
-  :components ((:module "src"
-                :components
-                (
+           :cl-who)
+  :components
+    ((:module "src" :components (
          (:file "sanitize")
          (:file "parenscript")
          (:file "tsquery-converter")
          (:file "main" :depends-on ("config" "view" "db"))
-                 (:file "web" :depends-on ("view" "parenscript"))
-                 (:file "view" :depends-on ("config"))
-                 (:file "db" :depends-on ("config"))
-                 (:file "config"))))
+         (:file "web" :depends-on ("view" "parenscript"))
+         (:file "schedule" :depends-on ("web"))
+         (:file "view" :depends-on ("config"))
+         (:file "db" :depends-on ("config"))
+         (:file "config"))))
   :description ""
   :in-order-to ((test-op (test-op "spickipedia-test"))))

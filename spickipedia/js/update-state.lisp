@@ -13,6 +13,7 @@
 (i "./articles.lisp" "handleArticles")
 (i "./show-tab.lisp" "showTab")
 (i "./categories.lisp" "handleTagsRest")
+(i "./teachers.lisp" "handleTeachersNew")
 
 (export
  (defun update-state ()

@@ -47,6 +47,7 @@
   "/js/get-url-parameter.lisp"
   "/js/editor.lisp"
   "/js/hide-editor.lisp"
+  "/js/teachers.lisp"
   "/favicon.ico"))
 
 (chain
