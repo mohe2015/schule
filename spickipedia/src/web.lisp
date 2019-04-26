@@ -337,5 +337,5 @@
                     (where (:in :category tags))
                     (group-by :revision_id)))))
     (loop for revision in result do
-      (print (mito:find-dao 'wiki-article-revision :id (getf revision :revision-id)))))
+      (print (wiki-article-title (wiki-article-revision-article (mito:find-dao 'wiki-article-revision :id (getf revision :revision-id)))))))
   "\"hi\"")
