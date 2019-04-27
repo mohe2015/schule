@@ -5,10 +5,10 @@
 
 (defmethod session-verify ((request request))
   (let ((mito:*connection* (dbi:connect-cached :postgres :username "postgres" :database-name "spickipedia"))
-    (session-identifier (cookie-in (session-cookie-name *acceptor*) request)))
+        (session-identifier (cookie-in (session-cookie-name *acceptor*) request)))
     (if session-identifier
-    (mito:find-dao 'my-session :session-cookie session-identifier)
-    nil)))
+     (mito:find-dao 'my-session :session-cookie session-identifier)
+     nil)))
 
 (defmethod session-cookie-value ((my-session my-session))
   (and my-session (my-session-cookie my-session)))

@@ -25,7 +25,7 @@
              (:span :class "closable-badge-label" category)
              (:button :type "button" :class "close close-tag" :aria-label "Close"
                   (:span :aria-hidden "true" "&times;"))))))))
-  (chain ($ "article") (html (chain data content)))      
+  (chain ($ "article") (html (chain data content)))
   (render-math))
 
 (defroute "/wiki/:name"
@@ -43,30 +43,30 @@
    network-update
    (chain (fetch (concatenate 'string "/api/wiki/" (chain pathname 2)))
       (then (lambda (response)
-          (chain response (json))))
+             (chain response (json))))
       (then (lambda (data)
-          (setf network-data-received T)
-          (update-page data)))))
-  
+             (setf network-data-received T)
+             (update-page data)))))
+
   ;; fetch cached data
   (chain
    caches
    (match (concatenate 'string "/api/wiki/" (chain pathname 2)))
    (then (lambda (response)
-       (if (not response)
-           (throw (-error "No data"))) ;; is that right syntax?
-       (chain response (json))))
+          (if (not response)
+              (throw (-error "No data"))) ;; is that right syntax?
+          (chain response (json))))
    (then (lambda (data)
        ;; don't overwrite newer network data
-       (if (not network-data-received)
-           (update-page data))))
+          (if (not network-data-received)
+              (update-page data))))
    (catch (lambda ()
         ;; we didn't get cached data, the network is our last hope
-        network-update))
+           network-update))
    (catch (lambda (jq-xhr text-status error-thrown)
-        (if (= (chain jq-xhr status) 404)
-        (show-tab "#not-found")
-        (handle-error jq-xhr T))))
+           (if (= (chain jq-xhr status) 404)
+            (show-tab "#not-found")
+            (handle-error jq-xhr T))))
    (then (lambda ()
        ;; stop spinner
-       (show-tab "#page")))))
+          (show-tab "#page")))))

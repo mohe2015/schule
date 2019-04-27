@@ -1,42 +1,46 @@
 (in-package :cl-user)
 (defpackage spickipedia.db
-  (:use :cl)
+  (:use :cl :mito)
   (:import-from :spickipedia.config
                 :config)
-  (:import-from :mito
-                :*connection*)
   (:import-from :cl-dbi
                 :connect-cached)
   (:import-from #:alexandria
-                 #:make-keyword
+                #:make-keyword
                 #:compose)
   (:export :connection-settings
            :db
            :with-connection
-       :user
-       :wiki-article
-       :wiki-article-revision
-       :my-session
-       :quiz
-       :quiz-revision
-       :user-name
-       :user-group
-       :user-hash
-       :wiki-article-title
-       :wiki-article-revision-author
-       :wiki-article-revision-article
-       :wiki-article-revision-summary
-       :wiki-article-revision-content
-       :my-session-cookie
-       :my-session-csrf-token
-       :my-session-user
-       :quiz-revision-author
-       :quiz-revision-quiz
-       :quiz-revision-content
-       :wiki-article-revision-category
-       :wiki-article-revision-category-revision
-       :wiki-article-revision-category-category
-       :setup-db))
+           :teacher
+           :teacher-revision
+           :teacher-revision-author
+           :teacher-revision-teacher
+           :teacher-revision-name
+           :teacher-revision-initial
+           :user
+           :wiki-article
+           :wiki-article-revision
+           :my-session
+           :quiz
+           :quiz-revision
+           :user-name
+           :user-group
+           :user-hash
+           :wiki-article-title
+           :wiki-article-revision-author
+           :wiki-article-revision-article
+           :wiki-article-revision-summary
+           :wiki-article-revision-content
+           :my-session-cookie
+           :my-session-csrf-token
+           :my-session-user
+           :quiz-revision-author
+           :quiz-revision-quiz
+           :quiz-revision-content
+           :wiki-article-revision-category
+           :wiki-article-revision-category-revision
+           :wiki-article-revision-category-category
+           :setup-db))
 
 (in-package :spickipedia.db)
 
@@ -62,13 +66,13 @@
    (hash  :col-type (:varchar 512)
     :initarg :hash
     :accessor user-hash))
-  (:metaclass mito:dao-table-class))
+  (:metaclass dao-table-class))
 
 (defclass wiki-article ()
   ((title :col-type (:varchar 128)
     :initarg :title
     :accessor wiki-article-title))
-  (:metaclass mito:dao-table-class))
+  (:metaclass dao-table-class))
 
 (defclass wiki-article-revision ()
   ((author :col-type user
@@ -83,7 +87,7 @@
    (content :col-type (:text)
     :initarg :content
     :accessor wiki-article-revision-content))
-  (:metaclass mito:dao-table-class))
+  (:metaclass dao-table-class))
 
 (defclass wiki-article-revision-category ()
   ((revision :col-type wiki-article-revision
@@ -92,7 +96,7 @@
    (category :col-type (:varchar 256)
     :initarg :category
     :accessor wiki-article-revision-category-category))
-  (:metaclass mito:dao-table-class))
+  (:metaclass dao-table-class))
 
 (defclass my-session ()
   ((session-cookie :col-type (:varchar 512)
@@ -104,11 +108,11 @@
    (user           :col-type (or user :null)
        :initarg  :user
        :accessor my-session-user))
-  (:metaclass mito:dao-table-class))
+  (:metaclass dao-table-class))
 
 (defclass quiz ()
   ()
-  (:metaclass mito:dao-table-class))
+  (:metaclass dao-table-class))
 
 (defclass quiz-revision ()
   ((author :col-type user
@@ -120,24 +124,46 @@
    (content :col-type (:text)
     :initarg :content
     :accessor quiz-revision-content))
-  (:metaclass mito:dao-table-class))
+  (:metaclass dao-table-class))
 
+(defclass teacher ()
+  ()
+  (:metaclass dao-table-class))
+
+(defclass teacher-revision ()
+  ((author :col-type user
+           :initarg :author
+           :accessor teacher-revision-author)
+   (teacher :col-type teacher
+            :initarg :teacher
+            :accessor teacher-revision-teacher)
+   (name :col-type (:varchar 128)
+         :initarg :name
+         :accessor teacher-revision-name)
+   (initial :col-type (:varchar 64)
+            :initarg :initial
+            :accessor teacher-revision-initial))
+  (:metaclass dao-table-class))
 
 (defun setup-db ()
   (with-connection (db)
-    (mito:ensure-table-exists 'user)
-    (mito:ensure-table-exists 'wiki-article)
-    (mito:ensure-table-exists 'wiki-article-revision)
-    (mito:ensure-table-exists 'my-session)
-    (mito:ensure-table-exists 'quiz)
-    (mito:ensure-table-exists 'quiz-revision)
-    (mito:ensure-table-exists 'wiki-article-revision-category)
-    (mito:migrate-table 'user)
-    (mito:migrate-table 'wiki-article)
-    (mito:migrate-table 'wiki-article-revision)
-    (mito:migrate-table 'my-session)
-    (mito:migrate-table 'quiz)
-    (mito:migrate-table 'quiz-revision)
-    (mito:migrate-table 'wiki-article-revision-category)))
+    (ensure-table-exists 'user)
+    (ensure-table-exists 'wiki-article)
+    (ensure-table-exists 'wiki-article-revision)
+    (ensure-table-exists 'my-session)
+    (ensure-table-exists 'quiz)
+    (ensure-table-exists 'quiz-revision)
+    (ensure-table-exists 'wiki-article-revision-category)
+    (ensure-table-exists 'teacher)
+    (ensure-table-exists 'teacher-revision)
+    (migrate-table 'user)
+    (migrate-table 'wiki-article)
+    (migrate-table 'wiki-article-revision)
+    (migrate-table 'my-session)
+    (migrate-table 'quiz)
+    (migrate-table 'quiz-revision)
+    (migrate-table 'wiki-article-revision-category)
+    (migrate-table 'teacher)
+    (migrate-table 'teacher-revision)))
 
 (setup-db)

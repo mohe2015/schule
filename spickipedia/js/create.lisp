@@ -14,7 +14,7 @@
       (chain ($ "article") (html "")))
   (show-editor)
   (show-tab "#page"))
- 
+
 
 
 (chain

@@ -42,16 +42,16 @@
   (if (not (null (chain window history state)))
       (init-editor (chain window history state))
       (progn
-    (show-tab "#loading")
-    (chain
-     $
-     (get
-      (concatenate 'string "/api/wiki/" name)
-      (lambda (data)
-        (init-editor data)
-        (chain window history (replace-state data nil nil))))
-     (fail
-      (lambda (jq-xhr text-status error-thrown)
-        (if (= (chain jq-xhr status) 404)
-        (show-tab "#not-found")
-        (handle-error jq-xhr T))))))))
+       (show-tab "#loading")
+       (chain
+        $
+        (get
+         (concatenate 'string "/api/wiki/" name)
+         (lambda (data)
+           (init-editor data)
+           (chain window history (replace-state data nil nil))))
+        (fail
+         (lambda (jq-xhr text-status error-thrown)
+           (if (= (chain jq-xhr status) 404)
+            (show-tab "#not-found")
+            (handle-error jq-xhr T))))))))

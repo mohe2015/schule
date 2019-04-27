@@ -13,6 +13,7 @@
 (i "./articles.lisp" "handleArticles")
 (i "./show-tab.lisp" "showTab")
 (i "./categories.lisp" "handleTagsRest")
+(i "./teachers.lisp" "handleTeachersNew")
 
 (export
  (defun update-state ()
@@ -22,11 +23,11 @@
        (chain ($ "#logout") (text (concatenate 'string (chain window local-storage name) " abmelden"))))
    (if (and (not (= (chain window location pathname) "/login")) (undefined (chain window local-storage name)))
        (progn
-     (chain window history
-        (push-state (create
-                 last-url (chain window location href)
-                 last-state (chain window history state)) nil "/login"))
-     (update-state)))
+        (chain window history
+           (push-state (create
+                        last-url (chain window location href)
+                        last-state (chain window history state)) nil "/login"))
+        (update-state)))
    (loop for route in (chain window routes) do
     (if (route (chain window location pathname))
         (return-from update-state)))
