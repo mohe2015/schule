@@ -259,9 +259,12 @@
 (my-defroute :GET "/api/file/:name" (:admin :user :anonymous) (name) (get-safe-mime-type (merge-pathnames (concatenate 'string "uploads/" name)))
   (merge-pathnames (concatenate 'string "uploads/" name)))
 
-(my-defroute :GET "/js/:file" nil (file) "application/javascript"
-  (with-cache (read-file-into-string (merge-pathnames (concatenate 'string "js/" file) *application-root*))
-    (file-js-gen (concatenate 'string (namestring *application-root*) "js/" file)))) ;; TODO local file inclusion
+(defroute ("/js/*" :method :GET) (&key splat)
+  (print (first splat))
+  (basic-headers)
+  (setf (getf (response-headers *response*) :content-type) "application/javascript")
+  (with-cache (read-file-into-string (merge-pathnames (concatenate 'string "js/" (first splat)) *application-root*))
+    (file-js-gen (concatenate 'string (namestring *application-root*) "js/" (first splat))))) ;; TODO local file inclusion
 
 ;; TODO basically depends on every asset
 (my-defroute :GET "/sw.lisp" nil () "application/javascript"
