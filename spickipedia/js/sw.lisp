@@ -8,7 +8,7 @@
  urls-to-cache
  ([]
   "/"
-  "/bootstrap.css"
+  "/bootstrap.min.css"
   "/all.css"
   "/index.css"
   "/jquery-3.3.1.js"
@@ -16,7 +16,7 @@
   "/mathlive.css"
   "/mathlive.js"
   "/popper.js"
-  "/bootstrap.js"
+  "/bootstrap.min.js"
   "/visual-diff.js"
   "/webfonts/fa-solid-900.woff2"
   "/js/index.lisp"

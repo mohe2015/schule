@@ -2,7 +2,7 @@
  (:HEAD (:META :CHARSET "utf-8")
   (:META :NAME "viewport" :CONTENT
    "width=device-width, initial-scale=1, shrink-to-fit=no")
-  (:LINK :REL "stylesheet" :HREF "/bootstrap.css")
+  (:LINK :REL "stylesheet" :HREF "/bootstrap.min.css")
   (:LINK :REL "stylesheet" :HREF "/all.css")
   (:LINK :REL "stylesheet" :HREF "/index.css")
 
@@ -404,7 +404,7 @@
   (:LINK :REL "stylesheet" :HREF "/mathlive.css")
   (:SCRIPT :SRC "/mathlive.js")
   (:SCRIPT :SRC "/popper.js")
-  (:SCRIPT :SRC "/bootstrap.js")
+  (:SCRIPT :SRC "/bootstrap.min.js")
   (:SCRIPT :SRC "/visual-diff.js")
   (:SCRIPT :NOMODULE "" :SRC "no_module_support.js")
 
