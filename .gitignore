@@ -6,3 +6,4 @@ quicklisp.lisp
 quicklisp.lisp.asc
 uploads/
 track.json
+node_modules/
