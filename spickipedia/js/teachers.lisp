@@ -3,6 +3,7 @@
 (i "./show-tab.lisp" "showTab")
 (i "./read-cookie.lisp" "readCookie")
 (i "./handle-error.lisp" "handleError")
+(i "./fetch.lisp" "checkStatus" "json" "handleFetchError")
 
 (defroute "/teachers/new"
   (show-tab "#create-teacher-tab"))
@@ -13,17 +14,17 @@
   (submit
     (lambda (event)
       (let* ((formElement (chain document (query-selector "#create-teacher-form")))
-             (formData (new (-Form-Data formElement)))
-             (request (new -X-M-L-Http-Request)))
-        (setf (chain request onload)
-              (lambda (event)
-                ;; todo check response code
-                (alert "success")))
-        (setf (chain request onerror)
-              (lambda (event)
-                (alert "error")))
-        (chain request (open "POST" "/api/teachers"))
+             (formData (new (-Form-Data formElement))))
         (chain formData (append "_csrf_token" (read-cookie "_csrf_token")))
-        (chain request (send formData)))
-        ;; TODO get response
+        (chain
+          (fetch
+            "/api/teachers"
+            (create
+              method "POST"
+              body formData))
+          (then check-status)
+          (then
+            (lambda (data)
+              (alert data)))
+          (catch handle-fetch-error)))
       F)))
