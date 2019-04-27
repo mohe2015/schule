@@ -44,6 +44,7 @@
     (:INPUT :TYPE "checkbox" :CLASS "custom-control-input" :ID "customCheck1")
     (:LABEL :CLASS "custom-control-label" :FOR "customCheck1"
      "Check this custom")))
+
   (:TEMPLATE :ID "multiple-choice-question"
    (:DIV :CLASS "multiple-choice-question"
     (:FORM
@@ -55,6 +56,7 @@
       "btn btn-primary mb-1 add-response-possibility"
       "Antwortmöglichkeit hinzufügen"))
     (:HR)))
+
   (:TEMPLATE :ID "text-question"
    (:DIV :CLASS "text-question"
     (:FORM
@@ -65,6 +67,7 @@
       (:INPUT :TYPE "text" :CLASS "form-control answer" :PLACEHOLDER
        "Antwort eingeben")))
     (:HR)))
+
   (:TEMPLATE :ID "multiple-choice-response-possibility"
    (:DIV :CLASS "input-group mb-3"
     (:DIV :CLASS "input-group-prepend"
@@ -73,11 +76,13 @@
        :ARIA-LABEL "Checkbox for following text input")))
     (:INPUT :TYPE "text" :CLASS "form-control multiple-choice-response-text"
      :ARIA-LABEL "Text input with checkbox")))
+
   (:TEMPLATE :ID "search-result-template"
    (:A :CLASS "list-group-item list-group-item-action"
     (:DIV
      (:DIV (:H5 :CLASS "mt-0 s-title" "Media heading")
       (:DIV :CLASS "search-result-summary word-wrap")))))
+
   (:TEMPLATE :ID "history-item-template" " "
    (:DIV :CLASS "list-group-item list-group-item-action"
     (:DIV :CLASS "d-flex w-100 justify-content-between"
@@ -91,7 +96,9 @@
       (:I :CLASS "fas fa-eye"))
      (:A :TYPE "button" :CLASS "btn btn-outline-dark history-diff"
       (:I :CLASS "fas fa-columns")))))
+
   (:TEMPLATE :ID "articles-entry" (:LI (:A :CLASS "" :HREF "#" "Hauptseite")))
+
   (:NAV :CLASS "navbar navbar-expand-md navbar-light bg-light"
    (:A :CLASS "navbar-brand " :HREF "/wiki/Hauptseite" "Spickipedia ")
    (:DIV :CLASS "login-hide"
@@ -110,6 +117,7 @@
       (:A :CLASS "nav-link edit-button" :HREF "#" "Bearbeiten"))
      (:LI :CLASS "nav-item"
       (:A :CLASS "nav-link " :HREF "/logout" :ID "logout" "Abmelden")))))
+
   (:DIV
    (:DIV :STYLE "display: none;" :CLASS "container my-tab position-absolution"
     :ID "edit-quiz" (:H1 :CLASS "text-center" "Quiz ändern")
@@ -121,6 +129,7 @@
      "Frage mit Textantwort hinzufügen")
     (:BUTTON :TYPE "button" :CLASS "btn btn-primary mb-1 save-quiz"
      "Speichern")))
+
   (:div :style "display: none;" :class "container-fluid my-tab position-absolute" :id "create-teacher-tab"
     (:FORM :method "POST" :action "/api/teachers" :id "create-teacher-form"
      (:DIV :CLASS "form-group"
@@ -132,12 +141,15 @@
      (:BUTTON :TYPE "submit" :CLASS
       "btn btn-primary"
       "LehrerIn erstellen")))
+
   (:DIV :STYLE "display: none;" :CLASS "container my-tab position-absolute" :ID "articles"
     (:H1 :CLASS "text-center" "Alle Artikel")
     (:UL :ID "articles-list"))
+
   (:div :style "display:none;" :class "container my-tab position-absolute" :id "tags"
     (:h1 :class "text-center" "Tags")
     (:ul :id "tags-list"))
+
   (:DIV :STYLE "display: none;" :CLASS "container my-tab position-absolute" :ID
    "multiple-choice-question-html"
    (:H2 :CLASS "text-center question-html" "Dies ist eine Testfrage?")
@@ -147,8 +159,14 @@
       "btn btn-primary mt-1 multiple-choice-submit-html" "Absenden")
      (:BUTTON :TYPE "button" :STYLE "display: none;" :CLASS
       "btn btn-primary mt-1 next-question" "Nächste Frage"))))
+
   (:DIV :STYLE "display: none;" :CLASS "container my-tab position-absolute" :ID
    "quiz-results" (:H1 :CLASS "text-center" "Ergebnisse") (:P :ID "result"))
+
+  (:DIV :STYLE "display: none;" :class "container my-tab position-absolute" :ID "list-teachers"
+    (:h2 :class "text-center" "Lehrer")
+    (:ul :id "teachers-list"))
+
   (:DIV :STYLE "display: none;" :CLASS "container my-tab position-absolute" :ID
    "text-question-html"
    (:H2 :CLASS "text-center question-html" "Dies ist eine Testfrage?")
@@ -160,6 +178,7 @@
       "Absenden")
      (:BUTTON :TYPE "button" :STYLE "display: none;" :CLASS
       "btn btn-primary mt-1 next-question" "Nächste Frage"))))
+
   (:DIV :STYLE "display: none;" :CLASS
    "container my-tab position-absolute col-sm-6 offset-sm-3 col-md-4 offset-md-4 text-center"
    :ID "login" (:H1 "Anmelden")
@@ -172,6 +191,7 @@
       :PLACEHOLDER "Passwort" :REQUIRED ""))
     (:BUTTON :CLASS "btn btn-primary" :TYPE "submit" :ID "login-button"
      "Anmelden")))
+
   (:DIV :STYLE "display: none;" :CLASS
    "container-fluid my-tab position-absolute word-wrap" :ID "page"
    (:DIV :CLASS "alert alert-warning mt-1 d-none" :ID "is-outdated-article"
@@ -209,15 +229,18 @@
      "http://creativecommons.org/licenses/by-sa/4.0/deed.de"
      "Creative Commons Namensnennung - Weitergabe unter gleichen Bedingungen 4.0 International Lizenz")
     "."))
+
   (:DIV :STYLE "display: none;" :CLASS
    "container-fluid my-tab position-absolute" :ID "not-found"
    (:DIV :CLASS "alert alert-danger" :ROLE "alert"
     " Der Artikel konnte nicht gefunden werden. Möchtest du ihn "
     (:A :ID "create-article" :HREF "#" :CLASS "alert-link" "erstellen") "?"))
+
   (:DIV :STYLE "display: none;" :CLASS
    "container-fluid my-tab position-absolute" :ID "history"
    (:H1 :CLASS "text-center" "Änderungsverlauf")
    (:DIV :CLASS "list-group" :ID "history-list"))
+
   (:DIV :STYLE "display: none;" :CLASS
    "container-fluid my-tab position-absolute" :ID "search" " " (:BR)
    (:DIV :CLASS "input-group mb-3"
@@ -239,15 +262,18 @@
         "erstellen")
        "?"))
      (:DIV :CLASS "list-group" :ID "search-results-content"))))
+
   (:DIV :CLASS "my-tab position-absolute" :STYLE
    "top: 50%; left: 50%; margin-left: -1rem; margin-top: -1rem;" :ID "loading"
    (:DIV :CLASS "spinner-border" :ROLE "status"
     (:SPAN :CLASS "sr-only" "Loading...")))
+
   (:DIV :STYLE "display: none;" :CLASS
    "container-fluid my-tab position-absolute" :ID "error"
    (:DIV :CLASS "alert alert-danger" :ROLE "alert"
     (:SPAN :ID "errorMessage") " "
     (:A :HREF "#" :ID "refresh" :CLASS "alert-link" "Erneut versuchen")))
+
   (:DIV :CLASS "modal fade" :ID "publish-changes-modal" :TABINDEX "-1" :ROLE
    "dialog" :ARIA-HIDDEN "true"
    (:DIV :CLASS "modal-dialog" :ROLE "document"
@@ -276,6 +302,7 @@
        (:SPAN :CLASS "spinner-border spinner-border-sm" :ROLE "status"
         :ARIA-HIDDEN "true")
        " Veröffentlichen... ")))))
+
   (:DIV :CLASS "modal fade" :ID "uploadProgressModal" :TABINDEX "-1" :ROLE
    "dialog" :ARIA-LABELLEDBY "exampleModalCenterTitle" :ARIA-HIDDEN "true"
    (:DIV :CLASS "modal-dialog modal-dialog-centered" :ROLE "document"
@@ -286,6 +313,7 @@
         "progress-bar progress-bar-striped progress-bar-animated" :ROLE
         "progressbar" :ARIA-VALUENOW "75" :ARIA-VALUEMIN "0" :ARIA-VALUEMAX
         "100" :STYLE "width: 0%"))))))
+
   (:DIV :CLASS "modal fade" :ID "spickiLinkModal" :TABINDEX "-1" :ROLE "dialog"
    :ARIA-HIDDEN "true"
    (:DIV :CLASS "modal-dialog" :ROLE "document"
@@ -305,6 +333,7 @@
      (:DIV :CLASS "modal-footer"
       (:BUTTON :TYPE "button" :CLASS "btn btn-primary" :ID "publish-changes"
        "Änderungen veröffentlichen")))))
+
   (:DIV :CLASS "modal fade" :ID "settings-modal" :TABINDEX "-1" :ROLE "dialog"
    :ARIA-LABELLEDBY "exampleModalLabel" :ARIA-HIDDEN "true"
    (:DIV :CLASS "modal-dialog" :ROLE "document"
@@ -320,6 +349,7 @@
      (:DIV :CLASS "modal-footer"
       (:BUTTON :TYPE "button" :CLASS "btn btn-secondary" :DATA-DISMISS "modal"
        "Fertig")))))
+
   (:DIV :CLASS "modal fade" :ID "link-modal" :TABINDEX "-1" :ROLE "dialog"
    :ARIA-LABELLEDBY "exampleModalLabel" :ARIA-HIDDEN "true"
    (:DIV :CLASS "modal-dialog" :ROLE "document"
@@ -338,6 +368,7 @@
         "Abbrechen")
        (:BUTTON :TYPE "submit" :CLASS "btn btn-primary" :ID "update-link"
         "Ok"))))))
+
   (:DIV :CLASS "modal fade" :ID "table-modal" :TABINDEX "-1" :ROLE "dialog"
    :ARIA-LABELLEDBY "exampleModalLabel" :ARIA-HIDDEN "true"
    (:DIV :CLASS "modal-dialog" :ROLE "document"
@@ -357,6 +388,7 @@
        "Abbrechen")
       (:BUTTON :TYPE "button" :CLASS "btn btn-primary" :ID "update-table"
        "Ok")))))
+
   (:DIV :CLASS "modal fade" :ID "image-modal" :TABINDEX "-1" :ROLE "dialog"
    :ARIA-LABELLEDBY "exampleModalLabel" :ARIA-HIDDEN "true"
    (:DIV :CLASS "modal-dialog" :ROLE "document"
@@ -379,6 +411,7 @@
        "Abbrechen")
       (:BUTTON :TYPE "button" :CLASS "btn btn-primary" :ID "update-image"
        "Ok")))))
+
   (:DIV :CLASS "modal fade" :ID "formula-modal" :TABINDEX "-1" :ROLE "dialog"
    :ARIA-LABELLEDBY "exampleModalLabel" :ARIA-HIDDEN "true"
    (:DIV :CLASS "modal-dialog" :ROLE "document"
@@ -398,6 +431,7 @@
        "Abbrechen")
       (:BUTTON :TYPE "button" :CLASS "btn btn-primary" :ID "update-formula"
        "Ok")))))
+       
   (:SCRIPT :SRC "/jquery-3.3.1.js")
   ;; load later only when needed
   (:LINK :REL "stylesheet" :HREF "/mathlive.core.css")
