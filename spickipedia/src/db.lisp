@@ -145,6 +145,34 @@
             :accessor teacher-revision-initial))
   (:metaclass dao-table-class))
 
+(defclass course ()
+  ()
+  (:metaclass dao-table-class))
+
+(defclass course-revision ()
+  ((author :col-type user
+           :initarg :author
+           :accessor course-revision-author)
+   (teacher :col-type teacher
+            :initarg :teacher
+            :accessor course-revision-teacher)
+   (type :col-type (:varchar 4)
+         :initarg :type
+         :accessor course-revision-type)
+   (subject :col-type (:varchar 64)
+            :initarg :subject
+            :accessor course-revision-subject)
+   (is-tutorial :col-type :boolean
+                :initarg :is-tutorial
+                :accessor :course-revision-is-tutorial)
+   (class :col-type (:varchar 64)
+          :initarg :class
+          :accessor course-revision-class)
+   (topic :col-type (:varchar 512)
+          :initarg :topic
+          :accessor course-revision-topic))
+  (:metaclass dao-table-class))
+
 (defun setup-db ()
   (with-connection (db)
     (ensure-table-exists 'user)
@@ -156,6 +184,8 @@
     (ensure-table-exists 'wiki-article-revision-category)
     (ensure-table-exists 'teacher)
     (ensure-table-exists 'teacher-revision)
+    (ensure-table-exists 'course)
+    (ensure-table-exists 'course-revision)
     (migrate-table 'user)
     (migrate-table 'wiki-article)
     (migrate-table 'wiki-article-revision)
@@ -164,6 +194,8 @@
     (migrate-table 'quiz-revision)
     (migrate-table 'wiki-article-revision-category)
     (migrate-table 'teacher)
-    (migrate-table 'teacher-revision)))
+    (migrate-table 'teacher-revision)
+    (migrate-table 'course)
+    (migrate-table 'course-revision)))
 
 (setup-db)
