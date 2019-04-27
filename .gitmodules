@@ -28,3 +28,6 @@
 [submodule "spickipedia/bootstrap"]
 	path = spickipedia/bootstrap
 	url = git://github.com/twbs/bootstrap.git
+[submodule "bootstrap"]
+	path = bootstrap
+	url = git@github.com:mohe2015/bootstrap.git
