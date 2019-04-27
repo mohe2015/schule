@@ -4,7 +4,7 @@
 
 (export
   (defun handle-fetch-error (error)
-    (chain console (log (chain error response)))
+    (chain console (log (chain error)))
     (let ((status (chain error response status)))
       (if (= status 401)
        (let ((name (chain ($ "#inputName") (val (chain window local-storage name)))))
@@ -18,7 +18,7 @@
 
 (export
   (defun handle-fetch-error-show (error)
-    (chain console (log (chain error response)))
+    (chain console (log (chain error)))
     (let ((status (chain error response status)))
       (if (= status 401)
        (let ((name (chain ($ "#inputName") (val (chain window local-storage name)))))

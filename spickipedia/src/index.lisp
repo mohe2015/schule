@@ -45,6 +45,9 @@
     (:LABEL :CLASS "custom-control-label" :FOR "customCheck1"
      "Check this custom")))
 
+  (:template :id "teachers-list-html"
+    (:span :class "teachers-list-name"))
+
   (:TEMPLATE :ID "multiple-choice-question"
    (:DIV :CLASS "multiple-choice-question"
     (:FORM
@@ -431,7 +434,7 @@
        "Abbrechen")
       (:BUTTON :TYPE "button" :CLASS "btn btn-primary" :ID "update-formula"
        "Ok")))))
-       
+
   (:SCRIPT :SRC "/jquery-3.3.1.js")
   ;; load later only when needed
   (:LINK :REL "stylesheet" :HREF "/mathlive.core.css")
