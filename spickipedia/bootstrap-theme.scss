@@ -1,0 +1,90 @@
+/*!
+ * Bootstrap v4.3.1 (https://getbootstrap.com/)
+ * Copyright 2011-2019 The Bootstrap Authors
+ * Copyright 2011-2019 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ */
+
+$theme-colors: (
+  "primary": hsla(250, 100%, 50%, 1)
+);
+
+@import "bootstrap/scss/functions"; // required
+@import "bootstrap/scss/variables"; // required
+@import "bootstrap/scss/mixins"; // required
+
+//@import "bootstrap/scss/root";
+@import "bootstrap/scss/reboot"; // required
+@import "bootstrap/scss/type"; // required
+//@import "bootstrap/scss/images";
+//@import "bootstrap/scss/code";
+@import "bootstrap/scss/grid"; // required - maybe card footer can be used for aligning
+//@import "bootstrap/scss/tables";
+//@import "bootstrap/scss/forms";
+@import "bootstrap/scss/buttons"; // required
+//@import "bootstrap/scss/transitions";
+//@import "bootstrap/scss/dropdown";
+//@import "bootstrap/scss/button-group";
+//@import "bootstrap/scss/input-group";
+//@import "bootstrap/scss/custom-forms";
+@import "bootstrap/scss/nav"; // required
+@import "bootstrap/scss/navbar"; // required
+@import "bootstrap/scss/card"; // required
+//@import "bootstrap/scss/breadcrumb";
+//@import "bootstrap/scss/pagination";
+//@import "bootstrap/scss/badge";
+//@import "bootstrap/scss/jumbotron";
+//@import "bootstrap/scss/alert";
+//@import "bootstrap/scss/progress";
+//@import "bootstrap/scss/media";
+//@import "bootstrap/scss/list-group";
+//@import "bootstrap/scss/close";
+//@import "bootstrap/scss/toasts";
+//@import "bootstrap/scss/modal";
+//@import "bootstrap/scss/tooltip";
+//@import "bootstrap/scss/popover";
+@import "bootstrap/scss/carousel"; // required
+//@import "bootstrap/scss/spinners";
+@import "bootstrap/scss/utilities"; // required
+//@import "bootstrap/scss/print";
+
+.carousel-image {
+    max-width: 25em;
+}
+.carousel-inner img {
+  margin: auto;
+}
+.carousel-indicators li {
+    background-color: #007bff;
+}
+.carousel-control-prev-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='%23007bff' viewBox='0 0 8 8'%3e%3cpath d='M5.25 0l-4 4 4 4 1.5-1.5-2.5-2.5 2.5-2.5-1.5-1.5z'/%3e%3c/svg%3e");
+}
+.carousel-control-next-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='%23007bff' viewBox='0 0 8 8'%3e%3cpath d='M2.75 0l-1.5 1.5 2.5 2.5-2.5 2.5 1.5 1.5 4-4-4-4z'/%3e%3c/svg%3e");
+}
+
+.scroll-fade {
+    opacity: 1;
+    transition: all 1s;
+}
+li {
+    opacity: 1;
+    transition: all 1s;
+}
+
+.scroll-invisible {
+    opacity: 0;
+    transition: all 0s;
+}
+.center-on-image {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+html {
+  position: relative;
+  scroll-behavior: smooth;
+}
