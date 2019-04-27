@@ -3,7 +3,7 @@
 (i "./show-tab.lisp" "showTab")
 (i "./read-cookie.lisp" "readCookie")
 (i "./handle-error.lisp" "handleError")
-(i "./fetch.lisp" "checkStatus" "json" "handleFetchError")
+(i "./fetch.lisp" "checkStatus" "json" "html" "handleFetchError")
 
 (defroute "/teachers/new"
   (show-tab "#create-teacher-tab"))
@@ -23,6 +23,7 @@
               method "POST"
               body formData))
           (then check-status)
+          (then json)
           (then
             (lambda (data)
               (alert data)))
