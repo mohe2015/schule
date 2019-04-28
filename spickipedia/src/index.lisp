@@ -46,7 +46,7 @@
      "Check this custom")))
 
   (:template :id "teachers-list-html"
-    (:span :class "teachers-list-name"))
+    (:li :class "teachers-list-name"))
 
   (:TEMPLATE :ID "multiple-choice-question"
    (:DIV :CLASS "multiple-choice-question"
@@ -134,13 +134,29 @@
      "Speichern")))
 
   (:div :style "display: none;" :class "container-fluid my-tab position-absolute" :id "create-course-tab"
-    (:FORM :method "POST" :action "/api/teachers" :id "create-course-form"
+    (:FORM :method "POST" :action "/api/courses" :id "create-course-form"
      (:DIV :CLASS "form-group"
       (:label "Fach")
       (:INPUT :TYPE "text" :CLASS "form-control" :PLACEHOLDER "Fach" :name "subject"))
      (:DIV :CLASS "form-group"
+       (:label "Typ")
+       (:select :CLASS "custom-select" :name "type"
+         (:option :selected "true" "GK")
+         (:option "LK")))
+     (:DIV :CLASS "form-group"
+       (:label "LehrerIn")
+       (:select :CLASS "custom-select" :name "teacher"
+         (:option "Frau Schmitzke")))
+     (:div :class "custom-control custom-checkbox"
+       (:input :type "checkbox" :class "custom-control-input" :name "is-tutorial" :id "is-tutorial")
+       (:label :class "custom-control-label" :for "is-tutorial" "Tutorium?"))
+     (:DIV :CLASS "form-group"
       (:label "Klasse")
       (:INPUT :TYPE "text" :CLASS "form-control" :PLACEHOLDER "Klasse" :name "class"))
+     (:DIV :CLASS "form-group"
+      (:label "Thema")
+      (:INPUT :TYPE "text" :CLASS "form-control" :PLACEHOLDER "Thema" :name "topic"))
+
      (:BUTTON :TYPE "submit" :CLASS
       "btn btn-primary"
       "Kurs erstellen")))
