@@ -133,6 +133,18 @@
     (:BUTTON :TYPE "button" :CLASS "btn btn-primary mb-1 save-quiz"
      "Speichern")))
 
+  (:div :style "display: none;" :class "container-fluid my-tab position-absolute" :id "create-course-tab"
+    (:FORM :method "POST" :action "/api/teachers" :id "create-course-form"
+     (:DIV :CLASS "form-group"
+      (:label "Fach")
+      (:INPUT :TYPE "text" :CLASS "form-control" :PLACEHOLDER "Fach" :name "subject"))
+     (:DIV :CLASS "form-group"
+      (:label "Klasse")
+      (:INPUT :TYPE "text" :CLASS "form-control" :PLACEHOLDER "Klasse" :name "class"))
+     (:BUTTON :TYPE "submit" :CLASS
+      "btn btn-primary"
+      "Kurs erstellen")))
+
   (:div :style "display: none;" :class "container-fluid my-tab position-absolute" :id "create-teacher-tab"
     (:FORM :method "POST" :action "/api/teachers" :id "create-teacher-form"
      (:DIV :CLASS "form-group"
