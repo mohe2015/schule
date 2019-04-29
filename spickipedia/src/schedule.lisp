@@ -18,13 +18,18 @@
              teachers)))
     (encode-json-to-string teacher-revisions)))
 
-
-
-
-
-
-
-
+(my-defroute :POST "/api/courses" (:admin :user) (|subject| |type| |teacher| |is-tutorial| |class| |topic|) "text/html"
+  (let* ((course  (create-dao 'course))
+         (revision (create-dao 'course-revision
+                               :author user
+                               :course course
+                               :name (first |subject|)
+                               :initial (first |type|)
+                               :teacher (first |teacher|)
+                               :is-tutorial (first |is-tutorial|)
+                               :class (first |class|)
+                               :topic (first |topic|))))
+    (format nil "~a" (object-id teacher))))
 
 ;; TODO convert this to my-defroute because otherwise we cant use the features of it like  (basic-headers)
 ;; TODO moved here only temporarily so it only gets in action after all other handlers

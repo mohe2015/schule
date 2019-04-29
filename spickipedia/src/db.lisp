@@ -17,6 +17,15 @@
            :teacher-revision-teacher
            :teacher-revision-name
            :teacher-revision-initial
+           :course
+           :course-revision
+           :course-revision-author
+           :course-revision-teacher
+           :course-revision-type
+           :course-revision-subject
+           :course-revision-is-tutorial
+           :course-revision-class
+           :course-revision-topic
            :user
            :wiki-article
            :wiki-article-revision
@@ -164,7 +173,7 @@
             :accessor course-revision-subject)
    (is-tutorial :col-type :boolean
                 :initarg :is-tutorial
-                :accessor :course-revision-is-tutorial)
+                :accessor course-revision-is-tutorial)
    (class :col-type (:varchar 64)
           :initarg :class
           :accessor course-revision-class)
