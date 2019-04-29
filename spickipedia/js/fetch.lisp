@@ -13,7 +13,7 @@
        (if (= status 403)
            (let ((error-message "Du hast nicht die benötigten Berechtigungen, um diese Aktion durchzuführen. Sag mir Bescheid, wenn du glaubst, dass dies ein Fehler ist."))
              (alert error-message))
-           (let ((error-message (concatenate 'string "Unbekannter Fehler: " (chain jq-xhr status-text))))
+           (let ((error-message (concatenate 'string "Unbekannter Fehler: " (chain error response status-text))))
              (alert error-message)))))))
 
 (export
@@ -28,7 +28,7 @@
            (let ((error-message "Du hast nicht die benötigten Berechtigungen, um diese Aktion durchzuführen. Sag mir Bescheid, wenn du glaubst, dass dies ein Fehler ist."))
              (chain ($ "#errorMessage") (text error-message))
              (show-tab "#error"))
-           (let ((error-message (concatenate 'string "Unbekannter Fehler: " (chain jq-xhr status-text))))
+           (let ((error-message (concatenate 'string "Unbekannter Fehler: " (chain error response status-text))))
              (chain ($ "#errorMessage") (text error-message))
              (show-tab "#error")))))))
 
