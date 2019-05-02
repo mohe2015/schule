@@ -24,8 +24,8 @@
           (setf (chain teachers-list inner-h-t-m-l) "")
           (loop for page in data do
               (let ((template (get-template "teachers-list-html")))
-                (chain console (log template))
-                (setf (chain template (query-selector ".teachers-list-name") inner-text) "test")
+                (chain console (log (chain page name)))
+                (setf (chain template (query-selector ".teachers-list-name") inner-text) (chain page name))
                 (chain document (get-element-by-id "teachers-list") (append template)))))))
     (catch handle-fetch-error)))
 

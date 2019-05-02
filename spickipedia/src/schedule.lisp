@@ -14,7 +14,7 @@
          (teacher-revisions
            (mapcar
              #'(lambda (teacher)
-                 (select-dao 'teacher-revision (where (:= :teacher teacher)) (order-by (:desc :id)) (limit 1)))
+                 (first (select-dao 'teacher-revision (where (:= :teacher teacher)) (order-by (:desc :id)) (limit 1))))
              teachers)))
     (encode-json-to-string teacher-revisions)))
 
