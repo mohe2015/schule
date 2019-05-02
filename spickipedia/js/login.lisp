@@ -21,10 +21,7 @@
            (replace-state "/wiki/Hauptseite")
            (return))))
     (show-tab "#login")
-    (chain ($ ".login-hide")
-       (fade-out
-        (lambda ()
-          (chain ($ ".login-hide") (attr "style" "display: none !important")))))
+    (chain ($ ".login-hide") (attr "style" "display: none !important"))
     (chain ($ ".navbar-collapse") (remove-class "show"))))
 
 (chain
