@@ -4,9 +4,30 @@
 (i "./read-cookie.lisp" "readCookie")
 (i "./handle-error.lisp" "handleError")
 (i "./fetch.lisp" "checkStatus" "json" "html" "handleFetchError")
+(i "./template.lisp" "getTemplate")
 
 (defroute "/teachers/new"
   (show-tab "#create-teacher-tab"))
+
+(defroute "/teachers"
+  (show-tab "#list-teachers")
+
+  (chain
+    (fetch "/api/teachers")
+    (then check-status)
+    (then json)
+    (then
+      (lambda (data)
+        (if (null data)
+          (setf data ([])))
+        (let ((teachers-list (chain document (get-element-by-id "teachers-list"))))
+          (setf (chain teachers-list inner-h-t-m-l) "")
+          (loop for page in data do
+              (let ((template (get-template "teachers-list-html")))
+                (chain console (log template))
+                (setf (chain template (query-selector ".teachers-list-name") inner-text) "test")
+                (chain document (get-element-by-id "teachers-list") (append template)))))))
+    (catch handle-fetch-error)))
 
 ;; TODO do it like this everywhere
 (chain

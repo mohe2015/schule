@@ -10,6 +10,7 @@
         :spickipedia.parenscript
         :mito
         :sxql
+        :json
         :sxql.sql-type
         :ironclad
         :sanitize
@@ -258,9 +259,12 @@
 (my-defroute :GET "/api/file/:name" (:admin :user :anonymous) (name) (get-safe-mime-type (merge-pathnames (concatenate 'string "uploads/" name)))
   (merge-pathnames (concatenate 'string "uploads/" name)))
 
-(my-defroute :GET "/js/:file" nil (file) "application/javascript"
-  (with-cache (read-file-into-string (merge-pathnames (concatenate 'string "js/" file) *application-root*))
-    (file-js-gen (concatenate 'string (namestring *application-root*) "js/" file)))) ;; TODO local file inclusion
+(defroute ("/js/*" :method :GET) (&key splat)
+  (print (first splat))
+  (basic-headers)
+  (setf (getf (response-headers *response*) :content-type) "application/javascript")
+  (with-cache (read-file-into-string (merge-pathnames (concatenate 'string "js/" (first splat)) *application-root*))
+    (file-js-gen (concatenate 'string (namestring *application-root*) "js/" (first splat))))) ;; TODO local file inclusion
 
 ;; TODO basically depends on every asset
 (my-defroute :GET "/sw.lisp" nil () "application/javascript"
@@ -285,17 +289,6 @@
      ,(with-open-file (s file)
         (read s))))
 
-;; TODO convert this to my-defroute because otherwise we cant use the features of it like  (basic-headers)
-
-;; TODO automatically reload src/index.lisp
-(defroute ("/.*" :regexp t :method :GET) ()
-  (basic-headers)
-  (let ((path (merge-pathnames-as-file *static-directory* (parse-namestring (subseq (lack.request:request-path-info ningle:*request*) 1)))))
-    (if (and (cl-fad:file-exists-p path) (not (cl-fad:directory-exists-p path)))
-        (with-cache-vector (read-file-into-byte-vector path)
-          (setf (getf (response-headers *response*) :content-type) (get-safe-mime-type path))
-          path)
-        (eval `(sexp-to-html ,(concatenate 'string (namestring *application-root*) "src/index.lisp"))))))
 
 ;; Error pages
 

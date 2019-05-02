@@ -14,6 +14,7 @@
 (i "./show-tab.lisp" "showTab")
 (i "./categories.lisp" "handleTagsRest")
 (i "./teachers.lisp" "handleTeachersNew")
+(i "./courses/new.lisp" "handleCoursesNew")
 
 (export
  (defun update-state ()

@@ -4,7 +4,7 @@
 
 (export
   (defun handle-fetch-error (error)
-    (chain console (log (chain error response)))
+    (chain console (log (chain error)))
     (let ((status (chain error response status)))
       (if (= status 401)
        (let ((name (chain ($ "#inputName") (val (chain window local-storage name)))))
@@ -13,12 +13,12 @@
        (if (= status 403)
            (let ((error-message "Du hast nicht die benötigten Berechtigungen, um diese Aktion durchzuführen. Sag mir Bescheid, wenn du glaubst, dass dies ein Fehler ist."))
              (alert error-message))
-           (let ((error-message (concatenate 'string "Unbekannter Fehler: " (chain jq-xhr status-text))))
+           (let ((error-message (concatenate 'string "Unbekannter Fehler: " (chain error response status-text))))
              (alert error-message)))))))
 
 (export
   (defun handle-fetch-error-show (error)
-    (chain console (log (chain error response)))
+    (chain console (log (chain error)))
     (let ((status (chain error response status)))
       (if (= status 401)
        (let ((name (chain ($ "#inputName") (val (chain window local-storage name)))))
@@ -28,7 +28,7 @@
            (let ((error-message "Du hast nicht die benötigten Berechtigungen, um diese Aktion durchzuführen. Sag mir Bescheid, wenn du glaubst, dass dies ein Fehler ist."))
              (chain ($ "#errorMessage") (text error-message))
              (show-tab "#error"))
-           (let ((error-message (concatenate 'string "Unbekannter Fehler: " (chain jq-xhr status-text))))
+           (let ((error-message (concatenate 'string "Unbekannter Fehler: " (chain error response status-text))))
              (chain ($ "#errorMessage") (text error-message))
              (show-tab "#error")))))))
 
