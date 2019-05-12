@@ -7,7 +7,22 @@
 (i "../template.lisp" "getTemplate")
 
 (defroute "/courses/new"
-  (show-tab "#create-course-tab"))
+    (let ((select (chain document (query-selector "#teachers-select"))))
+      (setf (chain select inner-h-t-m-l) "")
+      (chain
+       (fetch "/api/teachers")
+       (then check-status)
+       (then json)
+       (then
+	(lambda (data)
+	  (chain console (log data))
+	  (loop for teacher in data do
+	       (let ((element (chain document (create-element "option"))))
+		 (setf (chain element inner-text) (chain teacher name))
+		 (setf (chain element value) (chain teacher teacher-id))
+		 (chain select (append-child element))))))
+       (catch handle-fetch-error))
+      (show-tab "#create-course-tab")))
 
 (chain
   ($ "#create-course-form")

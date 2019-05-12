@@ -145,8 +145,8 @@
          (:option "LK")))
      (:DIV :CLASS "form-group"
        (:label "LehrerIn")
-       (:select :CLASS "custom-select" :name "teacher"
-         (:option "Frau Schmitzke")))
+       (:select :CLASS "custom-select" :id "teachers-select" :name "teacher"
+         (:option "Wird geladen...")))
      (:div :class "custom-control custom-checkbox"
        (:input :type "checkbox" :class "custom-control-input" :name "is-tutorial" :id "is-tutorial")
        (:label :class "custom-control-label" :for "is-tutorial" "Tutorium?"))

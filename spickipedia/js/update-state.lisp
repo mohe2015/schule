@@ -29,6 +29,7 @@
                         last-url (chain window location href)
                         last-state (chain window history state)) nil "/login"))
         (update-state)))
+   (chain ($ ".login-hide") (attr "style" ""))
    (loop for route in (chain window routes) do
     (if (route (chain window location pathname))
         (return-from update-state)))

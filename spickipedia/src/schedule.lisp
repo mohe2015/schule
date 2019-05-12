@@ -14,7 +14,7 @@
          (teacher-revisions
            (mapcar
              #'(lambda (teacher)
-                 (select-dao 'teacher-revision (where (:= :teacher teacher)) (order-by (:desc :id)) (limit 1)))
+                 (first (select-dao 'teacher-revision (where (:= :teacher teacher)) (order-by (:desc :id)) (limit 1))))
              teachers)))
     (encode-json-to-string teacher-revisions)))
 
@@ -25,8 +25,10 @@
                                :course course
                                :name (first |subject|)
                                :initial (first |type|)
-                               :teacher (first |teacher|)
-                               :is-tutorial (first |is-tutorial|)
+			       :type (first |type|)
+			       :subject (first |subject|)
+                               :teacher (find-dao 'teacher :id (parse-integer (first |teacher|)))
+                               :is-tutorial (equal "on" (first |is-tutorial|))
                                :class (first |class|)
                                :topic (first |topic|))))
     (format nil "~a" (object-id teacher))))
