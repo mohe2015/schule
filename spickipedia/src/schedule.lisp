@@ -33,6 +33,15 @@
                                :topic (first |topic|))))
     (format nil "~a" (object-id course))))
 
+(my-defroute :GET "/api/courses" (:admin :user) () "application/json"
+  (let* ((courses (select-dao 'course))
+         (course-revisions
+          (mapcar
+           #'(lambda (course)
+               (first (select-dao 'course-revision (where (:= :course course)) (order-by (:desc :id)) (limit 1))))
+           courses)))
+    (encode-json-to-string course-revisions)))
+
 ;; TODO convert this to my-defroute because otherwise we cant use the features of it like  (basic-headers)
 ;; TODO moved here only temporarily so it only gets in action after all other handlers
 ;; TODO automatically reload src/index.lisp
