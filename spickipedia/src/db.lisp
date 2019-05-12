@@ -162,6 +162,9 @@
   ((author :col-type user
            :initarg :author
            :accessor course-revision-author)
+   (course :col-type course
+	   :initarg :course
+	   :accessor course-revision-course)
    (teacher :col-type teacher
             :initarg :teacher
             :accessor course-revision-teacher)

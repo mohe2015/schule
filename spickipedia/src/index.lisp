@@ -48,6 +48,9 @@
   (:template :id "teachers-list-html"
     (:li :class "teachers-list-name"))
 
+  (:template :id "courses-list-html"
+    (:li :class "courses-list-subject"))
+
   (:TEMPLATE :ID "multiple-choice-question"
    (:DIV :CLASS "multiple-choice-question"
     (:FORM
@@ -197,6 +200,10 @@
   (:DIV :STYLE "display: none;" :class "container my-tab position-absolute" :ID "list-teachers"
     (:h2 :class "text-center" "Lehrer")
     (:ul :id "teachers-list"))
+
+  (:div :style "display: none;" :class "container my-tab position-absolute" :id "list-courses"
+   (:h2 :class "text-center" "Kurse")
+   (:ul :id "courses-list"))
 
   (:DIV :STYLE "display: none;" :CLASS "container my-tab position-absolute" :ID
    "text-question-html"
