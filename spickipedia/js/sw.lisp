@@ -48,6 +48,9 @@
   "/js/editor.lisp"
   "/js/hide-editor.lisp"
   "/js/teachers.lisp"
+  "/js/fetch.lisp"
+  "/js/template.lisp"
+  "/js/courses/new.lisp"
   "/favicon.ico"))
 
 (chain
