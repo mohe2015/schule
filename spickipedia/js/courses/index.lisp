@@ -22,6 +22,6 @@
           (loop for page in data do
               (let ((template (get-template "courses-list-html")))
                 (chain console (log (chain page name)))
-                (setf (chain template (query-selector ".courses-list-name") inner-text) (chain page name))
+                (setf (chain template (query-selector ".courses-list-subject") inner-text) (chain page subject))
                 (chain document (get-element-by-id "courses-list") (append template)))))))
     (catch handle-fetch-error)))

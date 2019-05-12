@@ -25,9 +25,9 @@
                                :course course
                                :name (first |subject|)
                                :initial (first |type|)
-			       :type (first |type|)
-			       :subject (first |subject|)
-                               :teacher (find-dao 'teacher :id (parse-integer (first |teacher|)))
+                    :type (first |type|)
+                    :subject (first |subject|)
+                             :teacher (find-dao 'teacher :id (parse-integer (first |teacher|)))
                                :is-tutorial (equal "on" (first |is-tutorial|))
                                :class (first |class|)
                                :topic (first |topic|))))
