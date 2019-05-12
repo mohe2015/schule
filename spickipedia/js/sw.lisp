@@ -1,6 +1,6 @@
 ;; https://developers.google.com/web/ilt/pwa/caching-files-with-service-worker
 ;; https://developers.google.com/web/fundamentals/primers/service-workers/lifecycle#skip_the_waiting_phase
-;; TODO call upate hourly
+;; TODO call update hourly
 
 (var static-cache-name "static-cache-v1")
 (var dynamic-cache-name "dynamic-cache-v1")
@@ -51,6 +51,7 @@
   "/js/fetch.lisp"
   "/js/template.lisp"
   "/js/courses/new.lisp"
+  "/js/courses/index.lisp"
   "/favicon.ico"))
 
 (chain
