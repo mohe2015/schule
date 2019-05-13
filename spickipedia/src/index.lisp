@@ -180,9 +180,30 @@
     (:H1 :CLASS "text-center" "Alle Artikel")
     (:UL :ID "articles-list"))
 
-  (:div :style "display:none;" :class "container my-tab position-absolute" :id "tags"
+  (:div :style "display: none;" :class "container my-tab position-absolute" :id "tags"
     (:h1 :class "text-center" "Tags")
     (:ul :id "tags-list"))
+
+  (:div :style "display: none;" :class "container-fluid my-tab position-absolute" :id "schedule"
+    (:div :class "table-responsive"
+      (:table :class "table table-hover table-bordered table-dark table-sm"
+        (:thead
+          (:tr
+            (:th :scope "col" "#")
+            (:th :scope "col" "Montag")
+            (:th :scope "col" "Dienstag")
+            (:th :scope "col" "Mittwoch")
+            (:th :scope "col" "Donnerstag")
+            (:th :scope "col" "Freitag")))
+        (:tbody
+          (:tr
+            (:th :scope "row" "1")
+            (:td "a")
+            (:td "a")
+            (:td "a")
+            (:td "a")
+            (:td "a"))))))
+
 
   (:DIV :STYLE "display: none;" :CLASS "container my-tab position-absolute" :ID
    "multiple-choice-question-html"

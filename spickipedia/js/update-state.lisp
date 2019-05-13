@@ -16,6 +16,7 @@
 (i "./teachers.lisp" "handleTeachersNew")
 (i "./courses/new.lisp" "handleCoursesNew")
 (i "./courses/index.lisp" "handleCourses")
+(i "./schedule/id.lisp" "handleScheduleId")
 
 (export
  (defun update-state ()
