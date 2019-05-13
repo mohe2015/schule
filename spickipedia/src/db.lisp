@@ -49,6 +49,17 @@
            :wiki-article-revision-category
            :wiki-article-revision-category-revision
            :wiki-article-revision-category-category
+           :schedule
+           :schedule-revision
+           :schedule-revision-author
+           :schedule-revision-schedule
+           :schedule-data
+           :schedule-data-schedule-revision
+           :schedule-data-weekday
+           :schedule-data-hour
+           :schedule-data-week-module
+           :schedule-data-course
+           :schedule-data-room
            :setup-db))
 
 (in-package :spickipedia.db)
@@ -163,8 +174,8 @@
            :initarg :author
            :accessor course-revision-author)
    (course :col-type course
-	   :initarg :course
-	   :accessor course-revision-course)
+     :initarg :course
+     :accessor course-revision-course)
    (teacher :col-type teacher
             :initarg :teacher
             :accessor course-revision-teacher)
@@ -185,6 +196,40 @@
           :accessor course-revision-topic))
   (:metaclass dao-table-class))
 
+(defclass schedule ()
+  ()
+  (:metaclass dao-table-class))
+
+(defclass schedule-revision ()
+  ((author :col-type user
+           :initarg :author
+           :accessor schedule-revision-author)
+   (schedule :col-type schedule
+             :initarg :schedule
+             :accessor schedule-revision-schedule))
+  (:metaclass dao-table-class))
+
+(defclass schedule-data ()
+  ((schedule-revision :col-type schedule-revision
+                      :initarg :schedule-revision
+                      :accessor schedule-data-schedule-revision)
+   (weekday :col-type (:integer)
+            :initarg :weekday
+            :accessor schedule-data-weekday)
+   (hour :col-type (:integer)
+         :initarg :hour
+         :accessor schedule-data-hour)
+   (week-modulo :col-type (:integer)
+                :integer :week-modulo
+                :accessor schedule-data-week-module)
+   (course :col-type course
+           :initarg :course
+           :accessor schedule-data-course)
+   (room   :col-type (:varchar 32)
+           :initarg :room
+           :accessor schedule-data-room))
+  (:metaclass dao-table-class))
+
 (defun setup-db ()
   (with-connection (db)
     (ensure-table-exists 'user)
@@ -198,6 +243,9 @@
     (ensure-table-exists 'teacher-revision)
     (ensure-table-exists 'course)
     (ensure-table-exists 'course-revision)
+    (ensure-table-exists 'schedule)
+    (ensure-table-exists 'schedule-revision)
+    (ensure-table-exists 'schedule-data)
     (migrate-table 'user)
     (migrate-table 'wiki-article)
     (migrate-table 'wiki-article-revision)
@@ -208,6 +256,9 @@
     (migrate-table 'teacher)
     (migrate-table 'teacher-revision)
     (migrate-table 'course)
-    (migrate-table 'course-revision)))
+    (migrate-table 'course-revision)
+    (ensure-table-exists 'schedule)
+    (ensure-table-exists 'schedule-revision)
+    (ensure-table-exists 'schedule-data)))
 
 (setup-db)
