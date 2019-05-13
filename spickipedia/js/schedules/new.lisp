@@ -5,5 +5,5 @@
 (i "../cleanup.lisp" "cleanup")
 (i "../handle-error.lisp" "handleError")
 
-(defroute "/schedule/:id"
-  (show-tab "#schedule"))
+(defroute "/schedules/new"
+  (show-tab "#create-schedule-tab"))

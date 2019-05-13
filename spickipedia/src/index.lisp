@@ -184,6 +184,15 @@
     (:h1 :class "text-center" "Tags")
     (:ul :id "tags-list"))
 
+  (:div :style "display: none;" :class "container-fluid my-tab position-absolute" :id "create-schedule-tab"
+    (:FORM :method "POST" :action "/api/schedules" :id "create-schedule-form"
+     (:DIV :CLASS "form-group"
+      (:label "Klasse")
+      (:INPUT :TYPE "text" :CLASS "form-control" :PLACEHOLDER "Klasse" :name "clazz"))
+     (:BUTTON :TYPE "submit" :CLASS
+      "btn btn-primary"
+      "Stundenplan erstellen")))
+
   (:div :style "display: none;" :class "container-fluid my-tab position-absolute" :id "schedule"
     (:div :class "table-responsive"
       (:table :class "table table-hover table-bordered table-dark table-sm"
