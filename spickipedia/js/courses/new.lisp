@@ -14,13 +14,13 @@
        (then check-status)
        (then json)
        (then
-	(lambda (data)
-	  (chain console (log data))
-	  (loop for teacher in data do
-	       (let ((element (chain document (create-element "option"))))
-		 (setf (chain element inner-text) (chain teacher name))
-		 (setf (chain element value) (chain teacher teacher-id))
-		 (chain select (append-child element))))))
+        (lambda (data)
+           (chain console (log data))
+           (loop for teacher in data do
+                 (let ((element (chain document (create-element "option"))))
+                  (setf (chain element inner-text) (chain teacher name))
+                  (setf (chain element value) (chain teacher teacher-id))
+                  (chain select (append-child element))))))
        (catch handle-fetch-error))
       (show-tab "#create-course-tab")))
 
