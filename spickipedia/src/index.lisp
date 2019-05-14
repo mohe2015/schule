@@ -51,6 +51,9 @@
   (:template :id "courses-list-html"
     (:li :class "courses-list-subject"))
 
+  (:template :id "schedules-list-html"
+    (:li :class "schedules-list-grade"))
+
   (:TEMPLATE :ID "multiple-choice-question"
    (:DIV :CLASS "multiple-choice-question"
     (:FORM
@@ -180,9 +183,39 @@
     (:H1 :CLASS "text-center" "Alle Artikel")
     (:UL :ID "articles-list"))
 
-  (:div :style "display:none;" :class "container my-tab position-absolute" :id "tags"
+  (:div :style "display: none;" :class "container my-tab position-absolute" :id "tags"
     (:h1 :class "text-center" "Tags")
     (:ul :id "tags-list"))
+
+  (:div :style "display: none;" :class "container-fluid my-tab position-absolute" :id "create-schedule-tab"
+    (:FORM :method "POST" :action "/api/schedules" :id "create-schedule-form"
+     (:DIV :CLASS "form-group"
+      (:label "Jahrgang")
+      (:INPUT :TYPE "text" :CLASS "form-control" :PLACEHOLDER "Jahrgang" :name "grade"))
+     (:BUTTON :TYPE "submit" :CLASS
+      "btn btn-primary"
+      "Stundenplan erstellen")))
+
+  (:div :style "display: none;" :class "container-fluid my-tab position-absolute" :id "schedule"
+    (:div :class "table-responsive"
+      (:table :class "table table-hover table-bordered table-dark table-sm"
+        (:thead
+          (:tr
+            (:th :scope "col" "#")
+            (:th :scope "col" "Montag")
+            (:th :scope "col" "Dienstag")
+            (:th :scope "col" "Mittwoch")
+            (:th :scope "col" "Donnerstag")
+            (:th :scope "col" "Freitag")))
+        (:tbody
+          (:tr
+            (:th :scope "row" "1")
+            (:td "a")
+            (:td "a")
+            (:td "a")
+            (:td "a")
+            (:td "a"))))))
+
 
   (:DIV :STYLE "display: none;" :CLASS "container my-tab position-absolute" :ID
    "multiple-choice-question-html"
@@ -204,6 +237,10 @@
   (:div :style "display: none;" :class "container my-tab position-absolute" :id "list-courses"
    (:h2 :class "text-center" "Kurse")
    (:ul :id "courses-list"))
+
+  (:div :style "display: none;" :class "container my-tab position-absolute" :id "list-schedules"
+   (:h2 :class "text-center" "Stundenpläne")
+   (:ul :id "schedules-list"))
 
   (:DIV :STYLE "display: none;" :CLASS "container my-tab position-absolute" :ID
    "text-question-html"

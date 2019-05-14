@@ -42,6 +42,17 @@
            courses)))
     (encode-json-to-string course-revisions)))
 
+(my-defroute :POST "/api/schedules" (:admin :user) (|grade|) "text/html"
+  (let* ((schedule (create-dao 'schedule :grade (first |grade|)))
+         (revision (create-dao 'schedule-revision
+                               :author user
+                               :schedule schedule)))
+    (format nil "~a" (object-id schedule))))
+
+(my-defroute :GET "/api/schedules" (:admin :user) () "application/json"
+  (let* ((schedules (select-dao 'schedule)))
+    (encode-json-to-string schedules)))
+
 ;; TODO convert this to my-defroute because otherwise we cant use the features of it like  (basic-headers)
 ;; TODO moved here only temporarily so it only gets in action after all other handlers
 ;; TODO automatically reload src/index.lisp
