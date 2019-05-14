@@ -50,6 +50,7 @@
            :wiki-article-revision-category-revision
            :wiki-article-revision-category-category
            :schedule
+           :schedule-grade
            :schedule-revision
            :schedule-revision-author
            :schedule-revision-schedule
@@ -197,7 +198,9 @@
   (:metaclass dao-table-class))
 
 (defclass schedule ()
-  ()
+  ((grade :col-type (:varchar 64)
+          :initarg :grade
+          :accessor schedule-grade))
   (:metaclass dao-table-class))
 
 (defclass schedule-revision ()
@@ -230,35 +233,25 @@
            :accessor schedule-data-room))
   (:metaclass dao-table-class))
 
+(defun check-table (table)
+  (ensure-table-exists table)
+  (migrate-table table))
+
 (defun setup-db ()
   (with-connection (db)
-    (ensure-table-exists 'user)
-    (ensure-table-exists 'wiki-article)
-    (ensure-table-exists 'wiki-article-revision)
-    (ensure-table-exists 'my-session)
-    (ensure-table-exists 'quiz)
-    (ensure-table-exists 'quiz-revision)
-    (ensure-table-exists 'wiki-article-revision-category)
-    (ensure-table-exists 'teacher)
-    (ensure-table-exists 'teacher-revision)
-    (ensure-table-exists 'course)
-    (ensure-table-exists 'course-revision)
-    (ensure-table-exists 'schedule)
-    (ensure-table-exists 'schedule-revision)
-    (ensure-table-exists 'schedule-data)
-    (migrate-table 'user)
-    (migrate-table 'wiki-article)
-    (migrate-table 'wiki-article-revision)
-    (migrate-table 'my-session)
-    (migrate-table 'quiz)
-    (migrate-table 'quiz-revision)
-    (migrate-table 'wiki-article-revision-category)
-    (migrate-table 'teacher)
-    (migrate-table 'teacher-revision)
-    (migrate-table 'course)
-    (migrate-table 'course-revision)
-    (ensure-table-exists 'schedule)
-    (ensure-table-exists 'schedule-revision)
-    (ensure-table-exists 'schedule-data)))
+    (check-table 'user)
+    (check-table 'wiki-article)
+    (check-table 'wiki-article-revision)
+    (check-table 'my-session)
+    (check-table 'quiz)
+    (check-table 'quiz-revision)
+    (check-table 'wiki-article-revision-category)
+    (check-table 'teacher)
+    (check-table 'teacher-revision)
+    (check-table 'course)
+    (check-table 'course-revision)
+    (check-table 'schedule)
+    (check-table 'schedule-revision)
+    (check-table 'schedule-data)))
 
 (setup-db)

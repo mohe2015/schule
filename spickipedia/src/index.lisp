@@ -187,8 +187,8 @@
   (:div :style "display: none;" :class "container-fluid my-tab position-absolute" :id "create-schedule-tab"
     (:FORM :method "POST" :action "/api/schedules" :id "create-schedule-form"
      (:DIV :CLASS "form-group"
-      (:label "Klasse")
-      (:INPUT :TYPE "text" :CLASS "form-control" :PLACEHOLDER "Klasse" :name "clazz"))
+      (:label "Jahrgang")
+      (:INPUT :TYPE "text" :CLASS "form-control" :PLACEHOLDER "Jahrgang" :name "grade"))
      (:BUTTON :TYPE "submit" :CLASS
       "btn btn-primary"
       "Stundenplan erstellen")))

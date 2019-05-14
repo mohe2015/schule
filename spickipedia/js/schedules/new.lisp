@@ -14,7 +14,7 @@
   ($ "#create-schedule-form")
   (submit
     (lambda (event)
-      (let* ((formElement (chain document (query-selector "#create-course-form")))
+      (let* ((formElement (chain document (query-selector "#create-schedule-form")))
              (formData (new (-Form-Data formElement))))
         (chain formData (append "_csrf_token" (read-cookie "_csrf_token")))
         (chain
