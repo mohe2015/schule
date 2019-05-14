@@ -50,13 +50,8 @@
     (format nil "~a" (object-id schedule))))
 
 (my-defroute :GET "/api/schedules" (:admin :user) () "application/json"
-  (let* ((schedules (select-dao 'schedule))
-         (schedule-revisions
-          (mapcar
-           #'(lambda (schedule)
-               (first (select-dao 'schedule-revision (where (:= :schedule schedule)) (order-by (:desc :id)) (limit 1))))
-           schedules)))
-    (encode-json-to-string schedule-revisions)))
+  (let* ((schedules (select-dao 'schedule)))
+    (encode-json-to-string schedules)))
 
 ;; TODO convert this to my-defroute because otherwise we cant use the features of it like  (basic-headers)
 ;; TODO moved here only temporarily so it only gets in action after all other handlers
