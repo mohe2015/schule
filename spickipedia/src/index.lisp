@@ -51,6 +51,9 @@
   (:template :id "courses-list-html"
     (:li :class "courses-list-subject"))
 
+  (:template :id "schedules-list-html"
+    (:li :class "schedules-list-grade"))
+
   (:TEMPLATE :ID "multiple-choice-question"
    (:DIV :CLASS "multiple-choice-question"
     (:FORM
@@ -234,6 +237,10 @@
   (:div :style "display: none;" :class "container my-tab position-absolute" :id "list-courses"
    (:h2 :class "text-center" "Kurse")
    (:ul :id "courses-list"))
+
+  (:div :style "display: none;" :class "container my-tab position-absolute" :id "list-schedules"
+   (:h2 :class "text-center" "Stundenpläne")
+   (:ul :id "schedules-list"))
 
   (:DIV :STYLE "display: none;" :CLASS "container my-tab position-absolute" :ID
    "text-question-html"
