@@ -54,6 +54,7 @@
   "/js/courses/index.lisp"
   "/js/schedule/id.lisp"
   "/js/schedules/new.lisp"
+  "/js/schedules/index.lisp"
   "/favicon.ico"))
 
 (chain

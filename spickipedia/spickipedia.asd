@@ -34,7 +34,7 @@
          (:file "sanitize")
          (:file "parenscript")
          (:file "tsquery-converter")
-         (:file "main" :depends-on ("config" "view" "db" "web"))
+         (:file "main" :depends-on ("config" "view" "db" "web" "schedule"))
          (:file "web" :depends-on ("view" "parenscript"))
          (:file "schedule" :depends-on ("web"))
          (:file "view" :depends-on ("config"))
