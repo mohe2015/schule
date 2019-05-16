@@ -207,13 +207,15 @@
             (:th :scope "col" "Donnerstag")
             (:th :scope "col" "Freitag")))
         (:tbody
-          (:tr
-            (:th :scope "row" "1")
-            (:td "a")
-            (:td "a")
-            (:td "a")
-            (:td "a")
-            (:td "a"))))))
+          (loop for i from 1 to 10 do
+            (cl-who:htm
+              (:tr
+                (:th :scope "row" "1")
+                (:td "a")
+                (:td "a")
+                (:td "a")
+                (:td "a")
+                (:td "a"))))))))
 
 
   (:DIV :STYLE "display: none;" :CLASS "container my-tab position-absolute" :ID
