@@ -35,7 +35,6 @@
   (:LINK :REL "modulepreload" :HREF "/js/editor.lisp")
   (:LINK :REL "modulepreload" :HREF "/js/hide-editor.lisp")
   (:LINK :REL "modulepreload" :HREF "/js/teachers.lisp")
-  (:LINK :REL "preload" :AS "font" :crossorigin "" :type "font/woff2" :href "/webfonts/fa-solid-900.woff2")
 
   (:TITLE "Spickipedia"))
  (:BODY
@@ -198,7 +197,7 @@
 
   (:div :style "display: none;" :class "container-fluid my-tab position-absolute" :id "schedule"
     (:div :class "table-responsive"
-      (:table :class "table table-hover table-bordered table-dark table-sm"
+      (:table :id "schedule-table" :class "table table-hover table-bordered table-dark table-sm"
         (:thead
           (:tr
             (:th :scope "col" "#")
@@ -260,10 +259,10 @@
    (:FORM :ID "login-form"
     (:DIV :CLASS "form-group"
      (:INPUT :TYPE "text" :ID "inputName" :CLASS "form-control" :PLACEHOLDER
-      "Name" :REQUIRED "" :AUTOFOCUS ""))
+      "Name" :REQUIRED "" :AUTOFOCUS "" :autocomplete "username"))
     (:DIV :CLASS "form-group"
      (:INPUT :TYPE "password" :ID "inputPassword" :CLASS "form-control"
-      :PLACEHOLDER "Passwort" :REQUIRED ""))
+      :PLACEHOLDER "Passwort" :REQUIRED "" :autocomplete "current-password"))
     (:BUTTON :CLASS "btn btn-primary" :TYPE "submit" :ID "login-button"
      "Anmelden")))
 
@@ -505,6 +504,33 @@
       (:BUTTON :TYPE "button" :CLASS "btn btn-secondary" :DATA-DISMISS "modal"
        "Abbrechen")
       (:BUTTON :TYPE "button" :CLASS "btn btn-primary" :ID "update-formula"
+       "Ok")))))
+
+  (:DIV :CLASS "modal fade" :ID "schedule-data-modal" :TABINDEX "-1" :ROLE "dialog"
+   :ARIA-LABELLEDBY "schedule-data-modal-label" :ARIA-HIDDEN "true"
+   (:DIV :CLASS "modal-dialog" :ROLE "document"
+    (:DIV :CLASS "modal-content"
+     (:DIV :CLASS "modal-header"
+      (:H5 :CLASS "modal-title" :ID "schedule-data-modal-label" "Unterrichtsstunde")
+      (:BUTTON :TYPE "button" :CLASS "close" :DATA-DISMISS "modal" :ARIA-LABEL
+       "Close" (:SPAN :ARIA-HIDDEN "true" "×")))
+     (:DIV :CLASS "modal-body"
+      (:FORM
+       (:input :type "hidden" :name "weekday" :value "monday")
+       (:input :type "hidden" :name "hour" :value "1")
+       (:DIV :CLASS "form-group" (:LABEL :FOR "week-modulo" "Regelmäßigkeit")
+         (:select :class "custom-select" :id "week-modulo"
+           (:option :selected "selected" :value "0" "Jede Woche")
+           (:option :value "1" "Ungerade Woche")
+           (:option :value "2" "Gerade Woche")))
+       (:DIV :CLASS "form-group" (:LABEL :FOR "course" "Kurs:") " "
+        (:INPUT :TYPE "number" :ID "course" :CLASS "form-control"))
+       (:DIV :CLASS "form-group" (:LABEL :FOR "room" "Raum:") " "
+        (:INPUT :TYPE "text" :ID "room" :CLASS "form-control"))))
+     (:DIV :CLASS "modal-footer"
+      (:BUTTON :TYPE "button" :CLASS "btn btn-secondary" :DATA-DISMISS "modal"
+       "Abbrechen")
+      (:BUTTON :TYPE "button" :CLASS "btn btn-primary" :ID "update-table"
        "Ok")))))
 
   (:SCRIPT :SRC "/jquery-3.3.1.js")
