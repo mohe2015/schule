@@ -207,15 +207,35 @@
             (:th :scope "col" "Donnerstag")
             (:th :scope "col" "Freitag")))
         (:tbody
-          (loop for i from 1 to 10 do
+          (loop for i from 1 to 11 do
             (cl-who:htm
               (:tr
-                (:th :scope "row" "1")
-                (:td "a")
-                (:td "a")
-                (:td "a")
-                (:td "a")
-                (:td "a"))))))))
+                (:th :scope "row" (cl-who:str i))
+                (:td (:ul :class "unstyled"
+                      (:li :class "mb-3 mt-3 test"
+                        "Mathe LK Keller B201"
+                        (:div :class "nowrap"
+                          (:button :type "button" :class "btn btn-sm btn-outline-primary"
+                            (:span :class "fa fa-pen"))
+                          (:button :type "button" :class "btn btn-sm btn-outline-primary"
+                            (:span :class "fa fa-trash"))))
+                      (:li :class "mb-3 mt-3 test"
+                        "Mathe LK Ast B203"
+                        (:div :class "nowrap"
+                          (:button :type "button" :class "btn btn-sm btn-outline-primary"
+                            (:span :class "fa fa-pen"))
+                          (:button :type "button" :class "btn btn-sm btn-outline-primary"
+                            (:span :class "fa fa-trash")))))
+                     (:button :type "button" :class "btn btn-sm btn-outline-primary w-100"
+                       (:span :class "fa fa-plus")))
+                (:td (:button :type "button" :class "btn btn-sm btn-outline-primary w-100"
+                       (:span :class "fa fa-plus")))
+                (:td (:button :type "button" :class "btn btn-sm btn-outline-primary w-100"
+                       (:span :class "fa fa-plus")))
+                (:td (:button :type "button" :class "btn btn-sm btn-outline-primary w-100"
+                       (:span :class "fa fa-plus")))
+                (:td (:button :type "button" :class "btn btn-sm btn-outline-primary w-100"
+                       (:span :class "fa fa-plus"))))))))))
 
 
   (:DIV :STYLE "display: none;" :CLASS "container my-tab position-absolute" :ID
