@@ -116,8 +116,8 @@
            (url (new (-u-r-l (chain request url))))
            (pathname (chain url pathname)))
       (if (chain pathname (starts-with "/api"))
-          (network-and-cache event dynamic-cache-name)) ;; dynamic things
-      (cache-then-fallback event static-cache-name))))) ;; assets etc.
+          (network-and-cache event dynamic-cache-name) ;; dynamic things
+          (cache-then-fallback event static-cache-name)))))) ;; assets etc.
 
 (chain
  self

@@ -5,7 +5,7 @@
 (i "../cleanup.lisp" "cleanup")
 (i "../handle-error.lisp" "handleError")
 (i "../fetch.lisp" "checkStatus" "json" "html" "handleFetchError" "cacheThenNetwork")
-(i "../utils.lisp" "showModal" "internalOnclicks" "all" "one" "hideModal")
+(i "../utils.lisp" "showModal" "internalOnclicks" "all" "one" "hideModal" "clearChildren")
 (i "../template.lisp" "getTemplate")
 
 (defroute "/schedule/:id"
@@ -39,4 +39,11 @@
 (cache-then-network
   "/api/courses"
   (lambda (data)
-    (chain console (log data))))
+    (let ((course-select (one "#course")))
+      (clear-children course-select)
+      (loop for course in data do
+        (let ((option (chain document (create-element "option")))
+              (text (concatenate 'string (chain course subject) " " (chain course type) " " (chain course teacher-id))))
+          (setf (chain option value) (chain course id))
+          (setf (chain option inner-text) text)
+          (chain course-select (append-child option)))))))

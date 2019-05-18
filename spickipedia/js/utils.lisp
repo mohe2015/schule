@@ -9,6 +9,11 @@
     (chain document (query-selector-all selector))))
 
 (export
+  (defun clear-children (element)
+    (while (chain element (has-child-nodes))
+      (chain element (remove-child (chain element last-child))))))
+
+(export
   (defun internal-onclicks (elements handler)
     (chain
       elements

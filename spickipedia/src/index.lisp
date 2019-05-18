@@ -541,7 +541,7 @@
              (:option :value "1" "Ungerade Woche")
              (:option :value "2" "Gerade Woche")))
          (:DIV :CLASS "form-group" (:LABEL :FOR "course" "Kurs:") " "
-          (:INPUT :TYPE "number" :ID "course" :CLASS "form-control"))
+           (:select :class "custom-select" :id "course"))
          (:DIV :CLASS "form-group" (:LABEL :FOR "room" "Raum:") " "
           (:INPUT :TYPE "text" :ID "room" :CLASS "form-control")))
        (:DIV :CLASS "modal-footer"
