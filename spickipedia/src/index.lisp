@@ -44,6 +44,15 @@
     (:LABEL :CLASS "custom-control-label" :FOR "customCheck1"
      "Check this custom")))
 
+  (:template :id "schedule-data-cell-template"
+    (:div :class "mb-3 mt-3 test"
+      (:span :class "data" "Mathe LK Keller B201")
+      (:div :class "nowrap"
+        (:button :type "button" :class "btn btn-sm btn-outline-primary"
+          (:span :class "fa fa-pen"))
+        (:button :type "button" :class "btn btn-sm btn-outline-primary"
+          (:span :class "fa fa-trash")))))
+
   (:template :id "teachers-list-html"
     (:li :class "teachers-list-name"))
 
@@ -211,23 +220,9 @@
             (cl-who:htm
               (:tr
                 (:th :scope "row" (cl-who:str i))
-                (:td (:ul :class "unstyled"
-                      (:li :class "mb-3 mt-3 test"
-                        "Mathe LK Keller B201"
-                        (:div :class "nowrap"
-                          (:button :type "button" :class "btn btn-sm btn-outline-primary"
-                            (:span :class "fa fa-pen"))
-                          (:button :type "button" :class "btn btn-sm btn-outline-primary"
-                            (:span :class "fa fa-trash"))))
-                      (:li :class "mb-3 mt-3 test"
-                        "Mathe LK Ast B203"
-                        (:div :class "nowrap"
-                          (:button :type "button" :class "btn btn-sm btn-outline-primary"
-                            (:span :class "fa fa-pen"))
-                          (:button :type "button" :class "btn btn-sm btn-outline-primary"
-                            (:span :class "fa fa-trash")))))
-                     (:button :type "button" :class "add-course btn btn-sm btn-outline-primary w-100"
-                       (:span :class "fa fa-plus")))
+                (:td
+                  (:button :type "button" :class "add-course btn btn-sm btn-outline-primary w-100"
+                    (:span :class "fa fa-plus")))
                 (:td (:button :type "button" :class "add-course btn btn-sm btn-outline-primary w-100"
                        (:span :class "fa fa-plus")))
                 (:td (:button :type "button" :class "add-course btn btn-sm btn-outline-primary w-100"
@@ -528,32 +523,32 @@
       (:BUTTON :TYPE "button" :CLASS "btn btn-primary" :ID "update-formula"
        "Ok")))))
 
-  (:DIV :CLASS "modal fade" :ID "schedule-data-modal" :TABINDEX "-1" :ROLE "dialog"
-   :ARIA-LABELLEDBY "schedule-data-modal-label" :ARIA-HIDDEN "true"
-   (:DIV :CLASS "modal-dialog" :ROLE "document"
-    (:DIV :CLASS "modal-content"
-     (:DIV :CLASS "modal-header"
-      (:H5 :CLASS "modal-title" :ID "schedule-data-modal-label" "Unterrichtsstunde")
-      (:BUTTON :TYPE "button" :CLASS "close" :DATA-DISMISS "modal" :ARIA-LABEL
-       "Close" (:SPAN :ARIA-HIDDEN "true" "×")))
-     (:DIV :CLASS "modal-body"
-      (:FORM
-       (:input :type "hidden" :name "weekday" :value "monday")
-       (:input :type "hidden" :name "hour" :value "1")
-       (:DIV :CLASS "form-group" (:LABEL :FOR "week-modulo" "Regelmäßigkeit")
-         (:select :class "custom-select" :id "week-modulo"
-           (:option :selected "selected" :value "0" "Jede Woche")
-           (:option :value "1" "Ungerade Woche")
-           (:option :value "2" "Gerade Woche")))
-       (:DIV :CLASS "form-group" (:LABEL :FOR "course" "Kurs:") " "
-        (:INPUT :TYPE "number" :ID "course" :CLASS "form-control"))
-       (:DIV :CLASS "form-group" (:LABEL :FOR "room" "Raum:") " "
-        (:INPUT :TYPE "text" :ID "room" :CLASS "form-control"))))
-     (:DIV :CLASS "modal-footer"
-      (:BUTTON :TYPE "button" :CLASS "btn btn-secondary" :DATA-DISMISS "modal"
-       "Abbrechen")
-      (:BUTTON :TYPE "button" :CLASS "btn btn-primary" :ID "update-table"
-       "Ok")))))
+  (:FORM :id "schedule-data-form"
+    (:DIV :CLASS "modal fade" :ID "schedule-data-modal" :TABINDEX "-1" :ROLE "dialog"
+     :ARIA-LABELLEDBY "schedule-data-modal-label" :ARIA-HIDDEN "true"
+     (:DIV :CLASS "modal-dialog" :ROLE "document"
+      (:DIV :CLASS "modal-content"
+       (:DIV :CLASS "modal-header"
+        (:H5 :CLASS "modal-title" :ID "schedule-data-modal-label" "Unterrichtsstunde")
+        (:BUTTON :TYPE "button" :CLASS "close" :DATA-DISMISS "modal" :ARIA-LABEL
+         "Close" (:SPAN :ARIA-HIDDEN "true" "×")))
+       (:DIV :CLASS "modal-body"
+         (:input :type "hidden" :id "schedule-data-weekday" :name "weekday" :value "monday")
+         (:input :type "hidden" :id "schedule-data-hour" :name "hour" :value "1")
+         (:DIV :CLASS "form-group" (:LABEL :FOR "week-modulo" "Regelmäßigkeit")
+           (:select :class "custom-select" :id "week-modulo"
+             (:option :selected "selected" :value "0" "Jede Woche")
+             (:option :value "1" "Ungerade Woche")
+             (:option :value "2" "Gerade Woche")))
+         (:DIV :CLASS "form-group" (:LABEL :FOR "course" "Kurs:") " "
+           (:select :class "custom-select" :id "course"))
+         (:DIV :CLASS "form-group" (:LABEL :FOR "room" "Raum:") " "
+          (:INPUT :TYPE "text" :ID "room" :CLASS "form-control")))
+       (:DIV :CLASS "modal-footer"
+        (:BUTTON :TYPE "button" :CLASS "btn btn-secondary" :DATA-DISMISS "modal"
+         "Abbrechen")
+        (:BUTTON :TYPE "submit" :CLASS "btn btn-primary" :ID "update-table"
+         "Ok"))))))
 
   (:SCRIPT :SRC "/jquery-3.3.1.js")
   ;; load later only when needed

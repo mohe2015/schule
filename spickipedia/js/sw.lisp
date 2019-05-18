@@ -55,6 +55,7 @@
   "/js/schedule/id.lisp"
   "/js/schedules/new.lisp"
   "/js/schedules/index.lisp"
+  "/js/utils.lisp"
   "/favicon.ico"))
 
 (chain
@@ -72,29 +73,7 @@
        (then (lambda (cache)
               (chain cache (add-all urls-to-cache))))))))))
 
-(defun cache-then-network (event cache-name)
-  (chain
-   event
-   (respond-with
-    (chain
-     caches
-     (open cache-name)
-     (then
-      (lambda (cache)
-       (chain
-        cache
-        (match (chain event request))
-        (then
-         (lambda (response)
-           (or
-            response
-            (chain
-             (fetch (chain event request))
-             (then (lambda (response)
-                    (chain cache (put (chain event request) (chain response (clone))))
-                    response)))))))))))))
-
-(defun network (event cache-name)
+(defun network-and-cache (event cache-name)
   (chain
    event
    (respond-with
@@ -137,9 +116,8 @@
            (url (new (-u-r-l (chain request url))))
            (pathname (chain url pathname)))
       (if (chain pathname (starts-with "/api"))
-       (if (= method "GET")
-           (network event dynamic-cache-name))
-       (cache-then-fallback event static-cache-name))))))
+          (network-and-cache event dynamic-cache-name) ;; dynamic things
+          (cache-then-fallback event static-cache-name)))))) ;; assets etc.
 
 (chain
  self

@@ -4,7 +4,9 @@
 (i "../show-tab.lisp" "showTab")
 (i "../cleanup.lisp" "cleanup")
 (i "../handle-error.lisp" "handleError")
-(i "../fetch.lisp" "checkStatus" "json" "html" "handleFetchError")
+(i "../fetch.lisp" "checkStatus" "json" "html" "handleFetchError" "cacheThenNetwork")
+(i "../utils.lisp" "showModal" "internalOnclicks" "all" "one" "hideModal" "clearChildren")
+(i "../template.lisp" "getTemplate")
 
 (defroute "/schedule/:id"
   (show-tab "#schedule")
@@ -18,26 +20,30 @@
         nil))
     (catch handle-fetch-error)))
 
-(defun one (selector)
-  (chain document (query-selector selector)))
-
-(defun all (selector)
-  (chain document (query-selector-all selector)))
-
-(defun internal-onclicks (elements handler)
-  (chain
-    elements
-    (for-each
-      (lambda (element)
-        (chain element (add-event-listener "click" handler))))))
-
-(defun show-modal (element)
-  (chain ($ element) (modal "show")))
-
-(defmacro onclicks (selector &body body)
-  `(internal-onclicks (all ,selector)
-          (lambda (e)
-            ,@body)))
-
 (onclicks ".add-course"
-  (show-modal (one "#schedule-data-modal")))
+  (let ((x (chain event target (closest "td") cell-index))
+        (y (chain event target (closest "tr") row-index)))
+    (setf (chain (one "#schedule-data-weekday") value) x)
+    (setf (chain (one "#schedule-data-hour") value) y)
+    (show-modal (one "#schedule-data-modal"))))
+
+(onsubmit "#schedule-data-form"
+  (chain event (prevent-default))
+  (let* ((x (chain (one "#schedule-data-weekday") value))
+         (y (chain (one "#schedule-data-hour") value))
+         (cell (getprop (one "#schedule-table") 'rows y 'cells x))
+         (template (get-template "schedule-data-cell-template")))
+    (chain cell (prepend template))
+    (hide-modal (one "#schedule-data-modal"))))
+
+(cache-then-network
+  "/api/courses"
+  (lambda (data)
+    (let ((course-select (one "#course")))
+      (clear-children course-select)
+      (loop for course in data do
+        (let ((option (chain document (create-element "option")))
+              (text (concatenate 'string (chain course subject) " " (chain course type) " " (chain course teacher-id))))
+          (setf (chain option value) (chain course id))
+          (setf (chain option inner-text) text)
+          (chain course-select (append-child option)))))))
