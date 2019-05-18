@@ -12,6 +12,10 @@
 ## Installation
 
 ```bash
+ros install sbcl # important to install from source because then you can backtrace
+ros install slime
+```
+```bash
 sudo pacman -S --needed postgresql
 sudo -iu postgres
 initdb -D /var/lib/postgres/data
