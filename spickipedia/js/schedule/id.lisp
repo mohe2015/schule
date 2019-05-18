@@ -32,7 +32,10 @@
   (let* ((x (chain (one "#schedule-data-weekday") value))
          (y (chain (one "#schedule-data-hour") value))
          (cell (getprop (one "#schedule-table") 'rows y 'cells x))
-         (template (get-template "schedule-data-cell-template")))
+         (template (get-template "schedule-data-cell-template"))
+         (course (chain (one "#course") selected-options 0 inner-text))
+         (room (chain (one "#room") value)))
+    (setf (chain template (query-selector ".data") inner-text) (concatenate 'string course " " room))
     (chain cell (prepend template))
     (hide-modal (one "#schedule-data-modal"))))
 
