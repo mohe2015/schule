@@ -2,13 +2,11 @@
 
 ## Requirements
 
-* sbcl
 * postgresql
 * fcgi
 * roswell
-* https://ultralisp.org/
 * Atom (ubuntu install gnome tweaks and change theme to dark)
-* Atom parinfer, atom-slime, language-lisp https://atom.io/packages/atom-slime
+* Atom parinfer, slima, language-lisp https://atom.io/packages/slima
 * https://github.com/FiloSottile/mkcert
 
 ## Installation
