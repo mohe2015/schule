@@ -25,7 +25,7 @@ hr {
  height: 100%;
 }
 .word-wrap {
-  word-wrap: break-word; 
+  word-wrap: break-word;
 }
 
 /* editor improvements */
@@ -115,4 +115,20 @@ article h6 {
 
 article p {
     margin-bottom: 0;
+}
+
+
+.unstyled {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.test {
+  display: flex;
+  justify-content: space-between;
+}
+
+.nowrap {
+  white-space: nowrap;
 }
