@@ -4,7 +4,7 @@
 (i "../show-tab.lisp" "showTab")
 (i "../cleanup.lisp" "cleanup")
 (i "../handle-error.lisp" "handleError")
-(i "../fetch.lisp" "checkStatus" "json" "html" "handleFetchError")
+(i "../fetch.lisp" "checkStatus" "json" "html" "handleFetchError" "cacheThenNetwork")
 (i "../utils.lisp" "showModal" "internalOnclicks" "all" "one" "hideModal")
 (i "../template.lisp" "getTemplate")
 
@@ -36,35 +36,7 @@
     (chain cell (prepend template))
     (hide-modal (one "#schedule-data-modal"))))
 
-(var networkDataReceived F)
-
-(startSpinner)
-
-;; fetch fresh data
-(var
-  networkUpdate
-  (chain
-    (fetch "/data.json")
-    (then
-      (lambda (response)
-        (chain response (json))))
-    (then (lambda (data))
-      (setf networkDataReceived T)
-      (updatePage data))))
-
-;; fetch cached data)
-(chain
-  caches
-  (match "/data.json")
-  (then (lambda (response))
-    (if (not response) (throw (new (-Error "No data"))))
-    (chain response json))
-  (then (lambda (data))
-    ;; don't overwrite newer network data
-    (if (not networkDataReceived)
-      (updatePage data)))
-  (catch (lambda())
-    ;; we didn't get cached data, the network is our last hope:
-    networkUpdate)
-  (catch (showErrorMessage))
-  (then (stopSpinner)))
+(cache-then-network
+  "/api/courses"
+  (lambda (data)
+    (chain console (log data))))

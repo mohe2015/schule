@@ -42,8 +42,37 @@
 
 (export
   (defun json (response)
+    (if (not response) (throw (new (-Error "No data"))))
     (chain response (json))))
 
 (export
   (defun html ()
     (chain response (text))))
+
+(export
+  (defun cache-then-network (url callback)
+    (var networkDataReceived F)
+    ;; (startSpinner)
+    ;; fetch fresh data
+    (var
+      networkUpdate
+      (chain
+        (fetch url)
+        (then json)
+        (then (lambda (data)
+                (setf networkDataReceived T)
+                (callback data)))))
+    ;; fetch cached data
+    (chain
+      caches
+      (match url)
+      (then json)
+      (then (lambda (data)
+              ;; don't overwrite newer network data
+              (if (not networkDataReceived)
+                (callback data))))
+      (catch (lambda()
+               ;; we didn't get cached data, the network is our last hope:
+               networkUpdate)))))
+    ;;  (catch handle-fetch-error)))
+    ;;  (then stopSpinner))
