@@ -22,5 +22,5 @@
 
 (defmacro onclicks (selector &body body)
   `(internal-onclicks (all ,selector)
-          (lambda (e)
+          (lambda (event)
             ,@body)))

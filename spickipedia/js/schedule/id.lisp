@@ -20,4 +20,7 @@
     (catch handle-fetch-error)))
 
 (onclicks ".add-course"
-  (show-modal (one "#schedule-data-modal")))
+  (let ((x (chain event target (closest "td") cell-index))
+        (y (chain event target (closest "tr") row-index)))
+    
+    (show-modal (one "#schedule-data-modal"))))
