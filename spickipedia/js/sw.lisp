@@ -55,6 +55,7 @@
   "/js/schedule/id.lisp"
   "/js/schedules/new.lisp"
   "/js/schedules/index.lisp"
+  "/js/utils.lisp"
   "/favicon.ico"))
 
 (chain
