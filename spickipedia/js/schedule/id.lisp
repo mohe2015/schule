@@ -24,13 +24,20 @@
 (defun all (selector)
   (chain document (query-selector-all selector)))
 
-(defun onclicks (elements handler)
+(defun internal-onclicks (elements handler)
   (chain
     elements
     (for-each
       (lambda (element)
         (chain element (add-event-listener "click" handler))))))
 
-(onclicks (all ".add-course")
+(defun show-modal (element)
+  (chain ($ element) (modal "show")))
+
+(defmacro onclicks (selector &body body)
+  `(internal-onclicks (all ,selector)
           (lambda (e)
-            (alert 1)))
+            ,@body)))
+
+(onclicks ".add-course"
+  (show-modal (one "#schedule-data-modal")))
