@@ -4,6 +4,7 @@
 (i "./file-upload.lisp" "sendFile")
 (i "./categories.lisp")
 (i "./handle-error.lisp" "handleError")
+(i "./fetch.lisp" "cacheThenNetwork")
 
 (defun save-range ()
   (chain document (get-elements-by-tag-name "article") 0 (focus))
@@ -92,37 +93,12 @@
           (update-link (chain ($ "#link") (val))))))
       (chain ($ "#link-modal") (modal "show")))
 
-(var network-data-received F)
-
 (var articles (array))
 
-;; fetch fresh data
-(var
- network-update
- (chain (fetch "/api/articles")
-    (then (lambda (response)
-           (chain response (json))))
-    (then (lambda (data)
-           (setf network-data-received T)
-           (setf articles data)))))
-
-;; fetch cached data
-(chain
- caches
- (match "/api/articles")
- (then (lambda (response)
-        (if (not response)
-            (throw (-error "No data"))) ;; is that right syntax?
-        (chain response (json))))
- (then (lambda (data)
-     ;; don't overwrite newer network data
-        (if (not network-data-received)
-            (setf articles data))))
- (catch (lambda ()
-      ;; we didn't get cached data, the network is our last hope
-         network-update))
- (catch (lambda (jq-xhr text-status error-thrown)
-         F)))
+(cache-then-network
+  "/api/articles"
+  (lambda (data)
+    (setf articles data)))
 
 (chain
  document
