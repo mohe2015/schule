@@ -5,7 +5,8 @@
 (i "../cleanup.lisp" "cleanup")
 (i "../handle-error.lisp" "handleError")
 (i "../fetch.lisp" "checkStatus" "json" "html" "handleFetchError")
-(i "../utils.lisp" "showModal" "internalOnclicks" "all" "one")
+(i "../utils.lisp" "showModal" "internalOnclicks" "all" "one" "hideModal")
+(i "../template.lisp" "getTemplate")
 
 (defroute "/schedule/:id"
   (show-tab "#schedule")
@@ -27,4 +28,10 @@
     (show-modal (one "#schedule-data-modal"))))
 
 (onsubmit "#schedule-data-form"
-  (chain event (prevent-default)))
+  (chain event (prevent-default))
+  (let* ((x (chain (one "#schedule-data-weekday") value))
+         (y (chain (one "#schedule-data-hour") value))
+         (cell (getprop (one "#schedule-table") 'rows y 'cells x))
+         (template (get-template "schedule-data-cell-template")))
+    (chain cell (prepend template))
+    (hide-modal (one "#schedule-data-modal"))))

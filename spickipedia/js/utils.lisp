@@ -20,6 +20,10 @@
   (defun show-modal (element)
     (chain ($ element) (modal "show"))))
 
+(export
+  (defun hide-modal (element)
+    (chain ($ element) (modal "hide"))))
+
 (defmacro onclicks (selector &body body)
   `(internal-onclicks (all ,selector)
           (lambda (event)

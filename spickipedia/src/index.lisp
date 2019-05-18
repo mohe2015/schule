@@ -44,6 +44,15 @@
     (:LABEL :CLASS "custom-control-label" :FOR "customCheck1"
      "Check this custom")))
 
+  (:template :id "schedule-data-cell-template"
+    (:li :class "mb-3 mt-3 test"
+      (:span :class "data" "Mathe LK Keller B201")
+      (:div :class "nowrap"
+        (:button :type "button" :class "btn btn-sm btn-outline-primary"
+          (:span :class "fa fa-pen"))
+        (:button :type "button" :class "btn btn-sm btn-outline-primary"
+          (:span :class "fa fa-trash")))))
+
   (:template :id "teachers-list-html"
     (:li :class "teachers-list-name"))
 
@@ -212,13 +221,7 @@
               (:tr
                 (:th :scope "row" (cl-who:str i))
                 (:td (:ul :class "unstyled"
-                      (:li :class "mb-3 mt-3 test"
-                        "Mathe LK Keller B201"
-                        (:div :class "nowrap"
-                          (:button :type "button" :class "btn btn-sm btn-outline-primary"
-                            (:span :class "fa fa-pen"))
-                          (:button :type "button" :class "btn btn-sm btn-outline-primary"
-                            (:span :class "fa fa-trash"))))
+
                       (:li :class "mb-3 mt-3 test"
                         "Mathe LK Ast B203"
                         (:div :class "nowrap"
