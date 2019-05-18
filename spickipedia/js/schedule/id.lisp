@@ -22,5 +22,9 @@
 (onclicks ".add-course"
   (let ((x (chain event target (closest "td") cell-index))
         (y (chain event target (closest "tr") row-index)))
-    
+    (setf (chain (one "#schedule-data-weekday") value) x)
+    (setf (chain (one "#schedule-data-hour") value) y)
     (show-modal (one "#schedule-data-modal"))))
+
+(onsubmit "#schedule-data-form"
+  (chain event (prevent-default)))
