@@ -226,15 +226,15 @@
                             (:span :class "fa fa-pen"))
                           (:button :type "button" :class "btn btn-sm btn-outline-primary"
                             (:span :class "fa fa-trash")))))
-                     (:button :type "button" :class "btn btn-sm btn-outline-primary w-100"
+                     (:button :type "button" :class "add-course btn btn-sm btn-outline-primary w-100"
                        (:span :class "fa fa-plus")))
-                (:td (:button :type "button" :class "btn btn-sm btn-outline-primary w-100"
+                (:td (:button :type "button" :class "add-course btn btn-sm btn-outline-primary w-100"
                        (:span :class "fa fa-plus")))
-                (:td (:button :type "button" :class "btn btn-sm btn-outline-primary w-100"
+                (:td (:button :type "button" :class "add-course btn btn-sm btn-outline-primary w-100"
                        (:span :class "fa fa-plus")))
-                (:td (:button :type "button" :class "btn btn-sm btn-outline-primary w-100"
+                (:td (:button :type "button" :class "add-course btn btn-sm btn-outline-primary w-100"
                        (:span :class "fa fa-plus")))
-                (:td (:button :type "button" :class "btn btn-sm btn-outline-primary w-100"
+                (:td (:button :type "button" :class "add-course btn btn-sm btn-outline-primary w-100"
                        (:span :class "fa fa-plus"))))))))))
 
 
