@@ -27,6 +27,10 @@
     (setf (chain (one "#schedule-data-hour") value) y)
     (show-modal (one "#schedule-data-modal"))))
 
+(onclick "#save-schedule"
+  (setf (chain (one "#save-schedule") disabled) T))
+  ;; TODO
+
 (onsubmit "#schedule-data-form"
   (chain event (prevent-default))
   (let* ((x (chain (one "#schedule-data-weekday") value))
