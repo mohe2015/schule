@@ -28,8 +28,15 @@
     (show-modal (one "#schedule-data-modal"))))
 
 (onclick "#save-schedule"
-  (setf (chain (one "#save-schedule") disabled) T))
-  ;; TODO
+  (setf (chain (one "#save-schedule") disabled) T)
+  (let ((table (one "#schedule-table")))
+    (dotimes (x (getprop table 'rows 'length))
+      (dotimes (y (getprop table 'rows x 'cells 'length))
+        (let ((cell (getprop table 'rows x 'cells y)))
+          ;;(chain console (log cell))
+          (loop for element in (chain cell (query-selector-all ".schedule-data")) do
+            (chain console (log element)))))))
+  (setf (chain (one "#save-schedule") disabled) F))
 
 (onsubmit "#schedule-data-form"
   (chain event (prevent-default))
