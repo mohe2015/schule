@@ -45,7 +45,7 @@
      "Check this custom")))
 
   (:template :id "schedule-data-cell-template"
-    (:div :class "mb-3 mt-3 schedule-data"
+    (:div :class "mb-3 mt-3 schedule-data test"
       (:span :class "data" "Mathe LK Keller B201")
       (:div :class "nowrap"
         (:button :type "button" :class "btn btn-sm btn-outline-primary"
