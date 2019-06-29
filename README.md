@@ -31,9 +31,9 @@ ln -s $PWD/clack/ ~/.roswell/local-projects/
 (spickipedia.db:setup-db)
 (in-package :spickipedia.db)
 (with-connection (db)
-  (create-dao 'user :name "Administrator" :hash (hash "xfg3zte94h62j392h") :group "admin")
-  (create-dao 'user :name "Anonymous" :hash (hash "xfg3zte94h") :group "anonymous")
-  (create-dao 'user :name "<your name>" :hash (hash "fjd8sh3l2h") :group "user"))
+  (create-dao 'user :name "Administrator" :hash (bcrypt:hash "xfg3zte94h62j392h") :group "admin")
+  (create-dao 'user :name "Anonymous" :hash (bcrypt:hash "xfg3zte94h") :group "anonymous")
+  (create-dao 'user :name "<your name>" :hash (bcrypt:hash "fjd8sh3l2h") :group "user"))
 (spickipedia:start)
 
 
