@@ -234,9 +234,16 @@
   (setf (gethash :user *SESSION*) nil)
   nil)
 
+(defun my-quit ()
+  #+sbcl (sb-ext:quit)
+  #+clisp (ext:exit)
+  #+ccl (ccl:quit)
+  #+ecl (ext:quit)
+  #+allegro (excl:exit))
+
 ;; noauth
 (my-defroute :GET "/api/killswitch" nil () "text/html"
-  (sb-ext:quit))
+  (my-quit))
 
 (defun starts-with-p (str1 str2)
   "Determine whether `str1` starts with `str2`"
