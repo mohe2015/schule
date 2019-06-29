@@ -67,3 +67,5 @@ purgecss --content www/index.html --css www/s/all.css --css www/s/bootstrap.min.
 
 (in-package :spickipedia.db)
 (with-connection (spickipedia.db:db) (mito:create-dao 'spickipedia.db:user :name "admin" :hash (bcrypt:hash "admin") :group "admin"))
+
+(sb-ext:quit)
