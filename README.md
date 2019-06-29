@@ -35,6 +35,10 @@ ln -s $PWD/clack/ ~/.roswell/local-projects/
   (create-dao 'user :name "Anonymous" :hash (hash "xfg3zte94h") :group "anonymous")
   (create-dao 'user :name "<your name>" :hash (hash "fjd8sh3l2h") :group "user"))
 (spickipedia:start)
+
+
+(declaim (optimize (compilation-speed 0) (debug 0) (safety 0) (space 3) (speed 0)))
+(save-application "spickipedia"  :clear-clos-caches t :impurify t :prepend-kernel t)
 ```
 
 ```bash
