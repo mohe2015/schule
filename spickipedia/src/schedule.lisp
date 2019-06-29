@@ -40,7 +40,7 @@
            #'(lambda (course)
                (first (select-dao 'course-revision (where (:= :course course)) (order-by (:desc :id)) (limit 1))))
            courses)))
-    (encode-json-to-string course-revisions)))
+    (encode-json-to-string (list-to-array course-revisions))))
 
 (my-defroute :POST "/api/schedules" (:admin :user) (|grade|) "text/html"
   (let* ((schedule (create-dao 'schedule :grade (first |grade|)))
