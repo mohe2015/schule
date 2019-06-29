@@ -45,7 +45,7 @@
      "Check this custom")))
 
   (:template :id "schedule-data-cell-template"
-    (:div :class "mb-3 mt-3 test"
+    (:div :class "mb-3 mt-3 schedule-data test"
       (:span :class "data" "Mathe LK Keller B201")
       (:div :class "nowrap"
         (:button :type "button" :class "btn btn-sm btn-outline-primary"
@@ -205,6 +205,7 @@
       "Stundenplan erstellen")))
 
   (:div :style "display: none;" :class "container-fluid my-tab position-absolute" :id "schedule"
+    (:button :type "button" :id "save-schedule" :class "btn btn-primary mb-1 w-100" "Speichern")
     (:div :class "table-responsive"
       (:table :id "schedule-table" :class "table table-hover table-bordered table-dark table-sm"
         (:thead

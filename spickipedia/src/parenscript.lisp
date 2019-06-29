@@ -51,6 +51,13 @@
        "submit" (lambda (event)
                   ,@body))))
 
+(defpsmacro onclick (selector &body body)
+  `(chain
+     (one ,selector)
+     (add-event-listener
+       "click" (lambda (event)
+                  ,@body))))
+
 (defun file-js-gen (file)
   (in-package :spickipedia.parenscript)
   (handler-bind ((simple-warning #'(lambda (e) (if (equal "Returning from unknown block ~A" (simple-condition-format-control e)) (muffle-warning)))))
