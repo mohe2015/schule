@@ -62,6 +62,7 @@ npm i -g purgecss
 purgecss --content www/index.html --css www/s/all.css --css www/s/bootstrap.min.css --css www/s/index.css --css www/s/summernote-bs4.css -o www/s/ --content www/s/*.js
 ```
 
+(spickipedia.db:setup-db)
 (spickipedia:start)
 
 (in-package :spickipedia.db)

@@ -20,7 +20,7 @@
 (defparameter *template-directory* (merge-pathnames #P"templates/" *application-root*))
 
 (defconfig :common
-  `(:databases ((:maindb :postgres :username "postgres" :database-name "spickipedia"))))
+  `(:databases ((:maindb :sqlite3 :database-name #P"spickipedia.db"))))
 
 (defconfig |development|
   '())

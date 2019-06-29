@@ -4,7 +4,7 @@
 (in-package :spickipedia.session)
 
 (defmethod session-verify ((request request))
-  (let ((mito:*connection* (dbi:connect-cached :postgres :username "postgres" :database-name "spickipedia"))
+  (let ((mito:*connection* (dbi:connect-cached :sqlite3 :database-name #P"spickipedia.db"))
         (session-identifier (cookie-in (session-cookie-name *acceptor*) request)))
     (if session-identifier
      (mito:find-dao 'my-session :session-cookie session-identifier)

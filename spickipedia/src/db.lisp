@@ -253,5 +253,3 @@
     (check-table 'schedule)
     (check-table 'schedule-revision)
     (check-table 'schedule-data)))
-
-(setup-db)
