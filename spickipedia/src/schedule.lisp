@@ -16,7 +16,7 @@
              #'(lambda (teacher)
                  (first (select-dao 'teacher-revision (where (:= :teacher teacher)) (order-by (:desc :id)) (limit 1))))
              teachers)))
-    (encode-json-to-string teacher-revisions)))
+    (encode-json-to-string (list-to-array teacher-revisions))))
 
 (my-defroute :POST "/api/courses" (:admin :user) (|subject| |type| |teacher| |is-tutorial| |class| |topic|) "text/html"
   (let* ((course  (create-dao 'course))
