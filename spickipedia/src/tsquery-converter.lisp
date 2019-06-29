@@ -2,7 +2,7 @@
 ;;(ql:quickload "str")
 ;;(use-package :str)
 
-;;(defvar *connection* (dbi:connect :postgres :database-name "spickipedia" :username "postgres"))
+;;(defvar *connection* (dbi:connect :sqlite3 :database-name #P"spickipedia.db"))
 
 ;;(defparameter *query* (dbi:prepare *connection* "SELECT to_tsquery('german', ?), to_tsquery('german', ?) @@ to_tsvector('german', 'Dies ist ein sehr toller Text über Elefanten. Sie können laufen, rennen und trompeten');"))
 

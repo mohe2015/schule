@@ -12,7 +12,7 @@
 	url = https://github.com/arnog/mathlive.git
 [submodule "crypt_blowfish"]
 	path = crypt_blowfish
-	url = https://github.com/mohe2015/crypt_blowfish.git
+	url = git@github.com:mohe2015/crypt_blowfish.git
 [submodule "monkeylib-bcrypt"]
 	path = monkeylib-bcrypt
 	url = https://github.com/mohe2015/monkeylib-bcrypt.git
@@ -25,9 +25,3 @@
 [submodule "clack"]
 	path = clack
 	url = git@github.com:mohe2015/clack.git
-[submodule "spickipedia/bootstrap"]
-	path = spickipedia/bootstrap
-	url = git://github.com/twbs/bootstrap.git
-[submodule "bootstrap"]
-	path = bootstrap
-	url = git@github.com:mohe2015/bootstrap.git
