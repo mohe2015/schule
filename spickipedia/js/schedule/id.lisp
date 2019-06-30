@@ -26,7 +26,6 @@
             (chain cell (prepend template))))))
     (catch handle-fetch-error))
 
-
   (chain
     (one "#schedule-data-form")
     (add-event-listener
@@ -54,8 +53,8 @@
               (lambda (data)
                 (setf (chain template (query-selector ".data") inner-text) (concatenate 'string course " " room))
                 (chain cell (prepend template))
-                (hide-modal (one "#schedule-data-modal"))
-                (alert data)))
+                (hide-modal (one "#schedule-data-modal"))))
+                ;;(alert data)))
             (catch handle-fetch-error)))))))
 
 (chain

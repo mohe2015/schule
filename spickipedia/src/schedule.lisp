@@ -101,7 +101,7 @@ O to STREAM (or to *JSON-OUTPUT*)."
          (revision (select-dao 'schedule-revision (where (:= :schedule schedule)) (order-by (:desc :id)) (limit 1))))
     (encode-json-plist-to-string
       `(:revision ,(car revision)
-        :data ,(retrieve-dao 'schedule-data :schedule-revision (car revision))))))
+        :data ,(list-to-array (retrieve-dao 'schedule-data :schedule-revision (car revision)))))))
 
 ;; TODO use transactions everywhere to prevent inconsistent state
 
