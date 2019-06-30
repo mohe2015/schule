@@ -202,7 +202,8 @@
   ((grade :col-type (:varchar 64)
           :initarg :grade
           :accessor schedule-grade))
-  (:metaclass dao-table-class))
+  (:metaclass dao-table-class)
+  (:unique-keys grade))
 
 (defclass schedule-revision ()
   ((author :col-type user
