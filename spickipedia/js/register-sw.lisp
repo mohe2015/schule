@@ -2,7 +2,8 @@
 
 (i "./test.lisp")
 
-(if (chain navigator service-worker)
+;; TODO FIXME disabled for debugging
+(if (not (chain navigator service-worker))
     (chain
      window
      (add-event-listener

@@ -29,13 +29,13 @@
            :trivial-mimes
            :postmodern
            :cl-who)
-  :components
+  :components ;; TODO FIXME fix all dependencies as otherwise there are compilation failures
     ((:module "src" :components (
          (:file "sanitize")
          (:file "parenscript")
          (:file "tsquery-converter")
          (:file "main" :depends-on ("config" "view" "db" "web" "schedule"))
-         (:file "web" :depends-on ("view" "parenscript"))
+         (:file "web" :depends-on ("view" "parenscript" "db"))
          (:file "schedule" :depends-on ("web"))
          (:file "view" :depends-on ("config"))
          (:file "db" :depends-on ("config"))

@@ -6,6 +6,7 @@
 (i "./handle-error.lisp" "handleError")
 (i "./math.lisp" "renderMath")
 (i "./image-viewer.lisp")
+(i "./fetch.lisp" "checkStatus" "json")
 
 (defun update-page (data)
   (chain ($ ".closable-badge") (remove))
@@ -26,10 +27,11 @@
              (:button :type "button" :class "close close-tag" :aria-label "Close"
                   (:span :aria-hidden "true" "&times;"))))))))
   (chain ($ "article") (html (chain data content)))
-  (render-math))
+  (render-math)
+  (show-tab "#page"))
 
 (defroute "/wiki/:name"
-    (var pathname (chain window location pathname (split "/")))
+  (var pathname (chain window location pathname (split "/")))
   (chain ($ ".edit-button") (remove-class "disabled"))
   (chain ($ "#is-outdated-article") (add-class "d-none"))
   (chain ($ "#wiki-article-title") (text (decode-u-r-i-component (chain pathname 2))))
@@ -42,20 +44,22 @@
   (var
    network-update
    (chain (fetch (concatenate 'string "/api/wiki/" (chain pathname 2)))
-      (then (lambda (response)
-             (chain response (json))))
+      (then check-status)
+      (then json)
       (then (lambda (data)
              (setf network-data-received T)
-             (update-page data)))))
+             (update-page data)))
+      (catch (lambda (error)
+              (if (= (chain error response status) 404)
+               (show-tab "#not-found")
+               (handle-error (chain error response) T))))))
 
   ;; fetch cached data
   (chain
    caches
    (match (concatenate 'string "/api/wiki/" (chain pathname 2)))
-   (then (lambda (response)
-          (if (not response)
-              (throw (-error "No data"))) ;; is that right syntax?
-          (chain response (json))))
+   (then check-status)
+   (then json)
    (then (lambda (data)
        ;; don't overwrite newer network data
           (if (not network-data-received)
@@ -63,10 +67,9 @@
    (catch (lambda ()
         ;; we didn't get cached data, the network is our last hope
            network-update))
-   (catch (lambda (jq-xhr text-status error-thrown)
-           (if (= (chain jq-xhr status) 404)
+   (catch (lambda (error)
+           (if (= (chain error response status) 404)
             (show-tab "#not-found")
-            (handle-error jq-xhr T))))
-   (then (lambda ()
-       ;; stop spinner
-          (show-tab "#page")))))
+            (handle-error (chain error response) T))))))
+   ;;(then (lambda ()))))
+   ;; stop spinner

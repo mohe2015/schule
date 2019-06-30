@@ -34,7 +34,7 @@
 
 (export
   (defun check-status (response)
-    (if (and (>= (chain response status) 200) (< (chain response status) 300))
+    (if (= (chain response status) 200)
       (chain -Promise (resolve response))
       (let ((error (new (-error (chain response status-text)))))
         (setf (chain error response) response)

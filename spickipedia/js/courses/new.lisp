@@ -19,7 +19,7 @@
            (loop for teacher in data do
                  (let ((element (chain document (create-element "option"))))
                   (setf (chain element inner-text) (chain teacher name))
-                  (setf (chain element value) (chain teacher teacher-id))
+                  (setf (chain element value) (chain teacher id))
                   (chain select (append-child element))))))
        (catch handle-fetch-error))
       (show-tab "#create-course-tab")))

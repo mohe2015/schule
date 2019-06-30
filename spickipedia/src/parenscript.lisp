@@ -11,6 +11,7 @@
   `(progn
      (export
       (defun ,(make-symbol (concatenate 'string "handle-" (subseq (regex-replace-all "\/[:\\.]?" route "-") 1))) (path)
+       (var results nil)
        (if (not (null (var results (chain (new (-Reg-Exp ,(concatenate 'string "^" (regex-replace-all "\\.[^/]*" (regex-replace-all ":[^/]*" route "([^/]*)") "(.*)") "$"))) (exec path)))))
            (progn
              ,@(loop
@@ -24,39 +25,40 @@
      (chain window routes (push ,(make-symbol (concatenate 'string "handle-" (subseq (regex-replace-all "\/[:\\.]?" route "-") 1)))))))
 
 
-(defpsmacro get (url show-error-page &body body)
-  `(chain $
-      (get ,url (lambda (data) ,@body))
-      (fail (lambda (jq-xhr text-status error-thrown)
-             (handle-error jq-xhr ,show-error-page)))))
 
-(defpsmacro post (url data show-error-page &body body)
-  `(chain $
-      (post ,url ,data (lambda (data) ,@body))
-      (fail (lambda (jq-xhr text-status error-thrown)
-             (handle-error jq-xhr ,show-error-page)))))
+;;(defpsmacro get (url show-error-page &body body)
+;;  `(chain $
+;;      (get ,url (lambda (data) ,@body))
+;;      (fail (lambda (jq-xhr text-status error-thrown)
+;;             (handle-error jq-xhr ,show-error-page))))
+
+;;(defpsmacro post (url data show-error-page &body body)
+;;  `(chain $
+;;      (post ,url ,data (lambda (data) ,@body))
+;;      (fail (lambda (jq-xhr text-status error-thrown)
+;;             (handle-error jq-xhr ,show-error-page))))
 
 (defpsmacro i (file &rest contents)
   `(import ,file ,@contents))
 
-(defpsmacro onclicks (selector &body body)
-  `(internal-onclicks (all ,selector)
-          (lambda (event)
-            ,@body)))
+;;(defpsmacro onclicks (selector &body body)
+;;  `(internal-onclicks (all ,selector)
+;;          (lambda (event)
+;;            ,@body))
 
-(defpsmacro onsubmit (selector &body body)
-  `(chain
-     (one ,selector)
-     (add-event-listener
-       "submit" (lambda (event)
-                  ,@body))))
+;;(defpsmacro onsubmit (selector &body body)
+;;  `(chain
+;;     (one ,selector)
+;;     (add-event-listener
+;;       "submit" (lambda (event)
+;;                  ,@body))
 
-(defpsmacro onclick (selector &body body)
-  `(chain
-     (one ,selector)
-     (add-event-listener
-       "click" (lambda (event)
-                  ,@body))))
+;;(defpsmacro onclick (selector &body body)
+;;  `(chain
+;;     (one ,selector)
+;;     (add-event-listener
+;;       "click" (lambda (event)
+;;                  ,@body))
 
 (defun file-js-gen (file)
   (in-package :spickipedia.parenscript)
