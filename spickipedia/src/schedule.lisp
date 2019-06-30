@@ -53,9 +53,19 @@
   (let* ((schedules (select-dao 'schedule)))
     (encode-json-to-string schedules)))
 
+(defmethod json:encode-json ((o schedule-data) &optional (stream json:*json-output*))
+  "Write the JSON representation (Object) of the postmodern DAO CLOS object
+O to STREAM (or to *JSON-OUTPUT*)."
+  (with-object (stream)
+    (encode-object-member 'test "hallo" stream)
+    (encode-object-member 'test1 "hallo1" stream)))
+
 (my-defroute :GET "/api/schedule/:grade" (:admin :user) (grade) "application/json"
-  (let* ((schedule (find-dao 'schedule :grade grade)))
-    (encode-json-to-string schedule)))
+  (let* ((schedule (find-dao 'schedule :grade grade))
+         (revision (select-dao 'schedule-revision (where (:= :schedule schedule)) (order-by (:desc :id)) (limit 1))))
+    (encode-json-plist-to-string
+      `(:revision ,(car revision)
+        :data ,(retrieve-dao 'schedule-data :schedule-revision (car revision))))))
 
 (my-defroute :POST "/api/schedule/:grade/add" (:admin :user) (grade |weekday| |hour| |week-modulo| |course| |room|) "application/json"
   (let* ((schedule (find-dao 'schedule :grade grade))
