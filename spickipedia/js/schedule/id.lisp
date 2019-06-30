@@ -31,7 +31,8 @@
         (setf (chain (one "#schedule-data-hour") value) y)
         (show-modal (one "#schedule-data-modal"))))))
 
-(one "#save-schedule"
+(chain
+  (one "#save-schedule")
   (add-event-listener
     "click"
     (lambda (event)
@@ -45,7 +46,8 @@
                 (chain console (log element)))))))
       (setf (chain (one "#save-schedule") disabled) F))))
 
-(one "#schedule-data-form"
+(chain
+  (one "#schedule-data-form")
   (add-event-listener
     "submit"
     (lambda (event)
