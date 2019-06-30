@@ -5,6 +5,7 @@
 (i "../handle-error.lisp" "handleError")
 (i "../fetch.lisp" "checkStatus" "json" "html" "handleFetchError")
 (i "../template.lisp" "getTemplate")
+(i "../push-state.lisp" "pushState")
 
 (defroute "/courses/new"
     (let ((select (chain document (query-selector "#teachers-select"))))
@@ -41,6 +42,6 @@
           (then json)
           (then
             (lambda (data)
-              (alert data)))
+              (push-state "/courses")))
           (catch handle-fetch-error)))
       F)))

@@ -6,6 +6,7 @@
 (i "../handle-error.lisp" "handleError")
 (i "../read-cookie.lisp" "readCookie")
 (i "../fetch.lisp" "checkStatus" "json" "html" "handleFetchError")
+(i "../push-state.lisp" "pushState")
 
 (defroute "/schedules/new"
   (show-tab "#create-schedule-tab"))
@@ -27,6 +28,6 @@
           (then json)
           (then
             (lambda (data)
-              (alert data)))
+              (push-state "/schedules")))
           (catch handle-fetch-error)))
       F)))
