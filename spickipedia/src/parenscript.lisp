@@ -11,6 +11,7 @@
   `(progn
      (export
       (defun ,(make-symbol (concatenate 'string "handle-" (subseq (regex-replace-all "\/[:\\.]?" route "-") 1))) (path)
+       (var results nil)
        (if (not (null (var results (chain (new (-Reg-Exp ,(concatenate 'string "^" (regex-replace-all "\\.[^/]*" (regex-replace-all ":[^/]*" route "([^/]*)") "(.*)") "$"))) (exec path)))))
            (progn
              ,@(loop
