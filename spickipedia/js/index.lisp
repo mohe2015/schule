@@ -74,6 +74,18 @@
             T)))))
 
 (chain
+ ($ "body")
+ (on "click" "a.norefresh"
+     (lambda (e)
+       (let ((url (chain ($ this) (attr "href"))))
+        (if (is-local-url url)
+            (progn
+              (chain e (prevent-default))
+              (push-state url)
+              F)
+            T)))))
+
+(chain
  ($ "#refresh")
  (click (lambda (e)
          (chain e (prevent-default))

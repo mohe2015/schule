@@ -247,15 +247,15 @@
    "quiz-results" (:H1 :CLASS "text-center" "Ergebnisse") (:P :ID "result"))
 
   (:DIV :STYLE "display: none;" :class "container my-tab position-absolute" :ID "list-teachers"
-    (:h2 :class "text-center" "Lehrer")
+    (:h2 :class "text-center" "Lehrer" (:a :href "/teachers/new" :type "button" :class "btn btn-primary norefresh" "+"))
     (:ul :id "teachers-list"))
 
   (:div :style "display: none;" :class "container my-tab position-absolute" :id "list-courses"
-   (:h2 :class "text-center" "Kurse")
+   (:h2 :class "text-center" "Kurse" (:a :href "/courses/new" :type "button" :class "btn btn-primary norefresh" "+"))
    (:ul :id "courses-list"))
 
   (:div :style "display: none;" :class "container my-tab position-absolute" :id "list-schedules"
-   (:h2 :class "text-center" "Stundenpläne")
+   (:h2 :class "text-center" "Stundenpläne" (:a :href "/schedules/new" :type "button" :class "btn btn-primary norefresh" "+"))
    (:ul :id "schedules-list"))
 
   (:DIV :STYLE "display: none;" :CLASS "container my-tab position-absolute" :ID
