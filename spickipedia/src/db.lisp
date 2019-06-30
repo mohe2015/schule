@@ -58,7 +58,7 @@
            :schedule-data-schedule-revision
            :schedule-data-weekday
            :schedule-data-hour
-           :schedule-data-week-module
+           :schedule-data-week-modulo
            :schedule-data-course
            :schedule-data-room
            :setup-db))
@@ -224,7 +224,7 @@
          :accessor schedule-data-hour)
    (week-modulo :col-type (:integer)
                 :integer :week-modulo
-                :accessor schedule-data-week-module)
+                :accessor schedule-data-week-modulo)
    (course :col-type course
            :initarg :course
            :accessor schedule-data-course)

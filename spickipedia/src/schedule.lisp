@@ -53,12 +53,46 @@
   (let* ((schedules (select-dao 'schedule)))
     (encode-json-to-string schedules)))
 
+(defmethod json:encode-json ((o teacher-revision) &optional (stream json:*json-output*))
+  "Write the JSON representation (Object) of the postmodern DAO CLOS object
+O to STREAM (or to *JSON-OUTPUT*)."
+  (with-object (stream)
+    (encode-object-member 'name (teacher-revision-name o) stream)))
+
+(defmethod json:encode-json ((o teacher) &optional (stream json:*json-output*))
+  "Write the JSON representation (Object) of the postmodern DAO CLOS object
+O to STREAM (or to *JSON-OUTPUT*)."
+  (encode-json (first (select-dao 'teacher-revision (where (:= :teacher o)) (order-by (:desc :id)) (limit 1))) stream))
+
+(defmethod json:encode-json ((o course-revision) &optional (stream json:*json-output*))
+  "Write the JSON representation (Object) of the postmodern DAO CLOS object
+O to STREAM (or to *JSON-OUTPUT*)."
+  (with-object (stream)
+    (encode-object-member 'teacher (course-revision-teacher o) stream)
+    (encode-object-member 'type (course-revision-type o) stream)
+    (encode-object-member 'subject (course-revision-subject o) stream)
+    (encode-object-member 'is-tutorial (course-revision-is-tutorial o) stream)
+    (encode-object-member 'class (course-revision-class o) stream)
+    (encode-object-member 'topic (course-revision-topic o) stream)))
+
+(defmethod json:encode-json ((o course) &optional (stream json:*json-output*))
+  "Write the JSON representation (Object) of the postmodern DAO CLOS object
+O to STREAM (or to *JSON-OUTPUT*)."
+  (encode-json (first (select-dao 'course-revision (where (:= :course o)) (order-by (:desc :id)) (limit 1))) stream))
+
 (defmethod json:encode-json ((o schedule-data) &optional (stream json:*json-output*))
   "Write the JSON representation (Object) of the postmodern DAO CLOS object
 O to STREAM (or to *JSON-OUTPUT*)."
   (with-object (stream)
-    (encode-object-member 'test "hallo" stream)
-    (encode-object-member 'test1 "hallo1" stream)))
+    (encode-object-member 'weekday (schedule-data-weekday o) stream)
+    (encode-object-member 'hour (schedule-data-hour o) stream)
+    (encode-object-member 'week-modulo (schedule-data-week-modulo o) stream)
+    (encode-object-member 'course (schedule-data-course o) stream)
+    (encode-object-member 'room (schedule-data-room o) stream)))
+    ;;(map-slots (lambda (key value)
+    ;;             (as-object-member (key stream)
+    ;;               (encode-json (if (eq value :null) nil value) stream))
+    ;;           o))
 
 (my-defroute :GET "/api/schedule/:grade" (:admin :user) (grade) "application/json"
   (let* ((schedule (find-dao 'schedule :grade grade))
