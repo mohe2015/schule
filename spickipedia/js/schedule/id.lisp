@@ -91,7 +91,7 @@
       (clear-children course-select)
       (loop for course in data do
         (let ((option (chain document (create-element "option")))
-              (text (concatenate 'string (chain course subject) " " (chain course type) " " (chain course teacher-id))))
-          (setf (chain option value) (chain course id))
+              (text (concatenate 'string (chain course subject) " " (chain course type) " " (chain course teacher name))))
+          (setf (chain option value) (chain course course-id))
           (setf (chain option inner-text) text)
           (chain course-select (append-child option)))))))

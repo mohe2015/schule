@@ -19,6 +19,7 @@
            :teacher-revision-initial
            :course
            :course-revision
+           :course-revision-course
            :course-revision-author
            :course-revision-teacher
            :course-revision-type

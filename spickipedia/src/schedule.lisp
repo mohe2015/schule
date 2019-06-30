@@ -69,6 +69,7 @@ O to STREAM (or to *JSON-OUTPUT*)."
   "Write the JSON representation (Object) of the postmodern DAO CLOS object
 O to STREAM (or to *JSON-OUTPUT*)."
   (with-object (stream)
+    (encode-object-member 'course-id (object-id (course-revision-course o)) stream)
     (encode-object-member 'teacher (course-revision-teacher o) stream)
     (encode-object-member 'type (course-revision-type o) stream)
     (encode-object-member 'subject (course-revision-subject o) stream)
