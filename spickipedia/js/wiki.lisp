@@ -27,7 +27,8 @@
              (:button :type "button" :class "close close-tag" :aria-label "Close"
                   (:span :aria-hidden "true" "&times;"))))))))
   (chain ($ "article") (html (chain data content)))
-  (render-math))
+  (render-math)
+  (show-tab "#page"))
 
 (defroute "/wiki/:name"
   (var pathname (chain window location pathname (split "/")))
@@ -47,7 +48,11 @@
       (then json)
       (then (lambda (data)
              (setf network-data-received T)
-             (update-page data)))))
+             (update-page data)))
+      (catch (lambda (error)
+              (if (= (chain error response status) 404)
+               (show-tab "#not-found")
+               (handle-error (chain error response) T))))))
 
   ;; fetch cached data
   (chain
@@ -62,10 +67,9 @@
    (catch (lambda ()
         ;; we didn't get cached data, the network is our last hope
            network-update))
-   (catch (lambda (jq-xhr text-status error-thrown)
-           (if (= (chain jq-xhr status) 404)
+   (catch (lambda (error)
+           (if (= (chain error response status) 404)
             (show-tab "#not-found")
-            (handle-error jq-xhr T))))
-   (then (lambda ()
-       ;; stop spinner
-          (show-tab "#page")))))
+            (handle-error (chain error response) T))))))
+   ;;(then (lambda ()))))
+   ;; stop spinner
