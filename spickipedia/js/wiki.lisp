@@ -6,6 +6,7 @@
 (i "./handle-error.lisp" "handleError")
 (i "./math.lisp" "renderMath")
 (i "./image-viewer.lisp")
+(i "./fetch.lisp" "checkStatus" "json")
 
 (defun update-page (data)
   (chain ($ ".closable-badge") (remove))
@@ -29,7 +30,7 @@
   (render-math))
 
 (defroute "/wiki/:name"
-    (var pathname (chain window location pathname (split "/")))
+  (var pathname (chain window location pathname (split "/")))
   (chain ($ ".edit-button") (remove-class "disabled"))
   (chain ($ "#is-outdated-article") (add-class "d-none"))
   (chain ($ "#wiki-article-title") (text (decode-u-r-i-component (chain pathname 2))))
@@ -42,8 +43,8 @@
   (var
    network-update
    (chain (fetch (concatenate 'string "/api/wiki/" (chain pathname 2)))
-      (then (lambda (response)
-             (chain response (json))))
+      (then check-status)
+      (then json)
       (then (lambda (data)
              (setf network-data-received T)
              (update-page data)))))
@@ -52,10 +53,8 @@
   (chain
    caches
    (match (concatenate 'string "/api/wiki/" (chain pathname 2)))
-   (then (lambda (response)
-          (if (not response)
-              (throw (-error "No data"))) ;; is that right syntax?
-          (chain response (json))))
+   (then check-status)
+   (then json)
    (then (lambda (data)
        ;; don't overwrite newer network data
           (if (not network-data-received)

@@ -5,7 +5,7 @@
 (i "../cleanup.lisp" "cleanup")
 (i "../handle-error.lisp" "handleError")
 (i "../fetch.lisp" "checkStatus" "json" "html" "handleFetchError" "cacheThenNetwork")
-(i "../utils.lisp" "showModal" "internalOnclicks" "all" "one" "hideModal" "clearChildren")
+(i "../utils.lisp" "showModal" "all" "one" "hideModal" "clearChildren")
 (i "../template.lisp" "getTemplate")
 
 (defroute "/schedule/:id"
@@ -20,35 +20,45 @@
         nil))
     (catch handle-fetch-error)))
 
-(onclicks ".add-course"
-  (let ((x (chain event target (closest "td") cell-index))
-        (y (chain event target (closest "tr") row-index)))
-    (setf (chain (one "#schedule-data-weekday") value) x)
-    (setf (chain (one "#schedule-data-hour") value) y)
-    (show-modal (one "#schedule-data-modal"))))
+(chain
+  (all ".add-course")
+  (on
+    "click"
+    (lambda (event)
+      (let ((x (chain event target (closest "td") cell-index))
+            (y (chain event target (closest "tr") row-index)))
+        (setf (chain (one "#schedule-data-weekday") value) x)
+        (setf (chain (one "#schedule-data-hour") value) y)
+        (show-modal (one "#schedule-data-modal"))))))
 
-(onclick "#save-schedule"
-  (setf (chain (one "#save-schedule") disabled) T)
-  (let ((table (one "#schedule-table")))
-    (dotimes (x (getprop table 'rows 'length))
-      (dotimes (y (getprop table 'rows x 'cells 'length))
-        (let ((cell (getprop table 'rows x 'cells y)))
-          ;;(chain console (log cell))
-          (loop for element in (chain cell (query-selector-all ".schedule-data")) do
-            (chain console (log element)))))))
-  (setf (chain (one "#save-schedule") disabled) F))
+(one "#save-schedule"
+  (add-event-listener
+    "click"
+    (lambda (event)
+      (setf (chain (one "#save-schedule") disabled) T)
+      (let ((table (one "#schedule-table")))
+        (dotimes (x (getprop table 'rows 'length))
+          (dotimes (y (getprop table 'rows x 'cells 'length))
+            (let ((cell (getprop table 'rows x 'cells y)))
+              ;;(chain console (log cell))
+              (loop for element in (chain cell (query-selector-all ".schedule-data")) do
+                (chain console (log element)))))))
+      (setf (chain (one "#save-schedule") disabled) F))))
 
-(onsubmit "#schedule-data-form"
-  (chain event (prevent-default))
-  (let* ((x (chain (one "#schedule-data-weekday") value))
-         (y (chain (one "#schedule-data-hour") value))
-         (cell (getprop (one "#schedule-table") 'rows y 'cells x))
-         (template (get-template "schedule-data-cell-template"))
-         (course (chain (one "#course") selected-options 0 inner-text))
-         (room (chain (one "#room") value)))
-    (setf (chain template (query-selector ".data") inner-text) (concatenate 'string course " " room))
-    (chain cell (prepend template))
-    (hide-modal (one "#schedule-data-modal"))))
+(one "#schedule-data-form"
+  (add-event-listener
+    "submit"
+    (lambda (event)
+      (chain event (prevent-default))
+      (let* ((x (chain (one "#schedule-data-weekday") value))
+             (y (chain (one "#schedule-data-hour") value))
+             (cell (getprop (one "#schedule-table") 'rows y 'cells x))
+             (template (get-template "schedule-data-cell-template"))
+             (course (chain (one "#course") selected-options 0 inner-text))
+             (room (chain (one "#room") value)))
+        (setf (chain template (query-selector ".data") inner-text) (concatenate 'string course " " room))
+        (chain cell (prepend template))
+        (hide-modal (one "#schedule-data-modal"))))))
 
 (cache-then-network
   "/api/courses"
