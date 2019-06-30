@@ -103,8 +103,11 @@ O to STREAM (or to *JSON-OUTPUT*)."
       `(:revision ,(car revision)
         :data ,(retrieve-dao 'schedule-data :schedule-revision (car revision))))))
 
+;; TODO use transactions everywhere to prevent inconsistent state
+
 (my-defroute :POST "/api/schedule/:grade/add" (:admin :user) (grade |weekday| |hour| |week-modulo| |course| |room|) "application/json"
   (let* ((schedule (find-dao 'schedule :grade grade))
+         (last-revision (select-dao 'schedule-revision (where (:= :schedule schedule)) (order-by (:desc :id)) (limit 1)))
          (revision (create-dao 'schedule-revision :author user :schedule schedule))
          (data     (create-dao 'schedule-data :schedule-revision revision
                                               :weekday (first |weekday|)
@@ -112,6 +115,14 @@ O to STREAM (or to *JSON-OUTPUT*)."
                                               :week-modulo (first |week-modulo|)
                                               :course (find-dao 'course :id (first |course|))
                                               :room (first |room|))))
+         ;; TODO FIXME implement in sql
+    (loop for old-data in (retrieve-dao 'schedule-data :schedule-revision (car last-revision)) do
+       (create-dao 'schedule-data  :schedule-revision revision
+                                   :weekday (schedule-data-weekday old-data)
+                                   :hour (schedule-data-hour old-data)
+                                   :week-modulo (schedule-data-week-modulo old-data)
+                                   :course (schedule-data-course old-data)
+                                   :room (schedule-data-room old-data)))
     (format nil "~a" (object-id data))))
 
 ;; TODO convert this to my-defroute because otherwise we cant use the features of it like  (basic-headers)
