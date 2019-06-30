@@ -57,10 +57,16 @@
   (let* ((schedule (find-dao 'schedule :grade grade)))
     (encode-json-to-string schedule)))
 
-(my-defroute :POST "/api/schedule/:grade" (:admin :user) (grade) "application/json"
-  (let* ((schedule (find-dao 'schedule :grade grade)))
-    ;; TODO add schedule data
-    nil))
+(my-defroute :POST "/api/schedule/:grade/add" (:admin :user) (grade |weekday| |hour| |week-modulo| |course| |room|) "application/json"
+  (let* ((schedule (find-dao 'schedule :grade grade))
+         (revision (create-dao 'schedule-revision :author user :schedule schedule))
+         (data     (create-dao 'schedule-data :schedule-revision revision
+                                              :weekday (first |weekday|)
+                                              :hour (first |hour|)
+                                              :week-modulo (first |week-modulo|)
+                                              :course (find-dao 'course :id (first |course|))
+                                              :room (first |room|))))
+    (format nil "~a" (object-id data))))
 
 ;; TODO convert this to my-defroute because otherwise we cant use the features of it like  (basic-headers)
 ;; TODO moved here only temporarily so it only gets in action after all other handlers

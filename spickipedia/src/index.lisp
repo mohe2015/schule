@@ -536,14 +536,14 @@
          (:input :type "hidden" :id "schedule-data-weekday" :name "weekday" :value "monday")
          (:input :type "hidden" :id "schedule-data-hour" :name "hour" :value "1")
          (:DIV :CLASS "form-group" (:LABEL :FOR "week-modulo" "Regelmäßigkeit")
-           (:select :class "custom-select" :id "week-modulo"
+           (:select :class "custom-select" :id "week-modulo" :name "week-modulo"
              (:option :selected "selected" :value "0" "Jede Woche")
              (:option :value "1" "Ungerade Woche")
              (:option :value "2" "Gerade Woche")))
          (:DIV :CLASS "form-group" (:LABEL :FOR "course" "Kurs:") " "
-           (:select :class "custom-select" :id "course"))
+           (:select :class "custom-select" :id "course" :name "course"))
          (:DIV :CLASS "form-group" (:LABEL :FOR "room" "Raum:") " "
-          (:INPUT :TYPE "text" :ID "room" :CLASS "form-control")))
+          (:INPUT :TYPE "text" :ID "room" :name "room" :CLASS "form-control")))
        (:DIV :CLASS "modal-footer"
         (:BUTTON :TYPE "button" :CLASS "btn btn-secondary" :DATA-DISMISS "modal"
          "Abbrechen")

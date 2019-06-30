@@ -7,18 +7,51 @@
 (i "../fetch.lisp" "checkStatus" "json" "html" "handleFetchError" "cacheThenNetwork")
 (i "../utils.lisp" "showModal" "all" "one" "hideModal" "clearChildren")
 (i "../template.lisp" "getTemplate")
+(i "../read-cookie.lisp" "readCookie")
 
-(defroute "/schedule/:id"
+(defroute "/schedule/:grade"
   (show-tab "#schedule")
 
   (chain
-    (fetch (concatenate 'string "/api/schedule/" id))
+    (fetch (concatenate 'string "/api/schedule/" grade))
     (then check-status)
     (then json)
     (then
       (lambda (data)
         nil))
-    (catch handle-fetch-error)))
+    (catch handle-fetch-error))
+
+
+  (chain
+    (one "#schedule-data-form")
+    (add-event-listener
+      "submit"
+      (lambda (event)
+        (chain event (prevent-default))
+        (let* ((x (chain (one "#schedule-data-weekday") value))
+               (y (chain (one "#schedule-data-hour") value))
+               (cell (getprop (one "#schedule-table") 'rows y 'cells x))
+               (template (get-template "schedule-data-cell-template"))
+               (course (chain (one "#course") selected-options 0 inner-text))
+               (room (chain (one "#room") value))
+               (form-element (chain document (query-selector "#schedule-data-form")))
+               (form-data (new (-Form-Data form-element))))
+          (chain form-data (append "_csrf_token" (read-cookie "_csrf_token")))
+          (chain
+            (fetch
+              (concatenate 'string "/api/schedule/" grade "/add")
+              (create
+                method "POST"
+                body form-data))
+            (then check-status)
+            (then json)
+            (then
+              (lambda (data)
+                (setf (chain template (query-selector ".data") inner-text) (concatenate 'string course " " room))
+                (chain cell (prepend template))
+                (hide-modal (one "#schedule-data-modal"))
+                (alert data)))
+            (catch handle-fetch-error)))))))
 
 (chain
   (all ".add-course")
@@ -45,22 +78,6 @@
 ;;              (loop for element in (chain cell (query-selector-all ".schedule-data")) do
 ;;                (chain console (log element))))
 ;;      (setf (chain (one "#save-schedule") disabled) F))))
-
-(chain
-  (one "#schedule-data-form")
-  (add-event-listener
-    "submit"
-    (lambda (event)
-      (chain event (prevent-default))
-      (let* ((x (chain (one "#schedule-data-weekday") value))
-             (y (chain (one "#schedule-data-hour") value))
-             (cell (getprop (one "#schedule-table") 'rows y 'cells x))
-             (template (get-template "schedule-data-cell-template"))
-             (course (chain (one "#course") selected-options 0 inner-text))
-             (room (chain (one "#room") value)))
-        (setf (chain template (query-selector ".data") inner-text) (concatenate 'string course " " room))
-        (chain cell (prepend template))
-        (hide-modal (one "#schedule-data-modal"))))))
 
 (cache-then-network
   "/api/courses"
