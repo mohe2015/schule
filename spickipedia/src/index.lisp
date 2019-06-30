@@ -151,10 +151,10 @@
     (:FORM :method "POST" :action "/api/courses" :id "create-course-form"
      (:DIV :CLASS "form-group"
       (:label "Fach")
-      (:INPUT :TYPE "text" :CLASS "form-control" :PLACEHOLDER "Fach" :name "subject"))
+      (:INPUT :TYPE "text" :CLASS "form-control" :PLACEHOLDER "Fach" :name "subject" :id "course-subject"))
      (:DIV :CLASS "form-group"
        (:label "Typ")
-       (:select :CLASS "custom-select" :name "type"
+       (:select :CLASS "custom-select" :name "type" :id "course-type"
          (:option :selected "true" "GK")
          (:option "LK")))
      (:DIV :CLASS "form-group"
@@ -166,10 +166,10 @@
        (:label :class "custom-control-label" :for "is-tutorial" "Tutorium?"))
      (:DIV :CLASS "form-group"
       (:label "Klasse")
-      (:INPUT :TYPE "text" :CLASS "form-control" :PLACEHOLDER "Klasse" :name "class"))
+      (:INPUT :TYPE "text" :CLASS "form-control" :PLACEHOLDER "Klasse" :name "class" :id "course-class"))
      (:DIV :CLASS "form-group"
       (:label "Thema")
-      (:INPUT :TYPE "text" :CLASS "form-control" :PLACEHOLDER "Thema" :name "topic"))
+      (:INPUT :TYPE "text" :CLASS "form-control" :PLACEHOLDER "Thema" :name "topic" :id "course-topic"))
 
      (:BUTTON :TYPE "submit" :CLASS
       "btn btn-primary"
@@ -179,10 +179,10 @@
     (:FORM :method "POST" :action "/api/teachers" :id "create-teacher-form"
      (:DIV :CLASS "form-group"
       (:label "Name")
-      (:INPUT :TYPE "text" :CLASS "form-control" :PLACEHOLDER "Name" :name "name"))
+      (:INPUT :TYPE "text" :CLASS "form-control" :PLACEHOLDER "Name" :name "name" :id "teacher-name"))
      (:DIV :CLASS "form-group"
       (:label "Initialien")
-      (:INPUT :TYPE "text" :CLASS "form-control" :PLACEHOLDER "Initialien" :name "initial"))
+      (:INPUT :TYPE "text" :CLASS "form-control" :PLACEHOLDER "Initialien" :name "initial" :id "teacher-initial"))
      (:BUTTON :TYPE "submit" :CLASS
       "btn btn-primary"
       "LehrerIn erstellen")))
@@ -199,7 +199,7 @@
     (:FORM :method "POST" :action "/api/schedules" :id "create-schedule-form"
      (:DIV :CLASS "form-group"
       (:label "Jahrgang")
-      (:INPUT :TYPE "text" :CLASS "form-control" :PLACEHOLDER "Jahrgang" :name "grade"))
+      (:INPUT :TYPE "text" :CLASS "form-control" :PLACEHOLDER "Jahrgang" :name "grade" :id "schedule-grade"))
      (:BUTTON :TYPE "submit" :CLASS
       "btn btn-primary"
       "Stundenplan erstellen")))

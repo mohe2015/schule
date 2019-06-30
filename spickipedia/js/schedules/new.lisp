@@ -7,6 +7,7 @@
 (i "../read-cookie.lisp" "readCookie")
 (i "../fetch.lisp" "checkStatus" "json" "html" "handleFetchError")
 (i "../push-state.lisp" "pushState")
+(i "../utils.lisp" "showModal" "all" "one" "hideModal" "clearChildren")
 
 (defroute "/schedules/new"
   (show-tab "#create-schedule-tab"))
@@ -28,6 +29,7 @@
           (then json)
           (then
             (lambda (data)
-              (push-state "/schedules")))
+              (push-state "/schedules")
+              (setf (chain (one "#schedule-grade") value) "")))
           (catch handle-fetch-error)))
       F)))
