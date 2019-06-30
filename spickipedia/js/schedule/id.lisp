@@ -31,20 +31,20 @@
         (setf (chain (one "#schedule-data-hour") value) y)
         (show-modal (one "#schedule-data-modal"))))))
 
-(chain
-  (one "#save-schedule")
-  (add-event-listener
-    "click"
-    (lambda (event)
-      (setf (chain (one "#save-schedule") disabled) T)
-      (let ((table (one "#schedule-table")))
-        (dotimes (x (getprop table 'rows 'length))
-          (dotimes (y (getprop table 'rows x 'cells 'length))
-            (let ((cell (getprop table 'rows x 'cells y)))
-              ;;(chain console (log cell))
-              (loop for element in (chain cell (query-selector-all ".schedule-data")) do
-                (chain console (log element)))))))
-      (setf (chain (one "#save-schedule") disabled) F))))
+;;(chain
+;;  (one "#save-schedule")
+;;  (add-event-listener
+;;    "click"
+;;    (lambda (event)
+;;      (setf (chain (one "#save-schedule") disabled) T)
+;;      (let ((table (one "#schedule-table")))
+;;        (dotimes (x (getprop table 'rows 'length))
+;;          (dotimes (y (getprop table 'rows x 'cells 'length))
+;;            (let ((cell (getprop table 'rows x 'cells y)))
+;;              ;;(chain console (log cell))
+;;              (loop for element in (chain cell (query-selector-all ".schedule-data")) do
+;;                (chain console (log element))))
+;;      (setf (chain (one "#save-schedule") disabled) F))))
 
 (chain
   (one "#schedule-data-form")

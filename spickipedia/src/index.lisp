@@ -205,7 +205,6 @@
       "Stundenplan erstellen")))
 
   (:div :style "display: none;" :class "container-fluid my-tab position-absolute" :id "schedule"
-    (:button :type "button" :id "save-schedule" :class "btn btn-primary mb-1 w-100" "Speichern")
     (:div :class "table-responsive"
       (:table :id "schedule-table" :class "table table-hover table-bordered table-dark table-sm"
         (:thead

@@ -48,3 +48,10 @@ java -jar closure-compiler-v20181210.jar --js_output_file=www/s/result.js --exte
 npm i -g purgecss
 purgecss --content www/index.html --css www/s/all.css --css www/s/bootstrap.min.css --css www/s/index.css --css www/s/summernote-bs4.css -o www/s/ --content www/s/*.js
 ```
+
+## Browser debugging
+
+### Accessing modules
+
+import('../js/utils.lisp').then(m => module = m)
+
