@@ -18,7 +18,12 @@
     (then json)
     (then
       (lambda (data)
-        nil))
+        (loop for element in (chain data data) do
+          (chain console (log element))
+          (let* ((cell (getprop (one "#schedule-table") 'rows (chain element hour) 'cells (chain element weekday)))
+                 (template (get-template "schedule-data-cell-template")))
+            (setf (chain template (query-selector ".data") inner-text) (concatenate 'string (chain element course subject) " " (chain element course type) " " (chain element course teacher name) " " (chain element room)))
+            (chain cell (prepend template))))))
     (catch handle-fetch-error))
 
 
