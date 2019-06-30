@@ -60,7 +60,7 @@
     (:li :class "courses-list-subject"))
 
   (:template :id "schedules-list-html"
-    (:li :class "schedules-list-grade"))
+    (:li (:a :class "schedules-list-grade norefresh")))
 
   (:TEMPLATE :ID "multiple-choice-question"
    (:DIV :CLASS "multiple-choice-question"

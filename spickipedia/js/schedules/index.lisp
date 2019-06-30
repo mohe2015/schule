@@ -23,5 +23,6 @@
               (let ((template (get-template "schedules-list-html")))
                 (chain console (log (chain page name)))
                 (setf (chain template (query-selector ".schedules-list-grade") inner-text) (chain page grade))
+                (setf (chain template (query-selector ".schedules-list-grade") href) (concatenate 'string "/schedule/" (chain page grade)))
                 (chain document (get-element-by-id "schedules-list") (append template)))))))
     (catch handle-fetch-error)))
