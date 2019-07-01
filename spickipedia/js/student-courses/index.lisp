@@ -44,4 +44,27 @@
     (add-event-listener "click"
       (lambda (event)
         (chain event (prevent-default))
-        (show-modal ($ "#student-courses-modal"))))))
+        (show-modal ($ "#modal-student-courses")))))
+
+  (chain
+    (one "#form-student-courses")
+    (add-event-listener
+      "submit"
+      (lambda (event)
+        (chain event (prevent-default))
+        (let* ((form-element (one "#form-student-courses"))
+               (form-data (new (-Form-Data form-element))))
+          (chain form-data (append "_csrf_token" (read-cookie "_csrf_token")))
+          (chain
+            (fetch
+              "/api/student-courses"
+              (create
+                method "POST"
+                body form-data))
+            (then check-status)
+            (then json)
+            (then
+              (lambda (data)
+                ;; TODO ADD
+                (hide-modal (one "#modal-student-courses"))))
+            (catch handle-fetch-error)))))))

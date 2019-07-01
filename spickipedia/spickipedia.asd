@@ -25,12 +25,12 @@
   :components ;; TODO FIXME fix all dependencies as otherwise there are compilation failures
     ((:module "src" :components (
          (:file "package")
-         (:file "sanitize")
-         (:file "parenscript")
-         (:file "tsquery-converter")
+         (:file "sanitize" :depends-on ("package"))
+         (:file "parenscript" :depends-on ("package"))
+         (:file "tsquery-converter" :depends-on ("package"))
          (:file "html/user-courses/index" :depends-on ("package"))
          (:file "index" :depends-on ("package" "html/user-courses/index"))
-         (:file "main" :depends-on ("config" "db" "web" "schedule"))
+         (:file "main" :depends-on ("config" "db" "web" "schedule" "student-courses"))
          (:file "web" :depends-on ("package" "parenscript" "db" "index"))
          (:file "schedule" :depends-on ("package" "web")) ;; TODO FIXME clean up this dependency garbase
          (:file "student-courses" :depends-on ("package" "web"))

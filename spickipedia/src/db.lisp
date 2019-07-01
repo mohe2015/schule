@@ -175,13 +175,13 @@
            :accessor schedule-data-room))
   (:metaclass dao-table-class))
 
-(defclass student-courses ()
+(defclass student-course ()
   ((student :col-type user
             :initarg :student
-            :accessor student-courses-student)
+            :accessor student-course-student)
    (course  :col-type course
             :initarg :course
-            :accessor student-courses-course))
+            :accessor student-course-course))
   (:metaclass dao-table-class))
 
 (defun check-table (table)
@@ -204,4 +204,4 @@
     (check-table 'schedule)
     (check-table 'schedule-revision)
     (check-table 'schedule-data)
-    (check-table 'student-courses)))
+    (check-table 'student-course)))

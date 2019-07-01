@@ -1,8 +1,3 @@
-(in-package :cl-user)
-(defpackage spickipedia.parenscript
-  (:use :cl :parenscript :ppcre :ironclad)
-  (:export :file-js-gen
-       :js-files))
 (in-package :spickipedia.parenscript)
 
 (defparameter *js-target-version* "1.8.5")
