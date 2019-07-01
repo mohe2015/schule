@@ -289,21 +289,6 @@
            template nil
            env)))
 
-(defun schedule-tab (day)
-  `(:div :class "tab-pane fade show active" :id ,day :role "tabpanel" :aria-labeledby ,(concatenate 'string day "-tab")
-    (:table :class "table table-hover table-bordered table-dark table-sm"
-      (:thead
-        (:tr
-          (:th :scope "col" "#")
-          (:th :scope "col" "")))
-      (:tbody
-        (loop for i from 1 to 11 do
-          (cl-who:htm
-              (:tr
-                (:td (cl-who:str i))
-                (:td (:button :type "button" :class "add-course btn btn-sm btn-outline-primary w-100"
-                       (:span :class "fa fa-plus"))))))))))
-
 ;; Error pages
 
 (defmethod on-exception ((app <web>) (code (eql 404)))

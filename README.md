@@ -2,6 +2,7 @@
 
 ## Requirements
 
+* libfixposix-dev
 * fcgi
 * roswell
 * Atom (ubuntu install gnome tweaks and change theme to dark)
