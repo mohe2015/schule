@@ -32,7 +32,3 @@
          (let ((mito:*mito-logger-stream* t))
            (funcall app env)))))
  *web*)
-
-(cl-inotify:with-inotify (inotify T ("." '(:modify)))
-  (cl-inotify:do-events (event inotify :blocking-p T)
-    (format T "~A~%" event)))

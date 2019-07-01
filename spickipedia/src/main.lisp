@@ -27,3 +27,7 @@
   (prog1
       (clack:stop *handler*)
     (setf *handler* nil)))
+
+(cl-inotify:with-inotify (inotify T ("." '(:modify)))
+  (cl-inotify:do-events (event inotify :blocking-p T)
+    (format T "~A~%" event)))
