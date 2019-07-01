@@ -52,6 +52,7 @@
   "/js/template.lisp"
   "/js/courses/new.lisp"
   "/js/courses/index.lisp"
+  "/js/student-courses/index.lisp"
   "/js/schedule/id.lisp"
   "/js/schedules/new.lisp"
   "/js/schedules/index.lisp"
