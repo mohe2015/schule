@@ -33,8 +33,10 @@
   (let ((top-level *standard-output*))
     (bt:make-thread
       (lambda ()
-        (format top-level "Hello from thread!")
+        (format top-level "Started compilation thread!~%")
         (cl-inotify:with-inotify (inotify T ("." '(:modify)))
           (cl-inotify:do-events (event inotify :blocking-p T)
-            (format top-level "Got an update!")
-            (asdf:load-system :spickipedia :verbose t)))))))
+            (format top-level "Got a code update!~%")
+            (handler-case
+              (asdf:load-system :spickipedia)
+              (error () (format top-level "Failed compiling!~%")))))))))
