@@ -6,7 +6,8 @@
   (:import-from :clack
                 :clackup)
   (:export :start
-           :stop))
+           :stop
+           :development))
 (in-package :spickipedia)
 
 (defvar *appfile-path*
@@ -28,6 +29,11 @@
       (clack:stop *handler*)
     (setf *handler* nil)))
 
-(cl-inotify:with-inotify (inotify T ("." '(:modify)))
-  (cl-inotify:do-events (event inotify :blocking-p T)
-    (format T "~A~%" event)))
+(defun development ()
+  (format *standard-output* "started")
+  (cl-inotify:with-inotify (inotify T ("." '(:modify)))
+    (cl-inotify:do-events (event inotify :blocking-p T)
+      (ql:quickload :spickipedia))))
+
+(let ((top-level *standard-output*))
+  (bt:make-thread (lambda () (spickipedia:development))))

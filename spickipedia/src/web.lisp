@@ -9,10 +9,6 @@
 (defvar *web* (make-instance '<web>))
 (clear-routing-rules *web*)
 
-(djula::def-tag-compiler :file-hash (path)
-  (lambda (stream)
-    (princ (byte-array-to-hex-string (digest-file :sha512 path)) stream)))
-
 (defmacro with-user (&body body)
   `(if (gethash :user *SESSION*)
        (let ((user (mito:find-dao 'user :id (gethash :user *SESSION*))))
@@ -252,19 +248,6 @@
 (my-defroute :GET "/sw.lisp" nil () "application/javascript"
   (with-cache (read-file-into-string (merge-pathnames "js/sw.lisp" *application-root*))
     (file-js-gen (concatenate 'string (namestring *application-root*) "js/sw.lisp"))))
-
-(defparameter *template-registry* (make-hash-table :test 'equal))
-
-(defun render (template-path &optional &rest env)
-  (let ((template (gethash template-path *template-registry*)))
-    (unless template
-      (setf template (djula:compile-template* (princ-to-string template-path)))
-      (setf (gethash template-path *template-registry*) template))
-    (apply #'djula:render-template*
-           template nil
-           env)))
-
-;; Error pages
 
 (defmethod on-exception ((app <web>) (code (eql 404)))
   (declare (ignore app))
