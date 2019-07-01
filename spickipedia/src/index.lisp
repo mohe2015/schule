@@ -1,7 +1,7 @@
 (in-package :spickipedia.web)
 
 (defun schedule-tab (day)
-  `(:div :class "tab-pane" :id ,day :role "tabpanel" :aria-labeledby ,(concatenate 'string day "-tab")
+  `(:div :class "tab-pane fade" :id ,day :role "tabpanel" :aria-labeledby ,(concatenate 'string day "-tab")
     (:table :class "table table-hover table-bordered table-dark table-sm"
       (:thead
         (:tr
@@ -224,7 +224,7 @@
 
       (:div :style "display: none;" :class "container-fluid my-tab position-absolute" :id "schedule"
         (:ul :id "schedule-tabs" :class "nav nav-tabs" :role "tablist"
-          (:li :class "nav-item" (:a :class "nav-link active" :id "monday-tab" :data-toggle "tab" :href "#monday" :role "tab" :aria-controls "monday" :aria-selected "true" "Montag"))
+          (:li :class "nav-item" (:a :class "nav-link" :id "monday-tab" :data-toggle "tab" :href "#monday" :role "tab" :aria-controls "monday" :aria-selected "true" "Montag"))
           (:li :class "nav-item" (:a :class "nav-link" :id "tuesday-tab" :data-toggle "tab" :href "#tuesday" :role "tab" :aria-controls "tuesday" :aria-selected "false" "Dienstag"))
           (:li :class "nav-item" (:a :class "nav-link" :id "wednesday-tab" :data-toggle "tab" :href "#wednesday" :role "tab" :aria-controls "wednesday" :aria-selected "false" "Mittwoch"))
           (:li :class "nav-item" (:a :class "nav-link" :id "thursday-tab" :data-toggle "tab" :href "#thursday" :role "tab" :aria-controls "thursday" :aria-selected "false" "Donnerstag"))

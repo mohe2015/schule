@@ -34,7 +34,8 @@
     (bt:make-thread
       (lambda ()
         (format top-level "Started compilation thread!~%")
-        (cl-inotify:with-inotify (inotify T ("." '(:modify)))
+        ;; TODO FIXME this is not recursive
+        (cl-inotify:with-inotify (inotify T ((concatenate 'string (namestring (asdf:system-source-directory :spickipedia)) "/src") '(:modify)))
           (cl-inotify:do-events (event inotify :blocking-p T)
             (format top-level "Got a code update!~%")
             (handler-case
