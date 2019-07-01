@@ -6,7 +6,8 @@
   (:import-from :clack
                 :clackup)
   (:export :start
-           :stop))
+           :stop
+           :development))
 (in-package :spickipedia)
 
 (defvar *appfile-path*
@@ -27,3 +28,16 @@
   (prog1
       (clack:stop *handler*)
     (setf *handler* nil)))
+
+(defun development ()
+  (let ((top-level *standard-output*))
+    (bt:make-thread
+      (lambda ()
+        (format top-level "Started compilation thread!~%")
+        ;; TODO FIXME this is not recursive
+        (cl-inotify:with-inotify (inotify T ((concatenate 'string (namestring (asdf:system-source-directory :spickipedia)) "/src") '(:modify)))
+          (cl-inotify:do-events (event inotify :blocking-p T)
+            (format top-level "Got a code update!~%")
+            (handler-case
+              (asdf:load-system :spickipedia)
+              (error () (format top-level "Failed compiling!~%")))))))))

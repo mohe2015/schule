@@ -101,7 +101,7 @@ O to STREAM (or to *JSON-OUTPUT*)."
          (revision (select-dao 'schedule-revision (where (:= :schedule schedule)) (order-by (:desc :id)) (limit 1))))
     (encode-json-plist-to-string
       `(:revision ,(car revision)
-        :data ,(retrieve-dao 'schedule-data :schedule-revision (car revision))))))
+        :data ,(list-to-array (retrieve-dao 'schedule-data :schedule-revision (car revision)))))))
 
 ;; TODO use transactions everywhere to prevent inconsistent state
 
@@ -125,6 +125,12 @@ O to STREAM (or to *JSON-OUTPUT*)."
                                    :room (schedule-data-room old-data)))
     (format nil "~a" (object-id data))))
 
+(defmacro test ()
+  `(progn
+    (setf (HTML-MODE) :HTML5)
+    (with-html-output-to-string (jo nil :prologue t :indent t)
+      ,(get-html))))
+
 ;; TODO convert this to my-defroute because otherwise we cant use the features of it like  (basic-headers)
 ;; TODO moved here only temporarily so it only gets in action after all other handlers
 ;; TODO automatically reload src/index.lisp
@@ -135,4 +141,4 @@ O to STREAM (or to *JSON-OUTPUT*)."
         (with-cache-vector (read-file-into-byte-vector path)
           (setf (getf (response-headers *response*) :content-type) (get-safe-mime-type path))
           path)
-        (eval `(sexp-to-html ,(concatenate 'string (namestring *application-root*) "src/index.lisp"))))))
+        (test))))

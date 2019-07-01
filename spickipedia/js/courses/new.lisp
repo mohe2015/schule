@@ -5,6 +5,8 @@
 (i "../handle-error.lisp" "handleError")
 (i "../fetch.lisp" "checkStatus" "json" "html" "handleFetchError")
 (i "../template.lisp" "getTemplate")
+(i "../push-state.lisp" "pushState")
+(i "../utils.lisp" "showModal" "all" "one" "hideModal" "clearChildren")
 
 (defroute "/courses/new"
     (let ((select (chain document (query-selector "#teachers-select"))))
@@ -41,6 +43,12 @@
           (then json)
           (then
             (lambda (data)
-              (alert data)))
+              (push-state "/courses")
+              (setf (chain (one "#course-subject") value) "")
+              (setf (chain (one "#course-type") value) "")
+              (setf (chain (one "#teachers-select") value) "")
+              (setf (chain (one "#is-tutorial") value) "")
+              (setf (chain (one "#course-class") value) "")
+              (setf (chain (one "#course-topic") value) "")))
           (catch handle-fetch-error)))
       F)))

@@ -20,12 +20,13 @@
       (lambda (data)
         (loop for element in (chain data data) do
           (chain console (log element))
-          (let* ((cell (getprop (one "#schedule-table") 'rows (chain element hour) 'cells (chain element weekday)))
+          (let* ((cell1 (getprop (one "#schedule-table") 'children (chain element weekday)))
+                 (cell2 (chain cell1 (query-selector "tbody")))
+                 (cell (getprop cell2 'children (- (chain element hour) 1) 'children 1))
                  (template (get-template "schedule-data-cell-template")))
             (setf (chain template (query-selector ".data") inner-text) (concatenate 'string (chain element course subject) " " (chain element course type) " " (chain element course teacher name) " " (chain element room)))
             (chain cell (prepend template))))))
     (catch handle-fetch-error))
-
 
   (chain
     (one "#schedule-data-form")
@@ -33,9 +34,11 @@
       "submit"
       (lambda (event)
         (chain event (prevent-default))
-        (let* ((x (chain (one "#schedule-data-weekday") value))
-               (y (chain (one "#schedule-data-hour") value))
-               (cell (getprop (one "#schedule-table") 'rows y 'cells x))
+        (let* ((day (chain (one "#schedule-data-weekday") value))
+               (hour (chain (one "#schedule-data-hour") value))
+               (cell1 (getprop (one "#schedule-table") 'children day))
+               (cell2 (chain cell1 (query-selector "tbody")))
+               (cell (getprop cell2 'children (- hour 1) 'children 1))
                (template (get-template "schedule-data-cell-template"))
                (course (chain (one "#course") selected-options 0 inner-text))
                (room (chain (one "#room") value))
@@ -54,8 +57,8 @@
               (lambda (data)
                 (setf (chain template (query-selector ".data") inner-text) (concatenate 'string course " " room))
                 (chain cell (prepend template))
-                (hide-modal (one "#schedule-data-modal"))
-                (alert data)))
+                (hide-modal (one "#schedule-data-modal"))))
+                ;;(alert data)))
             (catch handle-fetch-error)))))))
 
 (chain
@@ -63,26 +66,13 @@
   (on
     "click"
     (lambda (event)
-      (let ((x (chain event target (closest "td") cell-index))
-            (y (chain event target (closest "tr") row-index)))
+      (chain console (log event))
+      (let* ((y (chain event target (closest "tr") row-index))
+             (x-element (chain event target (closest "div")))
+             (x (chain -array (from (chain x-element parent-node children)) (index-of x-element))))
         (setf (chain (one "#schedule-data-weekday") value) x)
         (setf (chain (one "#schedule-data-hour") value) y)
         (show-modal (one "#schedule-data-modal"))))))
-
-;;(chain
-;;  (one "#save-schedule")
-;;  (add-event-listener
-;;    "click"
-;;    (lambda (event)
-;;      (setf (chain (one "#save-schedule") disabled) T)
-;;      (let ((table (one "#schedule-table")))
-;;        (dotimes (x (getprop table 'rows 'length))
-;;          (dotimes (y (getprop table 'rows x 'cells 'length))
-;;            (let ((cell (getprop table 'rows x 'cells y)))
-;;              ;;(chain console (log cell))
-;;              (loop for element in (chain cell (query-selector-all ".schedule-data")) do
-;;                (chain console (log element))))
-;;      (setf (chain (one "#save-schedule") disabled) F))))
 
 (cache-then-network
   "/api/courses"

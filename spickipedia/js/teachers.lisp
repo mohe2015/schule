@@ -5,6 +5,8 @@
 (i "./handle-error.lisp" "handleError")
 (i "./fetch.lisp" "checkStatus" "json" "html" "handleFetchError")
 (i "./template.lisp" "getTemplate")
+(i "./push-state.lisp" "pushState")
+(i "./utils.lisp" "showModal" "all" "one" "hideModal" "clearChildren")
 
 (defroute "/teachers/new"
   (show-tab "#create-teacher-tab"))
@@ -47,6 +49,8 @@
           (then json)
           (then
             (lambda (data)
-              (alert data)))
+              (push-state "/teachers")
+              (setf (chain (one "#teacher-name") value) "")
+              (setf (chain (one "#teacher-initial") value) "")))
           (catch handle-fetch-error)))
       F)))

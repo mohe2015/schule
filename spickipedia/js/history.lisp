@@ -6,6 +6,7 @@
 (i "./cleanup.lisp" "cleanup")
 (i "./math.lisp" "renderMath")
 (i "./handle-error.lisp" "handleError")
+(i "./fetch.lisp" "checkStatus" "json" "html" "handleFetchError")
 
 (chain
  ($ "#show-history")
@@ -20,7 +21,13 @@
   (chain ($ ".edit-button") (remove-class "disabled"))
   (show-tab "#loading")
   (var pathname (chain window location pathname (split "/")))
-  (get (concatenate 'string "/api/history/" (chain pathname 2)) T
+
+  (chain
+   (fetch (concatenate 'string "/api/history/" (chain pathname 2)))
+   (then check-status)
+   (then json)
+   (then
+     (lambda (data)
        (chain ($ "#history-list") (html ""))
        (loop for page in data do
         (let ((template ($ (chain ($ "#history-item-template") (html)))))
@@ -31,7 +38,7 @@
           (chain template (find ".history-show") (attr "href" (concatenate 'string "/wiki/" (chain pathname 2) "/history/" (chain page id))))
           (chain template (find ".history-diff") (attr "href" (concatenate 'string "/wiki/" (chain pathname 2) "/history/" (chain page id) "/changes")))
           (chain ($ "#history-list") (append template))))
-       (show-tab "#history")))
+       (show-tab "#history")))))
 
 (defroute "/wiki/:page/history/:id"
   (show-tab "#loading")
