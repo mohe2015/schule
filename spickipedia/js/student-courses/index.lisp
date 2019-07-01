@@ -13,7 +13,7 @@
   (show-modal ($ "#student-courses-modal"))
 
   (chain
-    (fetch "/api/courses")
+    (fetch "/api/student-courses")
     (then check-status)
     (then json)
     (then

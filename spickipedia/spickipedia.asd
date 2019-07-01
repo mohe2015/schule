@@ -24,15 +24,16 @@
                :cl-who)
   :components ;; TODO FIXME fix all dependencies as otherwise there are compilation failures
     ((:module "src" :components (
+         (:file "package")
          (:file "sanitize")
          (:file "parenscript")
          (:file "tsquery-converter")
-         (:file "package")
          (:file "html/user-courses/index" :depends-on ("package"))
          (:file "index" :depends-on ("package" "html/user-courses/index"))
          (:file "main" :depends-on ("config" "db" "web" "schedule"))
          (:file "web" :depends-on ("package" "parenscript" "db" "index"))
-         (:file "schedule" :depends-on ("package" "web"))
+         (:file "schedule" :depends-on ("package" "web")) ;; TODO FIXME clean up this dependency garbase
+         (:file "student-courses" :depends-on ("package" "web"))
          (:file "db" :depends-on ("package" "config"))
          (:file "config"))))
   :description ""
