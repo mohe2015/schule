@@ -2,33 +2,26 @@
   :version "0.1.0"
   :author "Moritz Hedtke"
   :license ""
-  :depends-on ("clack"
-               "lack"
-               "caveman2"
-               "envy"
-               "cl-ppcre"
-               "uiop"
-
-               ;; for @route annotation
-               "cl-syntax-annot"
-
-               ;; HTML Template
-               "djula"
-              :cl-inotify
-           :mito
-           :cl-json
-           :sanitize
-           :ironclad
-           :cl-fad
-           :cl-base64
-           :monkeylib-bcrypt
-           :str
-           :parenscript
-           :lack
-           :lack-middleware-csrf
-           :trivial-mimes
-           :postmodern
-           :cl-who)
+  :depends-on (:clack
+               :lack
+               :caveman2
+               :envy
+               :cl-ppcre
+               :uiop
+               :cl-inotify
+               :mito
+               :cl-json
+               :sanitize
+               :ironclad
+               :cl-fad
+               :cl-base64
+               :monkeylib-bcrypt
+               :str
+               :parenscript
+               :lack
+               :lack-middleware-csrf
+               :trivial-mimes
+               :cl-who)
   :components ;; TODO FIXME fix all dependencies as otherwise there are compilation failures
     ((:module "src" :components (
          (:file "sanitize")
