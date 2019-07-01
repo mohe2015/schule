@@ -33,6 +33,6 @@
            (funcall app env)))))
  *web*)
 
-(with-inotify (inotify T ("." :all-events))
-  (do-events (event inotify :blocking-p T)(do-events (event inotify :blocking-p T))
+(cl-inotify:with-inotify (inotify T ("." '(:modify)))
+  (cl-inotify:do-events (event inotify :blocking-p T)
     (format T "~A~%" event)))

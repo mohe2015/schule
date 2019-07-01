@@ -14,7 +14,7 @@
 
                ;; HTML Template
                "djula"
-
+              :cl-inotify
            :mito
            :cl-json
            :sanitize
@@ -34,12 +34,12 @@
          (:file "sanitize")
          (:file "parenscript")
          (:file "tsquery-converter")
-         (:file "index")
-         (:file "main" :depends-on ("config" "view" "db" "web" "schedule"))
-         (:file "web" :depends-on ("view" "parenscript" "db" "index"))
-         (:file "schedule" :depends-on ("web"))
-         (:file "view" :depends-on ("config"))
-         (:file "db" :depends-on ("config"))
+         (:file "package")
+         (:file "index" :depends-on ("package"))
+         (:file "main" :depends-on ("config" "db" "web" "schedule"))
+         (:file "web" :depends-on ("package" "parenscript" "db" "index"))
+         (:file "schedule" :depends-on ("package" "web"))
+         (:file "db" :depends-on ("package" "config"))
          (:file "config"))))
   :description ""
   :in-order-to ((test-op (test-op "spickipedia-test"))))

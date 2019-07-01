@@ -1,16 +1,3 @@
-(in-package :cl-user)
-(defpackage spickipedia.config
-  (:use :cl)
-  (:import-from :envy
-                :config-env-var
-                :defconfig)
-  (:export :config
-           :*application-root*
-           :*static-directory*
-           :*template-directory*
-           :appenv
-           :developmentp
-           :productionp))
 (in-package :spickipedia.config)
 
 (setf (config-env-var) "APP_ENV")

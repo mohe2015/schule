@@ -1,28 +1,3 @@
-(in-package :cl-user)
-(defpackage spickipedia.web
-  (:use :cl
-        :caveman2
-        :spickipedia.config
-        :spickipedia.view
-        :spickipedia.db
-        :spickipedia.sanitize
-        :spickipedia.tsquery-converter
-        :spickipedia.parenscript
-        :mito
-        :sxql
-        :json
-        :sxql.sql-type
-        :ironclad
-        :sanitize
-        :bcrypt
-        :alexandria
-        :cl-who
-        :cl-fad
-        :cl-base64)
-  (:shadowing-import-from :ironclad :xor)
-  (:shadowing-import-from :cl-fad :copy-file)
-  (:shadowing-import-from :cl-fad :copy-stream)
-  (:export :*web* :schedule-tab))
 (in-package :spickipedia.web)
 
 (declaim (optimize (debug 3)))
