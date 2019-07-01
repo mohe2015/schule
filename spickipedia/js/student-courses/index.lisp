@@ -5,9 +5,12 @@
 (i "../handle-error.lisp" "handleError")
 (i "../fetch.lisp" "checkStatus" "json" "html" "handleFetchError")
 (i "../template.lisp" "getTemplate")
+(i "../utils.lisp" "showModal")
 
 (defroute "/student-courses"
   (show-tab "#list-student-courses")
+
+  (show-modal ($ "#student-courses-modal"))
 
   (chain
     (fetch "/api/courses")
