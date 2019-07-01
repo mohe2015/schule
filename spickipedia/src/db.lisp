@@ -17,7 +17,7 @@
    (group :col-type (:varchar 64)
     :initarg :group
     :inflate (compose #'make-keyword #'string-upcase)
-         :deflate #'string-downcase
+    :deflate #'string-downcase
     :accessor user-group)
    (hash  :col-type (:varchar 512)
     :initarg :hash
@@ -55,13 +55,16 @@
   (:metaclass dao-table-class))
 
 (defclass my-session ()
-  ((session-cookie :col-type (:varchar 512)
+  ((session-cookie
+        :col-type (:varchar 512)
         :initarg :session-cookie
         :accessor my-session-cookie)
-   (csrf-token     :col-type (:varchar 512)
+   (csrf-token
+       :col-type (:varchar 512)
        :initarg :csrf-token
        :accessor my-session-csrf-token)
-   (user           :col-type (or user :null)
+   (user
+       :col-type (or user :null)
        :initarg  :user
        :accessor my-session-user))
   (:metaclass dao-table-class))
@@ -71,22 +74,25 @@
   (:metaclass dao-table-class))
 
 (defclass quiz-revision ()
-  ((author :col-type user
-      :initarg :author
-      :accessor quiz-revision-author)
-   (quiz :col-type quiz
-    :initarg :quiz
-    :accessor quiz-revision-quiz)
-   (content :col-type (:text)
-    :initarg :content
-    :accessor quiz-revision-content))
+  ((author
+     :col-type user
+     :initarg :author
+     :accessor quiz-revision-author)
+   (quiz
+     :col-type quiz
+     :initarg :quiz
+     :accessor quiz-revision-quiz)
+   (content
+     :col-type (:text)
+     :initarg :content
+     :accessor quiz-revision-content))
   (:metaclass dao-table-class))
 
 (defclass teacher ()
   ()
   (:metaclass dao-table-class))
 
-(defclass teacher-revision ()
+(defclass teacher-revision () ;; TODO maybe add a deleted tag
   ((author :col-type user
            :initarg :author
            :accessor teacher-revision-author)
@@ -124,7 +130,7 @@
    (is-tutorial :col-type :boolean
                 :initarg :is-tutorial
                 :accessor course-revision-is-tutorial)
-   (class :col-type (:varchar 64)
+   (class :col-type (:varchar 64) ;; TODO replace with schedule
           :initarg :class
           :accessor course-revision-class)
    (topic :col-type (:varchar 512)
@@ -169,6 +175,15 @@
            :accessor schedule-data-room))
   (:metaclass dao-table-class))
 
+(defclass student-course ()
+  ((student :col-type user
+            :initarg :student
+            :accessor student-course-student)
+   (course  :col-type course
+            :initarg :course
+            :accessor student-course-course))
+  (:metaclass dao-table-class))
+
 (defun check-table (table)
   (ensure-table-exists table)
   (migrate-table table))
@@ -188,4 +203,5 @@
     (check-table 'course-revision)
     (check-table 'schedule)
     (check-table 'schedule-revision)
-    (check-table 'schedule-data)))
+    (check-table 'schedule-data)
+    (check-table 'student-course)))

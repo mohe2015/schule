@@ -1,7 +1,3 @@
-(in-package :cl-user)
-(defpackage spickipedia.sanitize
-  (:use :cl :sanitize)
-  (:export :*sanitize-spickipedia*))
 (in-package :spickipedia.sanitize)
 
 (define-sanitize-mode *sanitize-spickipedia*

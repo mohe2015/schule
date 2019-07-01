@@ -1,3 +1,16 @@
+(defpackage spickipedia.sanitize
+  (:use :cl :sanitize)
+  (:export :*sanitize-spickipedia*))
+
+(defpackage spickipedia.tsquery-converter
+  (:use :cl :str)
+  (:export :tsquery-convert))
+
+(defpackage spickipedia.parenscript
+  (:use :cl :parenscript :ppcre :ironclad)
+  (:export :file-js-gen
+       :js-files))
+
 (defpackage spickipedia.config
   (:use :cl)
   (:import-from :envy
@@ -75,6 +88,9 @@
            :schedule-data-week-modulo
            :schedule-data-course
            :schedule-data-room
+           :student-course
+           :student-course-student
+           :student-course-course
            :setup-db))
 
 (defpackage spickipedia.web

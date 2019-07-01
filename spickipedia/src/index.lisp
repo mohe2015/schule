@@ -56,6 +56,7 @@
 
       (:TITLE "Spickipedia"))
      (:BODY
+
       (:TEMPLATE :ID "multiple-choice-answer-html"
        (:DIV :CLASS "custom-control custom-checkbox" " "
         (:INPUT :TYPE "checkbox" :CLASS "custom-control-input" :ID "customCheck1")
@@ -256,6 +257,8 @@
       (:div :style "display: none;" :class "container my-tab position-absolute" :id "list-courses"
        (:h2 :class "text-center" "Kurse" (:a :href "/courses/new" :type "button" :class "btn btn-primary norefresh" "+"))
        (:ul :id "courses-list"))
+
+      ,@(html-user-courses)
 
       (:div :style "display: none;" :class "container my-tab position-absolute" :id "list-schedules"
        (:h2 :class "text-center" "Stundenpläne" (:a :href "/schedules/new" :type "button" :class "btn btn-primary norefresh" "+"))
