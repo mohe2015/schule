@@ -30,10 +30,11 @@
     (setf *handler* nil)))
 
 (defun development ()
-  (format *standard-output* "started")
-  (cl-inotify:with-inotify (inotify T ("." '(:modify)))
-    (cl-inotify:do-events (event inotify :blocking-p T)
-      (ql:quickload :spickipedia))))
-
-(let ((top-level *standard-output*))
-  (bt:make-thread (lambda () (spickipedia:development))))
+  (let ((top-level *standard-output*))
+    (bt:make-thread
+      (lambda ()
+        (format top-level "Hello from thread!")
+        (cl-inotify:with-inotify (inotify T ("." '(:modify)))
+          (cl-inotify:do-events (event inotify :blocking-p T)
+            (format top-level "Got an update!")
+            (asdf:load-system :spickipedia :verbose t)))))))
