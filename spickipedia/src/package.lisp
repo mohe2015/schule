@@ -7,6 +7,7 @@
            :*application-root*
            :*static-directory*
            :*template-directory*
+           :*database-path*
            :appenv
            :developmentp
            :productionp))

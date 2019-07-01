@@ -20,7 +20,7 @@
       (lambda (data)
         (loop for element in (chain data data) do
           (chain console (log element))
-          (let* ((cell (getprop (one "#schedule-table") 'rows (chain element hour) 'cells (chain element weekday)))
+          (let* ((cell (getprop (one "#schedule-table") 'children (chain element weekday) 'children (chain element hour)))
                  (template (get-template "schedule-data-cell-template")))
             (setf (chain template (query-selector ".data") inner-text) (concatenate 'string (chain element course subject) " " (chain element course type) " " (chain element course teacher name) " " (chain element room)))
             (chain cell (prepend template))))))
@@ -34,7 +34,7 @@
         (chain event (prevent-default))
         (let* ((x (chain (one "#schedule-data-weekday") value))
                (y (chain (one "#schedule-data-hour") value))
-               (cell (getprop (one "#schedule-table") 'rows y 'cells x))
+               (cell (getprop (one "#schedule-table") 'children x 'children y))
                (template (get-template "schedule-data-cell-template"))
                (course (chain (one "#course") selected-options 0 inner-text))
                (room (chain (one "#room") value))
@@ -62,26 +62,12 @@
   (on
     "click"
     (lambda (event)
+      (chain console (log event))
       (let ((x (chain event target (closest "td") cell-index))
             (y (chain event target (closest "tr") row-index)))
         (setf (chain (one "#schedule-data-weekday") value) x)
         (setf (chain (one "#schedule-data-hour") value) y)
         (show-modal (one "#schedule-data-modal"))))))
-
-;;(chain
-;;  (one "#save-schedule")
-;;  (add-event-listener
-;;    "click"
-;;    (lambda (event)
-;;      (setf (chain (one "#save-schedule") disabled) T)
-;;      (let ((table (one "#schedule-table")))
-;;        (dotimes (x (getprop table 'rows 'length))
-;;          (dotimes (y (getprop table 'rows x 'cells 'length))
-;;            (let ((cell (getprop table 'rows x 'cells y)))
-;;              ;;(chain console (log cell))
-;;              (loop for element in (chain cell (query-selector-all ".schedule-data")) do
-;;                (chain console (log element))))
-;;      (setf (chain (one "#save-schedule") disabled) F))))
 
 (cache-then-network
   "/api/courses"

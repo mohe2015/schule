@@ -29,6 +29,7 @@ ln -s $PWD/clack/ ~/.roswell/local-projects/
 ```
 
 ```lisp
+(spickipedia:development)
 (spickipedia.db:setup-db)
 (in-package :spickipedia.db)
 (with-connection (db)
@@ -61,12 +62,7 @@ import('../js/utils.lisp').then(m => module = m)
 
 
 
-
-
-
-
 (dbi:connect-cached :sqlite3 :database-name #P"spickipedia.db")
-
 (mito:connect-toplevel :sqlite3 :database-name #P"spickipedia.db")
 (mito:deftable user1 ()
   ((name :col-type (:varchar 64))
