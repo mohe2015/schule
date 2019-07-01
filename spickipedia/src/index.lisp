@@ -213,10 +213,18 @@
       (:li :class "nav-item" (:a :class "nav-link active" :id "friday-tab" :data-toggle "tab" :href "#friday" :role "tab" :aria-controls "home" :aria-selected "true" "Freitag")))
     (:div :class "tab-content" :id "schedule-table"
       (:div :class "tab-pane fade show active" :id "monday" :role "tabpanel" :aria-labeledby "monday-tab"
-        (loop for i from 1 to 11 do
-          (cl-who:htm
-              (:div (:button :type "button" :class "add-course btn btn-sm btn-outline-primary w-100"
-                     (:span :class "fa fa-plus"))))))))
+        (:table :class "table table-hover table-bordered table-dark table-sm"
+          (:thead
+            (:tr
+              (:th :scope "col" "#")
+              (:th :scope "col" "")))
+          (:tbody
+            (loop for i from 1 to 11 do
+              (cl-who:htm
+                  (:tr
+                    (:td (cl-who:str i))
+                    (:td (:button :type "button" :class "add-course btn btn-sm btn-outline-primary w-100"
+                           (:span :class "fa fa-plus")))))))))))
 
   (:DIV :STYLE "display: none;" :CLASS "container my-tab position-absolute" :ID
    "multiple-choice-question-html"

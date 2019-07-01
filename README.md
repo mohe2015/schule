@@ -55,3 +55,20 @@ purgecss --content www/index.html --css www/s/all.css --css www/s/bootstrap.min.
 
 import('../js/utils.lisp').then(m => module = m)
 
+
+
+
+
+
+
+
+
+
+(dbi:connect-cached :sqlite3 :database-name #P"spickipedia.db")
+
+(mito:connect-toplevel :sqlite3 :database-name #P"spickipedia.db")
+(mito:deftable user1 ()
+  ((name :col-type (:varchar 64))
+   (email :col-type (or (:varchar 128) :null))))
+(mito:ensure-table-exists 'user1)
+(dbi:disconnect mito:*connection*)
