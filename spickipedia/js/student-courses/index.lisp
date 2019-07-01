@@ -20,9 +20,9 @@
           (setf data ([])))
         (let ((courses-list (chain document (get-element-by-id "student-courses-list"))))
           (setf (chain courses-list inner-h-t-m-l) "")
-          (loop for page in data do
+          (loop for course in data do
               (let ((template (get-template "student-courses-list-html")))
-                (setf (chain template (query-selector ".student-courses-list-subject") inner-text) (chain page subject))
+                (setf (chain template (query-selector ".student-courses-list-subject") inner-text) (concatenate 'string (chain course course subject) " " (chain course course type) " " (chain course course teacher name)))
                 (chain document (get-element-by-id "student-courses-list") (append template)))))))
     (catch handle-fetch-error))
 

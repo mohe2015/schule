@@ -96,6 +96,13 @@ O to STREAM (or to *JSON-OUTPUT*)."
     ;;               (encode-json (if (eq value :null) nil value) stream))
     ;;           o))
 
+(defmethod json:encode-json ((o student-course) &optional (stream json:*json-output*))
+  "Write the JSON representation (Object) of the postmodern DAO CLOS object
+O to STREAM (or to *JSON-OUTPUT*)."
+  (with-object (stream)
+    (encode-object-member 'course (student-course-course o) stream)
+    (encode-object-member 'student (student-course-student o) stream)))
+
 (my-defroute :GET "/api/schedule/:grade" (:admin :user) (grade) "application/json"
   (let* ((schedule (find-dao 'schedule :grade grade))
          (revision (select-dao 'schedule-revision (where (:= :schedule schedule)) (order-by (:desc :id)) (limit 1))))
