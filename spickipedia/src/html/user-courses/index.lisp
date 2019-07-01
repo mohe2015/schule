@@ -22,4 +22,6 @@
      (:ul :id "student-courses-list"))
 
     ,(modal "student-courses-modal" "Kurs hinzufügen" nil
-       `((:h2 :class "text-center" "Test")))))
+       `((:DIV :CLASS "form-group"
+           (:LABEL :FOR "course" "Kurs:") " "
+           (:select :class "custom-select" :id "student-course" :name "student-course"))))))
