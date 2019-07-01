@@ -18,10 +18,14 @@
       (:li :class "student-courses-list-subject"))
 
     (:div :style "display: none;" :class "container my-tab position-absolute" :id "list-student-courses"
-     (:h2 :class "text-center" "Deine Kurse" (:a :href "/student-courses/add" :type "button" :class "btn btn-primary norefresh" "+"))
+     (:h2 :class "text-center" "Deine Kurse" (:a :id "add-student-course" :type "button" :class "btn btn-primary norefresh" "+"))
      (:ul :id "student-courses-list"))
 
-    ,(modal "student-courses-modal" "Kurs hinzufügen" nil
+    ,(modal "student-courses-modal" "Kurs hinzufügen"
+       `((:BUTTON :TYPE "button" :CLASS "btn btn-secondary" :DATA-DISMISS "modal"
+          "Abbrechen")
+         (:BUTTON :TYPE "button" :CLASS "btn btn-primary" :ID "student-courses-add"
+          "Hinzufügen"))
        `((:DIV :CLASS "form-group"
            (:LABEL :FOR "course" "Kurs:") " "
            (:select :class "custom-select" :id "student-course" :name "student-course"))))))

@@ -10,8 +10,6 @@
 (defroute "/student-courses"
   (show-tab "#list-student-courses")
 
-  (show-modal ($ "#student-courses-modal"))
-
   (chain
     (fetch "/api/student-courses")
     (then check-status)
@@ -39,4 +37,11 @@
                 (text (concatenate 'string (chain course subject) " " (chain course type) " " (chain course teacher name))))
             (setf (chain option value) (chain course course-id))
             (setf (chain option inner-text) text)
-            (chain course-select (append-child option))))))))
+            (chain course-select (append-child option)))))))
+
+  (chain
+    (one "#add-student-course")
+    (add-event-listener "click"
+      (lambda (event)
+        (chain event (prevent-default))
+        (show-modal ($ "#student-courses-modal"))))))
