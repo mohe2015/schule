@@ -5,9 +5,8 @@
      (:h2 :class "text-center" "Einstellungen")
 
      (:h3 :class "text-center" "Dein Jahrgang")
-     (:a :id "add-student-course" :type "button" :class "btn btn-primary norefresh" "Jahrgang hinzufügen")
-     (:ul :id "student-courses-list")) ;; TODO select
-
+     (:a :id "settings-add-grade" :type "button" :class "btn btn-primary norefresh" "Jahrgang hinzufügen")
+     (:select :class "custom-select" :id "settings-select-grade" :name "grade"))
 
     ,(modal "student-courses" "Kurs hinzufügen"
        `((:BUTTON :TYPE "button" :CLASS "btn btn-secondary" :DATA-DISMISS "modal"
