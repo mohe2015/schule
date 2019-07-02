@@ -209,3 +209,17 @@
     (check-table 'schedule-revision)
     (check-table 'schedule-data)
     (check-table 'student-course)))
+
+(defun generate-migrations ()
+  (with-connection (db)
+    (mito:generate-migrations (asdf:system-source-directory :spickipedia))))
+
+
+(defun migrate ()
+  (with-connection (db)
+    (mito:migrate (asdf:system-source-directory :spickipedia))))
+
+
+(defun migration-status ()
+  (with-connection (db)
+    (mito:migration-status (asdf:system-source-directory :spickipedia))))
