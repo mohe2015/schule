@@ -54,7 +54,6 @@
               method "POST"
               body formData))
           (then check-status)
-          (then json)
           (then
             (lambda (data)
               (hide-modal "#modal-settings-create-grade")

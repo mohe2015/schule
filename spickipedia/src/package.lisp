@@ -57,6 +57,7 @@
            :course-revision-class
            :course-revision-topic
            :user
+           :user-grade
            :wiki-article
            :wiki-article-revision
            :my-session
