@@ -16,6 +16,12 @@
     (lambda (data)
       (let ((grade-select (one "#settings-select-grade")))
         (clear-children grade-select)
+        (let ((default-option (chain document (create-element "option")))) ;; TODO use template
+          (setf (chain default-option disabled) t)
+          (setf (chain default-option selected) t)
+          (setf (chain default-option value) "")
+          (setf (chain default-option inner-text) "Jahrgang auswählen...")
+          (chain grade-select (append-child default-option)))
         (loop for grade in data do
           (let ((option (chain document (create-element "option")))
                 (text (chain grade grade)))
