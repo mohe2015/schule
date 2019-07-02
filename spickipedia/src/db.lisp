@@ -10,6 +10,13 @@
   `(let ((*connection* ,conn))
      ,@body))
 
+(defclass schedule ()
+  ((grade :col-type (:varchar 64)
+          :initarg :grade
+          :accessor schedule-grade))
+  (:metaclass dao-table-class)
+  (:unique-keys grade))
+
 (defclass user ()
   ((name  :col-type (:varchar 64)
     :initarg :name
@@ -22,7 +29,7 @@
    (hash  :col-type (:varchar 512)
     :initarg :hash
     :accessor user-hash)
-   (grade :col-type schedule
+   (grade :col-type (or schedule :null)
           :initarg :grade
           :accessor user-grade))
   (:metaclass dao-table-class))
@@ -110,13 +117,6 @@
             :accessor teacher-revision-initial))
   (:metaclass dao-table-class))
 
-(defclass schedule ()
-  ((grade :col-type (:varchar 64)
-          :initarg :grade
-          :accessor schedule-grade))
-  (:metaclass dao-table-class)
-  (:unique-keys grade))
-
 (defclass schedule-revision ()
   ((author :col-type user
            :initarg :author
@@ -124,6 +124,10 @@
    (schedule :col-type schedule
              :initarg :schedule
              :accessor schedule-revision-schedule))
+  (:metaclass dao-table-class))
+
+(defclass course ()
+  ()
   (:metaclass dao-table-class))
 
 (defclass schedule-data ()
@@ -145,10 +149,6 @@
    (room   :col-type (:varchar 32)
            :initarg :room
            :accessor schedule-data-room))
-  (:metaclass dao-table-class))
-
-(defclass course ()
-  ()
   (:metaclass dao-table-class))
 
 (defclass course-revision ()
@@ -210,16 +210,14 @@
     (check-table 'schedule-data)
     (check-table 'student-course)))
 
-(defun generate-migrations ()
+(defun do-generate-migrations ()
   (with-connection (db)
     (mito:generate-migrations (asdf:system-source-directory :spickipedia))))
 
-
-(defun migrate ()
+(defun do-migrate ()
   (with-connection (db)
     (mito:migrate (asdf:system-source-directory :spickipedia))))
 
-
-(defun migration-status ()
+(defun do-migration-status ()
   (with-connection (db)
     (mito:migration-status (asdf:system-source-directory :spickipedia))))

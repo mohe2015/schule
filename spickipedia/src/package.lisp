@@ -35,9 +35,9 @@
                 #:make-keyword
                 #:compose)
   (:export :connection-settings
-           :generate-migrations
-           :migrate
-           :migration-status
+           :do-generate-migrations
+           :do-migrate
+           :do-migration-status
            :db
            :with-connection
            :teacher
