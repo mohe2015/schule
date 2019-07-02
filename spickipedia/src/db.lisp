@@ -21,7 +21,10 @@
     :accessor user-group)
    (hash  :col-type (:varchar 512)
     :initarg :hash
-    :accessor user-hash))
+    :accessor user-hash)
+   (grade :col-type schedule
+          :initarg :grade
+          :accessor user-grade))
   (:metaclass dao-table-class))
 
 (defclass wiki-article ()

@@ -37,6 +37,7 @@
          (:file "tsquery-converter" :depends-on ("package"))
 
          (:file "web" :depends-on ("package" "parenscript" "db" "index"))
+         (:file "settings" :depends-on ("package" "web"))
          (:file "schedule" :depends-on ("package" "web")) ;; TODO FIXME clean up this dependency garbase
          (:file "student-courses" :depends-on ("package" "web"))
          (:file "default-handler" :depends-on ("package" "web"))
