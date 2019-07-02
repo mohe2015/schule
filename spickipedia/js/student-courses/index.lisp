@@ -62,7 +62,6 @@
                 method "POST"
                 body form-data))
             (then check-status)
-            (then json)
             (then
               (lambda (data)
                 ;; TODO ADD

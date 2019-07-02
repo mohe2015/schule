@@ -182,7 +182,8 @@
    (course  :col-type course
             :initarg :course
             :accessor student-course-course))
-  (:metaclass dao-table-class))
+  (:metaclass dao-table-class)
+  (:unique-keys (student course)))
 
 (defun check-table (table)
   (ensure-table-exists table)
