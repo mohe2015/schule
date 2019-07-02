@@ -130,9 +130,9 @@
    (is-tutorial :col-type :boolean
                 :initarg :is-tutorial
                 :accessor course-revision-is-tutorial)
-   (class :col-type (:varchar 64) ;; TODO replace with schedule
+   (grade :col-type schedule
           :initarg :class
-          :accessor course-revision-class)
+          :accessor course-revision-grade)
    (topic :col-type (:varchar 512)
           :initarg :topic
           :accessor course-revision-topic))
