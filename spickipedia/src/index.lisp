@@ -237,6 +237,8 @@
           ,(spickipedia.web:schedule-tab "thursday")
           ,(spickipedia.web:schedule-tab "friday")))
 
+      ,@(html-settings)
+
       (:DIV :STYLE "display: none;" :CLASS "container my-tab position-absolute" :ID
        "multiple-choice-question-html"
        (:H2 :CLASS "text-center question-html" "Dies ist eine Testfrage?")

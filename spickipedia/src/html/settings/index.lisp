@@ -1,12 +1,12 @@
 (in-package :spickipedia.web)
 
 (defun html-settings ()
-  `(:div :style "display: none;" :class "container my-tab position-absolute" :id "tab-settings"
+  `((:div :style "display: none;" :class "container my-tab position-absolute" :id "tab-settings"
      (:h2 :class "text-center" "Einstellungen")
 
      (:h3 :class "text-center" "Dein Jahrgang")
      (:a :id "add-student-course" :type "button" :class "btn btn-primary norefresh" "Jahrgang hinzufügen")
-     (:ul :id "student-courses-list") ;; TODO select
+     (:ul :id "student-courses-list")) ;; TODO select
 
 
     ,(modal "student-courses" "Kurs hinzufügen"

@@ -107,37 +107,6 @@
             :accessor teacher-revision-initial))
   (:metaclass dao-table-class))
 
-(defclass course ()
-  ()
-  (:metaclass dao-table-class))
-
-(defclass course-revision ()
-  ((author :col-type user
-           :initarg :author
-           :accessor course-revision-author)
-   (course :col-type course
-     :initarg :course
-     :accessor course-revision-course)
-   (teacher :col-type teacher
-            :initarg :teacher
-            :accessor course-revision-teacher)
-   (type :col-type (:varchar 4)
-         :initarg :type
-         :accessor course-revision-type)
-   (subject :col-type (:varchar 64)
-            :initarg :subject
-            :accessor course-revision-subject)
-   (is-tutorial :col-type :boolean
-                :initarg :is-tutorial
-                :accessor course-revision-is-tutorial)
-   (grade :col-type schedule
-          :initarg :class
-          :accessor course-revision-grade)
-   (topic :col-type (:varchar 512)
-          :initarg :topic
-          :accessor course-revision-topic))
-  (:metaclass dao-table-class))
-
 (defclass schedule ()
   ((grade :col-type (:varchar 64)
           :initarg :grade
@@ -173,6 +142,37 @@
    (room   :col-type (:varchar 32)
            :initarg :room
            :accessor schedule-data-room))
+  (:metaclass dao-table-class))
+
+(defclass course ()
+  ()
+  (:metaclass dao-table-class))
+
+(defclass course-revision ()
+  ((author :col-type user
+           :initarg :author
+           :accessor course-revision-author)
+   (course :col-type course
+     :initarg :course
+     :accessor course-revision-course)
+   (teacher :col-type teacher
+            :initarg :teacher
+            :accessor course-revision-teacher)
+   (type :col-type (:varchar 4)
+         :initarg :type
+         :accessor course-revision-type)
+   (subject :col-type (:varchar 64)
+            :initarg :subject
+            :accessor course-revision-subject)
+   (is-tutorial :col-type :boolean
+                :initarg :is-tutorial
+                :accessor course-revision-is-tutorial)
+   (grade :col-type schedule
+          :initarg :class
+          :accessor course-revision-grade)
+   (topic :col-type (:varchar 512)
+          :initarg :topic
+          :accessor course-revision-topic))
   (:metaclass dao-table-class))
 
 (defclass student-course ()
