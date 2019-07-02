@@ -5,14 +5,15 @@
      (:h2 :class "text-center" "Einstellungen")
 
      (:h3 :class "text-center" "Dein Jahrgang")
-     (:a :id "settings-add-grade" :type "button" :class "btn btn-primary norefresh" "Jahrgang hinzufügen")
-     (:select :class "custom-select" :id "settings-select-grade" :name "grade"))
+     (:form :id "settings-form-select-grade"
+       (:select :class "custom-select" :id "settings-select-grade" :name "grade"))
+     (:a :id "settings-add-grade" :type "button" :class "btn btn-primary norefresh" "Jahrgang hinzufügen"))
 
-    ,(modal "student-courses" "Kurs hinzufügen"
+    ,(modal "settings-create-grade" "Jahrgang hinzufügen"
        `((:BUTTON :TYPE "button" :CLASS "btn btn-secondary" :DATA-DISMISS "modal"
           "Abbrechen")
-         (:BUTTON :TYPE "submit" :CLASS "btn btn-primary" :ID "student-courses-add"
+         (:BUTTON :TYPE "submit" :CLASS "btn btn-primary" :ID "settings-button-create-grade"
           "Hinzufügen"))
        `((:DIV :CLASS "form-group"
-           (:LABEL :FOR "course" "Kurs:") " "
-           (:select :class "custom-select" :id "student-course" :name "student-course"))))))
+           (:LABEL :FOR "settings-input-grade" "Jahrgang:") " "
+           (:input :type "text" :id "settings-input-grade" :name "grade"))))))
