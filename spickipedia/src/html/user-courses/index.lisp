@@ -16,7 +16,8 @@
 
 (defun html-user-courses ()
   `((:template :id "student-courses-list-html"
-      (:li :class "student-courses-list-subject"))
+      (:li (:a :type "button" :class "btn btn-primary button-student-course-delete" "-")
+           (:span :class "student-courses-list-subject")))
 
     (:div :style "display: none;" :class "container my-tab position-absolute" :id "list-student-courses"
      (:h2 :class "text-center" "Deine Kurse" (:a :id "add-student-course" :type "button" :class "btn btn-primary norefresh" "+"))
