@@ -10,6 +10,13 @@
   `(let ((*connection* ,conn))
      ,@body))
 
+(defclass schedule ()
+  ((grade :col-type (:varchar 64)
+          :initarg :grade
+          :accessor schedule-grade))
+  (:metaclass dao-table-class)
+  (:unique-keys grade))
+
 (defclass user ()
   ((name  :col-type (:varchar 64)
     :initarg :name
@@ -21,7 +28,10 @@
     :accessor user-group)
    (hash  :col-type (:varchar 512)
     :initarg :hash
-    :accessor user-hash))
+    :accessor user-hash)
+   (grade :col-type (or schedule :null)
+          :initarg :grade
+          :accessor user-grade))
   (:metaclass dao-table-class))
 
 (defclass wiki-article ()
@@ -107,44 +117,6 @@
             :accessor teacher-revision-initial))
   (:metaclass dao-table-class))
 
-(defclass course ()
-  ()
-  (:metaclass dao-table-class))
-
-(defclass course-revision ()
-  ((author :col-type user
-           :initarg :author
-           :accessor course-revision-author)
-   (course :col-type course
-     :initarg :course
-     :accessor course-revision-course)
-   (teacher :col-type teacher
-            :initarg :teacher
-            :accessor course-revision-teacher)
-   (type :col-type (:varchar 4)
-         :initarg :type
-         :accessor course-revision-type)
-   (subject :col-type (:varchar 64)
-            :initarg :subject
-            :accessor course-revision-subject)
-   (is-tutorial :col-type :boolean
-                :initarg :is-tutorial
-                :accessor course-revision-is-tutorial)
-   (class :col-type (:varchar 64) ;; TODO replace with schedule
-          :initarg :class
-          :accessor course-revision-class)
-   (topic :col-type (:varchar 512)
-          :initarg :topic
-          :accessor course-revision-topic))
-  (:metaclass dao-table-class))
-
-(defclass schedule ()
-  ((grade :col-type (:varchar 64)
-          :initarg :grade
-          :accessor schedule-grade))
-  (:metaclass dao-table-class)
-  (:unique-keys grade))
-
 (defclass schedule-revision ()
   ((author :col-type user
            :initarg :author
@@ -152,6 +124,10 @@
    (schedule :col-type schedule
              :initarg :schedule
              :accessor schedule-revision-schedule))
+  (:metaclass dao-table-class))
+
+(defclass course ()
+  ()
   (:metaclass dao-table-class))
 
 (defclass schedule-data ()
@@ -175,6 +151,33 @@
            :accessor schedule-data-room))
   (:metaclass dao-table-class))
 
+(defclass course-revision ()
+  ((author :col-type user
+           :initarg :author
+           :accessor course-revision-author)
+   (course :col-type course
+     :initarg :course
+     :accessor course-revision-course)
+   (teacher :col-type teacher
+            :initarg :teacher
+            :accessor course-revision-teacher)
+   (type :col-type (:varchar 4)
+         :initarg :type
+         :accessor course-revision-type)
+   (subject :col-type (:varchar 64)
+            :initarg :subject
+            :accessor course-revision-subject)
+   (is-tutorial :col-type :boolean
+                :initarg :is-tutorial
+                :accessor course-revision-is-tutorial)
+   (grade :col-type schedule
+          :initarg :class
+          :accessor course-revision-grade)
+   (topic :col-type (:varchar 512)
+          :initarg :topic
+          :accessor course-revision-topic))
+  (:metaclass dao-table-class))
+
 (defclass student-course ()
   ((student :col-type user
             :initarg :student
@@ -182,7 +185,8 @@
    (course  :col-type course
             :initarg :course
             :accessor student-course-course))
-  (:metaclass dao-table-class))
+  (:metaclass dao-table-class)
+  (:unique-keys (student course)))
 
 (defun check-table (table)
   (ensure-table-exists table)
@@ -205,3 +209,15 @@
     (check-table 'schedule-revision)
     (check-table 'schedule-data)
     (check-table 'student-course)))
+
+(defun do-generate-migrations ()
+  (with-connection (db)
+    (mito:generate-migrations (asdf:system-source-directory :spickipedia))))
+
+(defun do-migrate ()
+  (with-connection (db)
+    (mito:migrate (asdf:system-source-directory :spickipedia))))
+
+(defun do-migration-status ()
+  (with-connection (db)
+    (mito:migration-status (asdf:system-source-directory :spickipedia))))

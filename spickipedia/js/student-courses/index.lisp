@@ -7,9 +7,8 @@
 (i "../template.lisp" "getTemplate")
 (i "../utils.lisp" "showModal" "all" "one" "hideModal" "clearChildren")
 
-(defroute "/student-courses"
-  (show-tab "#list-student-courses")
-
+(defun render ()
+  (show-tab "#loading")
   (chain
     (fetch "/api/student-courses")
     (then check-status)
@@ -23,9 +22,13 @@
           (loop for course in data do
               (let ((template (get-template "student-courses-list-html")))
                 (setf (chain template (query-selector ".student-courses-list-subject") inner-text) (concatenate 'string (chain course course subject) " " (chain course course type) " " (chain course course teacher name)))
+                (chain template (query-selector ".button-student-course-delete") (set-attribute "data-id-student-course" (chain course course course-id)))
                 (chain document (get-element-by-id "student-courses-list") (append template)))))))
     (catch handle-fetch-error))
+  (show-tab "#list-student-courses"))
 
+(defroute "/student-courses"
+  (render)
 
   (cache-then-network
     "/api/courses"
@@ -62,9 +65,29 @@
                 method "POST"
                 body form-data))
             (then check-status)
-            (then json)
             (then
               (lambda (data)
-                ;; TODO ADD
-                (hide-modal (one "#modal-student-courses"))))
+                (hide-modal (one "#modal-student-courses"))
+                (render)))
             (catch handle-fetch-error)))))))
+
+(chain
+ ($ "body")
+ (on
+  "click"
+  ".button-student-course-delete"
+  (lambda (e)
+    (let* ((form-data (new (-Form-Data))))
+      (chain form-data (append "student-course" (chain ($ this) (data "id-student-course"))))
+      (chain form-data (append "_csrf_token" (read-cookie "_csrf_token")))
+      (chain
+        (fetch
+          "/api/student-courses"
+          (create
+            method "DELETE"
+            body form-data))
+        (then check-status)
+        (then
+          (lambda (data)
+            (render)))
+        (catch handle-fetch-error))))))

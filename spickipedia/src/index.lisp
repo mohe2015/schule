@@ -152,7 +152,9 @@
          (:LI :CLASS "nav-item d-none d-md-block"
           (:A :CLASS "nav-link edit-button" :HREF "#" "Bearbeiten"))
          (:LI :CLASS "nav-item"
-          (:A :CLASS "nav-link " :HREF "/logout" :ID "logout" "Abmelden")))))
+          (:A :CLASS "nav-link" :HREF "/settings" "Einstellungen"))
+         (:LI :CLASS "nav-item"
+          (:A :CLASS "nav-link" :HREF "/logout" :ID "logout" "Abmelden")))))
 
       (:DIV
        (:DIV :STYLE "display: none;" :CLASS "container my-tab position-absolution"
@@ -236,6 +238,8 @@
           ,(spickipedia.web:schedule-tab "wednesday")
           ,(spickipedia.web:schedule-tab "thursday")
           ,(spickipedia.web:schedule-tab "friday")))
+
+      ,@(html-settings)
 
       (:DIV :STYLE "display: none;" :CLASS "container my-tab position-absolute" :ID
        "multiple-choice-question-html"

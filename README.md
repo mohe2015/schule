@@ -29,15 +29,17 @@ ln -s $PWD/clack/ ~/.roswell/local-projects/
 ```
 
 ```lisp
+(ql:quickload :spickipedia)
+(spickipedia.db:do-generate-migrations)
+;;(spickipedia.db:do-migration-status)
+(spickipedia.db:do-migrate)
+(spickipedia:start)
 (spickipedia:development)
-(spickipedia.db:setup-db)
 (in-package :spickipedia.db)
 (with-connection (db)
   (create-dao 'user :name "Administrator" :hash (bcrypt:hash "xfg3zte94h62j392h") :group "admin")
   (create-dao 'user :name "Anonymous" :hash (bcrypt:hash "xfg3zte94h") :group "anonymous")
   (create-dao 'user :name "<your name>" :hash (bcrypt:hash "fjd8sh3l2h") :group "user"))
-(spickipedia:start)
-
 
 (declaim (optimize (compilation-speed 0) (debug 0) (safety 0) (space 3) (speed 0)))
 (save-application "spickipedia"  :clear-clos-caches t :impurify t :prepend-kernel t)
@@ -56,16 +58,3 @@ purgecss --content www/index.html --css www/s/all.css --css www/s/bootstrap.min.
 ### Accessing modules
 
 import('../js/utils.lisp').then(m => module = m)
-
-
-
-
-
-
-(dbi:connect-cached :sqlite3 :database-name #P"spickipedia.db")
-(mito:connect-toplevel :sqlite3 :database-name #P"spickipedia.db")
-(mito:deftable user1 ()
-  ((name :col-type (:varchar 64))
-   (email :col-type (or (:varchar 128) :null))))
-(mito:ensure-table-exists 'user1)
-(dbi:disconnect mito:*connection*)

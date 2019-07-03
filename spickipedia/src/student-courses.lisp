@@ -5,5 +5,11 @@
     (encode-json-to-string (list-to-array student-courses))))
 
 (my-defroute :POST "/api/student-courses" (:admin :user) (|student-course|) "text/html"
-  (let* ((student-course (create-dao 'student-course :student user :course (find-dao 'course :id (first |student-course|)))))
-    (format nil "~a" (object-id student-course))))
+  (let* ((query (dbi:prepare *connection* "INSERT OR IGNORE INTO student_course (student_id, course_id) VALUES (?, ?);"))
+         (result (dbi:execute query (object-id user) (first |student-course|))))
+    ;;(format nil "~a" (mito.db:last-insert-id *connection* nil "")))) ;; doesn't work but doesn't matter
+    ""))
+
+(my-defroute :DELETE "/api/student-courses" (:admin :user) (|student-course|) "text/html"
+  (delete-by-values 'student-course :student user :course-id (parse-integer (first |student-course|)))
+  "")

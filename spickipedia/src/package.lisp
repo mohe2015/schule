@@ -35,6 +35,9 @@
                 #:make-keyword
                 #:compose)
   (:export :connection-settings
+           :do-generate-migrations
+           :do-migrate
+           :do-migration-status
            :db
            :with-connection
            :teacher
@@ -54,6 +57,7 @@
            :course-revision-class
            :course-revision-topic
            :user
+           :user-grade
            :wiki-article
            :wiki-article-revision
            :my-session
