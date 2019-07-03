@@ -130,7 +130,7 @@
           (then check-status)
           (then
             (lambda (data)
-              nil))
+              (render)))
           (catch handle-fetch-error)))
       F)))
 
