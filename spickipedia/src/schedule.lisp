@@ -19,7 +19,7 @@
              teachers)))
     (encode-json-to-string (list-to-array teacher-revisions))))
 
-(my-defroute :POST "/api/courses" (:admin :user) (|subject| |type| |teacher| |is-tutorial| |class| |topic|) "text/html"
+(my-defroute :POST "/api/courses" (:admin :user) (|subject| |type| |teacher| |is-tutorial| |topic|) "text/html"
   (dbi:with-transaction *connection*
     (let* ((course  (create-dao 'course))
            (revision (create-dao 'course-revision
@@ -31,7 +31,7 @@
                                  :subject (first |subject|)
                                  :teacher (find-dao 'teacher :id (parse-integer (first |teacher|)))
                                  :is-tutorial (equal "on" (first |is-tutorial|))
-                                 :class (first |class|)
+                                 :class (user-grade user)
                                  :topic (first |topic|))))
       (format nil "~a" (object-id course)))))
 
@@ -77,7 +77,7 @@ O to STREAM (or to *JSON-OUTPUT*)."
     (encode-object-member 'type (course-revision-type o) stream)
     (encode-object-member 'subject (course-revision-subject o) stream)
     (encode-object-member 'is-tutorial (course-revision-is-tutorial o) stream)
-    (encode-object-member 'class (course-revision-class o) stream)
+    (encode-object-member 'grade (course-revision-grade o) stream)
     (encode-object-member 'topic (course-revision-topic o) stream)))
 
 (defmethod json:encode-json ((o course) &optional (stream json:*json-output*))

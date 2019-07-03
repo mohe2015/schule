@@ -120,4 +120,25 @@
           (catch handle-fetch-error)))
       F)))
 
-;;
+
+(chain
+  ($ "#form-settings-create-course")
+  (submit
+    (lambda (event)
+      (chain event (prevent-default))
+      (let* ((formElement (chain document (query-selector "#form-settings-create-course")))
+             (formData (new (-Form-Data formElement))))
+        (chain formData (append "_csrf_token" (read-cookie "_csrf_token")))
+        (chain
+          (fetch
+            "/api/courses"
+            (create
+              method "POST"
+              body formData))
+          (then check-status)
+          (then
+            (lambda (data)
+              (hide-modal "#modal-settings-create-course")
+              (render)))
+          (catch handle-fetch-error)))
+      F)))

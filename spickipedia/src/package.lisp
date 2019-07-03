@@ -54,7 +54,7 @@
            :course-revision-type
            :course-revision-subject
            :course-revision-is-tutorial
-           :course-revision-class
+           :course-revision-grade
            :course-revision-topic
            :user
            :user-grade
