@@ -38,7 +38,7 @@
 (my-defroute :GET "/api/courses" (:admin :user) () "application/json"
   (let* ((courses (select-dao 'course))
          (course-revisions
-          (mapcar
+          (mapcar ;; TODO make more efficient (n+1) query
            #'(lambda (course)
                (first (select-dao 'course-revision (where (:= :course course)) (order-by (:desc :id)) (limit 1))))
            courses)))
