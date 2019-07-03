@@ -79,7 +79,6 @@
               method "POST"
               body formData))
           (then check-status)
-          (then json)
           (then
             (lambda (data)
               nil))
