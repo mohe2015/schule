@@ -1,13 +1,14 @@
 (in-package :spickipedia.web)
 
 (my-defroute :POST "/api/teachers" (:admin :user) (|name| |initial|) "text/html"
-  (let* ((teacher  (create-dao 'teacher))
-         (revision (create-dao 'teacher-revision
-                               :author user
-                               :teacher teacher
-                               :name (first |name|)
-                               :initial (first |initial|))))
-    (format nil "~a" (object-id teacher))))
+  (dbi:with-transaction *connection*
+    (let* ((teacher  (create-dao 'teacher))
+           (revision (create-dao 'teacher-revision
+                                 :author user
+                                 :teacher teacher
+                                 :name (first |name|)
+                                 :initial (first |initial|))))
+      (format nil "~a" (object-id teacher)))))
 
 (my-defroute :GET "/api/teachers" (:admin :user) () "application/json"
   (let* ((teachers (select-dao 'teacher))
@@ -19,19 +20,20 @@
     (encode-json-to-string (list-to-array teacher-revisions))))
 
 (my-defroute :POST "/api/courses" (:admin :user) (|subject| |type| |teacher| |is-tutorial| |class| |topic|) "text/html"
-  (let* ((course  (create-dao 'course))
-         (revision (create-dao 'course-revision
-                               :author user
-                               :course course
-                               :name (first |subject|)
-                               :initial (first |type|)
-                               :type (first |type|)
-                               :subject (first |subject|)
-                               :teacher (find-dao 'teacher :id (parse-integer (first |teacher|)))
-                               :is-tutorial (equal "on" (first |is-tutorial|))
-                               :class (first |class|)
-                               :topic (first |topic|))))
-    (format nil "~a" (object-id course))))
+  (dbi:with-transaction *connection*
+    (let* ((course  (create-dao 'course))
+           (revision (create-dao 'course-revision
+                                 :author user
+                                 :course course
+                                 :name (first |subject|)
+                                 :initial (first |type|)
+                                 :type (first |type|)
+                                 :subject (first |subject|)
+                                 :teacher (find-dao 'teacher :id (parse-integer (first |teacher|)))
+                                 :is-tutorial (equal "on" (first |is-tutorial|))
+                                 :class (first |class|)
+                                 :topic (first |topic|))))
+      (format nil "~a" (object-id course)))))
 
 (my-defroute :GET "/api/courses" (:admin :user) () "application/json"
   (let* ((courses (select-dao 'course))
@@ -43,11 +45,12 @@
     (encode-json-to-string (list-to-array course-revisions))))
 
 (my-defroute :POST "/api/schedules" (:admin :user) (|grade|) "text/html"
-  (let* ((schedule (create-dao 'schedule :grade (first |grade|)))
-         (revision (create-dao 'schedule-revision
-                               :author user
-                               :schedule schedule)))
-    (format nil "~a" (object-id schedule))))
+  (dbi:with-transaction *connection*
+    (let* ((schedule (create-dao 'schedule :grade (first |grade|)))
+           (revision (create-dao 'schedule-revision
+                                 :author user
+                                 :schedule schedule)))
+      (format nil "~a" (object-id schedule)))))
 
 (my-defroute :GET "/api/schedules" (:admin :user) () "application/json"
   (let* ((schedules (select-dao 'schedule)))
@@ -110,27 +113,26 @@ O to STREAM (or to *JSON-OUTPUT*)."
       `(:revision ,(car revision)
         :data ,(list-to-array (retrieve-dao 'schedule-data :schedule-revision (car revision)))))))
 
-;; TODO use transactions everywhere to prevent inconsistent state
-
 (my-defroute :POST "/api/schedule/:grade/add" (:admin :user) (grade |weekday| |hour| |week-modulo| |course| |room|) "application/json"
-  (let* ((schedule (find-dao 'schedule :grade grade))
-         (last-revision (select-dao 'schedule-revision (where (:= :schedule schedule)) (order-by (:desc :id)) (limit 1)))
-         (revision (create-dao 'schedule-revision :author user :schedule schedule))
-         (data     (create-dao 'schedule-data :schedule-revision revision
-                                              :weekday (first |weekday|)
-                                              :hour (first |hour|)
-                                              :week-modulo (first |week-modulo|)
-                                              :course (find-dao 'course :id (first |course|))
-                                              :room (first |room|))))
-         ;; TODO FIXME implement in sql
-    (loop for old-data in (retrieve-dao 'schedule-data :schedule-revision (car last-revision)) do
-       (create-dao 'schedule-data  :schedule-revision revision
-                                   :weekday (schedule-data-weekday old-data)
-                                   :hour (schedule-data-hour old-data)
-                                   :week-modulo (schedule-data-week-modulo old-data)
-                                   :course (schedule-data-course old-data)
-                                   :room (schedule-data-room old-data)))
-    (format nil "~a" (object-id data))))
+  (dbi:with-transaction *connection*
+    (let* ((schedule (find-dao 'schedule :grade grade))
+           (last-revision (select-dao 'schedule-revision (where (:= :schedule schedule)) (order-by (:desc :id)) (limit 1)))
+           (revision (create-dao 'schedule-revision :author user :schedule schedule))
+           (data     (create-dao 'schedule-data :schedule-revision revision
+                                                :weekday (first |weekday|)
+                                                :hour (first |hour|)
+                                                :week-modulo (first |week-modulo|)
+                                                :course (find-dao 'course :id (first |course|))
+                                                :room (first |room|))))
+      ;; TODO FIXME implement in sql ;; mito has functionalitfy for that
+      (loop for old-data in (retrieve-dao 'schedule-data :schedule-revision (car last-revision)) do
+         (create-dao 'schedule-data  :schedule-revision revision
+                                     :weekday (schedule-data-weekday old-data)
+                                     :hour (schedule-data-hour old-data)
+                                     :week-modulo (schedule-data-week-modulo old-data)
+                                     :course (schedule-data-course old-data)
+                                     :room (schedule-data-room old-data)))
+      (format nil "~a" (object-id data)))))
 
 (defmacro test ()
   `(progn

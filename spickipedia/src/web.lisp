@@ -134,14 +134,15 @@
      "{\"content\":\"\", \"categories\": []}")))
 
 (my-defroute :POST "/api/wiki/:title" (:admin :user) (title |summary| |html| _parsed) "text/html"
-  (let* ((article (mito:find-dao 'wiki-article :title title))
-         (categories (cdr (assoc "categories" _parsed :test #'string=))))
-    (if (not article)
-     (setf article (mito:create-dao 'wiki-article :title title)))
-    (let ((revision (mito:create-dao 'wiki-article-revision :article article :author user :summary |summary| :content |html|)))
-     (loop for category in categories do
-          (mito:create-dao 'wiki-article-revision-category :revision revision :category category)))
-    nil))
+  (dbi:with-transaction *connection*
+    (let* ((article (mito:find-dao 'wiki-article :title title))
+           (categories (cdr (assoc "categories" _parsed :test #'string=))))
+      (if (not article)
+       (setf article (mito:create-dao 'wiki-article :title title)))
+      (let ((revision (mito:create-dao 'wiki-article-revision :article article :author user :summary |summary| :content |html|)))
+       (loop for category in categories do
+            (mito:create-dao 'wiki-article-revision-category :revision revision :category category)))
+      nil)))
 
 (my-defroute :POST "/api/quiz/create" (:admin :user) () "text/html"
   (format nil "~a" (object-id (mito:create-dao 'quiz :creator user))))
@@ -249,6 +250,7 @@
   (with-cache (read-file-into-string (merge-pathnames "js/sw.lisp" *application-root*))
     (file-js-gen (concatenate 'string (namestring *application-root*) "js/sw.lisp"))))
 
+;; TODO implement correctly
 (defmethod on-exception ((app <web>) (code (eql 404)))
   (declare (ignore app))
   (merge-pathnames #P"_errors/404.html"
