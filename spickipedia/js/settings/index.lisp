@@ -41,8 +41,8 @@
                   (let ((courses-list (chain document (get-element-by-id "settings-list-courses"))))
                     (setf (chain courses-list inner-h-t-m-l) "")
                     (loop for page in data do
-                        (let ((template (get-template "courses-list-html")))
-                          (setf (chain template (query-selector ".courses-list-subject") inner-text) (chain page subject))
+                        (let ((template (get-template "settings-student-course-html")))
+                          (setf (chain template (query-selector ".label-name") inner-text) (chain page subject))
                           (chain courses-list (append template)))))
                   (show-tab "#tab-settings")))
               (catch handle-fetch-error)))))))

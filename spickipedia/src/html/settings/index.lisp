@@ -1,7 +1,12 @@
 (in-package :spickipedia.web)
 
 (defun html-settings ()
-  `((:div :style "display: none;" :class "container my-tab position-absolute" :id "tab-settings"
+  `((:template :id "settings-student-course-html"
+      (:div :class "custom-control custom-checkbox"
+        (:input :type "checkbox" :class "custom-control-input" :id "settings-course-n")
+        (:label :class "custom-control-label label-name" :for "settings-course-n" "")))
+
+    (:div :style "display: none;" :class "container my-tab position-absolute" :id "tab-settings"
      (:h2 :class "text-center" "Einstellungen")
 
      (:h3 :class "text-center" "Dein Jahrgang")
@@ -11,8 +16,7 @@
 
      (:h3 :class "text-center" "Deine Kurse")
      (:div :id "settings-list-courses"
-       (:label (:input :type "checkbox" :name "test") "Test1") (:br)
-       (:label (:input :type "checkbox" :name "test2") "Test12")) (:br)
+       (:label (:input :type "checkbox" :name "test") "Test1") (:br))
      (:a :id "settings-add-course" :type "button" :class "btn btn-primary norefresh" "Kurs erstellen"))
 
     ,(modal "settings-create-grade" "Jahrgang hinzufügen"
