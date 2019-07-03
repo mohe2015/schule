@@ -42,7 +42,9 @@
                     (setf (chain courses-list inner-h-t-m-l) "")
                     (loop for page in data do
                         (let ((template (get-template "settings-student-course-html")))
-                          (setf (chain template (query-selector ".label-name") inner-text) (chain page subject))
+                          (setf (chain template (query-selector "label") inner-text) (chain page subject))
+                          (chain template (query-selector "label") (set-attribute "for" (chain page course-id)))
+                          (setf (chain template (query-selector "input") id) (chain page course-id))
                           (chain courses-list (append template)))))
                   (show-tab "#tab-settings")))
               (catch handle-fetch-error)))))))
