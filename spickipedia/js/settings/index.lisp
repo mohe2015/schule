@@ -27,7 +27,11 @@
             (setf (chain option value) (chain grade id))
             (setf (chain option inner-text) text)
             (chain grade-select (append-child option))))
-        (show-tab "#tab-settings")))))
+        (cache-then-network
+          "/api/settings"
+          (lambda (data)
+            (setf (chain grade-select value) (chain data id))
+            (show-tab "#tab-settings")))))))
 
 (defroute "/settings"
   (render))
