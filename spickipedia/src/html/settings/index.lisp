@@ -3,7 +3,7 @@
 (defun html-settings ()
   `((:template :id "settings-student-course-html"
       (:div :class "custom-control custom-checkbox"
-        (:input :type "checkbox" :class "custom-control-input" :id "settings-course-n")
+        (:input :type "checkbox" :class "custom-control-input student-course-checkbox" :id "settings-course-n")
         (:label :class "custom-control-label" :for "settings-course-n" "")))
 
     (:div :style "display: none;" :class "container my-tab position-absolute" :id "tab-settings"

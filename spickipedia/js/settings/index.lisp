@@ -144,3 +144,29 @@
               (render)))
           (catch handle-fetch-error)))
       F)))
+
+
+(chain
+  (one "body")
+  (add-event-listener "change"
+    (lambda (event)
+      (if (not (chain event target (closest ".student-course-checkbox")))
+        (return))
+      (let* ((formData (new (-Form-Data))))
+        (chain console (log (chain event target)))
+        (chain formData (append "id" (chain event target id)))
+        (chain formData (append "value" (chain event target value)))
+        (chain formData (append "_csrf_token" (read-cookie "_csrf_token")))
+        (chain
+          (fetch ;; TODO loading indicator
+            "/api/user-courses"
+            (create
+              method "POST"
+              body formData))
+          (then check-status)
+          (then
+            (lambda (data)
+              nil))
+          (catch handle-fetch-error)))
+      F)))
+;
