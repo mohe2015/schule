@@ -31,7 +31,35 @@
           "/api/settings"
           (lambda (data)
             (setf (chain grade-select value) (chain data id))
-            (show-tab "#tab-settings")))))))
+
+            (chain
+              (fetch "/api/courses")
+              (then check-status)
+              (then json)
+              (then
+                (lambda (data)
+                  (let ((courses-list (chain document (get-element-by-id "settings-list-courses"))))
+                    (setf (chain courses-list inner-h-t-m-l) "")
+                    (loop for page in data do
+                        (let ((template (get-template "courses-list-html")))
+                          (setf (chain template (query-selector ".courses-list-subject") inner-text) (chain page subject))
+                          (chain courses-list (append template)))))
+                  (show-tab "#tab-settings")))
+              (catch handle-fetch-error)))))))
+  (let ((select (chain document (query-selector "#settings-teachers-select"))))
+    (setf (chain select inner-h-t-m-l) "")
+    (chain
+     (fetch "/api/teachers")
+     (then check-status)
+     (then json)
+     (then
+      (lambda (data)
+         (loop for teacher in data do
+               (let ((element (chain document (create-element "option"))))
+                (setf (chain element inner-text) (chain teacher name))
+                (setf (chain element value) (chain teacher id))
+                (chain select (append-child element))))))
+     (catch handle-fetch-error))))
 
 (defroute "/settings"
   (render))
@@ -42,6 +70,13 @@
     (lambda (event)
       (chain event (prevent-default))
       (show-modal "#modal-settings-create-grade"))))
+
+(chain
+  (one "#settings-add-course")
+  (add-event-listener "click"
+    (lambda (event)
+      (chain event (prevent-default))
+      (show-modal "#modal-settings-create-course"))))
 
 (chain
   ($ "#form-settings-create-grade")
@@ -84,3 +119,5 @@
               nil))
           (catch handle-fetch-error)))
       F)))
+
+;;
