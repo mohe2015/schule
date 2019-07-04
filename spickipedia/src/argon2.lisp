@@ -1,4 +1,11 @@
+;; This file is dedicated to the public domain.
+(defpackage spickipedia.argon2
+  (:use :cl :cffi)
+  (:export :hash :verify))
+
 (in-package :spickipedia.argon2)
+
+;; https://github.com/P-H-C/phc-winner-argon2/blob/master/include/argon2.h
 
 (define-foreign-library libargon2
   (:unix (:or "libargon2.so.1" "libargon2.so"))
@@ -6,7 +13,6 @@
 
 (use-foreign-library libargon2)
 
-;; https://github.com/P-H-C/phc-winner-argon2/blob/master/include/argon2.h
 (defctype size :unsigned-int)
 
 ;; TODO FIXME check all response codes as this is critical code

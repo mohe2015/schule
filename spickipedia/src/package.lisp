@@ -2,11 +2,6 @@
   (:use :cl :sanitize)
   (:export :*sanitize-spickipedia*))
 
-(defpackage spickipedia.argon2
-  (:use :cl :cffi)
-  (:export :hash
-           :verify))
-
 (defpackage spickipedia.tsquery-converter
   (:use :cl :str)
   (:export :tsquery-convert))
