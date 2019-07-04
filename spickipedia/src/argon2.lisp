@@ -30,11 +30,12 @@
 (defparameter *SALTLEN* 16)
 (defparameter *ENCODEDLEN* 128)
 
-(with-foreign-pointer (encoded *ENCODEDLEN*)
-  (with-foreign-pointer (salt *SALTLEN*) ;; TODO FIXME initialize with random data
-    (with-foreign-string ((pwd pwdlen) "randompassword")
-      (let ((t-cost 2) ;; 1-pass computation
-            (m-cost (ash 1 16)) ;; 64 mebibytes memory usage
-            (parallelism 1)) ;; number of threads and lanes
-        (argon2id-hash-encoded t-cost m-cost parallelism pwd pwdlen salt *SALTLEN* *HASHLEN* encoded *ENCODEDLEN*)
-        (foreign-string-to-lisp encoded)))))
+(defun hash (password)
+  (with-foreign-pointer (encoded *ENCODEDLEN*)
+    (with-foreign-array (salt (crypto:random-data *SALTLEN*) `(:array :uint8 ,*SALTLEN*))
+      (with-foreign-string ((pwd pwdlen) password)
+        (let ((t-cost 2) ;; 1-pass computation
+              (m-cost (ash 1 16)) ;; 64 mebibytes memory usage
+              (parallelism 1)) ;; number of threads and lanes
+          (argon2id-hash-encoded t-cost m-cost parallelism pwd pwdlen salt *SALTLEN* *HASHLEN* encoded *ENCODEDLEN*)
+          (foreign-string-to-lisp encoded))))))
