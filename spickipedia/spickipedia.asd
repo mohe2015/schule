@@ -29,7 +29,8 @@
          (:file "html/helpers" :depends-on ("package"))
          (:file "html/user-courses/index" :depends-on ("package" "html/helpers"))
          (:file "html/settings/index" :depends-on ("package" "html/helpers"))
-         (:file "index" :depends-on ("package" "html/helpers" "html/user-courses/index" "html/settings/index"))
+         (:file "html/schedule/index" :depends-on ("package" "html/helpers"))
+         (:file "index" :depends-on ("package" "html/helpers" "html/user-courses/index" "html/settings/index" "html/schedule/index"))
 
          (:file "config")
          (:file "sanitize" :depends-on ("package"))
