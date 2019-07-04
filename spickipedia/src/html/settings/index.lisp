@@ -17,7 +17,9 @@
      (:h3 :class "text-center" "Deine Kurse")
      (:div :id "settings-list-courses"
        (:label (:input :type "checkbox" :name "test") "Test1") (:br))
-     (:a :id "settings-add-course" :type "button" :class "btn btn-primary norefresh" "Kurs erstellen"))
+     (:a :id "settings-add-course" :type "button" :class "btn btn-primary norefresh" "Kurs erstellen")
+
+     (:a :id "settings-show-schedule" :type "button" :class "btn btn-primary norefresh" "Stundenplan anzeigen"))
 
     ,(modal "settings-create-grade" "Jahrgang hinzufügen"
        `((:BUTTON :TYPE "button" :CLASS "btn btn-secondary" :DATA-DISMISS "modal"
