@@ -8,7 +8,7 @@
                :envy
                :cl-ppcre
                :uiop
-               :cl-inotify
+               :cl-fsnotify
                :mito
                :cl-json
                :sanitize

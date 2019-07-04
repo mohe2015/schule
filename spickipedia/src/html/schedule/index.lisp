@@ -21,8 +21,6 @@
        (:span :class "data" "Mathe LK Keller B201")
        (:div :class "nowrap"
          (:button :type "button" :class "btn btn-sm btn-outline-primary"
-           (:span :class "fa fa-pen"))
-         (:button :type "button" :class "btn btn-sm btn-outline-primary"
            (:span :class "fa fa-trash")))))
 
     (:div :style "display: none;" :class "container-fluid my-tab position-absolute" :id "schedule"

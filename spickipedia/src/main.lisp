@@ -1,6 +1,6 @@
 (in-package :cl-user)
 (defpackage spickipedia
-  (:use :cl)
+  (:use :cl :cl-fsnotify)
   (:import-from :spickipedia.config
                 :config)
   (:import-from :clack
@@ -29,15 +29,26 @@
       (clack:stop *handler*)
     (setf *handler* nil)))
 
+(defun mapc-directory-tree (fn directory &key (depth-first-p t))
+  (dolist (entry (cl-fad:list-directory directory))
+    (unless depth-first-p
+      (funcall fn entry))
+    (when (cl-fad:directory-pathname-p entry)
+      (mapc-directory-tree fn entry))
+    (when depth-first-p
+      (funcall fn entry))))
+
 (defun development ()
   (let ((top-level *standard-output*))
     (bt:make-thread
       (lambda ()
         (format top-level "Started compilation thread!~%")
-        ;; TODO FIXME this is not recursive
-        (cl-inotify:with-inotify (inotify T ((concatenate 'string (namestring (asdf:system-source-directory :spickipedia)) "/src") '(:modify)))
-          (cl-inotify:do-events (event inotify :blocking-p T)
-            (format top-level "Got a code update!~%")
-            (handler-case
-              (asdf:load-system :spickipedia)
-              (error () (format top-level "Failed compiling!~%")))))))))
+        (open-fsnotify)
+        (mapc-directory-tree (lambda (x) (if (not (pathname-name x)) (add-watch x))) (asdf:system-source-directory :spickipedia))
+        (loop while t do
+          (if (get-events)
+            (progn
+              (format top-level "Got a code update!~%")
+              (handler-case
+                (asdf:load-system :spickipedia)
+                (error () (format top-level "Failed compiling!~%"))))))))))
