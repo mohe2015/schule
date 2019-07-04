@@ -15,7 +15,6 @@
                :ironclad
                :cl-fad
                :cl-base64
-               :monkeylib-bcrypt
                :str
                :parenscript
                :lack
@@ -25,6 +24,8 @@
   :components ;; TODO FIXME fix all dependencies as otherwise there are compilation failures
     ((:module "src" :components (
          (:file "package") ;; TODO split up into the single packages or google how you should do it
+
+         (:file "argon2")
 
          (:file "html/helpers" :depends-on ("package"))
          (:file "html/user-courses/index" :depends-on ("package" "html/helpers"))
@@ -37,7 +38,7 @@
          (:file "parenscript" :depends-on ("package"))
          (:file "tsquery-converter" :depends-on ("package"))
 
-         (:file "web" :depends-on ("package" "parenscript" "db" "index"))
+         (:file "web" :depends-on ("package" "parenscript" "db" "index" "argon2"))
          (:file "settings" :depends-on ("package" "web"))
          (:file "schedule" :depends-on ("package" "web")) ;; TODO FIXME clean up this dependency garbase
          (:file "student-courses" :depends-on ("package" "web"))
