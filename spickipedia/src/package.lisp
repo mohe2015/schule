@@ -4,7 +4,8 @@
 
 (defpackage spickipedia.argon2
   (:use :cl :cffi)
-  (:export :hash))
+  (:export :hash
+           :verify))
 
 (defpackage spickipedia.tsquery-converter
   (:use :cl :str)

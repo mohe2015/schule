@@ -61,7 +61,7 @@
   (hashlen size)
   (type Argon2_type))
 
-(defcfun "argon2id_hash_encoded" :int
+(defcfun "argon2id_hash_encoded" Argon2_ErrorCodes
   (t-cost :uint32)
   (m-cost :uint32)
   (parallelism :uint32)
@@ -73,21 +73,25 @@
   (encoded :pointer)
   (encodedlen size))
 
-(defcfun "argon2id_verify" :int
+(defcfun "argon2id_verify" Argon2_ErrorCodes
   (encoded :pointer)
   (pwd :pointer)
   (pwdlen size))
 
 (defparameter *HASHLEN* 32)
 (defparameter *SALTLEN* 16)
-(defparameter *ENCODEDLEN* 128)
 
 (defun hash (password)
-  (with-foreign-pointer (encoded *ENCODEDLEN*)
     (with-foreign-array (salt (crypto:random-data *SALTLEN*) `(:array :uint8 ,*SALTLEN*))
       (with-foreign-string ((pwd pwdlen) password)
         (let ((t-cost 2) ;; 1-pass computation
               (m-cost (ash 1 16)) ;; 64 mebibytes memory usage
               (parallelism 1)) ;; number of threads and lanes
-          (argon2id-hash-encoded t-cost m-cost parallelism pwd pwdlen salt *SALTLEN* *HASHLEN* encoded *ENCODEDLEN*)
-          (foreign-string-to-lisp encoded))))))
+             (with-foreign-pointer (encoded (argon2-encodedlen t-cost m-cost parallelism *SALTLEN* *HASHLEN* :Argon2_id) encodedlen)
+               (assert (eq :ARGON2_OK (argon2id-hash-encoded t-cost m-cost parallelism pwd pwdlen salt *SALTLEN* *HASHLEN* encoded encodedlen)))
+               (foreign-string-to-lisp encoded))))))
+
+(defun verify (password hash)
+  (with-foreign-string ((pwd pwdlen) password)
+    (with-foreign-string (encoded hash)
+      (eq :ARGON2_OK (argon2id-verify encoded pwd pwdlen)))))
