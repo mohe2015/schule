@@ -93,6 +93,15 @@
       (show-modal "#modal-settings-create-course"))))
 
 (chain
+  (one "#settings-show-schedule")
+  (add-event-listener "click"
+    (lambda (event)
+      (chain event (prevent-default))
+      (let* ((select (chain document (get-element-by-id "settings-select-grade")))
+             (grade (getprop select 'options (chain select selected-index) 'text)))
+        (push-state (concatenate 'string "/schedule/" grade))))))
+
+(chain
   ($ "#form-settings-create-grade")
   (submit
     (lambda (event)
