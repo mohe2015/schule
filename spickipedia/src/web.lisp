@@ -194,7 +194,7 @@
 (my-defroute :POST "/api/login" nil (|name| |password|) "text/html"
   (format t "~A ~A~%" |name| |password|)
   (let* ((user (mito:find-dao 'user :name |name|)))
-    (if (and user (password= |password| (user-hash user)))                        ;; TODO prevent timing attack
+    (if (and user (verify |password| (user-hash user)))
      (progn
        ;;(regenerate-session *SESSION*) ;; TODO this is IMPORTANT WE NEED TO FIX THIS THIS IS IMPORTANT WE NEED TO FIX THIS
        (setf (gethash :user *SESSION*) (object-id user))
