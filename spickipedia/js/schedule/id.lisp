@@ -25,6 +25,7 @@
                  (cell (getprop cell2 'children (- (chain element hour) 1) 'children 1))
                  (template (get-template "schedule-data-cell-template")))
             (setf (chain template (query-selector ".data") inner-text) (concatenate 'string (chain element course subject) " " (chain element course type) " " (chain element course teacher name) " " (chain element room)))
+            (chain template (query-selector ".button-delete-schedule-data") (set-attribute "data-id" (chain element id)))
             (chain cell (prepend template))))))
     (catch handle-fetch-error)))
 
@@ -43,7 +44,8 @@
              (course (chain (one "#course") selected-options 0 inner-text))
              (room (chain (one "#room") value))
              (form-element (chain document (query-selector "#schedule-data-form")))
-             (form-data (new (-Form-Data form-element))))
+             (form-data (new (-Form-Data form-element)))
+             (grade (chain location pathname (split "/") 2)))
         (chain form-data (append "_csrf_token" (read-cookie "_csrf_token")))
         (chain
           (fetch
@@ -73,6 +75,32 @@
         (setf (chain (one "#schedule-data-weekday") value) x)
         (setf (chain (one "#schedule-data-hour") value) y)
         (show-modal (one "#schedule-data-modal"))))))
+
+(chain
+  (one "body")
+  (add-event-listener "click"
+    (lambda (event)
+      (if (not (chain event target (closest ".button-delete-schedule-data")))
+        (return))
+      (chain console (log event))
+      (let* ((id (chain event target (get-attribute "data-id")))
+             (form-data (new (-Form-Data)))
+             (grade (chain location pathname (split "/") 2)))
+        (chain form-data (append "id" id))
+        (chain form-data (append "_csrf_token" (read-cookie "_csrf_token")))
+        (if (confirm "Möchtest du den Eintrag wirklich löschen?")
+          (chain
+            (fetch
+              (concatenate 'string "/api/schedule/" grade "/delete")
+              (create
+                method "POST"
+                body form-data))
+            (then check-status)
+            (then json)
+            (then
+              (lambda (data)
+                (chain event target (remove))))
+            (catch handle-fetch-error)))))))
 
 (cache-then-network
   "/api/courses"

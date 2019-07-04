@@ -20,7 +20,7 @@
       (:div :class "mb-3 mt-3 schedule-data test"
        (:span :class "data" "Mathe LK Keller B201")
        (:div :class "nowrap"
-         (:button :type "button" :class "btn btn-sm btn-outline-primary"
+         (:button :type "button" :class "btn btn-sm btn-outline-primary button-delete-schedule-data"
            (:span :class "fa fa-trash")))))
 
     (:div :style "display: none;" :class "container-fluid my-tab position-absolute" :id "schedule"

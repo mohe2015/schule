@@ -39,6 +39,7 @@
       (funcall fn entry))))
 
 (defun development ()
+  (start)
   (let ((top-level *standard-output*))
     (bt:make-thread
       (lambda ()
@@ -51,4 +52,5 @@
               (format top-level "Got a code update!~%")
               (handler-case
                 (asdf:load-system :spickipedia)
-                (error () (format top-level "Failed compiling!~%"))))))))))
+                (error () (format top-level "Failed compiling!~%"))))
+            (sleep 1)))))))
