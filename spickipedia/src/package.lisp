@@ -115,7 +115,8 @@
         :alexandria
         :cl-who
         :cl-fad
-        :cl-base64)
+        :cl-base64
+        :cffi)
   (:shadowing-import-from :ironclad :xor)
   (:shadowing-import-from :cl-fad :copy-file)
   (:shadowing-import-from :cl-fad :copy-stream)

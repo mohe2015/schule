@@ -2,7 +2,7 @@
 
 ## Requirements
 
-* libfixposix-dev
+* libfixposix-dev, libargon2-dev
 * fcgi
 * roswell
 * Atom (ubuntu install gnome tweaks and change theme to dark)
@@ -58,3 +58,9 @@ purgecss --content www/index.html --css www/s/all.css --css www/s/bootstrap.min.
 ### Accessing modules
 
 import('../js/utils.lisp').then(m => module = m)
+
+
+## Buggy quicklisp
+
+cd $HOME/.roswell/local-projects
+find -L -name '*.asd' > system-index.txt

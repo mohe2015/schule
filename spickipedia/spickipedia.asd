@@ -26,6 +26,8 @@
     ((:module "src" :components (
          (:file "package") ;; TODO split up into the single packages or google how you should do it
 
+         (:file "argon2" :depends-on ("package"))
+
          (:file "html/helpers" :depends-on ("package"))
          (:file "html/user-courses/index" :depends-on ("package" "html/helpers"))
          (:file "html/settings/index" :depends-on ("package" "html/helpers"))
