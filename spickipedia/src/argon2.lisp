@@ -15,7 +15,6 @@
 
 (defctype size :unsigned-int)
 
-;; TODO FIXME check all response codes as this is critical code
 (defcenum Argon2_ErrorCodes
     (:ARGON2_OK 0)
     (:ARGON2_OUTPUT_PTR_NULL -1)
