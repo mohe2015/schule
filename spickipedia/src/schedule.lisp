@@ -89,6 +89,7 @@ O to STREAM (or to *JSON-OUTPUT*)."
   "Write the JSON representation (Object) of the postmodern DAO CLOS object
 O to STREAM (or to *JSON-OUTPUT*)."
   (with-object (stream)
+    (encode-object-member 'id (object-id o) stream)
     (encode-object-member 'weekday (schedule-data-weekday o) stream)
     (encode-object-member 'hour (schedule-data-hour o) stream)
     (encode-object-member 'week-modulo (schedule-data-week-modulo o) stream)
@@ -133,6 +134,22 @@ O to STREAM (or to *JSON-OUTPUT*)."
                                      :course (schedule-data-course old-data)
                                      :room (schedule-data-room old-data)))
       (format nil "~a" (object-id data)))))
+
+(my-defroute :POST "/api/schedule/:grade/delete" (:admin :user) (|id|) "application/json"
+  (dbi:with-transaction *connection*
+    (let* ((schedule (user-grade user))
+           (last-revision (select-dao 'schedule-revision (where (:= :schedule schedule)) (order-by (:desc :id)) (limit 1)))
+           (revision (create-dao 'schedule-revision :author user :schedule schedule)))
+      ;; TODO FIXME implement in sql ;; mito has functionalitfy for that
+      (loop for old-data in (retrieve-dao 'schedule-data :schedule-revision (car last-revision)) do
+        (if (not (= (object-id old-data) (parse-integer (first |id|))))
+          (create-dao 'schedule-data  :schedule-revision revision
+                                      :weekday (schedule-data-weekday old-data)
+                                      :hour (schedule-data-hour old-data)
+                                      :week-modulo (schedule-data-week-modulo old-data)
+                                      :course (schedule-data-course old-data)
+                                      :room (schedule-data-room old-data))))
+      "")))
 
 (defmacro test ()
   `(progn

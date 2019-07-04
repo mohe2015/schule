@@ -83,7 +83,7 @@
       (if (not (chain event target (closest ".button-delete-schedule-data")))
         (return))
       (chain console (log event))
-      (let* ((id (chain event target (get-attribute "data-id")))
+      (let* ((id (chain event target (closest ".button-delete-schedule-data") (get-attribute "data-id")))
              (form-data (new (-Form-Data)))
              (grade (chain location pathname (split "/") 2)))
         (chain form-data (append "id" id))
@@ -96,10 +96,9 @@
                 method "POST"
                 body form-data))
             (then check-status)
-            (then json)
             (then
               (lambda (data)
-                (chain event target (remove))))
+                (chain event target (closest ".schedule-data") (remove))))
             (catch handle-fetch-error)))))))
 
 (cache-then-network
