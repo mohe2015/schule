@@ -2,6 +2,10 @@
   (:use :cl :sanitize)
   (:export :*sanitize-spickipedia*))
 
+(defpackage spickipedia.argon2
+  (:use :cl :cffi)
+  (:export :hash))
+
 (defpackage spickipedia.tsquery-converter
   (:use :cl :str)
   (:export :tsquery-convert))
@@ -111,7 +115,7 @@
         :sxql.sql-type
         :ironclad
         :sanitize
-        :bcrypt
+        :spickipedia.argon2
         :alexandria
         :cl-who
         :cl-fad

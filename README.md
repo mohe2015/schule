@@ -15,14 +15,7 @@
 ros install ccl-bin
 ros install slime
 
-cd crypt_blowfish
-make libbcrypt.so
-sudo cp libbcrypt.so /usr/local/lib/
-sudo ldconfig
-cdd ..
-
 ln -s $PWD/spickipedia/ ~/.roswell/local-projects/
-ln -s $PWD/monkeylib-bcrypt/ ~/.roswell/local-projects/
 ln -s $PWD/lack/ ~/.roswell/local-projects/
 ln -s $PWD/parenscript/ ~/.roswell/local-projects/
 ln -s $PWD/clack/ ~/.roswell/local-projects/
@@ -37,9 +30,9 @@ ln -s $PWD/clack/ ~/.roswell/local-projects/
 (spickipedia:development)
 (in-package :spickipedia.db)
 (with-connection (db)
-  (create-dao 'user :name "Administrator" :hash (bcrypt:hash "xfg3zte94h62j392h") :group "admin")
-  (create-dao 'user :name "Anonymous" :hash (bcrypt:hash "xfg3zte94h") :group "anonymous")
-  (create-dao 'user :name "<your name>" :hash (bcrypt:hash "fjd8sh3l2h") :group "user"))
+  (create-dao 'user :name "Administrator" :hash (hash "xfg3zte94h62j392h") :group "admin")
+  (create-dao 'user :name "Anonymous" :hash (hash "xfg3zte94h") :group "anonymous")
+  (create-dao 'user :name "<your name>" :hash (hash "fjd8sh3l2h") :group "user"))
 
 (declaim (optimize (compilation-speed 0) (debug 0) (safety 0) (space 3) (speed 0)))
 (save-application "spickipedia"  :clear-clos-caches t :impurify t :prepend-kernel t)

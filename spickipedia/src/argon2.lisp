@@ -1,4 +1,4 @@
-(in-package :spickipedia.web)
+(in-package :spickipedia.argon2)
 
 (define-foreign-library libargon2
   (:unix (:or "libargon2.so.1" "libargon2.so"))
@@ -20,11 +20,6 @@
   (hashlen size)
   (encoded :pointer)
   (encodedlen size))
-
-(with-foreign-pointer (string 4 size)
-  (lisp-string-to-foreign "Popcorns" string size)
-  (loop for i from 0 below size
-    collect (code-char (mem-ref string :char i))))
 
 (defparameter *HASHLEN* 32)
 (defparameter *SALTLEN* 16)

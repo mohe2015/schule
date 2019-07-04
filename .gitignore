@@ -10,3 +10,4 @@ track.json
 node_modules/
 spickipedia.db
 spickipedia.db-journal
+repl.lisp-repl

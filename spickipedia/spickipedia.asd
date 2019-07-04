@@ -15,7 +15,6 @@
                :ironclad
                :cl-fad
                :cl-base64
-               :monkeylib-bcrypt
                :str
                :parenscript
                :lack
