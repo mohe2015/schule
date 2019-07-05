@@ -1,56 +1,45 @@
-(var __-p-s_-m-v_-r-e-g)
 
-(i "./show-tab.lisp" "showTab")
-(i "./read-cookie.lisp" "readCookie")
-(i "./handle-error.lisp" "handleError")
-(i "./fetch.lisp" "checkStatus" "json" "html" "handleFetchError")
-(i "./template.lisp" "getTemplate")
-(i "./push-state.lisp" "pushState")
-(i "./utils.lisp" "showModal" "all" "one" "hideModal" "clearChildren")
-
-(defroute "/teachers/new"
-  (show-tab "#create-teacher-tab"))
-
-(defroute "/teachers"
-  (show-tab "#list-teachers")
-
-  (chain
-    (fetch "/api/teachers")
-    (then check-status)
-    (then json)
-    (then
-      (lambda (data)
-        (if (null data)
-          (setf data ([])))
-        (let ((teachers-list (chain document (get-element-by-id "teachers-list"))))
-          (setf (chain teachers-list inner-h-t-m-l) "")
-          (loop for page in data do
-              (let ((template (get-template "teachers-list-html")))
-                (chain console (log (chain page name)))
-                (setf (chain template (query-selector ".teachers-list-name") inner-text) (chain page name))
-                (chain document (get-element-by-id "teachers-list") (append template)))))))
-    (catch handle-fetch-error)))
-
-;; TODO do it like this everywhere
-(chain
-  ($ "#create-teacher-form")
-  (submit
-    (lambda (event)
-      (let* ((formElement (chain document (query-selector "#create-teacher-form")))
-             (formData (new (-Form-Data formElement))))
-        (chain formData (append "_csrf_token" (read-cookie "_csrf_token")))
-        (chain
-          (fetch
-            "/api/teachers"
-            (create
-              method "POST"
-              body formData))
-          (then check-status)
-          (then json)
-          (then
+(var __-p-s_-m-v_-r-e-g) 
+(i "./show-tab.lisp" "showTab") 
+(i "./read-cookie.lisp" "readCookie") 
+(i "./handle-error.lisp" "handleError") 
+(i "./fetch.lisp" "checkStatus" "json" "html" "handleFetchError") 
+(i "./template.lisp" "getTemplate") 
+(i "./push-state.lisp" "pushState") 
+(i "./utils.lisp" "showModal" "all" "one" "hideModal" "clearChildren") 
+(defroute "/teachers/new" (show-tab "#create-teacher-tab")) 
+(defroute "/teachers" (show-tab "#list-teachers")
+          (chain (fetch "/api/teachers") (then check-status) (then json)
+           (then
             (lambda (data)
-              (push-state "/teachers")
-              (setf (chain (one "#teacher-name") value) "")
-              (setf (chain (one "#teacher-initial") value) "")))
-          (catch handle-fetch-error)))
-      F)))
+              (if (null data)
+                  (setf data ([])))
+              (let ((teachers-list
+                     (chain document (get-element-by-id "teachers-list"))))
+                (setf (chain teachers-list inner-h-t-m-l) "")
+                (loop for page in data
+                      do (let ((template (get-template "teachers-list-html")))
+                           (chain console (log (chain page name)))
+                           (setf (chain template
+                                  (query-selector ".teachers-list-name")
+                                  inner-text)
+                                   (chain page name))
+                           (chain document (get-element-by-id "teachers-list")
+                            (append template)))))))
+           (catch handle-fetch-error))) 
+(chain ($ "#create-teacher-form")
+ (submit
+  (lambda (event)
+    (let* ((formelement
+            (chain document (query-selector "#create-teacher-form")))
+           (formdata (new (-form-data formelement))))
+      (chain formdata (append "_csrf_token" (read-cookie "_csrf_token")))
+      (chain (fetch "/api/teachers" (create method "POST" body formdata))
+       (then check-status) (then json)
+       (then
+        (lambda (data)
+          (push-state "/teachers")
+          (setf (chain (one "#teacher-name") value) "")
+          (setf (chain (one "#teacher-initial") value) "")))
+       (catch handle-fetch-error)))
+    f))) 
