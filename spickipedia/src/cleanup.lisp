@@ -52,7 +52,7 @@
                                  "container my-tab position-absolute"
                                  :id))
                         ``(tab ,,(nth 5 rest)
-                           ,',@(subseq rest 6))
+                           ,,@(subseq rest 6))
                         ``(:div ,,@rest))))
      ,sexp))
 
