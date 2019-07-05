@@ -1,7 +1,7 @@
 
-(in-package :spickipedia.web) 
-(defun get-html ()
-  `(:html :lang "en"
+(in-package :spickipedia.web)
+(defmacro get-html ()
+  (:html :lang "en"
     (:head (:meta :charset "utf-8")
      (:meta :name "viewport" :content
       "width=device-width, initial-scale=1, shrink-to-fit=no")
@@ -101,7 +101,7 @@
         "Frage mit Textantwort hinzufügen")
        (:button :type "button" :class "btn btn-primary mb-1 save-quiz"
         "Speichern")))
-     ,(tab "create-course-tab"
+     (tab "create-course-tab"
        `(:form :method "POST" :action "/api/courses" :id "create-course-form"
          ,(text-input "Fach" "course-subject" "subject")
          (:div :class "form-group" (:label "Typ")
@@ -135,7 +135,7 @@
          :name "grade" :id "schedule-grade"))
        (:button :type "submit" :class "btn btn-primary"
         "Stundenplan erstellen")))
-     ,@(html-settings)
+     (html-settings)
      (:div :style "display: none;" :class "container my-tab position-absolute"
       :id "multiple-choice-question-html"
       (:h2 :class "text-center question-html" "Dies ist eine Testfrage?")
@@ -160,7 +160,7 @@
        (:a :href "/courses/new" :type "button" :class
         "btn btn-primary norefresh" "+"))
       (:ul :id "courses-list"))
-     ,@(html-user-courses) ,@(html-schedule)
+     (html-user-courses) (html-schedule)
      (:div :style "display: none;" :class "container my-tab position-absolute"
       :id "list-schedules"
       (:h2 :class "text-center" "Stundenpläne"
@@ -466,4 +466,4 @@
      (:script :src "/mathlive.js") (:script :src "/popper.js")
      (:script :src "/bootstrap.min.js") (:script :src "/visual-diff.js")
      (:script :nomodule "" :src "no_module_support.js")
-     (:script :type "module" :src "/js/index.lisp")))) 
+     (:script :type "module" :src "/js/index.lisp"))))
