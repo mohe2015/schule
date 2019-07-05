@@ -1,12 +1,12 @@
 
-(quicklisp-client:quickload "str") 
-(quicklisp-client:quickload "cl-fad") 
-(use-package :cl-fad) 
+(quicklisp-client:quickload "str")
+(quicklisp-client:quickload "cl-fad")
+(use-package :cl-fad)
 (defun mapc-directory-tree (fn directory &key (depth-first-p t))
   (dolist (entry (list-directory directory))
     (unless depth-first-p (funcall fn entry))
     (when (directory-pathname-p entry) (mapc-directory-tree fn entry))
-    (when depth-first-p (funcall fn entry)))) 
+    (when depth-first-p (funcall fn entry))))
 (defun update-file (file)
   (if (and (pathname-name file)
            (str:ends-with? ".lisp" (file-namestring file)))
@@ -22,12 +22,13 @@
                                                  ``(tab ,,(nth 5 rest)
                                                     ,',@(subseq rest 6))
                                                  (print rest))))
-                                  (read s nil))
+                                  (print (read s nil)))
                      while sexp
                      collect sexp))))
         (with-open-file (s file :direction :output :if-exists :supersede)
           (let ((*print-case* :downcase))
             (loop for sexp in result
-                  do (print sexp s))))))) 
-(mapc-directory-tree 'update-file
-                     (asdf/system:system-source-directory :spickipedia)) 
+                  do (print sexp s)))))))
+;;(mapc-directory-tree 'update-file
+;;                     (asdf/system:system-source-directory :spickipedia)))))))
+(update-file #P"spickipedia/src/index.lisp")
