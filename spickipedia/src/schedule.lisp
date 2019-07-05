@@ -36,13 +36,15 @@
       (format nil "~a" (object-id course)))))
 
 (my-defroute :GET "/api/courses" (:admin :user) () "application/json"
-  (let* ((courses (select-dao 'course))
-         (course-revisions
-          (mapcar ;; TODO make more efficient (n+1) query
-           #'(lambda (course) ;; TODO remove null
-               (first (select-dao 'course-revision (where (:and (:= :course course) (:= :grade (user-grade user)))) (order-by (:desc :id)) (limit 1))))
-           courses)))
-    (encode-json-to-string (list-to-array (remove nil course-revisions)))))
+  (if (user-grade user)
+    (let* ((courses (select-dao 'course))
+           (course-revisions
+            (mapcar ;; TODO make more efficient (n+1) query
+             #'(lambda (course) ;; TODO remove null
+                 (first (select-dao 'course-revision (where (:and (:= :course course) (:= :grade (user-grade user)))) (order-by (:desc :id)) (limit 1))))
+             courses)))
+      (encode-json-to-string (list-to-array (remove nil course-revisions))))
+    (encode-json-to-string #())))
 
 (my-defroute :POST "/api/schedules" (:admin :user) (|grade|) "text/html"
   (dbi:with-transaction *connection*
