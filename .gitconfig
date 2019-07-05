@@ -1,3 +1,0 @@
-[diff "diff_sexp"]
-	command = ./diff-sexp.sh
-	binary = true

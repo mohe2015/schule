@@ -1,0 +1,33 @@
+#!/bin/sh
+#|-*- mode:lisp -*-|#
+#|
+exec ros -Q -- $0 "$@"
+|#
+(progn ;;init forms
+  (ros:ensure-asdf)
+  #+quicklisp(ql:quickload '(:mw-diff-sexp :cl-strings :spickipedia) :silent t)
+  )
+
+(defpackage :ros.script.diff.3771317484
+  (:use :cl :mw-diff-sexp :cl-strings))
+(in-package :ros.script.diff.3771317484)
+
+(defun read-file (file)
+  (print file)
+  (if (ends-with file ".lisp")
+    (with-open-file (s file)
+      (loop for sexp = (read s nil)
+            while sexp
+            collect sexp))))
+
+;; https://git-scm.com/docs/git/2.18.0#git-codeGITEXTERNALDIFFcode
+;; path old-file old-hex old-mode new-file new-hex new-mode
+(defun main (&rest argv)
+  (declare (ignorable argv))
+  (ignore-errors
+    (let ((diff (diff-sexp
+                  (read-file (nth 1 argv))
+                  (read-file (nth 4 argv)))))
+      (loop for sexp in diff
+            do (print sexp)))))
+;;; vim: set ft=lisp lisp:
