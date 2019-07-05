@@ -41,10 +41,7 @@
             (:select :CLASS "custom-select" :name "type" :id "course-type"
               (:option :selected "true" "GK")
               (:option "LK")))
-          (:DIV :CLASS "form-group"
-            (:label "LehrerIn")
-            (:select :CLASS "custom-select" :id "settings-teachers-select" :name "teacher"
-              (:option "Wird geladen...")))
+          ,(teacher-select "settings-teachers-select")
           (:div :class "custom-control custom-checkbox"
             (:input :type "checkbox" :class "custom-control-input" :name "is-tutorial" :id "settings-is-tutorial")
             (:label :class "custom-control-label" :for "settings-is-tutorial" "Tutorium?"))

@@ -13,3 +13,9 @@
            ,@body)
           (:DIV :CLASS "modal-footer"
            ,@footer))))))
+
+(defun teacher-select (id)
+  `(:DIV :CLASS "form-group"
+    (:label "LehrerIn")
+    (:select :CLASS "custom-select teacher-select" :id ,id :name "teacher"
+      (:option "Wird geladen..."))))

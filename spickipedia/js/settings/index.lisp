@@ -30,7 +30,8 @@
         (cache-then-network
           "/api/settings"
           (lambda (data)
-            (setf (chain grade-select value) (chain data id))
+            (if data
+              (setf (chain grade-select value) (chain data id)))
 
             (chain
               (fetch "/api/courses")
