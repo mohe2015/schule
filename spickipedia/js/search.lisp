@@ -6,9 +6,9 @@
 (chain ($ document)
  (on "input" "#search-query" (lambda (e) (chain ($ "#button-search") (click))))) 
 (defroute "/search" (chain ($ ".edit-button") (add-class "disabled"))
-          (show-tab "#search")) 
+ (show-tab "#search")) 
 (defroute "/search/:query" (chain ($ ".edit-button") (add-class "disabled"))
-          (show-tab "#search") (chain ($ "#search-query") (val query))) 
+ (show-tab "#search") (chain ($ "#search-query") (val query))) 
 (chain ($ "#button-search")
  (click
   (lambda ()

@@ -22,31 +22,29 @@
      (:a :id "settings-show-schedule" :type "button" :class
       "btn btn-primary norefresh" "Stundenplan anzeigen"))
     ,(modal "settings-create-grade" "Jahrgang hinzufügen"
-            `((:button :type "button" :class "btn btn-secondary" :data-dismiss
-               "modal" "Abbrechen")
-              (:button :type "submit" :class "btn btn-primary" :id
-               "settings-button-create-grade" "Hinzufügen"))
-            `((:div :class "form-group"
-               (:label :for "settings-input-grade" "Jahrgang:") " "
-               (:input :type "text" :id "settings-input-grade" :name
-                "grade"))))
+      `((:button :type "button" :class "btn btn-secondary" :data-dismiss
+         "modal" "Abbrechen")
+        (:button :type "submit" :class "btn btn-primary" :id
+         "settings-button-create-grade" "Hinzufügen"))
+      `((:div :class "form-group"
+         (:label :for "settings-input-grade" "Jahrgang:") " "
+         (:input :type "text" :id "settings-input-grade" :name "grade"))))
     ,(modal "settings-create-course" "Kurs erstellen"
-            `((:button :type "button" :class "btn btn-secondary" :data-dismiss
-               "modal" "Abbrechen")
-              (:button :type "submit" :class "btn btn-primary"
-               "Kurs erstellen"))
-            `((:div :class "form-group" (:label "Fach")
-               (:input :type "text" :class "form-control" :placeholder "Fach"
-                :name "subject" :id "course-subject"))
-              (:div :class "form-group" (:label "Typ")
-               (:select :class "custom-select" :name "type" :id "course-type"
-                (:option :selected "true" "GK") (:option "LK")))
-              ,(teacher-select "settings-teachers-select")
-              (:div :class "custom-control custom-checkbox"
-               (:input :type "checkbox" :class "custom-control-input" :name
-                "is-tutorial" :id "settings-is-tutorial")
-               (:label :class "custom-control-label" :for
-                "settings-is-tutorial" "Tutorium?"))
-              (:div :class "form-group" (:label "Thema")
-               (:input :type "text" :class "form-control" :placeholder "Thema"
-                :name "topic" :id "course-topic")))))) 
+      `((:button :type "button" :class "btn btn-secondary" :data-dismiss
+         "modal" "Abbrechen")
+        (:button :type "submit" :class "btn btn-primary" "Kurs erstellen"))
+      `((:div :class "form-group" (:label "Fach")
+         (:input :type "text" :class "form-control" :placeholder "Fach" :name
+          "subject" :id "course-subject"))
+        (:div :class "form-group" (:label "Typ")
+         (:select :class "custom-select" :name "type" :id "course-type"
+          (:option :selected "true" "GK") (:option "LK")))
+        ,(teacher-select "settings-teachers-select")
+        (:div :class "custom-control custom-checkbox"
+         (:input :type "checkbox" :class "custom-control-input" :name
+          "is-tutorial" :id "settings-is-tutorial")
+         (:label :class "custom-control-label" :for "settings-is-tutorial"
+          "Tutorium?"))
+        (:div :class "form-group" (:label "Thema")
+         (:input :type "text" :class "form-control" :placeholder "Thema" :name
+          "topic" :id "course-topic")))))) 

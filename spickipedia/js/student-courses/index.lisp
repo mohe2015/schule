@@ -34,42 +34,37 @@
    (catch handle-fetch-error))
   (show-tab "#list-student-courses")) 
 (defroute "/student-courses" (render)
-          (cache-then-network "/api/courses"
-           (lambda (data)
-             (let ((course-select (one "#student-course")))
-               (clear-children course-select)
-               (loop for course in data
-                     do (let ((option
-                               (chain document (create-element "option")))
-                              (text
-                               (concatenate 'string (chain course subject) " "
-                                            (chain course type) " "
-                                            (chain course teacher name))))
-                          (setf (chain option value) (chain course course-id))
-                          (setf (chain option inner-text) text)
-                          (chain course-select (append-child option)))))))
-          (chain (one "#add-student-course")
-           (add-event-listener "click"
-            (lambda (event)
-              (chain event (prevent-default))
-              (show-modal ($ "#modal-student-courses")))))
-          (chain (one "#form-student-courses")
-           (add-event-listener "submit"
-            (lambda (event)
-              (chain event (prevent-default))
-              (let* ((form-element (one "#form-student-courses"))
-                     (form-data (new (-form-data form-element))))
-                (chain form-data
-                 (append "_csrf_token" (read-cookie "_csrf_token")))
-                (chain
-                 (fetch "/api/student-courses"
-                  (create method "POST" body form-data))
-                 (then check-status)
-                 (then
-                  (lambda (data)
-                    (hide-modal (one "#modal-student-courses"))
-                    (render)))
-                 (catch handle-fetch-error))))))) 
+ (cache-then-network "/api/courses"
+  (lambda (data)
+    (let ((course-select (one "#student-course")))
+      (clear-children course-select)
+      (loop for course in data
+            do (let ((option (chain document (create-element "option")))
+                     (text
+                      (concatenate 'string (chain course subject) " "
+                                   (chain course type) " "
+                                   (chain course teacher name))))
+                 (setf (chain option value) (chain course course-id))
+                 (setf (chain option inner-text) text)
+                 (chain course-select (append-child option)))))))
+ (chain (one "#add-student-course")
+  (add-event-listener "click"
+   (lambda (event)
+     (chain event (prevent-default))
+     (show-modal ($ "#modal-student-courses")))))
+ (chain (one "#form-student-courses")
+  (add-event-listener "submit"
+   (lambda (event)
+     (chain event (prevent-default))
+     (let* ((form-element (one "#form-student-courses"))
+            (form-data (new (-form-data form-element))))
+       (chain form-data (append "_csrf_token" (read-cookie "_csrf_token")))
+       (chain
+        (fetch "/api/student-courses" (create method "POST" body form-data))
+        (then check-status)
+        (then
+         (lambda (data) (hide-modal (one "#modal-student-courses")) (render)))
+        (catch handle-fetch-error))))))) 
 (chain ($ "body")
  (on "click" ".button-student-course-delete"
   (lambda (e)

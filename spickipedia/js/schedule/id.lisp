@@ -10,61 +10,57 @@
 (i "../template.lisp" "getTemplate") 
 (i "../read-cookie.lisp" "readCookie") 
 (defroute "/schedule/:grade" (show-tab "#schedule")
-          (chain (fetch (concatenate 'string "/api/schedule/" grade))
-           (then check-status) (then json)
-           (then
-            (lambda (data)
-              (loop for element in (chain data data)
-                    do (chain console (log element)) (let* ((cell1
-                                                             (getprop
-                                                              (one
-                                                               "#schedule-table")
-                                                              'children
-                                                              (chain element
-                                                               weekday)))
-                                                            (cell2
-                                                             (chain cell1
-                                                              (query-selector
-                                                               "tbody")))
-                                                            (cell
-                                                             (getprop cell2
-                                                              'children
-                                                              (-
-                                                               (chain element
-                                                                hour)
-                                                               1)
-                                                              'children 1))
-                                                            (template
-                                                             (get-template
-                                                              "schedule-data-cell-template")))
-                                                       (setf (chain template
-                                                              (query-selector
-                                                               ".data")
-                                                              inner-text)
-                                                               (concatenate
-                                                                'string
-                                                                (chain element
-                                                                 course
-                                                                 subject)
-                                                                " "
-                                                                (chain element
-                                                                 course type)
-                                                                " "
-                                                                (chain element
-                                                                 course teacher
-                                                                 name)
-                                                                " "
-                                                                (chain element
-                                                                 room)))
-                                                       (chain template
-                                                        (query-selector
-                                                         ".button-delete-schedule-data")
-                                                        (set-attribute
-                                                         "data-id"
-                                                         (chain element id)))
-                                                       (chain cell
-                                                        (prepend template))))))
-           (catch handle-fetch-error))) 
+ (chain (fetch (concatenate 'string "/api/schedule/" grade))
+  (then check-status) (then json)
+  (then
+   (lambda (data)
+     (loop for element in (chain data data)
+           do (chain console (log element)) (let* ((cell1
+                                                    (getprop
+                                                     (one "#schedule-table")
+                                                     'children
+                                                     (chain element weekday)))
+                                                   (cell2
+                                                    (chain cell1
+                                                     (query-selector "tbody")))
+                                                   (cell
+                                                    (getprop cell2 'children
+                                                     (- (chain element hour) 1)
+                                                     'children 1))
+                                                   (template
+                                                    (get-template
+                                                     "schedule-data-cell-template")))
+                                              (setf (chain template
+                                                     (query-selector ".data")
+                                                     inner-text)
+                                                      (concatenate 'string
+                                                                   (chain
+                                                                    element
+                                                                    course
+                                                                    subject)
+                                                                   " "
+                                                                   (chain
+                                                                    element
+                                                                    course
+                                                                    type)
+                                                                   " "
+                                                                   (chain
+                                                                    element
+                                                                    course
+                                                                    teacher
+                                                                    name)
+                                                                   " "
+                                                                   (chain
+                                                                    element
+                                                                    room)))
+                                              (chain template
+                                               (query-selector
+                                                ".button-delete-schedule-data")
+                                               (set-attribute "data-id"
+                                                (chain element id)))
+                                              (chain cell
+                                               (prepend template))))))
+  (catch handle-fetch-error))) 
 (chain (one "#schedule-data-form")
  (add-event-listener "submit"
   (lambda (event)

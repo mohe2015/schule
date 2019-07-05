@@ -13,10 +13,10 @@
        "btn btn-primary norefresh" "+"))
      (:ul :id "student-courses-list"))
     ,(modal "student-courses" "Kurs hinzufügen"
-            `((:button :type "button" :class "btn btn-secondary" :data-dismiss
-               "modal" "Abbrechen")
-              (:button :type "submit" :class "btn btn-primary" :id
-               "student-courses-add" "Hinzufügen"))
-            `((:div :class "form-group" (:label :for "course" "Kurs:") " "
-               (:select :class "custom-select" :id "student-course" :name
-                "student-course")))))) 
+      `((:button :type "button" :class "btn btn-secondary" :data-dismiss
+         "modal" "Abbrechen")
+        (:button :type "submit" :class "btn btn-primary" :id
+         "student-courses-add" "Hinzufügen"))
+      `((:div :class "form-group" (:label :for "course" "Kurs:") " "
+         (:select :class "custom-select" :id "student-course" :name
+          "student-course")))))) 

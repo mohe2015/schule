@@ -12,15 +12,15 @@
       (if (not
            (null
             (var results
-             (chain
-              (new
-               (-reg-exp
-                ,(concatenate 'string "^"
-                              (regex-replace-all "\\.[^/]*"
-                               (regex-replace-all ":[^/]*" route "([^/]*)")
-                               "(.*)")
-                              "$")))
-              (exec path)))))
+                 (chain
+                  (new
+                   (-reg-exp
+                    ,(concatenate 'string "^"
+                                  (regex-replace-all "\\.[^/]*"
+                                   (regex-replace-all ":[^/]*" route "([^/]*)")
+                                   "(.*)")
+                                  "$")))
+                  (exec path)))))
           (progn
            ,@(loop for variable in (all-matches-as-strings "[:.][^/]*" route)
                    for i from 1

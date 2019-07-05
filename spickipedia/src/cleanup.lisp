@@ -1,5 +1,7 @@
 
 (quicklisp-client:quickload "str")
+(quicklisp-client:quickload "cl-fad")
+(use-package :cl-fad)
 (defun mapc-directory-tree (fn directory &key (depth-first-p t))
   (dolist (entry (list-directory directory))
     (unless depth-first-p (funcall fn entry))

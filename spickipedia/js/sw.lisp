@@ -2,22 +2,22 @@
 (var static-cache-name "static-cache-v1") 
 (var dynamic-cache-name "dynamic-cache-v1") 
 (var urls-to-cache
- ([] "/" "/bootstrap.min.css" "/all.css" "/index.css" "/jquery-3.3.1.js"
-  "/mathlive.core.css" "/mathlive.css" "/mathlive.js" "/popper.js"
-  "/bootstrap.min.js" "/visual-diff.js" "/webfonts/fa-solid-900.woff2"
-  "/js/index.lisp" "/js/test.lisp" "/js/replace-state.lisp"
-  "/js/update-state.lisp" "/js/push-state.lisp" "/js/editor-lib.lisp"
-  "/js/register-sw.lisp" "/js/wiki.lisp" "/js/search.lisp" "/js/quiz.lisp"
-  "/js/logout.lisp" "/js/login.lisp" "/js/root.lisp" "/js/history.lisp"
-  "/js/edit.lisp" "/js/create.lisp" "/js/articles.lisp" "/js/show-tab.lisp"
-  "/js/categories.lisp" "/js/file-upload.lisp" "/js/cleanup.lisp"
-  "/js/handle-error.lisp" "/js/math.lisp" "/js/image-viewer.lisp"
-  "/js/read-cookie.lisp" "/js/get-url-parameter.lisp" "/js/editor.lisp"
-  "/js/hide-editor.lisp" "/js/teachers.lisp" "/js/fetch.lisp"
-  "/js/template.lisp" "/js/courses/new.lisp" "/js/courses/index.lisp"
-  "/js/student-courses/index.lisp" "/js/schedule/id.lisp"
-  "/js/schedules/new.lisp" "/js/schedules/index.lisp" "/js/settings/index.lisp"
-  "/js/utils.lisp" "/favicon.ico")) 
+     ([] "/" "/bootstrap.min.css" "/all.css" "/index.css" "/jquery-3.3.1.js"
+      "/mathlive.core.css" "/mathlive.css" "/mathlive.js" "/popper.js"
+      "/bootstrap.min.js" "/visual-diff.js" "/webfonts/fa-solid-900.woff2"
+      "/js/index.lisp" "/js/test.lisp" "/js/replace-state.lisp"
+      "/js/update-state.lisp" "/js/push-state.lisp" "/js/editor-lib.lisp"
+      "/js/register-sw.lisp" "/js/wiki.lisp" "/js/search.lisp" "/js/quiz.lisp"
+      "/js/logout.lisp" "/js/login.lisp" "/js/root.lisp" "/js/history.lisp"
+      "/js/edit.lisp" "/js/create.lisp" "/js/articles.lisp" "/js/show-tab.lisp"
+      "/js/categories.lisp" "/js/file-upload.lisp" "/js/cleanup.lisp"
+      "/js/handle-error.lisp" "/js/math.lisp" "/js/image-viewer.lisp"
+      "/js/read-cookie.lisp" "/js/get-url-parameter.lisp" "/js/editor.lisp"
+      "/js/hide-editor.lisp" "/js/teachers.lisp" "/js/fetch.lisp"
+      "/js/template.lisp" "/js/courses/new.lisp" "/js/courses/index.lisp"
+      "/js/student-courses/index.lisp" "/js/schedule/id.lisp"
+      "/js/schedules/new.lisp" "/js/schedules/index.lisp"
+      "/js/settings/index.lisp" "/js/utils.lisp" "/favicon.ico")) 
 (chain self
  (add-event-listener "install"
   (lambda (event)
