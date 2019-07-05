@@ -1,47 +1,35 @@
-(ql:quickload :plump)
-(ql:quickload :cl-markup)
-(ql:quickload :alexandria)
-(use-package :plump)
-(use-package :cl-markup)
 
+(quicklisp-client:quickload :plump) 
+(quicklisp-client:quickload :cl-markup) 
+(quicklisp-client:quickload :alexandria) 
+(use-package :plump) 
+(use-package :cl-markup) 
 (defun string->name (string)
   (if (loop for char across string
-         always (or (not (both-case-p char))
-                    (lower-case-p char)))
+            always (or (not (both-case-p char)) (lower-case-p char)))
       (intern (string-upcase string) "KEYWORD")
-      string))
-
-(defgeneric to-sexp (node)
+      string)) 
+(defgeneric to-sexp
+    (node)
   (:documentation "Serialize the given node into a SEXP form.")
-  (:method ((node comment))
-    (list :!COMMENT (text node)))
-  (:method ((node doctype))
-    (list :!DOCTYPE (doctype node)))
+  (:method ((node comment)) (list :!comment (text node)))
+  (:method ((node doctype)) (list :!doctype (doctype node)))
   (:method ((node root))
-    (cons :!ROOT
-          (loop for child across (children node)
-             collect (to-sexp child))))
-  (:method ((node text-node))
-    (text node))
+   (cons :!root
+         (loop for child across (children node)
+               collect (to-sexp child))))
+  (:method ((node text-node)) (text node))
   (:method ((node element))
-    (append
-     (list (string->name (tag-name node)))
-     (loop for key being the hash-keys of (attributes node)
-        for val being the hash-values of (attributes node)
-        nconc (list (string->name key) val))
-     (loop for child across (children node)
-      collect (to-sexp child)))))
-
-
-(defparameter *FILE* (alexandria:read-file-into-string "templates/index.html"))
-(defparameter *DOM* (parse *FILE*))
-(defparameter *SEXP* (to-sexp *DOM*))
-(defparameter *SEXP* (nth 2 *SEXP*))
-
+   (append (list (string->name (tag-name node)))
+           (loop for key being the hash-keys of (attributes node)
+                 for val being the hash-values of (attributes node)
+                 nconc (list (string->name key) val))
+           (loop for child across (children node)
+                 collect (to-sexp child))))) 
+(defparameter *file* (read-file-into-string "templates/index.html")) 
+(defparameter *dom* (parse *file*)) 
+(defparameter *sexp* (to-sexp *dom*)) 
+(defparameter *sexp* (nth 2 *sexp*)) 
 (let ((*markup-language* :html5))
-  (markup* *SEXP*))
-
-(html5
-  (:html
-   (:head
-    (:title "hi"))))
+  (markup* *sexp*)) 
+(html5 (:html (:head (:title "hi")))) 

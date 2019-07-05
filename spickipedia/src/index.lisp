@@ -1,495 +1,470 @@
-(in-package :spickipedia.web)
 
+(in-package :spickipedia.web) 
 (defun get-html ()
-  `(:HTML :LANG "en"
-     (:HEAD (:META :CHARSET "utf-8")
-      (:META :NAME "viewport" :CONTENT
-       "width=device-width, initial-scale=1, shrink-to-fit=no")
-      (:LINK :REL "stylesheet" :HREF "/bootstrap.min.css")
-      (:LINK :REL "stylesheet" :HREF "/all.css")
-      (:LINK :REL "stylesheet" :HREF "/index.css")
-
-      (:TITLE "Spickipedia"))
-     (:BODY
-
-      (:TEMPLATE :ID "multiple-choice-answer-html"
-       (:DIV :CLASS "custom-control custom-checkbox" " "
-        (:INPUT :TYPE "checkbox" :CLASS "custom-control-input" :ID "customCheck1")
-        (:LABEL :CLASS "custom-control-label" :FOR "customCheck1"
-         "Check this custom")))
-
-      (:template :id "teachers-list-html"
-        (:li :class "teachers-list-name"))
-
-      (:template :id "courses-list-html"
-        (:li :class "courses-list-subject"))
-
-      (:template :id "schedules-list-html"
-        (:li (:a :class "schedules-list-grade norefresh")))
-
-      (:TEMPLATE :ID "multiple-choice-question"
-       (:DIV :CLASS "multiple-choice-question"
-        (:FORM
-         (:DIV :CLASS "form-group"
-          (:INPUT :TYPE "text" :CLASS "form-control question" :PLACEHOLDER
-           "Frage eingeben"))
-         (:DIV :CLASS "responses")
-         (:BUTTON :TYPE "button" :CLASS
-          "btn btn-primary mb-1 add-response-possibility"
-          "Antwortmöglichkeit hinzufügen"))
-        (:HR)))
-
-      (:TEMPLATE :ID "text-question"
-       (:DIV :CLASS "text-question"
-        (:FORM
-         (:DIV :CLASS "form-group"
-          (:INPUT :TYPE "text" :CLASS "form-control question" :PLACEHOLDER
-           "Frage eingeben"))
-         (:DIV :CLASS "form-group"
-          (:INPUT :TYPE "text" :CLASS "form-control answer" :PLACEHOLDER
-           "Antwort eingeben")))
-        (:HR)))
-
-      (:TEMPLATE :ID "multiple-choice-response-possibility"
-       (:DIV :CLASS "input-group mb-3"
-        (:DIV :CLASS "input-group-prepend"
-         (:DIV :CLASS "input-group-text"
-          (:INPUT :CLASS "multiple-choice-response-correct" :TYPE "checkbox"
-           :ARIA-LABEL "Checkbox for following text input")))
-        (:INPUT :TYPE "text" :CLASS "form-control multiple-choice-response-text"
-         :ARIA-LABEL "Text input with checkbox")))
-
-      (:TEMPLATE :ID "search-result-template"
-       (:A :CLASS "list-group-item list-group-item-action"
-        (:DIV
-         (:DIV (:H5 :CLASS "mt-0 s-title" "Media heading")
-          (:DIV :CLASS "search-result-summary word-wrap")))))
-
-      (:TEMPLATE :ID "history-item-template" " "
-       (:DIV :CLASS "list-group-item list-group-item-action"
-        (:DIV :CLASS "d-flex w-100 justify-content-between"
-         (:H5 :CLASS "mb-1 history-username" "Moritz Hedtke")
-         (:SMALL :CLASS "history-date" "vor 3 Tagen"))
-        (:P :CLASS "mb-1 history-summary" "Ein paar wichtige Infos hinzugefügt")
-        (:SMALL (:SPAN :CLASS "history-characters" "50.322") " Zeichen"
-         (:SPAN :CLASS "text-success d-none" "+ 50 Zeichen"))
-        (:DIV :CLASS "btn-group w-100" :ROLE "group" :ARIA-LABEL "Basic example"
-         (:A :TYPE "button" :CLASS "btn btn-outline-dark history-show"
-          (:I :CLASS "fas fa-eye"))
-         (:A :TYPE "button" :CLASS "btn btn-outline-dark history-diff"
-          (:I :CLASS "fas fa-columns")))))
-
-      (:TEMPLATE :ID "articles-entry" (:LI (:A :CLASS "" :HREF "#" "Hauptseite")))
-
-      (:NAV :CLASS "navbar navbar-expand-md navbar-light bg-light"
-       (:A :CLASS "navbar-brand " :HREF "/wiki/Hauptseite" "Spickipedia ")
-       (:DIV :CLASS "login-hide"
-        (:A :CLASS "btn d-inline d-md-none edit-button" (:I :CLASS "fas fa-pen"))
-        (:A :CLASS "btn d-inline d-md-none search-button " :HREF "/search"
-         (:I :CLASS "fas fa-search"))
-        (:BUTTON :CLASS "navbar-toggler" :TYPE "button" :DATA-TOGGLE "collapse"
-         :DATA-TARGET "#navbarSupportedContent" :ARIA-CONTROLS
-         "navbarSupportedContent" :ARIA-EXPANDED "false" :ARIA-LABEL
-         "Toggle navigation" (:SPAN :CLASS "navbar-toggler-icon")))
-       (:DIV :CLASS "collapse navbar-collapse" :ID "navbarSupportedContent"
-        (:UL :CLASS "navbar-nav mr-auto"
-         (:LI :CLASS "nav-item d-none d-md-block"
-          (:A :CLASS "nav-link search-button " :HREF "/search" "Suchen"))
-         (:LI :CLASS "nav-item d-none d-md-block"
-          (:A :CLASS "nav-link edit-button" :HREF "#" "Bearbeiten"))
-         (:LI :CLASS "nav-item"
-          (:A :CLASS "nav-link" :HREF "/settings" "Einstellungen"))
-         (:LI :CLASS "nav-item"
-          (:A :CLASS "nav-link" :HREF "/logout" :ID "logout" "Abmelden")))))
-
-      (:DIV
-       (:DIV :STYLE "display: none;" :CLASS "container my-tab position-absolution"
-        :ID "edit-quiz" (:H1 :CLASS "text-center" "Quiz ändern")
-        (:DIV :ID "questions")
-        (:BUTTON :TYPE "button" :CLASS
-         "btn btn-primary mb-1 create-multiple-choice-question"
-         "Multiple-Choice-Frage hinzufügen")
-        (:BUTTON :TYPE "button" :CLASS "btn btn-primary mb-1 create-text-question"
-         "Frage mit Textantwort hinzufügen")
-        (:BUTTON :TYPE "button" :CLASS "btn btn-primary mb-1 save-quiz"
-         "Speichern")))
-
-      ,(tab "create-course-tab"
-        `(:FORM :method "POST" :action "/api/courses" :id "create-course-form"
-           ,(text-input "Fach" "course-subject" "subject")
-           (:DIV :CLASS "form-group"
-             (:label "Typ")
-             (:select :CLASS "custom-select" :name "type" :id "course-type"
-               (:option :selected "true" "GK")
-               (:option "LK")))
-           ,(teacher-select "teachers-select")
-           ,(checkbox-input "Tutorium?" "is-tutorial" "is-tutorial")
-           ,(text-input "Klasse" "course-class" "class")
-           ,(text-input "Thema" "course-topic" "topic")
-           `(submit-button "Kurs erstellen")))
-
-      (:div :style "display: none;" :class "container-fluid my-tab position-absolute" :id "create-teacher-tab"
-        (:FORM :method "POST" :action "/api/teachers" :id "create-teacher-form"
-         (:DIV :CLASS "form-group"
-          (:label "Name")
-          (:INPUT :TYPE "text" :CLASS "form-control" :PLACEHOLDER "Name" :name "name" :id "teacher-name"))
-         (:DIV :CLASS "form-group"
-          (:label "Initialien")
-          (:INPUT :TYPE "text" :CLASS "form-control" :PLACEHOLDER "Initialien" :name "initial" :id "teacher-initial"))
-         (:BUTTON :TYPE "submit" :CLASS
-          "btn btn-primary"
-          "LehrerIn erstellen")))
-
-      (:DIV :STYLE "display: none;" :CLASS "container my-tab position-absolute" :ID "articles"
-        (:H1 :CLASS "text-center" "Alle Artikel")
-        (:UL :ID "articles-list"))
-
-      (:div :style "display: none;" :class "container my-tab position-absolute" :id "tags"
-        (:h1 :class "text-center" "Tags")
-        (:ul :id "tags-list"))
-
-      (:div :style "display: none;" :class "container-fluid my-tab position-absolute" :id "create-schedule-tab"
-        (:FORM :method "POST" :action "/api/schedules" :id "create-schedule-form"
-         (:DIV :CLASS "form-group"
-          (:label "Jahrgang")
-          (:INPUT :TYPE "text" :CLASS "form-control" :PLACEHOLDER "Jahrgang" :name "grade" :id "schedule-grade"))
-         (:BUTTON :TYPE "submit" :CLASS
-          "btn btn-primary"
-          "Stundenplan erstellen")))
-
-
-
-      ,@(html-settings)
-
-      (:DIV :STYLE "display: none;" :CLASS "container my-tab position-absolute" :ID
-       "multiple-choice-question-html"
-       (:H2 :CLASS "text-center question-html" "Dies ist eine Testfrage?")
-       (:DIV :CLASS "row justify-content-center"
-        (:DIV :CLASS "col col-sm-10 col-md-6" (:DIV :ID "answers-html")
-         (:BUTTON :TYPE "button" :CLASS
-          "btn btn-primary mt-1 multiple-choice-submit-html" "Absenden")
-         (:BUTTON :TYPE "button" :STYLE "display: none;" :CLASS
-          "btn btn-primary mt-1 next-question" "Nächste Frage"))))
-
-      (:DIV :STYLE "display: none;" :CLASS "container my-tab position-absolute" :ID
-       "quiz-results" (:H1 :CLASS "text-center" "Ergebnisse") (:P :ID "result"))
-
-      (:DIV :STYLE "display: none;" :class "container my-tab position-absolute" :ID "list-teachers"
-        (:h2 :class "text-center" "Lehrer" (:a :href "/teachers/new" :type "button" :class "btn btn-primary norefresh" "+"))
-        (:ul :id "teachers-list"))
-
-      (:div :style "display: none;" :class "container my-tab position-absolute" :id "list-courses"
-       (:h2 :class "text-center" "Kurse" (:a :href "/courses/new" :type "button" :class "btn btn-primary norefresh" "+"))
-       (:ul :id "courses-list"))
-
-      ,@(html-user-courses)
-
-      ,@(html-schedule)
-
-      (:div :style "display: none;" :class "container my-tab position-absolute" :id "list-schedules"
-       (:h2 :class "text-center" "Stundenpläne" (:a :href "/schedules/new" :type "button" :class "btn btn-primary norefresh" "+"))
-       (:ul :id "schedules-list"))
-
-      (:DIV :STYLE "display: none;" :CLASS "container my-tab position-absolute" :ID
-       "text-question-html"
-       (:H2 :CLASS "text-center question-html" "Dies ist eine Testfrage?")
-       (:DIV :CLASS "row justify-content-center"
-        (:DIV :CLASS "col col-sm-10 col-md-6"
-         (:DIV :ID "answers-html" " "
-          (:INPUT :TYPE "text" :CLASS "form-control" :ID "text-response"))
-         (:BUTTON :TYPE "button" :CLASS "btn btn-primary mt-1 text-submit-html"
-          "Absenden")
-         (:BUTTON :TYPE "button" :STYLE "display: none;" :CLASS
-          "btn btn-primary mt-1 next-question" "Nächste Frage"))))
-
-      (:DIV :STYLE "display: none;" :CLASS
-       "container my-tab position-absolute col-sm-6 offset-sm-3 col-md-4 offset-md-4 text-center"
-       :ID "login" (:H1 "Anmelden")
-       (:FORM :ID "login-form"
-        (:DIV :CLASS "form-group"
-         (:INPUT :TYPE "text" :ID "inputName" :CLASS "form-control" :PLACEHOLDER
-          "Name" :REQUIRED "" :AUTOFOCUS "" :autocomplete "username"))
-        (:DIV :CLASS "form-group"
-         (:INPUT :TYPE "password" :ID "inputPassword" :CLASS "form-control"
-          :PLACEHOLDER "Passwort" :REQUIRED "" :autocomplete "current-password"))
-        (:BUTTON :CLASS "btn btn-primary" :TYPE "submit" :ID "login-button"
-         "Anmelden")))
-
-      (:DIV :STYLE "display: none;" :CLASS
-       "container-fluid my-tab position-absolute word-wrap" :ID "page"
-       (:DIV :CLASS "alert alert-warning mt-1 d-none" :ID "is-outdated-article"
-        :ROLE "alert"
-        " Dies zeigt den Artikel zu einem bestimmten Zeitpunkt und ist somit nicht unbedingt aktuell! "
-        (:A :HREF "#" :ID "currentVersionLink" :CLASS "alert-link "
-         "Zur aktuellen Version"))
-       (:H1 :CLASS "text-center" :ID "wiki-article-title" "title")
-       (:DIV :CLASS "article-editor"
-        (:DIV :ID "editor" :CLASS "d-none"
-         (:A :HREF "#" :ID "format-p" (:SPAN :CLASS "fas fa-paragraph")) " "
-         (:A :HREF "#" :ID "format-h2" (:SPAN :CLASS "fas fa-heading")) " "
-         (:A :HREF "#" :ID "format-h3" (:SPAN :CLASS "fas fa-heading")) " "
-         (:A :HREF "#" :ID "superscript" (:SPAN :CLASS "fas fa-superscript")) " "
-         (:A :HREF "#" :ID "subscript" (:SPAN :CLASS "fas fa-subscript")) " "
-         (:A :HREF "#" :ID "insertUnorderedList" (:SPAN :CLASS "fas fa-list-ul")) " "
-         (:A :HREF "#" :ID "insertOrderedList" (:SPAN :CLASS "fas fa-list-ol")) " "
-         (:A :HREF "#" :ID "indent" (:SPAN :CLASS "fas fa-indent")) " "
-         (:A :HREF "#" :ID "outdent" (:SPAN :CLASS "fas fa-outdent")) " "
-         (:A :HREF "#" :ID "createLink" (:SPAN :CLASS "fas fa-link")) " "
-         (:A :HREF "#" :ID "insertImage" (:SPAN :CLASS "fas fa-image")) " "
-         (:A :HREF "#" :ID "table" (:SPAN :CLASS "fas fa-table")) " "
-         (:A :HREF "#" :ID "insertFormula" (:SPAN :CLASS "fas fa-calculator")) " "
-         (:A :HREF "#" :ID "undo" (:SPAN :CLASS "fas fa-undo")) " "
-         (:A :HREF "#" :ID "redo" (:SPAN :CLASS "fas fa-redo")) " "
-         (:A :HREF "#" :ID "settings" (:SPAN :CLASS "fas fa-cog")) " "
-         (:A :HREF "#" :ID "finish" (:SPAN :CLASS "fas fa-check")))
-        (:ARTICLE))
-       (:DIV :ID "categories")
-       (:DIV
-        (:BUTTON :ID "show-history" :TYPE "button" :CLASS "btn btn-outline-primary"
-         "Änderungsverlauf"))
-       (:SMALL "Dieses Werk ist lizenziert unter einer "
-        (:A :TARGET "_blank" :REL "license noopener" :HREF
-         "http://creativecommons.org/licenses/by-sa/4.0/deed.de"
-         "Creative Commons Namensnennung - Weitergabe unter gleichen Bedingungen 4.0 International Lizenz")
-        "."))
-
-      (:DIV :STYLE "display: none;" :CLASS
-       "container-fluid my-tab position-absolute" :ID "not-found"
-       (:DIV :CLASS "alert alert-danger" :ROLE "alert"
-        " Der Artikel konnte nicht gefunden werden. Möchtest du ihn "
-        (:A :ID "create-article" :HREF "#" :CLASS "alert-link" "erstellen") "?"))
-
-      (:DIV :STYLE "display: none;" :CLASS
-       "container-fluid my-tab position-absolute" :ID "history"
-       (:H1 :CLASS "text-center" "Änderungsverlauf")
-       (:DIV :CLASS "list-group" :ID "history-list"))
-
-      (:DIV :STYLE "display: none;" :CLASS
-       "container-fluid my-tab position-absolute" :ID "search" " " (:BR)
-       (:DIV :CLASS "input-group mb-3"
-        (:INPUT :TYPE "text" :CLASS "form-control" :ID "search-query" :PLACEHOLDER
-         "Suchbegriff")
-        (:DIV :CLASS "input-group-append"
-         (:BUTTON :CLASS "btn btn-outline-secondary" :TYPE "button" :ID
-          "button-search" (:I :CLASS "fas fa-search"))))
-       (:DIV
-        (:DIV :STYLE "display: none; left: 50%; margin-left: -1rem;" :CLASS
-         "position-absolute" :ID "search-results-loading"
-         (:DIV :CLASS "spinner-border" :ROLE "status"
-          (:SPAN :CLASS "sr-only" "Loading...")))
-        (:DIV :STYLE "display: none;" :ID "search-results"
-         (:DIV :STYLE "display: none;" :CLASS "text-center" :ID "no-search-results"
-          (:DIV :CLASS "alert alert-warning" :ROLE "alert"
-           " Es konnte kein Artikel mit genau diesem Titel gefunden werden. Möchtest du ihn "
-           (:A :ID "search-create-article" :HREF "#" :CLASS "alert-link "
-            "erstellen")
-           "?"))
-         (:DIV :CLASS "list-group" :ID "search-results-content"))))
-
-      (:DIV :CLASS "my-tab position-absolute" :STYLE
-       "top: 50%; left: 50%; margin-left: -1rem; margin-top: -1rem;" :ID "loading"
-       (:DIV :CLASS "spinner-border" :ROLE "status"
-        (:SPAN :CLASS "sr-only" "Loading...")))
-
-      (:DIV :STYLE "display: none;" :CLASS
-       "container-fluid my-tab position-absolute" :ID "error"
-       (:DIV :CLASS "alert alert-danger" :ROLE "alert"
-        (:SPAN :ID "errorMessage") " "
-        (:A :HREF "#" :ID "refresh" :CLASS "alert-link" "Erneut versuchen")))
-
-      (:DIV :CLASS "modal fade" :ID "publish-changes-modal" :TABINDEX "-1" :ROLE
-       "dialog" :ARIA-HIDDEN "true"
-       (:DIV :CLASS "modal-dialog" :ROLE "document"
-        (:DIV :CLASS "modal-content"
-         (:DIV :CLASS "modal-header"
-          (:H5 :CLASS "modal-title" "Änderungen veröffentlichen")
-          (:BUTTON :TYPE "button" :CLASS "close" :DATA-DISMISS "modal" :ARIA-LABEL
-           "Close" " " (:SPAN :ARIA-HIDDEN "true" "×")))
-         (:DIV :CLASS "modal-body"
-          (:FORM
-           (:DIV :CLASS "form-group" " " (:LABEL "Änderungszusammenfassung:") (:BR)
-            (:TEXTAREA :CLASS "form-control" :ID "change-summary" :ROWS "3")))
-          (:P
-           "Mit dem Veröffentlichen dieses Artikels garantierst du, dass er nicht die Rechte anderer verletzt und bist damit einverstanden, ihn unter der "
-           (:A :TARGET "_blank" :REL "noopener" :HREF
-            "https://creativecommons.org/licenses/by-sa/4.0/deed.de"
-            "Creative Commons Namensnennung - Weitergabe unter gleichen Bedingungen 4.0 International Lizenz")
-           " zu veröffentlichen."))
-         (:DIV :CLASS "modal-footer"
-          (:BUTTON :TYPE "button" :CLASS "btn btn-secondary" :DATA-DISMISS "modal"
-           "Bearbeitung fortsetzen")
-          (:BUTTON :TYPE "button" :CLASS "btn btn-primary" :ID "publish-changes"
-           "Änderungen veröffentlichen")
-          (:BUTTON :ID "publishing-changes" :CLASS "btn btn-primary" :STYLE
-           "display: none;" :TYPE "button" :DISABLED "" " "
-           (:SPAN :CLASS "spinner-border spinner-border-sm" :ROLE "status"
-            :ARIA-HIDDEN "true")
-           " Veröffentlichen... ")))))
-
-      (:DIV :CLASS "modal fade" :ID "uploadProgressModal" :TABINDEX "-1" :ROLE
-       "dialog" :ARIA-LABELLEDBY "exampleModalCenterTitle" :ARIA-HIDDEN "true"
-       (:DIV :CLASS "modal-dialog modal-dialog-centered" :ROLE "document"
-        (:DIV :CLASS "modal-content"
-         (:DIV :CLASS "modal-body"
-          (:DIV :CLASS "progress"
-           (:DIV :ID "uploadProgress" :CLASS
-            "progress-bar progress-bar-striped progress-bar-animated" :ROLE
-            "progressbar" :ARIA-VALUENOW "75" :ARIA-VALUEMIN "0" :ARIA-VALUEMAX
-            "100" :STYLE "width: 0%"))))))
-
-      (:DIV :CLASS "modal fade" :ID "spickiLinkModal" :TABINDEX "-1" :ROLE "dialog"
-       :ARIA-HIDDEN "true"
-       (:DIV :CLASS "modal-dialog" :ROLE "document"
-        (:DIV :CLASS "modal-content"
-         (:DIV :CLASS "modal-header"
-          (:H5 :CLASS "modal-title" "Spickipedia-Link einfügen")
-          (:BUTTON :TYPE "button" :CLASS "close" :DATA-DISMISS "modal" :ARIA-LABEL
-           "Close" (:SPAN :ARIA-HIDDEN "true" "×")))
-         (:DIV :CLASS "modal-body"
-          (:FORM
-           (:DIV :CLASS "form-group" (:LABEL "Anzeigetext") (:BR)
-            (:INPUT :CLASS "form-control" :TYPE "text" :ID "article-link-text")
-            "<input>")
-           (:DIV :CLASS "form-group" (:LABEL "Spickipedia-Artikel") (:BR)
-            (:INPUT :CLASS "form-control" :TYPE "text" :ID "article-link-title")
-            "<input>")))
-         (:DIV :CLASS "modal-footer"
-          (:BUTTON :TYPE "button" :CLASS "btn btn-primary" :ID "publish-changes"
-           "Änderungen veröffentlichen")))))
-
-      (:DIV :CLASS "modal fade" :ID "settings-modal" :TABINDEX "-1" :ROLE "dialog"
-       :ARIA-LABELLEDBY "exampleModalLabel" :ARIA-HIDDEN "true"
-       (:DIV :CLASS "modal-dialog" :ROLE "document"
-        (:DIV :CLASS "modal-content"
-         (:DIV :CLASS "modal-header"
-          (:H5 :CLASS "modal-title" :ID "exampleModalLabel" "Kategorien") " "
-          (:BUTTON :TYPE "button" :CLASS "close" :DATA-DISMISS "modal" :ARIA-LABEL
-           "Fertig" " " (:SPAN :ARIA-HIDDEN "true" "×")))
-         (:DIV :CLASS "modal-body"
-          (:FORM :CLASS "form-inline" :ID "add-tag-form"
-           (:INPUT :ID "new-category" :CLASS "form-control form-control-sm" :TYPE
-            "text" :PLACEHOLDER "Kategorie...")))
-         (:DIV :CLASS "modal-footer"
-          (:BUTTON :TYPE "button" :CLASS "btn btn-secondary" :DATA-DISMISS "modal"
-           "Fertig")))))
-
-      (:DIV :CLASS "modal fade" :ID "link-modal" :TABINDEX "-1" :ROLE "dialog"
-       :ARIA-LABELLEDBY "exampleModalLabel" :ARIA-HIDDEN "true"
-       (:DIV :CLASS "modal-dialog" :ROLE "document"
-        (:DIV :CLASS "modal-content"
-         (:FORM :ID "link-form"
-          (:DIV :CLASS "modal-header"
-           (:H5 :CLASS "modal-title" :ID "exampleModalLabel" "Link")
-           (:BUTTON :TYPE "button" :CLASS "close" :DATA-DISMISS "modal" :ARIA-LABEL
-            "Close" (:SPAN :ARIA-HIDDEN "true" "×")))
-          (:DIV :CLASS "modal-body"
-            (:DIV :CLASS "form-group" :style "position: relative; display: inline-block;"
-              (:INPUT :TYPE "text" :ID "link" :CLASS "form-control" :autocomplete "off")
-              (:div :class "dropdown-menu" :style "position: absolute; top: 100%; left: 0px; z-index: 100; width: 100%;")))
-          (:DIV :CLASS "modal-footer"
-           (:BUTTON :TYPE "button" :CLASS "btn btn-secondary" :DATA-DISMISS "modal"
-            "Abbrechen")
-           (:BUTTON :TYPE "submit" :CLASS "btn btn-primary" :ID "update-link"
-            "Ok"))))))
-
-      (:DIV :CLASS "modal fade" :ID "table-modal" :TABINDEX "-1" :ROLE "dialog"
-       :ARIA-LABELLEDBY "exampleModalLabel" :ARIA-HIDDEN "true"
-       (:DIV :CLASS "modal-dialog" :ROLE "document"
-        (:DIV :CLASS "modal-content"
-         (:DIV :CLASS "modal-header"
-          (:H5 :CLASS "modal-title" :ID "exampleModalLabel" "Tabelle")
-          (:BUTTON :TYPE "button" :CLASS "close" :DATA-DISMISS "modal" :ARIA-LABEL
-           "Close" (:SPAN :ARIA-HIDDEN "true" "×")))
-         (:DIV :CLASS "modal-body"
-          (:FORM
-           (:DIV :CLASS "form-group" (:LABEL :FOR "table-columns" "Spalten:")
-             (:INPUT :TYPE "number" :ID "table-columns" :CLASS "form-control"))
-           (:DIV :CLASS "form-group" (:LABEL :FOR "table-rows" "Zeilen:") " "
-            (:INPUT :TYPE "number" :ID "table-rows" :CLASS "form-control"))))
-         (:DIV :CLASS "modal-footer"
-          (:BUTTON :TYPE "button" :CLASS "btn btn-secondary" :DATA-DISMISS "modal"
-           "Abbrechen")
-          (:BUTTON :TYPE "button" :CLASS "btn btn-primary" :ID "update-table"
-           "Ok")))))
-
-      (:DIV :CLASS "modal fade" :ID "image-modal" :TABINDEX "-1" :ROLE "dialog"
-       :ARIA-LABELLEDBY "exampleModalLabel" :ARIA-HIDDEN "true"
-       (:DIV :CLASS "modal-dialog" :ROLE "document"
-        (:DIV :CLASS "modal-content"
-         (:DIV :CLASS "modal-header"
-          (:H5 :CLASS "modal-title" :ID "exampleModalLabel" "Bild")
-          (:BUTTON :TYPE "button" :CLASS "close" :DATA-DISMISS "modal" :ARIA-LABEL
-           "Close" (:SPAN :ARIA-HIDDEN "true" "×")))
-         (:DIV :CLASS "modal-body"
-          (:FORM
-           (:DIV :CLASS "form-group"
-            (:DIV :CLASS "form-group"
-             (:LABEL :FOR "image-file" "Bild auswählen:")
-             (:INPUT :TYPE "file" :ACCEPT "image/*" :CLASS "form-control-file" :ID
-              "image-file"))
-            (:DIV :CLASS "form-group" (:LABEL :FOR "image-url" "Bild-URL:")
-             (:INPUT :TYPE "url" :ID "image-url" :CLASS "form-control")))))
-         (:DIV :CLASS "modal-footer"
-          (:BUTTON :TYPE "button" :CLASS "btn btn-secondary" :DATA-DISMISS "modal"
-           "Abbrechen")
-          (:BUTTON :TYPE "button" :CLASS "btn btn-primary" :ID "update-image"
-           "Ok")))))
-
-      (:DIV :CLASS "modal fade" :ID "formula-modal" :TABINDEX "-1" :ROLE "dialog"
-       :ARIA-LABELLEDBY "exampleModalLabel" :ARIA-HIDDEN "true"
-       (:DIV :CLASS "modal-dialog" :ROLE "document"
-        (:DIV :CLASS "modal-content"
-         (:DIV :CLASS "modal-header"
-          (:H5 :CLASS "modal-title" :ID "exampleModalLabel" "Formel")
-          (:BUTTON :TYPE "button" :CLASS "close" :DATA-DISMISS "modal" :ARIA-LABEL
-           "Close" (:SPAN :ARIA-HIDDEN "true" "×")))
-         (:DIV :CLASS "modal-body"
-          (:FORM
-           (:DIV :CLASS "form-group"
-            (:DIV :CLASS "alert alert-warning" :ROLE "alert"
-             "Formeln editieren funktioniert nur in Google Chrome zuverlässig!")
-            (:SPAN :ID "formula" "e=mc^2"))))
-         (:DIV :CLASS "modal-footer"
-          (:BUTTON :TYPE "button" :CLASS "btn btn-secondary" :DATA-DISMISS "modal"
-           "Abbrechen")
-          (:BUTTON :TYPE "button" :CLASS "btn btn-primary" :ID "update-formula"
-           "Ok")))))
-
-      (:FORM :id "schedule-data-form"
-        (:DIV :CLASS "modal fade" :ID "schedule-data-modal" :TABINDEX "-1" :ROLE "dialog"
-         :ARIA-LABELLEDBY "schedule-data-modal-label" :ARIA-HIDDEN "true"
-         (:DIV :CLASS "modal-dialog" :ROLE "document"
-          (:DIV :CLASS "modal-content"
-           (:DIV :CLASS "modal-header"
-            (:H5 :CLASS "modal-title" :ID "schedule-data-modal-label" "Unterrichtsstunde")
-            (:BUTTON :TYPE "button" :CLASS "close" :DATA-DISMISS "modal" :ARIA-LABEL
-             "Close" (:SPAN :ARIA-HIDDEN "true" "×")))
-           (:DIV :CLASS "modal-body"
-             (:input :type "hidden" :id "schedule-data-weekday" :name "weekday" :value "monday")
-             (:input :type "hidden" :id "schedule-data-hour" :name "hour" :value "1")
-             (:DIV :CLASS "form-group" (:LABEL :FOR "week-modulo" "Regelmäßigkeit")
-               (:select :class "custom-select" :id "week-modulo" :name "week-modulo"
-                 (:option :selected "selected" :value "0" "Jede Woche")
-                 (:option :value "1" "Ungerade Woche")
-                 (:option :value "2" "Gerade Woche")))
-             (:DIV :CLASS "form-group" (:LABEL :FOR "course" "Kurs:") " "
-               (:select :class "custom-select" :id "course" :name "course"))
-             (:DIV :CLASS "form-group" (:LABEL :FOR "room" "Raum:") " "
-              (:INPUT :TYPE "text" :ID "room" :name "room" :CLASS "form-control")))
-           (:DIV :CLASS "modal-footer"
-            (:BUTTON :TYPE "button" :CLASS "btn btn-secondary" :DATA-DISMISS "modal"
-             "Abbrechen")
-            (:BUTTON :TYPE "submit" :CLASS "btn btn-primary" :ID "update-table"
-             "Ok"))))))
-
-      (:SCRIPT :SRC "/jquery-3.3.1.js")
-      ;; load later only when needed
-      (:LINK :REL "stylesheet" :HREF "/mathlive.core.css")
-      (:LINK :REL "stylesheet" :HREF "/mathlive.css")
-      (:SCRIPT :SRC "/mathlive.js")
-      (:SCRIPT :SRC "/popper.js")
-      (:SCRIPT :SRC "/bootstrap.min.js")
-      (:SCRIPT :SRC "/visual-diff.js")
-      (:SCRIPT :NOMODULE "" :SRC "no_module_support.js")
-
-      (:SCRIPT :TYPE "module" :SRC "/js/index.lisp"))))
+  `(:html :lang "en"
+    (:head (:meta :charset "utf-8")
+     (:meta :name "viewport" :content
+      "width=device-width, initial-scale=1, shrink-to-fit=no")
+     (:link :rel "stylesheet" :href "/bootstrap.min.css")
+     (:link :rel "stylesheet" :href "/all.css")
+     (:link :rel "stylesheet" :href "/index.css") (:title "Spickipedia"))
+    (:body
+     (:template :id "multiple-choice-answer-html"
+      (:div :class "custom-control custom-checkbox" " "
+       (:input :type "checkbox" :class "custom-control-input" :id
+        "customCheck1")
+       (:label :class "custom-control-label" :for "customCheck1"
+        "Check this custom")))
+     (:template :id "teachers-list-html" (:li :class "teachers-list-name"))
+     (:template :id "courses-list-html" (:li :class "courses-list-subject"))
+     (:template :id "schedules-list-html"
+      (:li (:a :class "schedules-list-grade norefresh")))
+     (:template :id "multiple-choice-question"
+      (:div :class "multiple-choice-question"
+       (:form
+        (:div :class "form-group"
+         (:input :type "text" :class "form-control question" :placeholder
+          "Frage eingeben"))
+        (:div :class "responses")
+        (:button :type "button" :class
+         "btn btn-primary mb-1 add-response-possibility"
+         "Antwortmöglichkeit hinzufügen"))
+       (:hr)))
+     (:template :id "text-question"
+      (:div :class "text-question"
+       (:form
+        (:div :class "form-group"
+         (:input :type "text" :class "form-control question" :placeholder
+          "Frage eingeben"))
+        (:div :class "form-group"
+         (:input :type "text" :class "form-control answer" :placeholder
+          "Antwort eingeben")))
+       (:hr)))
+     (:template :id "multiple-choice-response-possibility"
+      (:div :class "input-group mb-3"
+       (:div :class "input-group-prepend"
+        (:div :class "input-group-text"
+         (:input :class "multiple-choice-response-correct" :type "checkbox"
+          :aria-label "Checkbox for following text input")))
+       (:input :type "text" :class "form-control multiple-choice-response-text"
+        :aria-label "Text input with checkbox")))
+     (:template :id "search-result-template"
+      (:a :class "list-group-item list-group-item-action"
+       (:div
+        (:div (:h5 :class "mt-0 s-title" "Media heading")
+         (:div :class "search-result-summary word-wrap")))))
+     (:template :id "history-item-template" " "
+      (:div :class "list-group-item list-group-item-action"
+       (:div :class "d-flex w-100 justify-content-between"
+        (:h5 :class "mb-1 history-username" "Moritz Hedtke")
+        (:small :class "history-date" "vor 3 Tagen"))
+       (:p :class "mb-1 history-summary" "Ein paar wichtige Infos hinzugefügt")
+       (:small (:span :class "history-characters" "50.322") " Zeichen"
+        (:span :class "text-success d-none" "+ 50 Zeichen"))
+       (:div :class "btn-group w-100" :role "group" :aria-label "Basic example"
+        (:a :type "button" :class "btn btn-outline-dark history-show"
+         (:i :class "fas fa-eye"))
+        (:a :type "button" :class "btn btn-outline-dark history-diff"
+         (:i :class "fas fa-columns")))))
+     (:template :id "articles-entry"
+      (:li (:a :class "" :href "#" "Hauptseite")))
+     (:nav :class "navbar navbar-expand-md navbar-light bg-light"
+      (:a :class "navbar-brand " :href "/wiki/Hauptseite" "Spickipedia ")
+      (:div :class "login-hide"
+       (:a :class "btn d-inline d-md-none edit-button"
+        (:i :class "fas fa-pen"))
+       (:a :class "btn d-inline d-md-none search-button " :href "/search"
+        (:i :class "fas fa-search"))
+       (:button :class "navbar-toggler" :type "button" :data-toggle "collapse"
+        :data-target "#navbarSupportedContent" :aria-controls
+        "navbarSupportedContent" :aria-expanded "false" :aria-label
+        "Toggle navigation" (:span :class "navbar-toggler-icon")))
+      (:div :class "collapse navbar-collapse" :id "navbarSupportedContent"
+       (:ul :class "navbar-nav mr-auto"
+        (:li :class "nav-item d-none d-md-block"
+         (:a :class "nav-link search-button " :href "/search" "Suchen"))
+        (:li :class "nav-item d-none d-md-block"
+         (:a :class "nav-link edit-button" :href "#" "Bearbeiten"))
+        (:li :class "nav-item"
+         (:a :class "nav-link" :href "/settings" "Einstellungen"))
+        (:li :class "nav-item"
+         (:a :class "nav-link" :href "/logout" :id "logout" "Abmelden")))))
+     (:div
+      (:div :style "display: none;" :class
+       "container my-tab position-absolution" :id "edit-quiz"
+       (:h1 :class "text-center" "Quiz ändern") (:div :id "questions")
+       (:button :type "button" :class
+        "btn btn-primary mb-1 create-multiple-choice-question"
+        "Multiple-Choice-Frage hinzufügen")
+       (:button :type "button" :class
+        "btn btn-primary mb-1 create-text-question"
+        "Frage mit Textantwort hinzufügen")
+       (:button :type "button" :class "btn btn-primary mb-1 save-quiz"
+        "Speichern")))
+     ,(tab "create-course-tab"
+           `(:form :method "POST" :action "/api/courses" :id
+             "create-course-form"
+             ,(text-input "Fach" "course-subject" "subject")
+             (:div :class "form-group" (:label "Typ")
+              (:select :class "custom-select" :name "type" :id "course-type"
+               (:option :selected "true" "GK") (:option "LK")))
+             ,(teacher-select "teachers-select")
+             ,(checkbox-input "Tutorium?" "is-tutorial" "is-tutorial")
+             ,(text-input "Klasse" "course-class" "class")
+             ,(text-input "Thema" "course-topic" "topic")
+             `(submit-button "Kurs erstellen")))
+     (:div :style "display: none;" :class
+      "container-fluid my-tab position-absolute" :id "create-teacher-tab"
+      (:form :method "POST" :action "/api/teachers" :id "create-teacher-form"
+       (:div :class "form-group" (:label "Name")
+        (:input :type "text" :class "form-control" :placeholder "Name" :name
+         "name" :id "teacher-name"))
+       (:div :class "form-group" (:label "Initialien")
+        (:input :type "text" :class "form-control" :placeholder "Initialien"
+         :name "initial" :id "teacher-initial"))
+       (:button :type "submit" :class "btn btn-primary" "LehrerIn erstellen")))
+     (:div :style "display: none;" :class "container my-tab position-absolute"
+      :id "articles" (:h1 :class "text-center" "Alle Artikel")
+      (:ul :id "articles-list"))
+     (:div :style "display: none;" :class "container my-tab position-absolute"
+      :id "tags" (:h1 :class "text-center" "Tags") (:ul :id "tags-list"))
+     (:div :style "display: none;" :class
+      "container-fluid my-tab position-absolute" :id "create-schedule-tab"
+      (:form :method "POST" :action "/api/schedules" :id "create-schedule-form"
+       (:div :class "form-group" (:label "Jahrgang")
+        (:input :type "text" :class "form-control" :placeholder "Jahrgang"
+         :name "grade" :id "schedule-grade"))
+       (:button :type "submit" :class "btn btn-primary"
+        "Stundenplan erstellen")))
+     ,@(html-settings)
+     (:div :style "display: none;" :class "container my-tab position-absolute"
+      :id "multiple-choice-question-html"
+      (:h2 :class "text-center question-html" "Dies ist eine Testfrage?")
+      (:div :class "row justify-content-center"
+       (:div :class "col col-sm-10 col-md-6" (:div :id "answers-html")
+        (:button :type "button" :class
+         "btn btn-primary mt-1 multiple-choice-submit-html" "Absenden")
+        (:button :type "button" :style "display: none;" :class
+         "btn btn-primary mt-1 next-question" "Nächste Frage"))))
+     (:div :style "display: none;" :class "container my-tab position-absolute"
+      :id "quiz-results" (:h1 :class "text-center" "Ergebnisse")
+      (:p :id "result"))
+     (:div :style "display: none;" :class "container my-tab position-absolute"
+      :id "list-teachers"
+      (:h2 :class "text-center" "Lehrer"
+       (:a :href "/teachers/new" :type "button" :class
+        "btn btn-primary norefresh" "+"))
+      (:ul :id "teachers-list"))
+     (:div :style "display: none;" :class "container my-tab position-absolute"
+      :id "list-courses"
+      (:h2 :class "text-center" "Kurse"
+       (:a :href "/courses/new" :type "button" :class
+        "btn btn-primary norefresh" "+"))
+      (:ul :id "courses-list"))
+     ,@(html-user-courses) ,@(html-schedule)
+     (:div :style "display: none;" :class "container my-tab position-absolute"
+      :id "list-schedules"
+      (:h2 :class "text-center" "Stundenpläne"
+       (:a :href "/schedules/new" :type "button" :class
+        "btn btn-primary norefresh" "+"))
+      (:ul :id "schedules-list"))
+     (:div :style "display: none;" :class "container my-tab position-absolute"
+      :id "text-question-html"
+      (:h2 :class "text-center question-html" "Dies ist eine Testfrage?")
+      (:div :class "row justify-content-center"
+       (:div :class "col col-sm-10 col-md-6"
+        (:div :id "answers-html" " "
+         (:input :type "text" :class "form-control" :id "text-response"))
+        (:button :type "button" :class "btn btn-primary mt-1 text-submit-html"
+         "Absenden")
+        (:button :type "button" :style "display: none;" :class
+         "btn btn-primary mt-1 next-question" "Nächste Frage"))))
+     (:div :style "display: none;" :class
+      "container my-tab position-absolute col-sm-6 offset-sm-3 col-md-4 offset-md-4 text-center"
+      :id "login" (:h1 "Anmelden")
+      (:form :id "login-form"
+       (:div :class "form-group"
+        (:input :type "text" :id "inputName" :class "form-control" :placeholder
+         "Name" :required "" :autofocus "" :autocomplete "username"))
+       (:div :class "form-group"
+        (:input :type "password" :id "inputPassword" :class "form-control"
+         :placeholder "Passwort" :required "" :autocomplete
+         "current-password"))
+       (:button :class "btn btn-primary" :type "submit" :id "login-button"
+        "Anmelden")))
+     (:div :style "display: none;" :class
+      "container-fluid my-tab position-absolute word-wrap" :id "page"
+      (:div :class "alert alert-warning mt-1 d-none" :id "is-outdated-article"
+       :role "alert"
+       " Dies zeigt den Artikel zu einem bestimmten Zeitpunkt und ist somit nicht unbedingt aktuell! "
+       (:a :href "#" :id "currentVersionLink" :class "alert-link "
+        "Zur aktuellen Version"))
+      (:h1 :class "text-center" :id "wiki-article-title" "title")
+      (:div :class "article-editor"
+       (:div :id "editor" :class "d-none"
+        (:a :href "#" :id "format-p" (:span :class "fas fa-paragraph")) " "
+        (:a :href "#" :id "format-h2" (:span :class "fas fa-heading")) " "
+        (:a :href "#" :id "format-h3" (:span :class "fas fa-heading")) " "
+        (:a :href "#" :id "superscript" (:span :class "fas fa-superscript"))
+        " " (:a :href "#" :id "subscript" (:span :class "fas fa-subscript"))
+        " "
+        (:a :href "#" :id "insertUnorderedList"
+         (:span :class "fas fa-list-ul"))
+        " "
+        (:a :href "#" :id "insertOrderedList" (:span :class "fas fa-list-ol"))
+        " " (:a :href "#" :id "indent" (:span :class "fas fa-indent")) " "
+        (:a :href "#" :id "outdent" (:span :class "fas fa-outdent")) " "
+        (:a :href "#" :id "createLink" (:span :class "fas fa-link")) " "
+        (:a :href "#" :id "insertImage" (:span :class "fas fa-image")) " "
+        (:a :href "#" :id "table" (:span :class "fas fa-table")) " "
+        (:a :href "#" :id "insertFormula" (:span :class "fas fa-calculator"))
+        " " (:a :href "#" :id "undo" (:span :class "fas fa-undo")) " "
+        (:a :href "#" :id "redo" (:span :class "fas fa-redo")) " "
+        (:a :href "#" :id "settings" (:span :class "fas fa-cog")) " "
+        (:a :href "#" :id "finish" (:span :class "fas fa-check")))
+       (:article))
+      (:div :id "categories")
+      (:div
+       (:button :id "show-history" :type "button" :class
+        "btn btn-outline-primary" "Änderungsverlauf"))
+      (:small "Dieses Werk ist lizenziert unter einer "
+       (:a :target "_blank" :rel "license noopener" :href
+        "http://creativecommons.org/licenses/by-sa/4.0/deed.de"
+        "Creative Commons Namensnennung - Weitergabe unter gleichen Bedingungen 4.0 International Lizenz")
+       "."))
+     (:div :style "display: none;" :class
+      "container-fluid my-tab position-absolute" :id "not-found"
+      (:div :class "alert alert-danger" :role "alert"
+       " Der Artikel konnte nicht gefunden werden. Möchtest du ihn "
+       (:a :id "create-article" :href "#" :class "alert-link" "erstellen")
+       "?"))
+     (:div :style "display: none;" :class
+      "container-fluid my-tab position-absolute" :id "history"
+      (:h1 :class "text-center" "Änderungsverlauf")
+      (:div :class "list-group" :id "history-list"))
+     (:div :style "display: none;" :class
+      "container-fluid my-tab position-absolute" :id "search" " " (:br)
+      (:div :class "input-group mb-3"
+       (:input :type "text" :class "form-control" :id "search-query"
+        :placeholder "Suchbegriff")
+       (:div :class "input-group-append"
+        (:button :class "btn btn-outline-secondary" :type "button" :id
+         "button-search" (:i :class "fas fa-search"))))
+      (:div
+       (:div :style "display: none; left: 50%; margin-left: -1rem;" :class
+        "position-absolute" :id "search-results-loading"
+        (:div :class "spinner-border" :role "status"
+         (:span :class "sr-only" "Loading...")))
+       (:div :style "display: none;" :id "search-results"
+        (:div :style "display: none;" :class "text-center" :id
+         "no-search-results"
+         (:div :class "alert alert-warning" :role "alert"
+          " Es konnte kein Artikel mit genau diesem Titel gefunden werden. Möchtest du ihn "
+          (:a :id "search-create-article" :href "#" :class "alert-link "
+           "erstellen")
+          "?"))
+        (:div :class "list-group" :id "search-results-content"))))
+     (:div :class "my-tab position-absolute" :style
+      "top: 50%; left: 50%; margin-left: -1rem; margin-top: -1rem;" :id
+      "loading"
+      (:div :class "spinner-border" :role "status"
+       (:span :class "sr-only" "Loading...")))
+     (:div :style "display: none;" :class
+      "container-fluid my-tab position-absolute" :id "error"
+      (:div :class "alert alert-danger" :role "alert"
+       (:span :id "errorMessage") " "
+       (:a :href "#" :id "refresh" :class "alert-link" "Erneut versuchen")))
+     (:div :class "modal fade" :id "publish-changes-modal" :tabindex "-1" :role
+      "dialog" :aria-hidden "true"
+      (:div :class "modal-dialog" :role "document"
+       (:div :class "modal-content"
+        (:div :class "modal-header"
+         (:h5 :class "modal-title" "Änderungen veröffentlichen")
+         (:button :type "button" :class "close" :data-dismiss "modal"
+          :aria-label "Close" " " (:span :aria-hidden "true" "×")))
+        (:div :class "modal-body"
+         (:form
+          (:div :class "form-group" " " (:label "Änderungszusammenfassung:")
+           (:br)
+           (:textarea :class "form-control" :id "change-summary" :rows "3")))
+         (:p
+          "Mit dem Veröffentlichen dieses Artikels garantierst du, dass er nicht die Rechte anderer verletzt und bist damit einverstanden, ihn unter der "
+          (:a :target "_blank" :rel "noopener" :href
+           "https://creativecommons.org/licenses/by-sa/4.0/deed.de"
+           "Creative Commons Namensnennung - Weitergabe unter gleichen Bedingungen 4.0 International Lizenz")
+          " zu veröffentlichen."))
+        (:div :class "modal-footer"
+         (:button :type "button" :class "btn btn-secondary" :data-dismiss
+          "modal" "Bearbeitung fortsetzen")
+         (:button :type "button" :class "btn btn-primary" :id "publish-changes"
+          "Änderungen veröffentlichen")
+         (:button :id "publishing-changes" :class "btn btn-primary" :style
+          "display: none;" :type "button" :disabled "" " "
+          (:span :class "spinner-border spinner-border-sm" :role "status"
+           :aria-hidden "true")
+          " Veröffentlichen... ")))))
+     (:div :class "modal fade" :id "uploadProgressModal" :tabindex "-1" :role
+      "dialog" :aria-labelledby "exampleModalCenterTitle" :aria-hidden "true"
+      (:div :class "modal-dialog modal-dialog-centered" :role "document"
+       (:div :class "modal-content"
+        (:div :class "modal-body"
+         (:div :class "progress"
+          (:div :id "uploadProgress" :class
+           "progress-bar progress-bar-striped progress-bar-animated" :role
+           "progressbar" :aria-valuenow "75" :aria-valuemin "0" :aria-valuemax
+           "100" :style "width: 0%"))))))
+     (:div :class "modal fade" :id "spickiLinkModal" :tabindex "-1" :role
+      "dialog" :aria-hidden "true"
+      (:div :class "modal-dialog" :role "document"
+       (:div :class "modal-content"
+        (:div :class "modal-header"
+         (:h5 :class "modal-title" "Spickipedia-Link einfügen")
+         (:button :type "button" :class "close" :data-dismiss "modal"
+          :aria-label "Close" (:span :aria-hidden "true" "×")))
+        (:div :class "modal-body"
+         (:form
+          (:div :class "form-group" (:label "Anzeigetext") (:br)
+           (:input :class "form-control" :type "text" :id "article-link-text")
+           "<input>")
+          (:div :class "form-group" (:label "Spickipedia-Artikel") (:br)
+           (:input :class "form-control" :type "text" :id "article-link-title")
+           "<input>")))
+        (:div :class "modal-footer"
+         (:button :type "button" :class "btn btn-primary" :id "publish-changes"
+          "Änderungen veröffentlichen")))))
+     (:div :class "modal fade" :id "settings-modal" :tabindex "-1" :role
+      "dialog" :aria-labelledby "exampleModalLabel" :aria-hidden "true"
+      (:div :class "modal-dialog" :role "document"
+       (:div :class "modal-content"
+        (:div :class "modal-header"
+         (:h5 :class "modal-title" :id "exampleModalLabel" "Kategorien") " "
+         (:button :type "button" :class "close" :data-dismiss "modal"
+          :aria-label "Fertig" " " (:span :aria-hidden "true" "×")))
+        (:div :class "modal-body"
+         (:form :class "form-inline" :id "add-tag-form"
+          (:input :id "new-category" :class "form-control form-control-sm"
+           :type "text" :placeholder "Kategorie...")))
+        (:div :class "modal-footer"
+         (:button :type "button" :class "btn btn-secondary" :data-dismiss
+          "modal" "Fertig")))))
+     (:div :class "modal fade" :id "link-modal" :tabindex "-1" :role "dialog"
+      :aria-labelledby "exampleModalLabel" :aria-hidden "true"
+      (:div :class "modal-dialog" :role "document"
+       (:div :class "modal-content"
+        (:form :id "link-form"
+         (:div :class "modal-header"
+          (:h5 :class "modal-title" :id "exampleModalLabel" "Link")
+          (:button :type "button" :class "close" :data-dismiss "modal"
+           :aria-label "Close" (:span :aria-hidden "true" "×")))
+         (:div :class "modal-body"
+          (:div :class "form-group" :style
+           "position: relative; display: inline-block;"
+           (:input :type "text" :id "link" :class "form-control" :autocomplete
+            "off")
+           (:div :class "dropdown-menu" :style
+            "position: absolute; top: 100%; left: 0px; z-index: 100; width: 100%;")))
+         (:div :class "modal-footer"
+          (:button :type "button" :class "btn btn-secondary" :data-dismiss
+           "modal" "Abbrechen")
+          (:button :type "submit" :class "btn btn-primary" :id "update-link"
+           "Ok"))))))
+     (:div :class "modal fade" :id "table-modal" :tabindex "-1" :role "dialog"
+      :aria-labelledby "exampleModalLabel" :aria-hidden "true"
+      (:div :class "modal-dialog" :role "document"
+       (:div :class "modal-content"
+        (:div :class "modal-header"
+         (:h5 :class "modal-title" :id "exampleModalLabel" "Tabelle")
+         (:button :type "button" :class "close" :data-dismiss "modal"
+          :aria-label "Close" (:span :aria-hidden "true" "×")))
+        (:div :class "modal-body"
+         (:form
+          (:div :class "form-group" (:label :for "table-columns" "Spalten:")
+           (:input :type "number" :id "table-columns" :class "form-control"))
+          (:div :class "form-group" (:label :for "table-rows" "Zeilen:") " "
+           (:input :type "number" :id "table-rows" :class "form-control"))))
+        (:div :class "modal-footer"
+         (:button :type "button" :class "btn btn-secondary" :data-dismiss
+          "modal" "Abbrechen")
+         (:button :type "button" :class "btn btn-primary" :id "update-table"
+          "Ok")))))
+     (:div :class "modal fade" :id "image-modal" :tabindex "-1" :role "dialog"
+      :aria-labelledby "exampleModalLabel" :aria-hidden "true"
+      (:div :class "modal-dialog" :role "document"
+       (:div :class "modal-content"
+        (:div :class "modal-header"
+         (:h5 :class "modal-title" :id "exampleModalLabel" "Bild")
+         (:button :type "button" :class "close" :data-dismiss "modal"
+          :aria-label "Close" (:span :aria-hidden "true" "×")))
+        (:div :class "modal-body"
+         (:form
+          (:div :class "form-group"
+           (:div :class "form-group"
+            (:label :for "image-file" "Bild auswählen:")
+            (:input :type "file" :accept "image/*" :class "form-control-file"
+             :id "image-file"))
+           (:div :class "form-group" (:label :for "image-url" "Bild-URL:")
+            (:input :type "url" :id "image-url" :class "form-control")))))
+        (:div :class "modal-footer"
+         (:button :type "button" :class "btn btn-secondary" :data-dismiss
+          "modal" "Abbrechen")
+         (:button :type "button" :class "btn btn-primary" :id "update-image"
+          "Ok")))))
+     (:div :class "modal fade" :id "formula-modal" :tabindex "-1" :role
+      "dialog" :aria-labelledby "exampleModalLabel" :aria-hidden "true"
+      (:div :class "modal-dialog" :role "document"
+       (:div :class "modal-content"
+        (:div :class "modal-header"
+         (:h5 :class "modal-title" :id "exampleModalLabel" "Formel")
+         (:button :type "button" :class "close" :data-dismiss "modal"
+          :aria-label "Close" (:span :aria-hidden "true" "×")))
+        (:div :class "modal-body"
+         (:form
+          (:div :class "form-group"
+           (:div :class "alert alert-warning" :role "alert"
+            "Formeln editieren funktioniert nur in Google Chrome zuverlässig!")
+           (:span :id "formula" "e=mc^2"))))
+        (:div :class "modal-footer"
+         (:button :type "button" :class "btn btn-secondary" :data-dismiss
+          "modal" "Abbrechen")
+         (:button :type "button" :class "btn btn-primary" :id "update-formula"
+          "Ok")))))
+     (:form :id "schedule-data-form"
+      (:div :class "modal fade" :id "schedule-data-modal" :tabindex "-1" :role
+       "dialog" :aria-labelledby "schedule-data-modal-label" :aria-hidden
+       "true"
+       (:div :class "modal-dialog" :role "document"
+        (:div :class "modal-content"
+         (:div :class "modal-header"
+          (:h5 :class "modal-title" :id "schedule-data-modal-label"
+           "Unterrichtsstunde")
+          (:button :type "button" :class "close" :data-dismiss "modal"
+           :aria-label "Close" (:span :aria-hidden "true" "×")))
+         (:div :class "modal-body"
+          (:input :type "hidden" :id "schedule-data-weekday" :name "weekday"
+           :value "monday")
+          (:input :type "hidden" :id "schedule-data-hour" :name "hour" :value
+           "1")
+          (:div :class "form-group"
+           (:label :for "week-modulo" "Regelmäßigkeit")
+           (:select :class "custom-select" :id "week-modulo" :name
+            "week-modulo"
+            (:option :selected "selected" :value "0" "Jede Woche")
+            (:option :value "1" "Ungerade Woche")
+            (:option :value "2" "Gerade Woche")))
+          (:div :class "form-group" (:label :for "course" "Kurs:") " "
+           (:select :class "custom-select" :id "course" :name "course"))
+          (:div :class "form-group" (:label :for "room" "Raum:") " "
+           (:input :type "text" :id "room" :name "room" :class
+            "form-control")))
+         (:div :class "modal-footer"
+          (:button :type "button" :class "btn btn-secondary" :data-dismiss
+           "modal" "Abbrechen")
+          (:button :type "submit" :class "btn btn-primary" :id "update-table"
+           "Ok"))))))
+     (:script :src "/jquery-3.3.1.js")
+     (:link :rel "stylesheet" :href "/mathlive.core.css")
+     (:link :rel "stylesheet" :href "/mathlive.css")
+     (:script :src "/mathlive.js") (:script :src "/popper.js")
+     (:script :src "/bootstrap.min.js") (:script :src "/visual-diff.js")
+     (:script :nomodule "" :src "no_module_support.js")
+     (:script :type "module" :src "/js/index.lisp")))) 

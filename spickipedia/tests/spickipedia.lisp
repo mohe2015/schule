@@ -1,12 +1,7 @@
-(in-package :cl-user)
+
+(in-package :cl-user) 
 (defpackage spickipedia-test
-  (:use :cl
-        :spickipedia
-        :prove))
-(in-package :spickipedia-test)
-
-(plan nil)
-
-;; blah blah blah.
-
-(finalize)
+  (:use :cl :spickipedia :prove)) 
+(in-package :spickipedia-test) 
+(plan nil) 
+(finalize) 
