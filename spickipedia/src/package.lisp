@@ -1,3 +1,7 @@
+(defpackage spickipedia.argon2
+  (:use :cl :cffi)
+  (:export :hash :verify))
+
 (defpackage spickipedia.sanitize
   (:use :cl :sanitize)
   (:export :*sanitize-spickipedia*))

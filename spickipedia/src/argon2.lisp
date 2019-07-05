@@ -1,7 +1,7 @@
 ;; This file is dedicated to the public domain.
-(defpackage spickipedia.argon2
-  (:use :cl :cffi)
-  (:export :hash :verify))
+;;(defpackage spickipedia.argon2
+;;  (:use :cl :cffi)
+;;  (:export :hash :verify)
 
 (in-package :spickipedia.argon2)
 
