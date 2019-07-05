@@ -32,3 +32,18 @@
 ;;(mapc-directory-tree 'update-file
 ;;                     (asdf/system:system-source-directory :spickipedia)))))))
 (update-file #P"spickipedia/src/index.lisp")
+
+(macrolet ((:div (&rest rest)
+                 (format t "jo:~a" rest)
+                 (if (equal (subseq rest 0 5)
+                            '(:style
+                              "display: none;"
+                              :class
+                              "container-fluid my-tab position-absolute"
+                              :id))
+                     ``(tab ,,(nth 5 rest)
+                        ,',@(subseq rest 6))
+                      `(progn ,@rest))))
+  `(:div
+    ,(:div :style "display: none;" :class "container my-tab position-absolute"
+       :id "edit-quiz" `(:h1 :class "text-center" "Quiz ändern"))))
