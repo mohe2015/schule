@@ -43,7 +43,7 @@
                               :id))
                      ``(tab ,,(nth 5 rest)
                         ,',@(subseq rest 6))
-                      `(progn ,@rest))))
+                      ``(:div ,,@rest))))
   (:div
     (:div :style "display: none;" :class "container my-tab position-absolute"
        :id "edit-quiz" `(:h1 :class "text-center" "Quiz ändern"))))
