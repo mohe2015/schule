@@ -1,3 +1,5 @@
+(ql:quickload "str")
+
 (defun mapc-directory-tree (fn directory &key (depth-first-p t))
   (dolist (entry (cl-fad:list-directory directory))
     (unless depth-first-p
@@ -8,7 +10,7 @@
       (funcall fn entry))))
 
 (defun update-file (file)
-  (if (pathname-name file)
+  (if (and (pathname-name file) (str:ends-with? ".lisp" (file-namestring file)))
     (let ((result
             (with-open-file (s file)
               (macrolet ((:div (&rest rest)
@@ -20,7 +22,7 @@
                       while sexp
                       collect sexp)))))
       (with-open-file (s file) :direction :output :if-exists :supersede
-        (loop for sexp in result
+        (loop for sexp in result do
           (print sexp s))))))
 
-(mapc-directory-tree update-file (asdf:system-source-directory :spickipedia))
+(mapc-directory-tree 'update-file (asdf:system-source-directory :spickipedia))
