@@ -41,6 +41,21 @@
     (unless depth-first-p (funcall fn entry))
     (when (directory-pathname-p entry) (mapc-directory-tree fn entry))
     (when depth-first-p (funcall fn entry))))
+
+(defmacro convert (sexp)
+  `(macrolet ((:div (&rest rest)
+                    (format t "jo:~S~%" rest)
+                    (if (equal (ignore-errors (subseq rest 0 5))
+                               '(:style
+                                 "display: none;"
+                                 :class
+                                 "container my-tab position-absolute"
+                                 :id))
+                        ``(tab ,,(nth 5 rest)
+                           ,',@(subseq rest 6))
+                        ``(:div ,,@rest))))
+     ,sexp))
+
 (defun update-file (file)
   (if (not (or (pathname-name file) (str:ends-with? ".lisp" (file-namestring file))))
     (progn
@@ -48,18 +63,7 @@
       (return-from update-file)))
   (let ((result
           (with-open-file (s file :if-does-not-exist :error)
-            (loop for sexp = (macrolet ((:div (&rest rest)
-                                          (format t "jo:~S~%" rest)
-                                          (if (equal (ignore-errors (subseq rest 0 5))
-                                                     '(:style
-                                                       "display: none;"
-                                                       :class
-                                                       "container my-tab position-absolute"
-                                                       :id))
-                                              ``(tab ,,(nth 5 rest)
-                                                 ,',@(subseq rest 6))
-                                              ``(:div ,,@rest))))
-                               (read s nil))
+            (loop for sexp = (convert (read s nil))
                   while sexp
                   collect sexp))))
     (with-open-file (s file :direction :output :if-exists :supersede)
