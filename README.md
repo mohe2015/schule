@@ -28,7 +28,7 @@ ln -s $PWD/clack/ ~/.roswell/local-projects/
 (spickipedia.db:do-migrate)
 (spickipedia:start)
 (spickipedia:development)
-(in-package :spickipedia.db)
+(in-package :spickipedia.web)
 (with-connection (db)
   (create-dao 'user :name "Administrator" :hash (hash "xfg3zte94h62j392h") :group "admin")
   (create-dao 'user :name "Anonymous" :hash (hash "xfg3zte94h") :group "anonymous")
