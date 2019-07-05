@@ -144,19 +144,19 @@
         (:BUTTON :TYPE "button" :CLASS "btn btn-primary mb-1 save-quiz"
          "Speichern")))
 
-      (:div :style "display: none;" :class "container-fluid my-tab position-absolute" :id "create-course-tab"
-        (:FORM :method "POST" :action "/api/courses" :id "create-course-form"
-         ,(text-input "Fach" "course-subject" "subject")
-         (:DIV :CLASS "form-group"
-           (:label "Typ")
-           (:select :CLASS "custom-select" :name "type" :id "course-type"
-             (:option :selected "true" "GK")
-             (:option "LK")))
-         ,(teacher-select "teachers-select")
-         ,(checkbox-input "Tutorium?" "is-tutorial" "is-tutorial")
-         ,(text-input "Klasse" "course-class" "class")
-         ,(text-input "Thema" "course-topic" "topic")
-         `(submit-button "Kurs erstellen")))
+      ,(tab "create-course-tab"
+        `(:FORM :method "POST" :action "/api/courses" :id "create-course-form"
+           ,(text-input "Fach" "course-subject" "subject")
+           (:DIV :CLASS "form-group"
+             (:label "Typ")
+             (:select :CLASS "custom-select" :name "type" :id "course-type"
+               (:option :selected "true" "GK")
+               (:option "LK")))
+           ,(teacher-select "teachers-select")
+           ,(checkbox-input "Tutorium?" "is-tutorial" "is-tutorial")
+           ,(text-input "Klasse" "course-class" "class")
+           ,(text-input "Thema" "course-topic" "topic")
+           `(submit-button "Kurs erstellen")))
 
       (:div :style "display: none;" :class "container-fluid my-tab position-absolute" :id "create-teacher-tab"
         (:FORM :method "POST" :action "/api/teachers" :id "create-teacher-form"
