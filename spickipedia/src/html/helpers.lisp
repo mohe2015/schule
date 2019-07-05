@@ -19,3 +19,22 @@
     (:label "LehrerIn")
     (:select :CLASS "custom-select teacher-select" :id ,id :name "teacher"
       (:option "Wird geladen..."))))
+
+(defun text-input (label id name)
+  `(:DIV :CLASS "form-group"
+     (:label ,label)
+     (:INPUT :TYPE "text" :CLASS "form-control" :PLACEHOLDER ,label :name ,name :id ,id)))
+
+(defun checkbox-input (label id name)
+  `(:div :class "custom-control custom-checkbox"
+    (:input :type "checkbox" :class "custom-control-input" :name ,name :id ,id)
+    (:label :class "custom-control-label" :for ,id ,label)))
+
+(defun submit-button (label)
+  `(:BUTTON :TYPE "submit" :CLASS
+     "btn btn-primary"
+     ,label))
+
+(defun tab (id &rest content)
+  `(:div :style "display: none;" :class "container-fluid my-tab position-absolute" :id ,id
+     ,@content))
