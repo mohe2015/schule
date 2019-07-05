@@ -18,10 +18,10 @@
                                       '(:style "display: none;" :class "container-fluid my-tab position-absolute" :id))
                              ``(tab ,,(nth 5 rest) ,',@(subseq rest 6))
                              nil)))
-                (loop for sexp = (read s)
+                (loop for sexp = (read s nil)
                       while sexp
                       collect sexp)))))
-      (with-open-file (s file) :direction :output :if-exists :supersede
+      (with-open-file (s file :direction :output :if-exists :supersede)
         (loop for sexp in result do
           (print sexp s))))))
 
