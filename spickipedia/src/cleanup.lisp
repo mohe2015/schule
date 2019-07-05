@@ -1,3 +1,5 @@
+;; TODO FIXME this file doen't work and needs fixing. backquotes and unquoting are not that easy for me :-)
+
 
 (quicklisp-client:quickload "str")
 (quicklisp-client:quickload "cl-fad")
@@ -43,7 +45,7 @@
     (when depth-first-p (funcall fn entry))))
 
 (defmacro convert (sexp)
-  `(macrolet ((:div (&rest rest)
+  ``,',(macrolet ((:div (&rest rest)
                     (format t "jo:~S~%" rest)
                     (if (equal (ignore-errors (subseq rest 0 5))
                                '(:style
@@ -53,8 +55,8 @@
                                  :id))
                         ``(tab ,,(nth 5 rest)
                            ,,@(subseq rest 6))
-                        ``(:div ,,@rest))))
-     ,sexp))
+                        ``(:div ,,@rest)))))
+     sexp)
 
 (defun update-file (file)
   (if (not (or (pathname-name file) (str:ends-with? ".lisp" (file-namestring file))))
