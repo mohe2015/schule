@@ -296,8 +296,7 @@
         `((:button :type "button" :class "btn btn-secondary" :data-dismiss
             "modal" "Fertig"))
         `((:form :class "form-inline" :id "add-tag-form"
-            (:input :id "new-category" :class "form-control form-control-sm"
-             :type "text" :placeholder "Kategorie..."))))
+            (text-input "Kategorie..." "new-category" "category"))))
 
      ,(modal "link" "Link"
         `((:button :type "button" :class "btn btn-secondary" :data-dismiss
@@ -305,11 +304,11 @@
           (:button :type "submit" :class "btn btn-primary" :id "update-link"
            "Ok"))
         `((:div :class "form-group" :style
-            "position: relative; display: inline-block;")
-          (:input :type "text" :id "link" :class "form-control" :autocomplete
-           "off")
-          (:div :class "dropdown-menu" :style
-           "position: absolute; top: 100%; left: 0px; z-index: 100; width: 100%;")))
+            "position: relative; display: inline-block;"
+            (:input :type "text" :id "link" :class "form-control" :autocomplete
+             "off")
+            (:div :class "dropdown-menu" :style
+             "position: absolute; top: 100%; left: 0px; z-index: 100; width: 100%;"))))
 
      ,(modal "table" "Tabelle"
         `((:button :type "button" :class "btn btn-secondary" :data-dismiss
@@ -361,9 +360,7 @@
              (:option :value "2" "Gerade Woche")))
            (:div :class "form-group" (:label :for "course" "Kurs:") " "
             (:select :class "custom-select" :id "course" :name "course"))
-           (:div :class "form-group" (:label :for "room" "Raum:") " "
-            (:input :type "text" :id "room" :name "room" :class
-             "form-control"))))
+           (text-input "Raum" "room" "room")))
 
      (:script :src "/jquery-3.3.1.js")
      (:link :rel "stylesheet" :href "/mathlive.core.css")
