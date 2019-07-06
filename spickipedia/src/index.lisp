@@ -310,61 +310,35 @@
           (:input :class "form-control" :type "text" :id "article-link-title")
           "<input>")))
 
-     (:div :class "modal fade" :id "settings-modal" :tabindex "-1" :role
-      "dialog" :aria-labelledby "exampleModalLabel" :aria-hidden "true"
-      (:div :class "modal-dialog" :role "document"
-       (:div :class "modal-content"
-        (:div :class "modal-header"
-         (:h5 :class "modal-title" :id "exampleModalLabel" "Kategorien") " "
-         (:button :type "button" :class "close" :data-dismiss "modal"
-          :aria-label "Fertig" " " (:span :aria-hidden "true" "×")))
-        (:div :class "modal-body"
-         (:form :class "form-inline" :id "add-tag-form"
-          (:input :id "new-category" :class "form-control form-control-sm"
-           :type "text" :placeholder "Kategorie...")))
-        (:div :class "modal-footer"
-         (:button :type "button" :class "btn btn-secondary" :data-dismiss
-          "modal" "Fertig")))))
-     (:div :class "modal fade" :id "link-modal" :tabindex "-1" :role "dialog"
-      :aria-labelledby "exampleModalLabel" :aria-hidden "true"
-      (:div :class "modal-dialog" :role "document"
-       (:div :class "modal-content"
-        (:form :id "link-form"
-         (:div :class "modal-header"
-          (:h5 :class "modal-title" :id "exampleModalLabel" "Link")
-          (:button :type "button" :class "close" :data-dismiss "modal"
-           :aria-label "Close" (:span :aria-hidden "true" "×")))
-         (:div :class "modal-body"
-          (:div :class "form-group" :style
-           "position: relative; display: inline-block;"
-           (:input :type "text" :id "link" :class "form-control" :autocomplete
-            "off")
-           (:div :class "dropdown-menu" :style
-            "position: absolute; top: 100%; left: 0px; z-index: 100; width: 100%;")))
-         (:div :class "modal-footer"
-          (:button :type "button" :class "btn btn-secondary" :data-dismiss
+     ,(modal "settings" "Kategorien"
+        `((:button :type "button" :class "btn btn-secondary" :data-dismiss
+            "modal" "Fertig"))
+        `((:form :class "form-inline" :id "add-tag-form"
+            (:input :id "new-category" :class "form-control form-control-sm"
+             :type "text" :placeholder "Kategorie..."))))
+
+     ,(modal "link" "Link"
+        `((:button :type "button" :class "btn btn-secondary" :data-dismiss
            "modal" "Abbrechen")
           (:button :type "submit" :class "btn btn-primary" :id "update-link"
-           "Ok"))))))
-     (:div :class "modal fade" :id "table-modal" :tabindex "-1" :role "dialog"
-      :aria-labelledby "exampleModalLabel" :aria-hidden "true"
-      (:div :class "modal-dialog" :role "document"
-       (:div :class "modal-content"
-        (:div :class "modal-header"
-         (:h5 :class "modal-title" :id "exampleModalLabel" "Tabelle")
-         (:button :type "button" :class "close" :data-dismiss "modal"
-          :aria-label "Close" (:span :aria-hidden "true" "×")))
-        (:div :class "modal-body"
-         (:form
-          (:div :class "form-group" (:label :for "table-columns" "Spalten:")
+           "Ok"))
+        `((:div :class "form-group" :style
+            "position: relative; display: inline-block;")
+          (:input :type "text" :id "link" :class "form-control" :autocomplete
+           "off")
+          (:div :class "dropdown-menu" :style
+           "position: absolute; top: 100%; left: 0px; z-index: 100; width: 100%;")))
+
+     ,(modal "table" "Tabelle"
+        `((:button :type "button" :class "btn btn-secondary" :data-dismiss
+            "modal" "Abbrechen")
+          (:button :type "button" :class "btn btn-primary" :id "update-table"
+           "Ok"))
+        `((:div :class "form-group" (:label :for "table-columns" "Spalten:")
            (:input :type "number" :id "table-columns" :class "form-control"))
           (:div :class "form-group" (:label :for "table-rows" "Zeilen:") " "
            (:input :type "number" :id "table-rows" :class "form-control"))))
-        (:div :class "modal-footer"
-         (:button :type "button" :class "btn btn-secondary" :data-dismiss
-          "modal" "Abbrechen")
-         (:button :type "button" :class "btn btn-primary" :id "update-table"
-          "Ok")))))
+
      (:div :class "modal fade" :id "image-modal" :tabindex "-1" :role "dialog"
       :aria-labelledby "exampleModalLabel" :aria-hidden "true"
       (:div :class "modal-dialog" :role "document"
