@@ -103,12 +103,11 @@
              ,(text-input "Klasse" "course-class" "class")
              ,(text-input "Thema" "course-topic" "topic")
              `(submit-button "Kurs erstellen")))
-     (:div :style "display: none;" :class
-      "container-fluid my-tab position-absolute" :id "create-teacher-tab"
-      (:form :method "POST" :action "/api/teachers" :id "create-teacher-form"
-       ,(text-input "Name" "teacher-name" "name")
-       ,(text-input "Initialien" "teacher-initial" "initial")
-       ,(submit-button "LehrerIn erstellen")))
+     (tab "create-teacher-tab"
+      `(:form :method "POST" :action "/api/teachers" :id "create-teacher-form"
+         ,(text-input "Name" "teacher-name" "name")
+         ,(text-input "Initialien" "teacher-initial" "initial")
+         ,(submit-button "LehrerIn erstellen")))
      (:div :style "display: none;" :class "container my-tab position-absolute"
       :id "articles" (:h1 :class "text-center" "Alle Artikel")
       (:ul :id "articles-list"))
