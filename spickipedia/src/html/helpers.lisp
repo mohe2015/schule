@@ -15,10 +15,11 @@
   `(:div :class "form-group" (:label "LehrerIn")
     (:select :class "custom-select teacher-select" :id ,id :name "teacher"
      (:option "Wird geladen..."))))
-(defun text-input (label id name &optional classes)
+;; TODO accept arbitrary additional html attributes as keys
+(defun text-input (label id name &key classes required autofocus autocomplete)
   `(:div :class "form-group" (:label ,label)
     (:input :type "text" :class ,(concatenate 'string "form-control " classes) :placeholder ,label :name ,name
-     :id ,id)))
+     :id ,id :required ,required :autofocus ,autofocus :autocomplete ,autocomplete)))
 (defun checkbox-input (label id name)
   `(:div :class "custom-control custom-checkbox"
     (:input :type "checkbox" :class "custom-control-input" :name ,name :id ,id)

@@ -22,7 +22,7 @@
      (:template :id "multiple-choice-question"
       (:div :class "multiple-choice-question"
        (:form
-        ,(text-input "Frage eingeben" "random-id-1" "question" "question")
+        ,(text-input "Frage eingeben" "random-id-1" "question" :classes "question")
         (:div :class "responses")
         (:button :type "button" :class
          "btn btn-primary mb-1 add-response-possibility"
@@ -31,12 +31,8 @@
      (:template :id "text-question"
       (:div :class "text-question"
        (:form
-        (:div :class "form-group"
-         (:input :type "text" :class "form-control question" :placeholder
-          "Frage eingeben"))
-        (:div :class "form-group"
-         (:input :type "text" :class "form-control answer" :placeholder
-          "Antwort eingeben")))
+        ,(text-input "Frage eingeben" "random-id-2" "question" :classes "question")
+        ,(text-input "Antwort eingeben" "random-id-3" "answer" :classes "answer"))
        (:hr)))
      (:template :id "multiple-choice-response-possibility"
       (:div :class "input-group mb-3"
@@ -114,12 +110,8 @@
      (:div :style "display: none;" :class
       "container-fluid my-tab position-absolute" :id "create-teacher-tab"
       (:form :method "POST" :action "/api/teachers" :id "create-teacher-form"
-       (:div :class "form-group" (:label "Name")
-        (:input :type "text" :class "form-control" :placeholder "Name" :name
-         "name" :id "teacher-name"))
-       (:div :class "form-group" (:label "Initialien")
-        (:input :type "text" :class "form-control" :placeholder "Initialien"
-         :name "initial" :id "teacher-initial"))
+       ,(text-input "Name" "teacher-name" "name")
+       ,(text-input "Initialien" "teacher-initial" "initial")
        (:button :type "submit" :class "btn btn-primary" "LehrerIn erstellen")))
      (:div :style "display: none;" :class "container my-tab position-absolute"
       :id "articles" (:h1 :class "text-center" "Alle Artikel")
@@ -129,9 +121,7 @@
      (:div :style "display: none;" :class
       "container-fluid my-tab position-absolute" :id "create-schedule-tab"
       (:form :method "POST" :action "/api/schedules" :id "create-schedule-form"
-       (:div :class "form-group" (:label "Jahrgang")
-        (:input :type "text" :class "form-control" :placeholder "Jahrgang"
-         :name "grade" :id "schedule-grade"))
+       ,(text-input "Jahrgang" "schedule-grade" "grade")
        (:button :type "submit" :class "btn btn-primary"
         "Stundenplan erstellen")))
      ,@(html-settings)
@@ -181,9 +171,7 @@
       "container my-tab position-absolute col-sm-6 offset-sm-3 col-md-4 offset-md-4 text-center"
       :id "login" (:h1 "Anmelden")
       (:form :id "login-form"
-       (:div :class "form-group"
-        (:input :type "text" :id "inputName" :class "form-control" :placeholder
-         "Name" :required "" :autofocus "" :autocomplete "username"))
+       ,(text-input "Name" "inputName" "username" :required t :autofocus t :autocomplete "username")
        (:div :class "form-group"
         (:input :type "password" :id "inputPassword" :class "form-control"
          :placeholder "Passwort" :required "" :autocomplete
@@ -301,12 +289,8 @@
      ,(modal "wiki-link" "Spickipedia-Link einfügen"
        `((:button :type "button" :class "btn btn-primary" :id "publish-changes"
            "Änderungen veröffentlichen"))
-       `((:div :class "form-group" (:label "Anzeigetext") (:br)
-           (:input :class "form-control" :type "text" :id "article-link-text")
-           "<input>")
-         (:div :class "form-group" (:label "Spickipedia-Artikel") (:br)
-          (:input :class "form-control" :type "text" :id "article-link-title")
-          "<input>")))
+       `(,(text-input "Anzeigetext" "article-link-text" "link-text")
+         ,(text-input "Spickipedia-Artikel" "article-link-title" "link-title")))
 
      ,(modal "settings" "Kategorien"
         `((:button :type "button" :class "btn btn-secondary" :data-dismiss
