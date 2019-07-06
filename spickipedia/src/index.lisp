@@ -274,35 +274,25 @@
       (:div :class "alert alert-danger" :role "alert"
        (:span :id "errorMessage") " "
        (:a :href "#" :id "refresh" :class "alert-link" "Erneut versuchen")))
-     (:div :class "modal fade" :id "publish-changes-modal" :tabindex "-1" :role
-      "dialog" :aria-hidden "true"
-      (:div :class "modal-dialog" :role "document"
-       (:div :class "modal-content"
-        (:div :class "modal-header"
-         (:h5 :class "modal-title" "Änderungen veröffentlichen")
-         (:button :type "button" :class "close" :data-dismiss "modal"
-          :aria-label "Close" " " (:span :aria-hidden "true" "×")))
-        (:div :class "modal-body"
-         (:form
-          (:div :class "form-group" " " (:label "Änderungszusammenfassung:")
-           (:br)
-           (:textarea :class "form-control" :id "change-summary" :rows "3")))
-         (:p
-          "Mit dem Veröffentlichen dieses Artikels garantierst du, dass er nicht die Rechte anderer verletzt und bist damit einverstanden, ihn unter der "
-          (:a :target "_blank" :rel "noopener" :href
-           "https://creativecommons.org/licenses/by-sa/4.0/deed.de"
-           "Creative Commons Namensnennung - Weitergabe unter gleichen Bedingungen 4.0 International Lizenz")
-          " zu veröffentlichen."))
-        (:div :class "modal-footer"
-         (:button :type "button" :class "btn btn-secondary" :data-dismiss
-          "modal" "Bearbeitung fortsetzen")
-         (:button :type "button" :class "btn btn-primary" :id "publish-changes"
-          "Änderungen veröffentlichen")
-         (:button :id "publishing-changes" :class "btn btn-primary" :style
-          "display: none;" :type "button" :disabled "" " "
+     ,(modal "publish-changes" "Änderungen veröffentlichen"
+        `((:button :type "button" :class "btn btn-secondary" :data-dismiss
+            "modal" "Bearbeitung fortsetzen")
+          (:button :type "button" :class "btn btn-primary" :id "publish-changes"
+           "Änderungen veröffentlichen")
+          (:button :id "publishing-changes" :class "btn btn-primary" :style
+           "display: none;" :type "button" :disabled "" " ")
           (:span :class "spinner-border spinner-border-sm" :role "status"
-           :aria-hidden "true")
-          " Veröffentlichen... ")))))
+            :aria-hidden "true" " Veröffentlichen... "))
+        `((:div :class "form-group" " " (:label "Änderungszusammenfassung:")
+           (:br)
+           (:textarea :class "form-control" :id "change-summary" :rows "3"))
+          (:p
+           "Mit dem Veröffentlichen dieses Artikels garantierst du, dass er nicht die Rechte anderer verletzt und bist damit einverstanden, ihn unter der "
+           (:a :target "_blank" :rel "noopener" :href
+            "https://creativecommons.org/licenses/by-sa/4.0/deed.de"
+            "Creative Commons Namensnennung - Weitergabe unter gleichen Bedingungen 4.0 International Lizenz")
+           " zu veröffentlichen.")))
+
      (:div :class "modal fade" :id "uploadProgressModal" :tabindex "-1" :role
       "dialog" :aria-labelledby "exampleModalCenterTitle" :aria-hidden "true"
       (:div :class "modal-dialog modal-dialog-centered" :role "document"
@@ -467,4 +457,4 @@
      (:script :src "/mathlive.js") (:script :src "/popper.js")
      (:script :src "/bootstrap.min.js") (:script :src "/visual-diff.js")
      (:script :nomodule "" :src "no_module_support.js")
-     (:script :type "module" :src "/js/index.lisp")))) 
+     (:script :type "module" :src "/js/index.lisp"))))
