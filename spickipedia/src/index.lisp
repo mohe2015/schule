@@ -293,35 +293,23 @@
             "Creative Commons Namensnennung - Weitergabe unter gleichen Bedingungen 4.0 International Lizenz")
            " zu veröffentlichen.")))
 
-     (:div :class "modal fade" :id "uploadProgressModal" :tabindex "-1" :role
-      "dialog" :aria-labelledby "exampleModalCenterTitle" :aria-hidden "true"
-      (:div :class "modal-dialog modal-dialog-centered" :role "document"
-       (:div :class "modal-content"
-        (:div :class "modal-body"
-         (:div :class "progress"
-          (:div :id "uploadProgress" :class
-           "progress-bar progress-bar-striped progress-bar-animated" :role
-           "progressbar" :aria-valuenow "75" :aria-valuemin "0" :aria-valuemax
-           "100" :style "width: 0%"))))))
-     (:div :class "modal fade" :id "spickiLinkModal" :tabindex "-1" :role
-      "dialog" :aria-hidden "true"
-      (:div :class "modal-dialog" :role "document"
-       (:div :class "modal-content"
-        (:div :class "modal-header"
-         (:h5 :class "modal-title" "Spickipedia-Link einfügen")
-         (:button :type "button" :class "close" :data-dismiss "modal"
-          :aria-label "Close" (:span :aria-hidden "true" "×")))
-        (:div :class "modal-body"
-         (:form
-          (:div :class "form-group" (:label "Anzeigetext") (:br)
+     ,(modal "upload-progress" ""
+        `()
+        `((:div :class "progress"
+           (:div :id "uploadProgress" :class
+            "progress-bar progress-bar-striped progress-bar-animated" :role
+            "progressbar" :aria-valuenow "75" :aria-valuemin "0" :aria-valuemax
+            "100" :style "width: 0%"))))
+     ,(modal "wiki-link" "Spickipedia-Link einfügen"
+       `((:button :type "button" :class "btn btn-primary" :id "publish-changes"
+           "Änderungen veröffentlichen"))
+       `((:div :class "form-group" (:label "Anzeigetext") (:br)
            (:input :class "form-control" :type "text" :id "article-link-text")
            "<input>")
-          (:div :class "form-group" (:label "Spickipedia-Artikel") (:br)
-           (:input :class "form-control" :type "text" :id "article-link-title")
-           "<input>")))
-        (:div :class "modal-footer"
-         (:button :type "button" :class "btn btn-primary" :id "publish-changes"
-          "Änderungen veröffentlichen")))))
+         (:div :class "form-group" (:label "Spickipedia-Artikel") (:br)
+          (:input :class "form-control" :type "text" :id "article-link-title")
+          "<input>")))
+
      (:div :class "modal fade" :id "settings-modal" :tabindex "-1" :role
       "dialog" :aria-labelledby "exampleModalLabel" :aria-hidden "true"
       (:div :class "modal-dialog" :role "document"
