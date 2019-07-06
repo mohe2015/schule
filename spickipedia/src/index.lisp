@@ -339,80 +339,50 @@
           (:div :class "form-group" (:label :for "table-rows" "Zeilen:") " "
            (:input :type "number" :id "table-rows" :class "form-control"))))
 
-     (:div :class "modal fade" :id "image-modal" :tabindex "-1" :role "dialog"
-      :aria-labelledby "exampleModalLabel" :aria-hidden "true"
-      (:div :class "modal-dialog" :role "document"
-       (:div :class "modal-content"
-        (:div :class "modal-header"
-         (:h5 :class "modal-title" :id "exampleModalLabel" "Bild")
-         (:button :type "button" :class "close" :data-dismiss "modal"
-          :aria-label "Close" (:span :aria-hidden "true" "×")))
-        (:div :class "modal-body"
-         (:form
-          (:div :class "form-group"
-           (:div :class "form-group"
+     ,(modal "image" "Bild"
+        `((:button :type "button" :class "btn btn-secondary" :data-dismiss
+            "modal" "Abbrechen")
+          (:button :type "button" :class "btn btn-primary" :id "update-image"
+           "Ok"))
+        `((:div :class "form-group"
             (:label :for "image-file" "Bild auswählen:")
             (:input :type "file" :accept "image/*" :class "form-control-file"
              :id "image-file"))
-           (:div :class "form-group" (:label :for "image-url" "Bild-URL:")
-            (:input :type "url" :id "image-url" :class "form-control")))))
-        (:div :class "modal-footer"
-         (:button :type "button" :class "btn btn-secondary" :data-dismiss
-          "modal" "Abbrechen")
-         (:button :type "button" :class "btn btn-primary" :id "update-image"
-          "Ok")))))
-     (:div :class "modal fade" :id "formula-modal" :tabindex "-1" :role
-      "dialog" :aria-labelledby "exampleModalLabel" :aria-hidden "true"
-      (:div :class "modal-dialog" :role "document"
-       (:div :class "modal-content"
-        (:div :class "modal-header"
-         (:h5 :class "modal-title" :id "exampleModalLabel" "Formel")
-         (:button :type "button" :class "close" :data-dismiss "modal"
-          :aria-label "Close" (:span :aria-hidden "true" "×")))
-        (:div :class "modal-body"
-         (:form
-          (:div :class "form-group"
+          (:div :class "form-group" (:label :for "image-url" "Bild-URL:")
+           (:input :type "url" :id "image-url" :class "form-control"))))
+
+     ,(modal "formula" "Formel"
+        `((:button :type "button" :class "btn btn-secondary" :data-dismiss
+            "modal" "Abbrechen")
+          (:button :type "button" :class "btn btn-primary" :id "update-formula"
+           "Ok"))
+        `((:div :class "form-group"
            (:div :class "alert alert-warning" :role "alert"
             "Formeln editieren funktioniert nur in Google Chrome zuverlässig!")
            (:span :id "formula" "e=mc^2"))))
-        (:div :class "modal-footer"
-         (:button :type "button" :class "btn btn-secondary" :data-dismiss
-          "modal" "Abbrechen")
-         (:button :type "button" :class "btn btn-primary" :id "update-formula"
-          "Ok")))))
-     (:form :id "schedule-data-form"
-      (:div :class "modal fade" :id "schedule-data-modal" :tabindex "-1" :role
-       "dialog" :aria-labelledby "schedule-data-modal-label" :aria-hidden
-       "true"
-       (:div :class "modal-dialog" :role "document"
-        (:div :class "modal-content"
-         (:div :class "modal-header"
-          (:h5 :class "modal-title" :id "schedule-data-modal-label"
-           "Unterrichtsstunde")
-          (:button :type "button" :class "close" :data-dismiss "modal"
-           :aria-label "Close" (:span :aria-hidden "true" "×")))
-         (:div :class "modal-body"
-          (:input :type "hidden" :id "schedule-data-weekday" :name "weekday"
-           :value "monday")
-          (:input :type "hidden" :id "schedule-data-hour" :name "hour" :value
-           "1")
-          (:div :class "form-group"
-           (:label :for "week-modulo" "Regelmäßigkeit")
-           (:select :class "custom-select" :id "week-modulo" :name
-            "week-modulo"
-            (:option :selected "selected" :value "0" "Jede Woche")
-            (:option :value "1" "Ungerade Woche")
-            (:option :value "2" "Gerade Woche")))
-          (:div :class "form-group" (:label :for "course" "Kurs:") " "
-           (:select :class "custom-select" :id "course" :name "course"))
-          (:div :class "form-group" (:label :for "room" "Raum:") " "
-           (:input :type "text" :id "room" :name "room" :class
-            "form-control")))
-         (:div :class "modal-footer"
-          (:button :type "button" :class "btn btn-secondary" :data-dismiss
-           "modal" "Abbrechen")
-          (:button :type "submit" :class "btn btn-primary" :id "update-table"
-           "Ok"))))))
+
+      ,(modal "schedule-data" "Unterrichtsstunde"
+         `((:button :type "button" :class "btn btn-secondary" :data-dismiss
+            "modal" "Abbrechen")
+           (:button :type "submit" :class "btn btn-primary" :id "update-table"
+             "Ok"))
+         `((:input :type "hidden" :id "schedule-data-weekday" :name "weekday"
+             :value "monday")
+           (:input :type "hidden" :id "schedule-data-hour" :name "hour" :value
+            "1")
+           (:div :class "form-group"
+            (:label :for "week-modulo" "Regelmäßigkeit")
+            (:select :class "custom-select" :id "week-modulo" :name
+             "week-modulo"
+             (:option :selected "selected" :value "0" "Jede Woche")
+             (:option :value "1" "Ungerade Woche")
+             (:option :value "2" "Gerade Woche")))
+           (:div :class "form-group" (:label :for "course" "Kurs:") " "
+            (:select :class "custom-select" :id "course" :name "course"))
+           (:div :class "form-group" (:label :for "room" "Raum:") " "
+            (:input :type "text" :id "room" :name "room" :class
+             "form-control"))))
+
      (:script :src "/jquery-3.3.1.js")
      (:link :rel "stylesheet" :href "/mathlive.core.css")
      (:link :rel "stylesheet" :href "/mathlive.css")
