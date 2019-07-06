@@ -22,9 +22,7 @@
      (:template :id "multiple-choice-question"
       (:div :class "multiple-choice-question"
        (:form
-        (:div :class "form-group"
-         (:input :type "text" :class "form-control question" :placeholder
-          "Frage eingeben"))
+        ,(text-input "Frage eingeben" "random-id-1" "question" "question")
         (:div :class "responses")
         (:button :type "button" :class
          "btn btn-primary mb-1 add-response-possibility"
