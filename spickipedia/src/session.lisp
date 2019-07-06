@@ -21,7 +21,7 @@ case the function will also send a session cookie to the browser."
     (when session (return-from start-my-session session))
     (setf session
             (create-dao 'my-session :session-cookie (random-base64) :csrf-token
-                        (random-base64))
+             (random-base64))
           (session *request*) session)
     (set-cookie (session-cookie-name *acceptor*) :value
      (my-session-cookie session) :path "/" :http-only t :max-age

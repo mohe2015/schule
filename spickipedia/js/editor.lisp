@@ -15,8 +15,8 @@
           (article-path (chain window location pathname (split "/") 2)))
       (revert-math temp-dom)
       (var categories
-       (chain ($ "#settings-modal") (find ".closable-badge-label")
-        (map (lambda () (chain this inner-text))) (get)))
+           (chain ($ "#settings-modal") (find ".closable-badge-label")
+            (map (lambda () (chain this inner-text))) (get)))
       (chain $
        (post (concatenate 'string "/api/wiki/" article-path)
         (create summary change-summary html (chain temp-dom (html)) categories

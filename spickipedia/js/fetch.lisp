@@ -60,8 +60,8 @@
  (defun cache-then-network (url callback)
    (var networkdatareceived f)
    (var networkupdate
-    (chain (fetch url) (then json)
-     (then (lambda (data) (setf networkdatareceived t) (callback data)))))
+        (chain (fetch url) (then json)
+         (then (lambda (data) (setf networkdatareceived t) (callback data)))))
    (chain caches (match url) (then json)
     (then
      (lambda (data)

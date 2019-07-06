@@ -2,58 +2,53 @@
 (var __-p-s_-m-v_-r-e-g) 
 (i "./test.lisp") 
 (defroute "/quiz/create" (show-tab "#loading")
-          (post "/api/quiz/create"
-           (create '_csrf_token (read-cookie "_csrf_token")) t
-           (push-state (concatenate 'string "/quiz/" data "/edit")))) 
+ (post "/api/quiz/create" (create '_csrf_token (read-cookie "_csrf_token")) t
+  (push-state (concatenate 'string "/quiz/" data "/edit")))) 
 (defroute "/quiz/:id/edit" (show-tab "#edit-quiz")) 
 (defroute "/quiz/:id/play"
-          (get (concatenate 'string "/api/quiz/" id) t
-               (setf (chain window correct-responses) 0)
-               (setf (chain window wrong-responses) 0)
-               (replace-state (concatenate 'string "/quiz/" id "/play/0")
-                (create data data)))) 
+ (get (concatenate 'string "/api/quiz/" id) t
+      (setf (chain window correct-responses) 0)
+      (setf (chain window wrong-responses) 0)
+      (replace-state (concatenate 'string "/quiz/" id "/play/0")
+       (create data data)))) 
 (defroute "/quiz/:id/play/:index" (setf index (parse-int index))
-          (if (= (chain window history state data questions length) index)
-              (progn
-               (replace-state (concatenate 'string "/quiz/" id "/results"))
-               (return)))
-          (setf (chain window current-question)
-                  (elt (chain window history state data questions) index))
-          (if (= (chain window current-question type) "multiple-choice")
-              (progn
-               (show-tab "#multiple-choice-question-html")
-               (chain ($ ".question-html")
-                (text (chain window current-question question)))
-               (chain ($ "#answers-html") (text ""))
-               (dotimes (i (chain window current-question responses length))
-                 (let ((answer
-                        (elt (chain window current-question responses) i))
-                       (template
-                        ($ (chain ($ "#multiple-choice-answer-html") (html)))))
-                   (chain template (find ".custom-control-label")
-                    (text (chain answer text)))
-                   (chain template (find ".custom-control-label")
-                    (attr "for" i))
-                   (chain template (find ".custom-control-input")
-                    (attr "id" i))
-                   (chain ($ "#answers-html") (append template))))))
-          (if (= (chain window current-question type) "text")
-              (progn
-               (show-tab "#text-question-html")
-               (chain ($ ".question-html")
-                (text (chain window current-question question)))))) 
+ (if (= (chain window history state data questions length) index)
+     (progn
+      (replace-state (concatenate 'string "/quiz/" id "/results"))
+      (return)))
+ (setf (chain window current-question)
+         (elt (chain window history state data questions) index))
+ (if (= (chain window current-question type) "multiple-choice")
+     (progn
+      (show-tab "#multiple-choice-question-html")
+      (chain ($ ".question-html")
+       (text (chain window current-question question)))
+      (chain ($ "#answers-html") (text ""))
+      (dotimes (i (chain window current-question responses length))
+        (let ((answer (elt (chain window current-question responses) i))
+              (template ($ (chain ($ "#multiple-choice-answer-html") (html)))))
+          (chain template (find ".custom-control-label")
+           (text (chain answer text)))
+          (chain template (find ".custom-control-label") (attr "for" i))
+          (chain template (find ".custom-control-input") (attr "id" i))
+          (chain ($ "#answers-html") (append template))))))
+ (if (= (chain window current-question type) "text")
+     (progn
+      (show-tab "#text-question-html")
+      (chain ($ ".question-html")
+       (text (chain window current-question question)))))) 
 (defroute "/quiz/:id/results" (show-tab "#quiz-results")
-          (chain ($ "#result")
-           (text
-            (concatenate 'string "Du hast " (chain window correct-responses)
-                         " Fragen richtig und " (chain window wrong-responses)
-                         " Fragen falsch beantwortet. Das sind "
-                         (chain
-                          (/ (* (chain window correct-responses) 100)
-                             (+ (chain window correct-responses)
-                                (chain window wrong-responses)))
-                          (to-fixed 1) (to-locale-string))
-                         " %")))) 
+ (chain ($ "#result")
+  (text
+   (concatenate 'string "Du hast " (chain window correct-responses)
+                " Fragen richtig und " (chain window wrong-responses)
+                " Fragen falsch beantwortet. Das sind "
+                (chain
+                 (/ (* (chain window correct-responses) 100)
+                    (+ (chain window correct-responses)
+                       (chain window wrong-responses)))
+                 (to-fixed 1) (to-locale-string))
+                " %")))) 
 (chain ($ ".multiple-choice-submit-html")
  (click
   (lambda ()

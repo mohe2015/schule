@@ -15,6 +15,6 @@
 (defconfig |production| 'nil)
 (defconfig |test| 'nil)
 (defun config (&optional key) (envy:config "SPICKIPEDIA.CONFIG" key))
-(defun appenv () (uiop/os:getenv (config-env-var "SPICKIPEDIA.CONFIG")))
+(defun appenv () (uiop/os:getenv (config-env-var "SPICKIPEDIA.CONFIG"))) 
 (defun developmentp () (string= (appenv) "development"))
 (defun productionp () (string= (appenv) "production"))

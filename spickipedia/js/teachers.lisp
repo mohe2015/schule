@@ -9,24 +9,22 @@
 (i "./utils.lisp" "showModal" "all" "one" "hideModal" "clearChildren") 
 (defroute "/teachers/new" (show-tab "#create-teacher-tab")) 
 (defroute "/teachers" (show-tab "#list-teachers")
-          (chain (fetch "/api/teachers") (then check-status) (then json)
-           (then
-            (lambda (data)
-              (if (null data)
-                  (setf data ([])))
-              (let ((teachers-list
-                     (chain document (get-element-by-id "teachers-list"))))
-                (setf (chain teachers-list inner-h-t-m-l) "")
-                (loop for page in data
-                      do (let ((template (get-template "teachers-list-html")))
-                           (chain console (log (chain page name)))
-                           (setf (chain template
-                                  (query-selector ".teachers-list-name")
-                                  inner-text)
-                                   (chain page name))
-                           (chain document (get-element-by-id "teachers-list")
-                            (append template)))))))
-           (catch handle-fetch-error))) 
+ (chain (fetch "/api/teachers") (then check-status) (then json)
+  (then
+   (lambda (data)
+     (if (null data)
+         (setf data ([])))
+     (let ((teachers-list (chain document (get-element-by-id "teachers-list"))))
+       (setf (chain teachers-list inner-h-t-m-l) "")
+       (loop for page in data
+             do (let ((template (get-template "teachers-list-html")))
+                  (chain console (log (chain page name)))
+                  (setf (chain template (query-selector ".teachers-list-name")
+                         inner-text)
+                          (chain page name))
+                  (chain document (get-element-by-id "teachers-list")
+                   (append template)))))))
+  (catch handle-fetch-error))) 
 (chain ($ "#create-teacher-form")
  (submit
   (lambda (event)

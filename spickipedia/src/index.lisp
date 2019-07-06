@@ -1,5 +1,5 @@
 
-(in-package :spickipedia.web) 
+(in-package :spickipedia.web)
 (defun get-html ()
   `(:html :lang "en"
     (:head (:meta :charset "utf-8")

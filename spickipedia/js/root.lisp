@@ -3,4 +3,4 @@
 (i "./test.lisp") 
 (i "./replace-state.lisp" "replaceState") 
 (defroute "/" (chain ($ ".edit-button") (remove-class "disabled"))
-          (replace-state "/wiki/Hauptseite")) 
+ (replace-state "/wiki/Hauptseite")) 

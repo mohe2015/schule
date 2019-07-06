@@ -1,13 +1,12 @@
 
-(quicklisp-client:quickload :spickipedia)
+(quicklisp-client:quickload :spickipedia) 
 (defpackage spickipedia.app
   (:use :cl)
   (:import-from :lack.builder :builder)
   (:import-from :ppcre :scan :regex-replace)
   (:import-from :spickipedia.web :*web*)
-  (:import-from :spickipedia.config :config :productionp :*static-directory*))
-(in-package :spickipedia.app)
-
+  (:import-from :spickipedia.config :config :productionp :*static-directory*)) 
+(in-package :spickipedia.app) 
 (builder
  (if (productionp)
      nil
@@ -20,6 +19,6 @@
      nil
      (lambda (app)
        (lambda (env)
-         (let ((*mito-logger-stream* t))
+         (let ((mito.logger:*mito-logger-stream* t))
            (funcall app env)))))
- *web*)
+ *web*) 
