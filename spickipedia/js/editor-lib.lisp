@@ -1,18 +1,18 @@
 
-(var __-p-s_-m-v_-r-e-g) 
-(i "./test.lisp") 
-(i "./file-upload.lisp" "sendFile") 
+(var __-p-s_-m-v_-r-e-g)
+(i "./test.lisp")
+(i "./file-upload.lisp" "sendFile")
 (i "./categories.lisp") 
-(i "./handle-error.lisp" "handleError") 
-(i "./fetch.lisp" "cacheThenNetwork") 
+(i "./handle-error.lisp" "handleError")
+(i "./fetch.lisp" "cacheThenNetwork")
 (defun save-range ()
   (chain document (get-elements-by-tag-name "article") 0 (focus))
   (setf (chain window saved-range)
-          (chain window (get-selection) (get-range-at 0)))) 
+        (chain window (get-selection) (get-range-at 0))))
 (defun restore-range ()
   (chain document (get-elements-by-tag-name "article") 0 (focus))
   (chain window (get-selection) (remove-all-ranges))
-  (chain window (get-selection) (add-range (chain window saved-range)))) 
+  (chain window (get-selection) (add-range (chain window saved-range))))
 (defmacro tool (id &body body)
   `(chain document (get-element-by-id ,id)
     (add-event-listener "click"
@@ -21,24 +21,24 @@
        (chain event (stop-propagation))
        (save-range)
        ,@body
-       f)))) 
-(defmacro stool (id) `(tool ,id (chain document (exec-command ,id f)))) 
-(tool "format-p" (chain document (exec-command "formatBlock" f "<p>"))) 
-(tool "format-h2" (chain document (exec-command "formatBlock" f "<h2>"))) 
-(tool "format-h3" (chain document (exec-command "formatBlock" f "<h3>"))) 
-(stool "superscript") 
-(stool "subscript") 
-(stool "insertUnorderedList") 
-(stool "insertOrderedList") 
-(stool "indent") 
-(stool "outdent") 
-(defun get-url (url) (new (-u-r-l url (chain window location origin)))) 
+       f))))
+(defmacro stool (id) `(tool ,id (chain document (exec-command ,id f))))
+(tool "format-p" (chain document (exec-command "formatBlock" f "<p>")))
+(tool "format-h2" (chain document (exec-command "formatBlock" f "<h2>")))
+(tool "format-h3" (chain document (exec-command "formatBlock" f "<h3>")))
+(stool "superscript")
+(stool "subscript")
+(stool "insertUnorderedList")
+(stool "insertOrderedList")
+(stool "indent")
+(stool "outdent")
+(defun get-url (url) (new (-u-r-l url (chain window location origin))))
 (export
  (defun is-local-url (url)
    (try
     (let ((url (get-url url)))
       (return (= (chain url origin) (chain window location origin))))
-    (:catch (error) (return f))))) 
+    (:catch (error) (return f)))))
 (defun update-link (url)
   (if (is-local-url url)
       (let ((parsed-url (get-url url)))
@@ -61,7 +61,7 @@
                   (link
                    (chain selection focus-node parent-element (closest "a"))))
              (setf (chain link target) "_blank")
-             (setf (chain link rel) "noopener noreferrer")))))) 
+             (setf (chain link rel) "noopener noreferrer"))))))
 (tool "createLink"
  (chain ($ "#link-form") (off "submit")
   (submit
@@ -71,9 +71,9 @@
      (chain ($ "#link-modal") (modal "hide"))
      (restore-range)
      (update-link (chain ($ "#link") (val))))))
- (chain ($ "#link-modal") (modal "show"))) 
-(var articles (array)) 
-(cache-then-network "/api/articles" (lambda (data) (setf articles data))) 
+ (chain ($ "#link-modal") (modal "show")))
+(var articles (array))
+(cache-then-network "/api/articles" (lambda (data) (setf articles data)))
 (chain document (get-element-by-id "link")
  (add-event-listener "input"
   (lambda (event)
@@ -102,12 +102,12 @@
                   (add-event-listener "click"
                    (lambda (event)
                      (setf (chain input value)
-                             (concatenate 'string "/wiki/"
-                                          (chain element inner-h-t-m-l)))
+                           (concatenate 'string "/wiki/"
+                                        (chain element inner-h-t-m-l)))
                      (chain input next-element-sibling class-list
                       (remove "show")))))
                  (chain input next-element-sibling (append element))))
-      nil)))) 
+      nil))))
 (chain ($ "body")
  (on "click" ".editLink"
   (lambda (event)
@@ -124,7 +124,7 @@
           (chain ($ "#link-modal") (modal "hide"))
           (chain document (get-elements-by-tag-name "article") 0 (focus))
           (chain ($ target) (attr "href" (chain ($ "#link") (val)))))))
-      (chain ($ "#link-modal") (modal "show")))))) 
+      (chain ($ "#link-modal") (modal "show"))))))
 (chain ($ "body")
  (on "click" ".deleteLink"
   (lambda (event)
@@ -132,22 +132,22 @@
     (chain event (stop-propagation))
     (let ((target (get-popover-target (chain event target))))
       (chain ($ target) (popover "hide"))
-      (chain ($ target) (remove)))))) 
+      (chain ($ target) (remove))))))
 (chain ($ "body")
  (on "click" "article[contenteditable=true] a"
   (lambda (event)
     (let ((target (chain event current-target)))
       (create-popover-for target
        "<a href=\"#\" class=\"editLink\"><span class=\"fas fa-link\"></span></a> <a href=\"#\" class=\"deleteLink\"><span class=\"fas fa-unlink\"></span></a>")
-      (chain ($ target) (popover "show")))))) 
-(tool "insertImage" (chain ($ "#image-modal") (modal "show"))) 
+      (chain ($ target) (popover "show"))))))
+(tool "insertImage" (chain ($ "#image-modal") (modal "show")))
 (chain ($ "body")
  (on "click" "article[contenteditable=true] figure"
   (lambda (event)
     (let ((target (chain event current-target)))
       (create-popover-for target
        "<a href=\"#\" class=\"floatImageLeft\"><span class=\"fas fa-align-left\"></span></a> <a href=\"#\" class=\"floatImageRight\"><span class=\"fas fa-align-right\"></span></a> <a href=\"#\" class=\"resizeImage25\">25%</a> <a href=\"#\" class=\"resizeImage50\">50%</a> <a href=\"#\" class=\"resizeImage100\">100%</a> <a href=\"#\" class=\"deleteImage\"><span class=\"fas fa-trash\"></span></a>")
-      (chain ($ target) (popover "show")))))) 
+      (chain ($ target) (popover "show"))))))
 (chain ($ "body")
  (on "click" ".floatImageLeft"
   (lambda (event)
@@ -157,7 +157,7 @@
       (chain ($ target) (popover "hide"))
       (chain document (get-elements-by-tag-name "article") 0 (focus))
       (chain target class-list (remove "float-right"))
-      (chain target class-list (add "float-left")))))) 
+      (chain target class-list (add "float-left"))))))
 (chain ($ "body")
  (on "click" ".floatImageRight"
   (lambda (event)
@@ -167,7 +167,7 @@
       (chain ($ target) (popover "hide"))
       (chain document (get-elements-by-tag-name "article") 0 (focus))
       (chain target class-list (remove "float-left"))
-      (chain target class-list (add "float-right")))))) 
+      (chain target class-list (add "float-right"))))))
 (chain ($ "body")
  (on "click" ".resizeImage25"
   (lambda (event)
@@ -179,7 +179,7 @@
       (chain target class-list (remove "w-50"))
       (chain target class-list (remove "w-100"))
       (chain target class-list (add "w-25")))
-    f))) 
+    f)))
 (chain ($ "body")
  (on "click" ".resizeImage50"
   (lambda (event)
@@ -190,7 +190,7 @@
       (chain document (get-elements-by-tag-name "article") 0 (focus))
       (chain target class-list (remove "w-25"))
       (chain target class-list (remove "w-100"))
-      (chain target class-list (add "w-50")))))) 
+      (chain target class-list (add "w-50"))))))
 (chain ($ "body")
  (on "click" ".resizeImage100"
   (lambda (event)
@@ -201,7 +201,7 @@
       (chain document (get-elements-by-tag-name "article") 0 (focus))
       (chain target class-list (remove "w-25"))
       (chain target class-list (remove "w-50"))
-      (chain target class-list (add "w-100")))))) 
+      (chain target class-list (add "w-100"))))))
 (chain ($ "body")
  (on "click" ".deleteImage"
   (lambda (event)
@@ -210,7 +210,7 @@
     (let ((target (get-popover-target (chain event current-target))))
       (chain ($ target) (popover "hide"))
       (chain document (get-elements-by-tag-name "article") 0 (focus))
-      (chain target (remove)))))) 
+      (chain target (remove))))))
 (chain ($ "#update-image")
  (click
   (lambda (event)
@@ -222,8 +222,8 @@
           (concatenate 'string "<img src=\"" (chain ($ "#image-url") (val))
                        "\"></img>")))
         (send-file
-         (chain document (get-element-by-id "image-file") files 0)))))) 
-(tool "table" (chain ($ "#table-modal") (modal "show"))) 
+         (chain document (get-element-by-id "image-file") files 0))))))
+(tool "table" (chain ($ "#table-modal") (modal "show")))
 (chain ($ "#update-table")
  (click
   (lambda (event)
@@ -239,13 +239,13 @@
             (concatenate 'string
                          "<div class=\"table-responsive\"><table class=\"table table-bordered\">"
                          inner-table-html "</table></div>")))
-      (chain document (exec-command "insertHTML" f table-html)))))) 
+      (chain document (exec-command "insertHTML" f table-html))))))
 (chain ($ "body")
  (on "click" "article[contenteditable=true] td"
   (lambda (event)
     (let ((target (chain event current-target)))
       (create-popover-for target "table data")
-      (chain ($ target) (popover "show")))))) 
+      (chain ($ target) (popover "show"))))))
 (tool "insertFormula"
  (chain ($ "#update-formula") (off "click")
   (click
@@ -264,9 +264,9 @@
              do (chain -math-live (render-math-in-element element)))))))
  (chain ($ "#formula-modal") (modal "show"))
  (setf (chain window mathfield)
-         (chain -math-live
-          (make-math-field (chain document (get-element-by-id "formula"))
-           (create virtual-keyboard-mode "manual"))))) 
+       (chain -math-live
+        (make-math-field (chain document (get-element-by-id "formula"))
+         (create virtual-keyboard-mode "manual")))))
 (chain ($ "#update-formula") (off "click")
  (click
   (lambda (event)
@@ -281,29 +281,29 @@
                      latex "\\)</span>")))
       (loop for element in (chain document
                             (get-elements-by-class-name "formula"))
-            do (chain -math-live (render-math-in-element element))))))) 
-(stool "undo") 
-(stool "redo") 
-(tool "settings" (chain ($ "#settings-modal") (modal "show"))) 
+            do (chain -math-live (render-math-in-element element)))))))
+(stool "undo")
+(stool "redo")
+(tool "settings" (chain ($ "#settings-modal") (modal "show")))
 (tool "finish"
  (chain ($ "#publish-changes-modal")
   (on "shown.bs.modal"
    (lambda () (chain ($ "#change-summary") (trigger "focus")))))
- (chain ($ "#publish-changes-modal") (modal "show"))) 
+ (chain ($ "#publish-changes-modal") (modal "show")))
 (defun random-int ()
-  (chain -math (floor (* (chain -math (random)) 10000000000000000)))) 
+  (chain -math (floor (* (chain -math (random)) 10000000000000000))))
 (defun create-popover-for (element content)
   (if (not (chain element id))
       (setf (chain element id)
-              (concatenate 'string "popover-target-" (random-int))))
+            (concatenate 'string "popover-target-" (random-int))))
   (chain ($ element)
    (popover
     (create html t template
      (concatenate 'string "<div data-target=\"#" (chain element id)
                   "\" class=\"popover\" role=\"tooltip\"><div class=\"arrow\"></div><h3 class=\"popover-header\"></h3><div class=\"popover-body\"></div></div>")
-     content content trigger "manual")))) 
+     content content trigger "manual"))))
 (defun get-popover-target (element)
-  (chain ($ (chain ($ element) (closest ".popover") (data "target"))) 0)) 
+  (chain ($ (chain ($ element) (closest ".popover") (data "target"))) 0))
 (defun remove-old-popovers (event)
   (loop for popover in ($ ".popover")
         do (let ((target (get-popover-target popover)))
@@ -317,15 +317,15 @@
                           (return-from remove-old-popovers)))
              (if (= (chain event target) target)
                  (return-from remove-old-popovers))
-             (chain ($ target) (popover "hide"))))) 
-(chain ($ "body") (click remove-old-popovers)) 
+             (chain ($ target) (popover "hide")))))
+(chain ($ "body") (click remove-old-popovers))
 (chain ($ "body")
  (on "click" "article[contenteditable=true] .formula"
   (lambda (event)
     (let ((target (chain event current-target)))
       (create-popover-for target
        "<a href=\"#\" class=\"editFormula\"><span class=\"fas fa-pen\"></span></a> <a href=\"#\" class=\"deleteFormula\"><span class=\"fas fa-trash\"></span></a>")
-      (chain ($ target) (popover "show")))))) 
+      (chain ($ target) (popover "show"))))))
 (chain ($ "body")
  (on "click" ".deleteFormula"
   (lambda (event)
@@ -334,7 +334,7 @@
     (let ((target (get-popover-target (chain event current-target))))
       (chain ($ target) (popover "hide"))
       (chain document (get-elements-by-tag-name "article") 0 (focus))
-      (chain target (remove)))))) 
+      (chain target (remove))))))
 (chain ($ "body")
  (on "click" ".editFormula"
   (lambda (event)
@@ -345,11 +345,11 @@
       (chain ($ target) (popover "hide"))
       (chain document (get-elements-by-tag-name "article") 0 (focus))
       (setf (chain document (get-element-by-id "formula") inner-h-t-m-l)
-              (concatenate 'string "\\( " content " \\)"))
+            (concatenate 'string "\\( " content " \\)"))
       (setf (chain window mathfield)
-              (chain -math-live
-               (make-math-field (chain document (get-element-by-id "formula"))
-                (create virtual-keyboard-mode "manual"))))
+            (chain -math-live
+             (make-math-field (chain document (get-element-by-id "formula"))
+              (create virtual-keyboard-mode "manual"))))
       (chain ($ "#formula-modal") (modal "show"))
       (chain ($ "#update-formula") (off "click")
        (click
@@ -359,8 +359,8 @@
           (let ((latex (chain window mathfield (latex))))
             (chain window mathfield (revert-to-original-content))
             (setf (chain target inner-h-t-m-l)
-                    (concatenate 'string "\\( " latex " \\)"))
+                  (concatenate 'string "\\( " latex " \\)"))
             (loop for element in (chain document
                                   (get-elements-by-class-name "formula"))
                   do (chain -math-live
-                      (render-math-in-element element))))))))))) 
+                      (render-math-in-element element)))))))))))

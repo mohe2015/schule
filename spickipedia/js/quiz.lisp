@@ -1,23 +1,23 @@
 
-(var __-p-s_-m-v_-r-e-g) 
-(i "./test.lisp") 
+(var __-p-s_-m-v_-r-e-g)
+(i "./test.lisp")
 (defroute "/quiz/create" (show-tab "#loading")
  (post "/api/quiz/create" (create '_csrf_token (read-cookie "_csrf_token")) t
-  (push-state (concatenate 'string "/quiz/" data "/edit")))) 
-(defroute "/quiz/:id/edit" (show-tab "#edit-quiz")) 
+  (push-state (concatenate 'string "/quiz/" data "/edit"))))
+(defroute "/quiz/:id/edit" (show-tab "#edit-quiz"))
 (defroute "/quiz/:id/play"
  (get (concatenate 'string "/api/quiz/" id) t
       (setf (chain window correct-responses) 0)
       (setf (chain window wrong-responses) 0)
       (replace-state (concatenate 'string "/quiz/" id "/play/0")
-       (create data data)))) 
+       (create data data))))
 (defroute "/quiz/:id/play/:index" (setf index (parse-int index))
  (if (= (chain window history state data questions length) index)
      (progn
       (replace-state (concatenate 'string "/quiz/" id "/results"))
       (return)))
  (setf (chain window current-question)
-         (elt (chain window history state data questions) index))
+       (elt (chain window history state data questions) index))
  (if (= (chain window current-question type) "multiple-choice")
      (progn
       (show-tab "#multiple-choice-question-html")
@@ -36,7 +36,7 @@
      (progn
       (show-tab "#text-question-html")
       (chain ($ ".question-html")
-       (text (chain window current-question question)))))) 
+       (text (chain window current-question question))))))
 (defroute "/quiz/:id/results" (show-tab "#quiz-results")
  (chain ($ "#result")
   (text
@@ -48,7 +48,7 @@
                     (+ (chain window correct-responses)
                        (chain window wrong-responses)))
                  (to-fixed 1) (to-locale-string))
-                " %")))) 
+                " %"))))
 (chain ($ ".multiple-choice-submit-html")
  (click
   (lambda ()
@@ -93,7 +93,7 @@
           (incf (chain window correct-responses))
           (incf (chain window wrong-responses)))
       (chain ($ ".multiple-choice-submit-html") (hide))
-      (chain ($ ".next-question") (show)))))) 
+      (chain ($ ".next-question") (show))))))
 (chain ($ ".text-submit-html")
  (click
   (lambda ()
@@ -106,7 +106,7 @@
          (incf (chain window wrong-responses))
          (chain ($ "#text-response") (add-class "is-invalid"))))
     (chain ($ ".text-submit-html") (hide))
-    (chain ($ ".next-question") (show))))) 
+    (chain ($ ".next-question") (show)))))
 (chain ($ ".next-question")
  (click
   (lambda ()
@@ -116,21 +116,21 @@
     (let ((pathname (chain window location pathname (split "/"))))
       (replace-state
        (concatenate 'string "/quiz/" (chain pathname 2) "/play/"
-                    (1+ (parse-int (chain pathname 4))))))))) 
+                    (1+ (parse-int (chain pathname 4)))))))))
 (chain ($ ".create-multiple-choice-question")
  (click
   (lambda ()
     (chain ($ "#questions")
-     (append ($ (chain ($ "#multiple-choice-question") (html)))))))) 
+     (append ($ (chain ($ "#multiple-choice-question") (html))))))))
 (chain ($ ".create-text-question")
  (click
   (lambda ()
-    (chain ($ "#questions") (append ($ (chain ($ "#text-question") (html)))))))) 
+    (chain ($ "#questions") (append ($ (chain ($ "#text-question") (html))))))))
 (chain ($ "body")
  (on "click" ".add-response-possibility"
   (lambda (e)
     (chain ($ this) (siblings ".responses")
-     (append ($ (chain ($ "#multiple-choice-response-possibility") (html)))))))) 
+     (append ($ (chain ($ "#multiple-choice-response-possibility") (html))))))))
 (chain ($ ".save-quiz")
  (click
   (lambda ()
@@ -150,10 +150,10 @@
        t
        (chain window history
         (replace-state nil nil
-         (concatenate 'string "/quiz/" (chain pathname 2) "/play")))))))) 
+         (concatenate 'string "/quiz/" (chain pathname 2) "/play"))))))))
 (defun text-question (element)
   (create type "text" question (chain element (find ".question") (val)) answer
-   (chain element (find ".answer") (val)))) 
+   (chain element (find ".answer") (val))))
 (defun multiple-choice-question (element)
   (let ((obj
          (create type "multiple-choice" question
@@ -168,4 +168,4 @@
                (chain ($ this) (find ".multiple-choice-response-text") (val))))
           (chain obj responses
            (push (create text response-text is-correct is-correct)))))))
-    obj)) 
+    obj))

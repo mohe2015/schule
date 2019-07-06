@@ -1,12 +1,12 @@
 
-(var __-p-s_-m-v_-r-e-g) 
-(i "../show-tab.lisp" "showTab") 
-(i "../read-cookie.lisp" "readCookie") 
-(i "../handle-error.lisp" "handleError") 
+(var __-p-s_-m-v_-r-e-g)
+(i "../show-tab.lisp" "showTab")
+(i "../read-cookie.lisp" "readCookie")
+(i "../handle-error.lisp" "handleError")
 (i "../fetch.lisp" "cacheThenNetwork" "checkStatus" "json" "html"
- "handleFetchError") 
-(i "../template.lisp" "getTemplate") 
-(i "../utils.lisp" "showModal" "all" "one" "hideModal" "clearChildren") 
+ "handleFetchError")
+(i "../template.lisp" "getTemplate")
+(i "../utils.lisp" "showModal" "all" "one" "hideModal" "clearChildren")
 (defun render ()
   (show-tab "#loading")
   (chain (fetch "/api/student-courses") (then check-status) (then json)
@@ -22,9 +22,9 @@
                    (setf (chain template
                           (query-selector ".student-courses-list-subject")
                           inner-text)
-                           (concatenate 'string (chain course course subject)
-                                        " " (chain course course type) " "
-                                        (chain course course teacher name)))
+                         (concatenate 'string (chain course course subject)
+                                      " " (chain course course type) " "
+                                      (chain course course teacher name)))
                    (chain template
                     (query-selector ".button-student-course-delete")
                     (set-attribute "data-id-student-course"
@@ -32,7 +32,7 @@
                    (chain document (get-element-by-id "student-courses-list")
                     (append template)))))))
    (catch handle-fetch-error))
-  (show-tab "#list-student-courses")) 
+  (show-tab "#list-student-courses"))
 (defroute "/student-courses" (render)
  (cache-then-network "/api/courses"
   (lambda (data)
@@ -64,7 +64,7 @@
         (then check-status)
         (then
          (lambda (data) (hide-modal (one "#modal-student-courses")) (render)))
-        (catch handle-fetch-error))))))) 
+        (catch handle-fetch-error)))))))
 (chain ($ "body")
  (on "click" ".button-student-course-delete"
   (lambda (e)
@@ -75,4 +75,4 @@
       (chain
        (fetch "/api/student-courses" (create method "DELETE" body form-data))
        (then check-status) (then (lambda (data) (render)))
-       (catch handle-fetch-error)))))) 
+       (catch handle-fetch-error))))))

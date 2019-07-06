@@ -1,14 +1,14 @@
 
-(var __-p-s_-m-v_-r-e-g) 
-(i "../test.lisp") 
-(i "../show-tab.lisp" "showTab") 
-(i "../cleanup.lisp" "cleanup") 
-(i "../handle-error.lisp" "handleError") 
+(var __-p-s_-m-v_-r-e-g)
+(i "../test.lisp")
+(i "../show-tab.lisp" "showTab")
+(i "../cleanup.lisp" "cleanup")
+(i "../handle-error.lisp" "handleError")
 (i "../fetch.lisp" "checkStatus" "json" "html" "handleFetchError"
- "cacheThenNetwork") 
-(i "../utils.lisp" "showModal" "all" "one" "hideModal" "clearChildren") 
-(i "../template.lisp" "getTemplate") 
-(i "../read-cookie.lisp" "readCookie") 
+ "cacheThenNetwork")
+(i "../utils.lisp" "showModal" "all" "one" "hideModal" "clearChildren")
+(i "../template.lisp" "getTemplate")
+(i "../read-cookie.lisp" "readCookie")
 (defroute "/schedule/:grade" (show-tab "#schedule")
  (chain (fetch (concatenate 'string "/api/schedule/" grade))
   (then check-status) (then json)
@@ -33,26 +33,26 @@
                                               (setf (chain template
                                                      (query-selector ".data")
                                                      inner-text)
-                                                      (concatenate 'string
-                                                                   (chain
-                                                                    element
-                                                                    course
-                                                                    subject)
-                                                                   " "
-                                                                   (chain
-                                                                    element
-                                                                    course
-                                                                    type)
-                                                                   " "
-                                                                   (chain
-                                                                    element
-                                                                    course
-                                                                    teacher
-                                                                    name)
-                                                                   " "
-                                                                   (chain
-                                                                    element
-                                                                    room)))
+                                                    (concatenate 'string
+                                                                 (chain
+                                                                  element
+                                                                  course
+                                                                  subject)
+                                                                 " "
+                                                                 (chain
+                                                                  element
+                                                                  course
+                                                                  type)
+                                                                 " "
+                                                                 (chain
+                                                                  element
+                                                                  course
+                                                                  teacher
+                                                                  name)
+                                                                 " "
+                                                                 (chain
+                                                                  element
+                                                                  room)))
                                               (chain template
                                                (query-selector
                                                 ".button-delete-schedule-data")
@@ -60,7 +60,7 @@
                                                 (chain element id)))
                                               (chain cell
                                                (prepend template))))))
-  (catch handle-fetch-error))) 
+  (catch handle-fetch-error)))
 (chain (one "#schedule-data-form")
  (add-event-listener "submit"
   (lambda (event)
@@ -85,10 +85,10 @@
        (then
         (lambda (data)
           (setf (chain template (query-selector ".data") inner-text)
-                  (concatenate 'string course " " room))
+                (concatenate 'string course " " room))
           (chain cell (prepend template))
           (hide-modal (one "#schedule-data-modal"))))
-       (catch handle-fetch-error)))))) 
+       (catch handle-fetch-error))))))
 (chain (all ".add-course")
  (on "click"
   (lambda (event)
@@ -100,7 +100,7 @@
              (index-of x-element))))
       (setf (chain (one "#schedule-data-weekday") value) x)
       (setf (chain (one "#schedule-data-hour") value) y)
-      (show-modal (one "#schedule-data-modal")))))) 
+      (show-modal (one "#schedule-data-modal"))))))
 (chain (one "body")
  (add-event-listener "click"
   (lambda (event)
@@ -122,7 +122,7 @@
            (then
             (lambda (data)
               (chain event target (closest ".schedule-data") (remove))))
-           (catch handle-fetch-error))))))) 
+           (catch handle-fetch-error)))))))
 (cache-then-network "/api/courses"
  (lambda (data)
    (let ((course-select (one "#course")))
@@ -135,4 +135,4 @@
                                   (chain course teacher name))))
                 (setf (chain option value) (chain course course-id))
                 (setf (chain option inner-text) text)
-                (chain course-select (append-child option))))))) 
+                (chain course-select (append-child option)))))))
