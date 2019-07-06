@@ -10,11 +10,7 @@
      (:link :rel "stylesheet" :href "/index.css") (:title "Spickipedia"))
     (:body
      (:template :id "multiple-choice-answer-html"
-      (:div :class "custom-control custom-checkbox" " "
-       (:input :type "checkbox" :class "custom-control-input" :id
-        "customCheck1")
-       (:label :class "custom-control-label" :for "customCheck1"
-        "Check this custom")))
+       ,(checkbox-input "Check this custom" "customCheck1" "name"))
      (:template :id "teachers-list-html" (:li :class "teachers-list-name"))
      (:template :id "courses-list-html" (:li :class "courses-list-subject"))
      (:template :id "schedules-list-html"
@@ -112,7 +108,7 @@
       (:form :method "POST" :action "/api/teachers" :id "create-teacher-form"
        ,(text-input "Name" "teacher-name" "name")
        ,(text-input "Initialien" "teacher-initial" "initial")
-       (:button :type "submit" :class "btn btn-primary" "LehrerIn erstellen")))
+       ,(submit-button "LehrerIn erstellen")))
      (:div :style "display: none;" :class "container my-tab position-absolute"
       :id "articles" (:h1 :class "text-center" "Alle Artikel")
       (:ul :id "articles-list"))
@@ -122,8 +118,7 @@
       "container-fluid my-tab position-absolute" :id "create-schedule-tab"
       (:form :method "POST" :action "/api/schedules" :id "create-schedule-form"
        ,(text-input "Jahrgang" "schedule-grade" "grade")
-       (:button :type "submit" :class "btn btn-primary"
-        "Stundenplan erstellen")))
+       ,(submit-button "Stundenplan erstellen")))
      ,@(html-settings)
      (:div :style "display: none;" :class "container my-tab position-absolute"
       :id "multiple-choice-question-html"
@@ -176,8 +171,7 @@
         (:input :type "password" :id "inputPassword" :class "form-control"
          :placeholder "Passwort" :required "" :autocomplete
          "current-password"))
-       (:button :class "btn btn-primary" :type "submit" :id "login-button"
-        "Anmelden")))
+       ,(submit-button "Anmelden" :id "login-button")))
      (:div :style "display: none;" :class
       "container-fluid my-tab position-absolute word-wrap" :id "page"
       (:div :class "alert alert-warning mt-1 d-none" :id "is-outdated-article"
@@ -301,8 +295,7 @@
      ,(modal "link" "Link"
         `((:button :type "button" :class "btn btn-secondary" :data-dismiss
            "modal" "Abbrechen")
-          (:button :type "submit" :class "btn btn-primary" :id "update-link"
-           "Ok"))
+          (submit-button "Ok" :id "update-link"))
         `((:div :class "form-group" :style
             "position: relative; display: inline-block;"
             (:input :type "text" :id "link" :class "form-control" :autocomplete
@@ -345,8 +338,7 @@
       ,(modal "schedule-data" "Unterrichtsstunde"
          `((:button :type "button" :class "btn btn-secondary" :data-dismiss
             "modal" "Abbrechen")
-           (:button :type "submit" :class "btn btn-primary" :id "update-table"
-             "Ok"))
+           ,(submit-button "Ok" :id "update-table"))
          `((:input :type "hidden" :id "schedule-data-weekday" :name "weekday"
              :value "monday")
            (:input :type "hidden" :id "schedule-data-hour" :name "hour" :value

@@ -24,8 +24,8 @@
   `(:div :class "custom-control custom-checkbox"
     (:input :type "checkbox" :class "custom-control-input" :name ,name :id ,id)
     (:label :class "custom-control-label" :for ,id ,label)))
-(defun submit-button (label)
-  `(:button :type "submit" :class "btn btn-primary" ,label))
+(defun submit-button (label &key id)
+  `(:button :type "submit" :class "btn btn-primary" ,label :id ,id))
 (defun tab (id &rest content)
   `(:div :style "display: none;" :class
     "container-fluid my-tab position-absolute" :id ,id ,@content))
