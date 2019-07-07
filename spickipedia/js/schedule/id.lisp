@@ -61,7 +61,7 @@
                                               (chain cell
                                                (prepend template))))))
   (catch handle-fetch-error)))
-(chain (one "#schedule-data-form")
+(chain (one "#form-schedule-data")
  (add-event-listener "submit"
   (lambda (event)
     (chain event (prevent-default))
@@ -74,7 +74,7 @@
            (course (chain (one "#course") selected-options 0 inner-text))
            (room (chain (one "#room") value))
            (form-element
-            (chain document (query-selector "#schedule-data-form")))
+            (chain document (query-selector "#form-schedule-data")))
            (form-data (new (-form-data form-element)))
            (grade (chain location pathname (split "/") 2)))
       (chain form-data (append "_csrf_token" (read-cookie "_csrf_token")))

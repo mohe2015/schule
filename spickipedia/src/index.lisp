@@ -189,7 +189,7 @@
       "container my-tab position-absolute col-sm-6 offset-sm-3 col-md-4 offset-md-4 text-center"
       :id "login" (:h1 "Anmelden")
       (:form :id "login-form"
-       ,(text-input "Name" "inputName" "username" :required t :autofocus t :autocomplete "username")
+       ,(text-input "Name" "inputName" "username" :required t :autofocus t :autocomplete "username" :no-label? t)
        (:div :class "form-group"
         (:input :type "password" :id "inputPassword" :class "form-control"
          :placeholder "Passwort" :required "" :autocomplete
