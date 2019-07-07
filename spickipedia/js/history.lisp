@@ -7,7 +7,7 @@
 (i "./math.lisp" "renderMath") 
 (i "./handle-error.lisp" "handleError") 
 (i "./fetch.lisp" "checkStatus" "json" "html" "handleFetchError") 
-(chain ($ "#show-history")
+(chain (one "#show-history")
  (click
   (lambda (e)
     (chain e (prevent-default))
@@ -16,15 +16,15 @@
        (chain window history state))
       f)))) 
 (defroute "/wiki/:name/history"
- (chain ($ ".edit-button") (remove-class "disabled")) (show-tab "#loading")
+ (chain (one ".edit-button") (remove-class "disabled")) (show-tab "#loading")
  (var pathname (chain window location pathname (split "/")))
  (chain (fetch (concatenate 'string "/api/history/" (chain pathname 2)))
   (then check-status) (then json)
   (then
    (lambda (data)
-     (chain ($ "#history-list") (html ""))
+     (chain (one "#history-list") (html ""))
      (loop for page in data
-           do (let ((template ($ (chain ($ "#history-item-template") (html)))))
+           do (let ((template (one (chain (one "#history-item-template") (html)))))
                 (chain template (find ".history-username")
                  (text (chain page user)))
                 (chain template (find ".history-date")
@@ -41,24 +41,24 @@
                  (attr "href"
                   (concatenate 'string "/wiki/" (chain pathname 2) "/history/"
                                (chain page id) "/changes")))
-                (chain ($ "#history-list") (append template))))
+                (chain (one "#history-list") (append template))))
      (show-tab "#history"))))) 
 (defroute "/wiki/:page/history/:id" (show-tab "#loading")
- (chain ($ ".edit-button") (remove-class "disabled")) (cleanup)
- (chain ($ "#wiki-article-title") (text (decode-u-r-i-component page)))
+ (chain (one ".edit-button") (remove-class "disabled")) (cleanup)
+ (chain (one "#wiki-article-title") (text (decode-u-r-i-component page)))
  (chain $
   (get (concatenate 'string "/api/revision/" id)
        (lambda (data)
-         (chain ($ "#currentVersionLink")
+         (chain (one "#currentVersionLink")
           (attr "href" (concatenate 'string "/wiki/" page)))
-         (chain ($ "#is-outdated-article") (remove-class "d-none"))
-         (chain ($ "#categories") (html ""))
+         (chain (one "#is-outdated-article") (remove-class "d-none"))
+         (chain (one "#categories") (html ""))
          (loop for category in (chain data categories)
-               do (chain ($ "#categories")
+               do (chain (one "#categories")
                    (append
                     (who-ps-html
                      (:span :class "closable-badge bg-secondary" category)))))
-         (chain ($ "article") (html (chain data content)))
+         (chain (one "article") (html (chain data content)))
          (chain window history (replace-state (create content data) nil nil))
          (render-math)
          (show-tab "#page")))
@@ -68,10 +68,10 @@
          (show-tab "#not-found")
          (handle-error jq-xhr t)))))) 
 (defroute "/wiki/:page/history/:id/changes"
- (chain ($ ".edit-button") (add-class "disabled"))
- (chain ($ "#currentVersionLink")
+ (chain (one ".edit-button") (add-class "disabled"))
+ (chain (one "#currentVersionLink")
   (attr "href" (concatenate 'string "/wiki/" page)))
- (chain ($ "#is-outdated-article") (remove-class "d-none")) (cleanup)
+ (chain (one "#is-outdated-article") (remove-class "d-none")) (cleanup)
  (var current-revision nil) (var previous-revision nil)
  (chain $
   (get (concatenate 'string "/api/revision/" id)
@@ -84,7 +84,7 @@
                  (var diff-html
                       (htmldiff (chain previous-revision content)
                        (chain current-revision content)))
-                 (chain ($ "article") (html diff-html))
+                 (chain (one "article") (html diff-html))
                  (let* ((pt (chain previous-revision categories))
                         (ct (chain current-revision categories))
                         (both
@@ -96,21 +96,21 @@
                         (added
                          (chain ct
                           (filter (lambda (x) (not (chain pt (includes x))))))))
-                   (chain ($ "#categories") (html ""))
+                   (chain (one "#categories") (html ""))
                    (loop for category in both
-                         do (chain ($ "#categories")
+                         do (chain (one "#categories")
                              (append
                               (who-ps-html
                                (:span :class "closable-badge bg-secondary"
                                 category)))))
                    (loop for category in removed
-                         do (chain ($ "#categories")
+                         do (chain (one "#categories")
                              (append
                               (who-ps-html
                                (:span :class "closable-badge bg-danger"
                                 category)))))
                    (loop for category in added
-                         do (chain ($ "#categories")
+                         do (chain (one "#categories")
                              (append
                               (who-ps-html
                                (:span :class "closable-badge bg-success"

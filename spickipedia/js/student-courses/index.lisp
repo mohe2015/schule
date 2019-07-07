@@ -51,7 +51,7 @@
   (add-event-listener "click"
    (lambda (event)
      (chain event (prevent-default))
-     (show-modal ($ "#modal-student-courses")))))
+     (show-modal (one "#modal-student-courses")))))
  (chain (one "#form-student-courses")
   (add-event-listener "submit"
    (lambda (event)
@@ -65,12 +65,12 @@
         (then
          (lambda (data) (hide-modal (one "#modal-student-courses")) (render)))
         (catch handle-fetch-error)))))))
-(chain ($ "body")
+(chain (one "body")
  (on "click" ".button-student-course-delete"
   (lambda (e)
     (let* ((form-data (new (-form-data))))
       (chain form-data
-       (append "student-course" (chain ($ this) (data "id-student-course"))))
+       (append "student-course" (chain (one this) (data "id-student-course"))))
       (chain form-data (append "_csrf_token" (read-cookie "_csrf_token")))
       (chain
        (fetch "/api/student-courses" (create method "DELETE" body form-data))

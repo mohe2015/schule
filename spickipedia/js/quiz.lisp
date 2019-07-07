@@ -21,24 +21,24 @@
  (if (= (chain window current-question type) "multiple-choice")
      (progn
       (show-tab "#multiple-choice-question-html")
-      (chain ($ ".question-html")
+      (chain (one ".question-html")
        (text (chain window current-question question)))
-      (chain ($ "#answers-html") (text ""))
+      (chain (one "#answers-html") (text ""))
       (dotimes (i (chain window current-question responses length))
         (let ((answer (elt (chain window current-question responses) i))
-              (template ($ (chain ($ "#multiple-choice-answer-html") (html)))))
+              (template (one (chain (one "#multiple-choice-answer-html") (html)))))
           (chain template (find ".custom-control-label")
            (text (chain answer text)))
           (chain template (find ".custom-control-label") (attr "for" i))
           (chain template (find ".custom-control-input") (attr "id" i))
-          (chain ($ "#answers-html") (append template))))))
+          (chain (one "#answers-html") (append template))))))
  (if (= (chain window current-question type) "text")
      (progn
       (show-tab "#text-question-html")
-      (chain ($ ".question-html")
+      (chain (one ".question-html")
        (text (chain window current-question question))))))
 (defroute "/quiz/:id/results" (show-tab "#quiz-results")
- (chain ($ "#result")
+ (chain (one "#result")
   (text
    (concatenate 'string "Du hast " (chain window correct-responses)
                 " Fragen richtig und " (chain window wrong-responses)
@@ -49,20 +49,20 @@
                        (chain window wrong-responses)))
                  (to-fixed 1) (to-locale-string))
                 " %"))))
-(chain ($ ".multiple-choice-submit-html")
+(chain (one ".multiple-choice-submit-html")
  (click
   (lambda ()
     (let ((everything-correct t) (i 0))
       (loop for answer in (chain window current-question responses)
-            do (chain ($ (concatenate 'string "#" i))
+            do (chain (one (concatenate 'string "#" i))
                 (remove-class "is-valid")) (chain
-                                            ($ (concatenate 'string "#" i))
+                                            (one (concatenate 'string "#" i))
                                             (remove-class "is-invalid")) (if (=
                                                                               (chain
                                                                                answer
                                                                                is-correct)
                                                                               (chain
-                                                                               ($
+                                                                               (one
                                                                                 (concatenate
                                                                                  'string
                                                                                  "#"
@@ -70,7 +70,7 @@
                                                                                (prop
                                                                                 "checked")))
                                                                              (chain
-                                                                              ($
+                                                                              (one
                                                                                (concatenate
                                                                                 'string
                                                                                 "#"
@@ -79,7 +79,7 @@
                                                                                "is-valid"))
                                                                              (progn
                                                                               (chain
-                                                                               ($
+                                                                               (one
                                                                                 (concatenate
                                                                                  'string
                                                                                  "#"
@@ -92,58 +92,58 @@
       (if everything-correct
           (incf (chain window correct-responses))
           (incf (chain window wrong-responses)))
-      (chain ($ ".multiple-choice-submit-html") (hide))
-      (chain ($ ".next-question") (show))))))
-(chain ($ ".text-submit-html")
+      (chain (one ".multiple-choice-submit-html") (hide))
+      (chain (one ".next-question") (show))))))
+(chain (one ".text-submit-html")
  (click
   (lambda ()
-    (if (= (chain ($ "#text-response") (val))
+    (if (= (chain (one "#text-response") (val))
            (chain window current-question answer))
         (progn
          (incf (chain window correct-response))
-         (chain ($ "#text-response") (add-class "is-valid")))
+         (chain (one "#text-response") (add-class "is-valid")))
         (progn
          (incf (chain window wrong-responses))
-         (chain ($ "#text-response") (add-class "is-invalid"))))
-    (chain ($ ".text-submit-html") (hide))
-    (chain ($ ".next-question") (show)))))
-(chain ($ ".next-question")
+         (chain (one "#text-response") (add-class "is-invalid"))))
+    (chain (one ".text-submit-html") (hide))
+    (chain (one ".next-question") (show)))))
+(chain (one ".next-question")
  (click
   (lambda ()
-    (chain ($ ".next-question") (hide))
-    (chain ($ ".text-submit-html") (show))
-    (chain ($ ".multiple-choice-submit-html") (show))
+    (chain (one ".next-question") (hide))
+    (chain (one ".text-submit-html") (show))
+    (chain (one ".multiple-choice-submit-html") (show))
     (let ((pathname (chain window location pathname (split "/"))))
       (replace-state
        (concatenate 'string "/quiz/" (chain pathname 2) "/play/"
                     (1+ (parse-int (chain pathname 4)))))))))
-(chain ($ ".create-multiple-choice-question")
+(chain (one ".create-multiple-choice-question")
  (click
   (lambda ()
-    (chain ($ "#questions")
-     (append ($ (chain ($ "#multiple-choice-question") (html))))))))
-(chain ($ ".create-text-question")
+    (chain (one "#questions")
+     (append (one (chain (one "#multiple-choice-question") (html))))))))
+(chain (one ".create-text-question")
  (click
   (lambda ()
-    (chain ($ "#questions") (append ($ (chain ($ "#text-question") (html))))))))
-(chain ($ "body")
+    (chain (one "#questions") (append (one (chain (one "#text-question") (html))))))))
+(chain (one "body")
  (on "click" ".add-response-possibility"
   (lambda (e)
-    (chain ($ this) (siblings ".responses")
-     (append ($ (chain ($ "#multiple-choice-response-possibility") (html))))))))
-(chain ($ ".save-quiz")
+    (chain (one this) (siblings ".responses")
+     (append (one (chain (one "#multiple-choice-response-possibility") (html))))))))
+(chain (one ".save-quiz")
  (click
   (lambda ()
     (let ((obj (new (-object)))
           (pathname (chain window location pathname (split "/"))))
       (setf (chain obj questions) (list))
-      (chain ($ "#questions") (children)
+      (chain (one "#questions") (children)
        (each
         (lambda ()
-          (if (= (chain ($ this) (attr "class")) "multiple-choice-question")
-              (chain obj questions (push (multiple-choice-question ($ this)))))
-          (if (= (chain ($ this) (attr "class")) "text-question")
-              (chain obj questions (push (text-question ($ this))))))))
+          (if (= (chain (one this) (attr "class")) "multiple-choice-question")
+              (chain obj questions (push (multiple-choice-question (one this)))))
+          (if (= (chain (one this) (attr "class")) "text-question")
+              (chain obj questions (push (text-question (one this))))))))
       (post (concatenate 'string "/api/quiz" (chain pathname 2))
        (create _csrf_token (read-cookie "_csrf_token") data
         (chain -j-s-o-n (stringify obj)))
@@ -162,10 +162,10 @@
      (each
       (lambda ()
         (let ((is-correct
-               (chain ($ this) (find ".multiple-choice-response-correct")
+               (chain (one this) (find ".multiple-choice-response-correct")
                 (prop "checked")))
               (response-text
-               (chain ($ this) (find ".multiple-choice-response-text") (val))))
+               (chain (one this) (find ".multiple-choice-response-text") (val))))
           (chain obj responses
            (push (create text response-text is-correct is-correct)))))))
     obj))

@@ -25,7 +25,7 @@
                   (chain document (get-element-by-id "teachers-list")
                    (append template)))))))
   (catch handle-fetch-error)))
-(chain ($ "#create-teacher-form")
+(chain (one "#create-teacher-form")
  (submit
   (lambda (event)
     (let* ((formelement

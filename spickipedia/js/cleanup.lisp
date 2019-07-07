@@ -5,6 +5,6 @@
 (export
  (defun cleanup ()
    (hide-editor)
-   (chain ($ "#publish-changes-modal") (modal "hide"))
-   (chain ($ "#publish-changes") (show))
-   (chain ($ "#publishing-changes") (hide)))) 
+   (chain (one "#publish-changes-modal") (modal "hide"))
+   (chain (one "#publish-changes") (show))
+   (chain (one "#publishing-changes") (hide)))) 

@@ -7,7 +7,7 @@
 (i "./math.lisp" "renderMath") 
 (i "./editor.lisp" "showEditor") 
 (i "./handle-error.lisp" "handleError") 
-(chain ($ ".edit-button")
+(chain (one ".edit-button")
  (click
   (lambda (e)
     (chain e (prevent-default))
@@ -16,23 +16,23 @@
        (chain window history state))
       f)))) 
 (defun init-editor (data)
-  (chain ($ ".closable-badge") (remove))
+  (chain (one ".closable-badge") (remove))
   (if (chain data categories)
       (loop for category in (chain data categories)
-            do (chain ($ "#new-category")
+            do (chain (one "#new-category")
                 (before
                  (who-ps-html
                   (:span :class "closable-badge bg-secondary"
                    (:span :class "closable-badge-label" category)
                    (:button :type "button" :class "close close-tag" :aria-label
                     "Close" (:span :aria-hidden "true" "&times;"))))))))
-  (chain ($ "article") (html (chain data content)))
+  (chain (one "article") (html (chain data content)))
   (render-math)
   (show-editor)
   (show-tab "#page")) 
-(defroute "/wiki/:name/edit" (chain ($ ".edit-button") (add-class "disabled"))
- (chain ($ "#is-outdated-article") (add-class "d-none"))
- (chain ($ "#wiki-article-title") (text (decode-u-r-i-component name)))
+(defroute "/wiki/:name/edit" (chain (one ".edit-button") (add-class "disabled"))
+ (chain (one "#is-outdated-article") (add-class "d-none"))
+ (chain (one "#wiki-article-title") (text (decode-u-r-i-component name)))
  (cleanup)
  (if (not (null (chain window history state)))
      (init-editor (chain window history state))

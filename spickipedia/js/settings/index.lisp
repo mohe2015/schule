@@ -96,7 +96,7 @@
            (grade
             (getprop select 'options (chain select selected-index) 'text)))
       (push-state (concatenate 'string "/schedule/" grade))))))
-(chain ($ "#form-settings-create-grade")
+(chain (one "#form-settings-create-grade")
  (submit
   (lambda (event)
     (chain event (prevent-default))
@@ -121,7 +121,7 @@
        (then check-status) (then (lambda (data) (render)))
        (catch handle-fetch-error)))
     f)))
-(chain ($ "#form-settings-create-course")
+(chain (one "#form-settings-create-course")
  (submit
   (lambda (event)
     (chain event (prevent-default))

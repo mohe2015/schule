@@ -4,7 +4,7 @@
 (i "./read-cookie.lisp" "readCookie") 
 (export
  (defun send-file (file)
-   (chain ($ "#uploadProgressModal") (modal "show"))
+   (chain (one "#uploadProgressModal") (modal "show"))
    (let ((data (new (-form-data))))
      (chain data (append "file" file))
      (chain data (append "_csrf_token" (read-cookie "_csrf_token")))
@@ -23,7 +23,7 @@
               url "/api/upload" cache f content-type f process-data f success
               (lambda (url)
                 (setf (@ window file-upload-finished) t)
-                (chain ($ "#uploadProgressModal") (modal "hide"))
+                (chain (one "#uploadProgressModal") (modal "hide"))
                 (chain
                  (chain document
                   (exec-command "insertHTML" f
@@ -36,25 +36,25 @@
                 (if (not (@ window file-upload-finished))
                     (progn
                      (setf (@ window file-upload-finished) t)
-                     (chain ($ "#uploadProgressModal") (modal "hide"))
+                     (chain (one "#uploadProgressModal") (modal "hide"))
                      (alert "Fehler beim Upload!")))))))))))
 (defun progress-handling-function (e)
   (if (@ e length-computable)
-      (chain ($ "#uploadProgress")
+      (chain (one "#uploadProgress")
        (css "width"
         (concatenate 'string (* 100 (/ (@ e loaded) (@ e total))) "%")))))
-(chain ($ "#uploadProgressModal")
+(chain (one "#uploadProgressModal")
  (on "shown.bs.modal"
   (lambda (e)
     (if (@ window file-upload-finished)
-        (chain ($ "#uploadProgressModal") (modal "hide"))))))
-(chain ($ "#uploadProgressModal")
+        (chain (one "#uploadProgressModal") (modal "hide"))))))
+(chain (one "#uploadProgressModal")
  (on "hide.bs.modal"
   (lambda (e)
     (if (not (@ window file-upload-finished))
         (progn
          (setf (@ window file-upload-finished) t)
          (chain window file-upload-xhr (abort)))))))
-(chain ($ "#uploadProgressModal")
+(chain (one "#uploadProgressModal")
  (on "hidden.bs.modal"
-  (lambda (e) (chain ($ "#uploadProgress") (attr "width" "0%")))))
+  (lambda (e) (chain (one "#uploadProgress") (attr "width" "0%")))))

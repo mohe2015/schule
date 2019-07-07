@@ -8,15 +8,15 @@
 (i "./image-viewer.lisp") 
 (i "./fetch.lisp" "checkStatus" "json") 
 (defun update-page (data)
-  (chain ($ ".closable-badge") (remove))
-  (chain ($ "#categories") (html ""))
+  (chain (one ".closable-badge") (remove))
+  (chain (one "#categories") (html ""))
   (if (chain data categories)
       (loop for category in (chain data categories)
-            do (chain ($ "#categories")
+            do (chain (one "#categories")
                 (append
                  (who-ps-html
                   (:span :class "closable-badge bg-secondary"
-                   category)))) (chain ($ "#new-category")
+                   category)))) (chain (one "#new-category")
                                  (before
                                   (who-ps-html
                                    (:span :class "closable-badge bg-secondary"
@@ -26,14 +26,14 @@
                                      "close close-tag" :aria-label "Close"
                                      (:span :aria-hidden "true"
                                       "&times;"))))))))
-  (chain ($ "article") (html (chain data content)))
+  (chain (one "article") (html (chain data content)))
   (render-math)
   (show-tab "#page")) 
 (defroute "/wiki/:name"
  (var pathname (chain window location pathname (split "/")))
- (chain ($ ".edit-button") (remove-class "disabled"))
- (chain ($ "#is-outdated-article") (add-class "d-none"))
- (chain ($ "#wiki-article-title")
+ (chain (one ".edit-button") (remove-class "disabled"))
+ (chain (one "#is-outdated-article") (add-class "d-none"))
+ (chain (one "#wiki-article-title")
   (text (decode-u-r-i-component (chain pathname 2))))
  (cleanup) (var network-data-received f) (show-tab "#loading")
  (var network-update

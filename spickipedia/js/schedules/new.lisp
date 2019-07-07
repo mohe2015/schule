@@ -9,7 +9,7 @@
 (i "../push-state.lisp" "pushState") 
 (i "../utils.lisp" "showModal" "all" "one" "hideModal" "clearChildren") 
 (defroute "/schedules/new" (show-tab "#create-schedule-tab")) 
-(chain ($ "#create-schedule-form")
+(chain (one "#create-schedule-form")
  (submit
   (lambda (event)
     (let* ((formelement

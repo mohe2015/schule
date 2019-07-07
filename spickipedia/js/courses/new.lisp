@@ -21,7 +21,7 @@
                   (chain select (append-child element))))))
     (catch handle-fetch-error))
    (show-tab "#create-course-tab"))) 
-(chain ($ "#create-course-form")
+(chain (one "#create-course-form")
  (submit
   (lambda (event)
     (let* ((formelement

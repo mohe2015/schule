@@ -7,7 +7,7 @@
    (let ((status (chain error response status)))
      (if (= status 401)
          (let ((name
-                (chain ($ "#inputName")
+                (chain (one "#inputName")
                  (val (chain window local-storage name)))))
            (chain window local-storage (remove-item "name"))
            (push-state "/login"
@@ -27,7 +27,7 @@
    (let ((status (chain error response status)))
      (if (= status 401)
          (let ((name
-                (chain ($ "#inputName")
+                (chain (one "#inputName")
                  (val (chain window local-storage name)))))
            (chain window local-storage (remove-item "name"))
            (push-state "/login"
@@ -36,12 +36,12 @@
          (if (= status 403)
              (let ((error-message
                     "Du hast nicht die benötigten Berechtigungen, um diese Aktion durchzuführen. Sag mir Bescheid, wenn du glaubst, dass dies ein Fehler ist."))
-               (chain ($ "#errorMessage") (text error-message))
+               (chain (one "#errorMessage") (text error-message))
                (show-tab "#error"))
              (let ((error-message
                     (concatenate 'string "Unbekannter Fehler: "
                                  (chain error response status-text))))
-               (chain ($ "#errorMessage") (text error-message))
+               (chain (one "#errorMessage") (text error-message))
                (show-tab "#error"))))))) 
 (export
  (defun check-status (response)

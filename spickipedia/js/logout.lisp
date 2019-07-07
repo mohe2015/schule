@@ -5,7 +5,7 @@
 (i "./read-cookie.lisp" "readCookie") 
 (i "./replace-state.lisp" "replaceState") 
 (i "./handle-error.lisp" "handleError") 
-(defroute "/logout" (chain ($ ".edit-button") (add-class "disabled"))
+(defroute "/logout" (chain (one ".edit-button") (add-class "disabled"))
  (show-tab "#loading")
  (chain $
   (post "/api/logout" (create _csrf_token (read-cookie "_csrf_token"))

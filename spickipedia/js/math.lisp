@@ -3,11 +3,11 @@
 (i "./test.lisp")
 (export
  (defun render-math ()
-   (chain ($ ".formula")
+   (chain (one ".formula")
     (each (lambda () (chain -math-live (render-math-in-element this)))))
-   (chain ($ "article")
+   (chain (one "article")
     (on "summernote.init"
-     (lambda () (chain ($ ".formula") (attr "contenteditable" f)))))))
+     (lambda () (chain (one ".formula") (attr "contenteditable" f)))))))
 (export
  (defun revert-math (dom)
    (chain dom (find ".formula")

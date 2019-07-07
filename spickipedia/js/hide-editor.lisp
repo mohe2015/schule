@@ -3,6 +3,6 @@
 (i "./test.lisp") 
 (export
  (defun hide-editor ()
-   (chain ($ "#editor") (add-class "d-none"))
-   (chain ($ "article") (attr "contenteditable" f))
-   (chain ($ ".article-editor") (remove-class "fullscreen")))) 
+   (chain (one "#editor") (add-class "d-none"))
+   (chain (one "article") (attr "contenteditable" f))
+   (chain (one ".article-editor") (remove-class "fullscreen")))) 
