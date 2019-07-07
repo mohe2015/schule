@@ -1,10 +1,10 @@
 
-(var __-p-s_-m-v_-r-e-g) 
-(i "../show-tab.lisp" "showTab") 
-(i "../read-cookie.lisp" "readCookie") 
-(i "../handle-error.lisp" "handleError") 
-(i "../fetch.lisp" "checkStatus" "json" "html" "handleFetchError") 
-(i "../template.lisp" "getTemplate") 
+(var __-p-s_-m-v_-r-e-g)
+(i "../show-tab.lisp" "showTab")
+(i "../read-cookie.lisp" "readCookie")
+(i "../handle-error.lisp" "handleError")
+(i "../fetch.lisp" "checkStatus" "json" "html" "handleFetchError")
+(i "../template.lisp" "getTemplate")
 (defroute "/schedules" (show-tab "#list-schedules")
  (chain (fetch "/api/schedules") (then check-status) (then json)
   (then
@@ -18,11 +18,11 @@
                   (chain console (log (chain page name)))
                   (setf (chain template
                          (query-selector ".schedules-list-grade") inner-text)
-                          (chain page grade))
+                        (chain page grade))
                   (setf (chain template
                          (query-selector ".schedules-list-grade") href)
-                          (concatenate 'string "/schedule/"
-                                       (chain page grade)))
+                        (concatenate 'string "/schedule/"
+                                     (chain page grade)))
                   (chain document (get-element-by-id "schedules-list")
                    (append template)))))))
-  (catch handle-fetch-error))) 
+  (catch handle-fetch-error)))
