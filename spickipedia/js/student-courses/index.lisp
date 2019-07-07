@@ -1,5 +1,5 @@
-
 (var __-p-s_-m-v_-r-e-g)
+
 (i "../show-tab.lisp" "showTab")
 (i "../read-cookie.lisp" "readCookie")
 (i "../handle-error.lisp" "handleError")
@@ -7,6 +7,7 @@
  "handleFetchError")
 (i "../template.lisp" "getTemplate")
 (i "../utils.lisp" "showModal" "all" "one" "hideModal" "clearChildren")
+
 (defun render ()
   (show-tab "#loading")
   (chain (fetch "/api/student-courses") (then check-status) (then json)
@@ -33,6 +34,7 @@
                     (append template)))))))
    (catch handle-fetch-error))
   (show-tab "#list-student-courses"))
+
 (defroute "/student-courses" (render)
  (cache-then-network "/api/courses"
   (lambda (data)
@@ -47,32 +49,31 @@
                  (setf (chain option value) (chain course course-id))
                  (setf (chain option inner-text) text)
                  (chain course-select (append-child option)))))))
- (chain (one "#add-student-course")
-  (add-event-listener "click"
-   (lambda (event)
-     (chain event (prevent-default))
-     (show-modal (one "#modal-student-courses")))))
- (chain (one "#form-student-courses")
-  (add-event-listener "submit"
-   (lambda (event)
-     (chain event (prevent-default))
-     (let* ((form-element (one "#form-student-courses"))
-            (form-data (new (-form-data form-element))))
-       (chain form-data (append "_csrf_token" (read-cookie "_csrf_token")))
-       (chain
-        (fetch "/api/student-courses" (create method "POST" body form-data))
-        (then check-status)
-        (then
-         (lambda (data) (hide-modal (one "#modal-student-courses")) (render)))
-        (catch handle-fetch-error)))))))
-(chain (one "body")
- (on "click" ".button-student-course-delete"
-  (lambda (e)
-    (let* ((form-data (new (-form-data))))
-      (chain form-data
-       (append "student-course" (chain (one this) (data "id-student-course"))))
-      (chain form-data (append "_csrf_token" (read-cookie "_csrf_token")))
-      (chain
-       (fetch "/api/student-courses" (create method "DELETE" body form-data))
-       (then check-status) (then (lambda (data) (render)))
-       (catch handle-fetch-error))))))
+
+ (on "click" "#add-student-course" event
+   (chain event (prevent-default))
+   (show-modal (one "#modal-student-courses")))
+
+ (on "submit" "#form-student-courses" event
+   (chain event (prevent-default))
+   (let* ((form-element (one "#form-student-courses"))
+          (form-data (new (-form-data form-element))))
+     (chain form-data (append "_csrf_token" (read-cookie "_csrf_token")))
+     (chain
+      (fetch "/api/student-courses" (create method "POST" body form-data))
+      (then check-status)
+      (then
+       (lambda (data) (hide-modal (one "#modal-student-courses")) (render)))
+      (catch handle-fetch-error)))))
+
+(on "click" "body" event
+  (if (not (chain event target (closest ".button-student-course-delete")))
+      (return))
+  (let* ((form-data (new (-form-data))))
+    (chain form-data
+     (append "student-course" (chain (one this) (data "id-student-course"))))
+    (chain form-data (append "_csrf_token" (read-cookie "_csrf_token")))
+    (chain
+     (fetch "/api/student-courses" (create method "DELETE" body form-data))
+     (then check-status) (then (lambda (data) (render)))
+     (catch handle-fetch-error))))

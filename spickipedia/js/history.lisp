@@ -17,6 +17,7 @@
       (push-state (concatenate 'string "/wiki/" (chain pathname 2) "/history")
        (chain window history state))
       f))))
+
 (defroute "/wiki/:name/history"
  (chain (one ".edit-button") (remove-class "disabled")) (show-tab "#loading")
  (var pathname (chain window location pathname (split "/")))
@@ -45,6 +46,7 @@
                                (chain page id) "/changes")))
                 (chain (one "#history-list") (append template))))
      (show-tab "#history")))))
+
 (defroute "/wiki/:page/history/:id" (show-tab "#loading")
  (chain (one ".edit-button") (remove-class "disabled")) (cleanup)
  (chain (one "#wiki-article-title") (text (decode-u-r-i-component page)))
@@ -69,6 +71,7 @@
      (if (= (chain jq-xhr status) 404)
          (show-tab "#not-found")
          (handle-error jq-xhr t))))))
+
 (defroute "/wiki/:page/history/:id/changes"
  (chain (one ".edit-button") (add-class "disabled"))
  (chain (one "#currentVersionLink")

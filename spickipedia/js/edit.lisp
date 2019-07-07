@@ -1,5 +1,5 @@
-
 (var __-p-s_-m-v_-r-e-g)
+
 (i "./test.lisp")
 (i "./push-state.lisp" "pushState")
 (i "./cleanup.lisp" "cleanup")
@@ -9,14 +9,13 @@
 (i "./handle-error.lisp" "handleError")
 (i "./utils.lisp" "showModal" "all" "one" "hideModal" "clearChildren")
 
-(chain (one ".edit-button")
- (click
-  (lambda (e)
-    (chain e (prevent-default))
-    (let ((pathname (chain window location pathname (split "/"))))
-      (push-state (concatenate 'string "/wiki/" (chain pathname 2) "/edit")
-       (chain window history state))
-      f))))
+(on "click" ".edit-button" event
+  (chain event (prevent-default))
+  (let ((pathname (chain window location pathname (split "/"))))
+    (push-state (concatenate 'string "/wiki/" (chain pathname 2) "/edit")
+     (chain window history state))
+    f))
+
 (defun init-editor (data)
   (chain (one ".closable-badge") (remove))
   (if (chain data categories)
@@ -32,7 +31,9 @@
   (render-math)
   (show-editor)
   (show-tab "#page"))
-(defroute "/wiki/:name/edit" (chain (one ".edit-button") (add-class "disabled"))
+
+(defroute "/wiki/:name/edit"
+ (chain (one ".edit-button") (add-class "disabled"))
  (chain (one "#is-outdated-article") (add-class "d-none"))
  (chain (one "#wiki-article-title") (text (decode-u-r-i-component name)))
  (cleanup)

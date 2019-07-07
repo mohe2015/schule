@@ -23,6 +23,7 @@
                     (concatenate 'string "Unbekannter Fehler: "
                                  (chain error response status-text))))
                (alert error-message)))))))
+
 (export
  (defun handle-fetch-error-show (error)
    (chain console (log (chain error)))
@@ -45,6 +46,7 @@
                                  (chain error response status-text))))
                (chain (one "#errorMessage") (text error-message))
                (show-tab "#error")))))))
+
 (export
  (defun check-status (response)
    (if (= (chain response status) 200)
@@ -52,12 +54,15 @@
        (let ((error (new (-error (chain response status-text)))))
          (setf (chain error response) response)
          (throw error)))))
+
 (export
  (defun json (response)
    (if (not response)
        (throw (new (-error "No data"))))
    (chain response (json))))
+
 (export (defun html () (chain response (text))))
+
 (export
  (defun cache-then-network (url callback)
    (var networkdatareceived f)

@@ -1,5 +1,5 @@
-
 (var __-p-s_-m-v_-r-e-g)
+
 (i "./test.lisp")
 (i "./show-tab.lisp" "showTab")
 (i "./read-cookie.lisp" "readCookie")
@@ -18,8 +18,10 @@
         (:button :type "button" :class "close close-tag" :aria-label "Close"
          (:span :aria-hidden "true" "&times;"))))))
     (chain (one "#new-category") (val "")))))
+
 (chain (one "body")
  (on "click" ".close-tag" (lambda (e) (chain (one this) (parent) (remove)))))
+
 (defroute "/tags/.rest" (show-tab "#loading")
  (chain console (log (chain rest (split "/"))))
  (chain $

@@ -1,5 +1,5 @@
-
 (var __-p-s_-m-v_-r-e-g)
+
 (i "./test.lisp")
 (i "./get-url-parameter.lisp" "getUrlParameter")
 (i "./read-cookie.lisp" "readCookie")
@@ -22,6 +22,7 @@
    (show-tab "#login")
    (chain (one ".login-hide") (attr "style" "display: none !important"))
    (chain (one ".navbar-collapse") (remove-class "show"))))
+
 (chain (one "#login-form")
  (on "submit"
   (lambda (e)
@@ -30,6 +31,7 @@
      (html
       "<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span> Anmelden..."))
     (login-post f))))
+
 (defun login-post (repeated)
   (let ((name (chain (one "#inputName") (val)))
         (password (chain (one "#inputPassword") (val))))

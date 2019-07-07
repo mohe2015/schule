@@ -40,16 +40,19 @@
                      (setf (@ window file-upload-finished) t)
                      (chain (one "#uploadProgressModal") (modal "hide"))
                      (alert "Fehler beim Upload!")))))))))))
+
 (defun progress-handling-function (e)
   (if (@ e length-computable)
       (chain (one "#uploadProgress")
        (css "width"
         (concatenate 'string (* 100 (/ (@ e loaded) (@ e total))) "%")))))
+
 (chain (one "#uploadProgressModal")
  (on "shown.bs.modal"
   (lambda (e)
     (if (@ window file-upload-finished)
         (chain (one "#uploadProgressModal") (modal "hide"))))))
+
 (chain (one "#uploadProgressModal")
  (on "hide.bs.modal"
   (lambda (e)
@@ -57,6 +60,7 @@
         (progn
          (setf (@ window file-upload-finished) t)
          (chain window file-upload-xhr (abort)))))))
+
 (chain (one "#uploadProgressModal")
  (on "hidden.bs.modal"
   (lambda (e) (chain (one "#uploadProgress") (attr "width" "0%")))))

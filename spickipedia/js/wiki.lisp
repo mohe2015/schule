@@ -1,5 +1,5 @@
-
 (var __-p-s_-m-v_-r-e-g)
+
 (i "./test.lisp")
 (i "./show-tab.lisp" "showTab")
 (i "./cleanup.lisp" "cleanup")
@@ -31,6 +31,7 @@
   (chain (one "article") (html (chain data content)))
   (render-math)
   (show-tab "#page"))
+
 (defroute "/wiki/:name"
  (var pathname (chain window location pathname (split "/")))
  (chain (one ".edit-button") (remove-class "disabled"))

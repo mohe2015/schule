@@ -15,9 +15,11 @@
                       "Es ist ein Fehler aufgetreten! Melde ihn bitte dem Entwickler! "
                       message " source: " source " lineno: " lineno
                       " colno: " colno " error: " error))))
+
 (if (not (chain window caches))
     (alert
      "Kein Support für Cache API, die Seite funktioniert vermutlich nicht. Melde dies dem Entwickler!"))
+
 (chain (one "body")
  (on "click" "article[contenteditable=false] a"
   (lambda (e)
@@ -25,6 +27,7 @@
       (if (is-local-url url)
           (progn (chain e (prevent-default)) (push-state url) f)
           t)))))
+
 (chain (one "body")
  (on "click" "nav a"
   (lambda (e)
@@ -32,6 +35,7 @@
       (if (is-local-url url)
           (progn (chain e (prevent-default)) (push-state url) f)
           t)))))
+
 (chain (one "body")
  (on "click" "#search a"
   (lambda (e)
@@ -39,6 +43,7 @@
       (if (is-local-url url)
           (progn (chain e (prevent-default)) (push-state url) f)
           t)))))
+
 (chain (one "body")
  (on "click" "#articles a"
   (lambda (e)
@@ -46,6 +51,7 @@
       (if (is-local-url url)
           (progn (chain e (prevent-default)) (push-state url) f)
           t)))))
+
 (chain (one "body")
  (on "click" "#history-list a"
   (lambda (e)
@@ -53,6 +59,7 @@
       (if (is-local-url url)
           (progn (chain e (prevent-default)) (push-state url) f)
           t)))))
+
 (chain (one "body")
  (on "click" "a.norefresh"
   (lambda (e)
@@ -60,8 +67,10 @@
       (if (is-local-url url)
           (progn (chain e (prevent-default)) (push-state url) f)
           t)))))
+
 (chain (one "#refresh")
  (click (lambda (e) (chain e (prevent-default)) (update-state) f)))
+
 (setf (chain window onpopstate)
       (lambda (event)
         (if (chain window last-url)
@@ -76,6 +85,7 @@
                        (update-state))
                    (return)))))
         (update-state)))
+
 (setf (chain window onbeforeunload)
       (lambda ()
         (let ((pathname (chain window location pathname (split "/"))))
@@ -84,4 +94,5 @@
                    (or (= (chain pathname 3) "create")
                        (= (chain pathname 3) "edit")))
               t))))
+
 (setf (chain window onload) (lambda () (update-state)))

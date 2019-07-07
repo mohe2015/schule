@@ -7,29 +7,28 @@
 (i "./push-state.lisp" "pushState")
 (i "./utils.lisp" "showModal" "all" "one" "hideModal" "clearChildren")
 
-(chain (one "#publish-changes")
- (click
-  (lambda ()
-    (chain (one "#publish-changes") (hide))
-    (chain (one "#publishing-changes") (show))
-    (let ((change-summary (chain (one "#change-summary") (val)))
-          (temp-dom (chain (one "article") (clone)))
-          (article-path (chain window location pathname (split "/") 2)))
-      (revert-math temp-dom)
-      (var categories
-           (chain (one "#settings-modal") (find ".closable-badge-label")
-            (map (lambda () (chain this inner-text))) (get)))
-      (chain $
-       (post (concatenate 'string "/api/wiki/" article-path)
-        (create summary change-summary html (chain temp-dom (html)) categories
-         categories _csrf_token (read-cookie "_csrf_token"))
-        (lambda (data)
-          (push-state (concatenate 'string "/wiki/" article-path))))
-       (fail
-        (lambda (jq-xhr text-status error-thrown)
-          (chain (one "#publish-changes") (show))
-          (chain (one "#publishing-changes") (hide))
-          (handle-error jq-xhr f))))))))
+(on "click" "#publish-changes" event
+  (chain (one "#publish-changes") (hide))
+  (chain (one "#publishing-changes") (show))
+  (let ((change-summary (chain (one "#change-summary") (val)))
+        (temp-dom (chain (one "article") (clone)))
+        (article-path (chain window location pathname (split "/") 2)))
+    (revert-math temp-dom)
+    (var categories
+         (chain (one "#settings-modal") (find ".closable-badge-label")
+          (map (lambda () (chain this inner-text))) (get)))
+    (chain $
+     (post (concatenate 'string "/api/wiki/" article-path)
+      (create summary change-summary html (chain temp-dom (html)) categories
+       categories _csrf_token (read-cookie "_csrf_token"))
+      (lambda (data)
+        (push-state (concatenate 'string "/wiki/" article-path))))
+     (fail
+      (lambda (jq-xhr text-status error-thrown)
+        (chain (one "#publish-changes") (show))
+        (chain (one "#publishing-changes") (hide))
+        (handle-error jq-xhr f))))))
+
 (export
  (defun show-editor ()
    (chain (one "#editor") (remove-class "d-none"))

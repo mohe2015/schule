@@ -1,7 +1,7 @@
-
 (var __-p-s_-m-v_-r-e-g)
 
 (export (defun one (selector) (chain document (query-selector selector))))
+
 (export
  (defun all (selector)
    (let ((elements
@@ -14,9 +14,12 @@
                  (chain element (add-event-listener event handler)))))
              this))
      elements)))
+
 (export
  (defun clear-children (element)
    (while (chain element (has-child-nodes))
     (chain element (remove-child (chain element last-child))))))
+
 (export (defun show-modal (element) (chain (one element) (modal "show"))))
+
 (export (defun hide-modal (element) (chain (one element) (modal "hide"))))

@@ -1,5 +1,5 @@
-
 (var __-p-s_-m-v_-r-e-g)
+
 (i "./test.lisp")
 (i "./file-upload.lisp" "sendFile")
 (i "./categories.lisp")
@@ -11,10 +11,12 @@
   (chain document (get-elements-by-tag-name "article") 0 (focus))
   (setf (chain window saved-range)
         (chain window (get-selection) (get-range-at 0))))
+
 (defun restore-range ()
   (chain document (get-elements-by-tag-name "article") 0 (focus))
   (chain window (get-selection) (remove-all-ranges))
   (chain window (get-selection) (add-range (chain window saved-range))))
+
 (defmacro tool (id &body body)
   `(chain document (get-element-by-id ,id)
     (add-event-listener "click"
@@ -24,7 +26,9 @@
        (save-range)
        ,@body
        f))))
+
 (defmacro stool (id) `(tool ,id (chain document (exec-command ,id f))))
+
 (tool "format-p" (chain document (exec-command "formatBlock" f "<p>")))
 (tool "format-h2" (chain document (exec-command "formatBlock" f "<h2>")))
 (tool "format-h3" (chain document (exec-command "formatBlock" f "<h3>")))
@@ -34,13 +38,16 @@
 (stool "insertOrderedList")
 (stool "indent")
 (stool "outdent")
+
 (defun get-url (url) (new (-u-r-l url (chain window location origin))))
+
 (export
  (defun is-local-url (url)
    (try
     (let ((url (get-url url)))
       (return (= (chain url origin) (chain window location origin))))
     (:catch (error) (return f)))))
+
 (defun update-link (url)
   (if (is-local-url url)
       (let ((parsed-url (get-url url)))
@@ -64,6 +71,7 @@
                    (chain selection focus-node parent-element (closest "a"))))
              (setf (chain link target) "_blank")
              (setf (chain link rel) "noopener noreferrer"))))))
+
 (tool "createLink"
  (chain (one "#link-form") (off "submit")
   (submit
@@ -74,8 +82,11 @@
      (restore-range)
      (update-link (chain (one "#link") (val))))))
  (chain (one "#link-modal") (modal "show")))
+
 (var articles (array))
+
 (cache-then-network "/api/articles" (lambda (data) (setf articles data)))
+
 (chain document (get-element-by-id "link")
  (add-event-listener "input"
   (lambda (event)
@@ -110,6 +121,7 @@
                       (remove "show")))))
                  (chain input next-element-sibling (append element))))
       nil))))
+
 (chain (one "body")
  (on "click" ".editLink"
   (lambda (event)
@@ -127,6 +139,7 @@
           (chain document (get-elements-by-tag-name "article") 0 (focus))
           (chain (one target) (attr "href" (chain (one "#link") (val)))))))
       (chain (one "#link-modal") (modal "show"))))))
+
 (chain (one "body")
  (on "click" ".deleteLink"
   (lambda (event)
@@ -135,6 +148,7 @@
     (let ((target (get-popover-target (chain event target))))
       (chain (one target) (popover "hide"))
       (chain (one target) (remove))))))
+
 (chain (one "body")
  (on "click" "article[contenteditable=true] a"
   (lambda (event)
@@ -142,7 +156,9 @@
       (create-popover-for target
        "<a href=\"#\" class=\"editLink\"><span class=\"fas fa-link\"></span></a> <a href=\"#\" class=\"deleteLink\"><span class=\"fas fa-unlink\"></span></a>")
       (chain (one target) (popover "show"))))))
+
 (tool "insertImage" (chain (one "#image-modal") (modal "show")))
+
 (chain (one "body")
  (on "click" "article[contenteditable=true] figure"
   (lambda (event)
@@ -150,6 +166,7 @@
       (create-popover-for target
        "<a href=\"#\" class=\"floatImageLeft\"><span class=\"fas fa-align-left\"></span></a> <a href=\"#\" class=\"floatImageRight\"><span class=\"fas fa-align-right\"></span></a> <a href=\"#\" class=\"resizeImage25\">25%</a> <a href=\"#\" class=\"resizeImage50\">50%</a> <a href=\"#\" class=\"resizeImage100\">100%</a> <a href=\"#\" class=\"deleteImage\"><span class=\"fas fa-trash\"></span></a>")
       (chain (one target) (popover "show"))))))
+
 (chain (one "body")
  (on "click" ".floatImageLeft"
   (lambda (event)
@@ -160,6 +177,7 @@
       (chain document (get-elements-by-tag-name "article") 0 (focus))
       (chain target class-list (remove "float-right"))
       (chain target class-list (add "float-left"))))))
+
 (chain (one "body")
  (on "click" ".floatImageRight"
   (lambda (event)
@@ -170,6 +188,7 @@
       (chain document (get-elements-by-tag-name "article") 0 (focus))
       (chain target class-list (remove "float-left"))
       (chain target class-list (add "float-right"))))))
+
 (chain (one "body")
  (on "click" ".resizeImage25"
   (lambda (event)
@@ -182,6 +201,7 @@
       (chain target class-list (remove "w-100"))
       (chain target class-list (add "w-25")))
     f)))
+
 (chain (one "body")
  (on "click" ".resizeImage50"
   (lambda (event)
@@ -193,6 +213,7 @@
       (chain target class-list (remove "w-25"))
       (chain target class-list (remove "w-100"))
       (chain target class-list (add "w-50"))))))
+
 (chain (one "body")
  (on "click" ".resizeImage100"
   (lambda (event)
@@ -204,6 +225,7 @@
       (chain target class-list (remove "w-25"))
       (chain target class-list (remove "w-50"))
       (chain target class-list (add "w-100"))))))
+
 (chain (one "body")
  (on "click" ".deleteImage"
   (lambda (event)
@@ -213,6 +235,7 @@
       (chain (one target) (popover "hide"))
       (chain document (get-elements-by-tag-name "article") 0 (focus))
       (chain target (remove))))))
+
 (chain (one "#update-image")
  (click
   (lambda (event)
@@ -225,7 +248,9 @@
                        "\"></img>")))
         (send-file
          (chain document (get-element-by-id "image-file") files 0))))))
+
 (tool "table" (chain (one "#table-modal") (modal "show")))
+
 (chain (one "#update-table")
  (click
   (lambda (event)
@@ -242,12 +267,14 @@
                          "<div class=\"table-responsive\"><table class=\"table table-bordered\">"
                          inner-table-html "</table></div>")))
       (chain document (exec-command "insertHTML" f table-html))))))
+
 (chain (one "body")
  (on "click" "article[contenteditable=true] td"
   (lambda (event)
     (let ((target (chain event current-target)))
       (create-popover-for target "table data")
       (chain (one target) (popover "show"))))))
+
 (tool "insertFormula"
  (chain (one "#update-formula") (off "click")
   (click
@@ -269,6 +296,7 @@
        (chain -math-live
         (make-math-field (chain document (get-element-by-id "formula"))
          (create virtual-keyboard-mode "manual")))))
+
 (chain (one "#update-formula") (off "click")
  (click
   (lambda (event)
@@ -284,16 +312,22 @@
       (loop for element in (chain document
                             (get-elements-by-class-name "formula"))
             do (chain -math-live (render-math-in-element element)))))))
+
 (stool "undo")
+
 (stool "redo")
+
 (tool "settings" (chain (one "#settings-modal") (modal "show")))
+
 (tool "finish"
  (chain (one "#publish-changes-modal")
   (on "shown.bs.modal"
    (lambda () (chain (one "#change-summary") (trigger "focus")))))
  (chain (one "#publish-changes-modal") (modal "show")))
+
 (defun random-int ()
   (chain -math (floor (* (chain -math (random)) 10000000000000000))))
+
 (defun create-popover-for (element content)
   (if (not (chain element id))
       (setf (chain element id)
@@ -304,8 +338,10 @@
      (concatenate 'string "<div data-target=\"#" (chain element id)
                   "\" class=\"popover\" role=\"tooltip\"><div class=\"arrow\"></div><h3 class=\"popover-header\"></h3><div class=\"popover-body\"></div></div>")
      content content trigger "manual"))))
+
 (defun get-popover-target (element)
   (chain (one (chain (one element) (closest ".popover") (data "target"))) 0))
+
 (defun remove-old-popovers (event)
   (loop for popover in (one ".popover")
         do (let ((target (get-popover-target popover)))
@@ -320,7 +356,9 @@
              (if (= (chain event target) target)
                  (return-from remove-old-popovers))
              (chain (one target) (popover "hide")))))
+
 (chain (one "body") (click remove-old-popovers))
+
 (chain (one "body")
  (on "click" "article[contenteditable=true] .formula"
   (lambda (event)
@@ -328,6 +366,7 @@
       (create-popover-for target
        "<a href=\"#\" class=\"editFormula\"><span class=\"fas fa-pen\"></span></a> <a href=\"#\" class=\"deleteFormula\"><span class=\"fas fa-trash\"></span></a>")
       (chain (one target) (popover "show"))))))
+
 (chain (one "body")
  (on "click" ".deleteFormula"
   (lambda (event)
@@ -337,6 +376,7 @@
       (chain (one target) (popover "hide"))
       (chain document (get-elements-by-tag-name "article") 0 (focus))
       (chain target (remove))))))
+
 (chain (one "body")
  (on "click" ".editFormula"
   (lambda (event)

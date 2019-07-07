@@ -1,5 +1,5 @@
-
 (var __-p-s_-m-v_-r-e-g)
+
 (i "./test.lisp")
 (i "./push-state.lisp" "pushState")
 (i "./editor.lisp" "showEditor")
@@ -14,11 +14,10 @@
      (chain (one "article") (html (chain window history state content)))
      (chain (one "article") (html "")))
  (show-editor) (show-tab "#page"))
-(chain (one "#create-article")
- (click
-  (lambda (e)
-    (chain e (prevent-default))
-    (let ((pathname (chain window location pathname (split "/"))))
-      (push-state (concatenate 'string "/wiki/" (chain pathname 2) "/create")
-       (chain window history state))
-      f))))
+
+(on "click" "#create-article" event
+  (chain event (prevent-default))
+  (let ((pathname (chain window location pathname (split "/"))))
+    (push-state (concatenate 'string "/wiki/" (chain pathname 2) "/create")
+     (chain window history state))
+    f))

@@ -1,5 +1,5 @@
-
 (var __-p-s_-m-v_-r-e-g)
+
 (i "./test.lisp")
 (i "./utils.lisp" "showModal" "all" "one" "hideModal" "clearChildren")
 
@@ -10,6 +10,7 @@
    (chain (one "article")
     (on "summernote.init"
      (lambda () (chain (one ".formula") (attr "contenteditable" f)))))))
+
 (export
  (defun revert-math (dom)
    (chain dom (find ".formula")

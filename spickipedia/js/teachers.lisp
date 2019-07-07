@@ -1,5 +1,5 @@
-
 (var __-p-s_-m-v_-r-e-g)
+
 (i "./show-tab.lisp" "showTab")
 (i "./read-cookie.lisp" "readCookie")
 (i "./handle-error.lisp" "handleError")
@@ -7,7 +7,9 @@
 (i "./template.lisp" "getTemplate")
 (i "./push-state.lisp" "pushState")
 (i "./utils.lisp" "showModal" "all" "one" "hideModal" "clearChildren")
+
 (defroute "/teachers/new" (show-tab "#create-teacher-tab"))
+
 (defroute "/teachers" (show-tab "#list-teachers")
  (chain (fetch "/api/teachers") (then check-status) (then json)
   (then
@@ -25,6 +27,7 @@
                   (chain document (get-element-by-id "teachers-list")
                    (append template)))))))
   (catch handle-fetch-error)))
+
 (chain (one "#create-teacher-form")
  (submit
   (lambda (event)

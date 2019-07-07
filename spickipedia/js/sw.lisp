@@ -1,6 +1,7 @@
+(var static-cache-name "static-cache-v1")
 
-(var static-cache-name "static-cache-v1") 
-(var dynamic-cache-name "dynamic-cache-v1") 
+(var dynamic-cache-name "dynamic-cache-v1")
+
 (var urls-to-cache
      ([] "/" "/bootstrap.min.css" "/all.css" "/index.css" "/jquery-3.3.1.js"
       "/mathlive.core.css" "/mathlive.css" "/mathlive.js" "/popper.js"
@@ -17,7 +18,8 @@
       "/js/template.lisp" "/js/courses/new.lisp" "/js/courses/index.lisp"
       "/js/student-courses/index.lisp" "/js/schedule/id.lisp"
       "/js/schedules/new.lisp" "/js/schedules/index.lisp"
-      "/js/settings/index.lisp" "/js/utils.lisp" "/favicon.ico")) 
+      "/js/settings/index.lisp" "/js/utils.lisp" "/favicon.ico"))
+
 (chain self
  (add-event-listener "install"
   (lambda (event)
@@ -25,7 +27,8 @@
     (chain event
      (wait-until
       (chain caches (open static-cache-name)
-       (then (lambda (cache) (chain cache (add-all urls-to-cache)))))))))) 
+       (then (lambda (cache) (chain cache (add-all urls-to-cache))))))))))
+
 (defun network-and-cache (event cache-name)
   (chain event
    (respond-with
@@ -36,7 +39,8 @@
          (then
           (lambda (response)
             (chain cache (put (chain event request) (chain response (clone))))
-            response))))))))) 
+            response)))))))))
+
 (defun cache-then-fallback (event cache-name)
   (chain event
    (respond-with
@@ -45,7 +49,8 @@
       (lambda (cache)
         (chain cache (match (chain event request))
          (then
-          (lambda (response) (or response (chain cache (match "/")))))))))))) 
+          (lambda (response) (or response (chain cache (match "/"))))))))))))
+
 (chain self
  (add-event-listener "fetch"
   (lambda (event)
@@ -55,7 +60,8 @@
            (pathname (chain url pathname)))
       (if (chain pathname (starts-with "/api"))
           (network-and-cache event dynamic-cache-name)
-          (cache-then-fallback event static-cache-name)))))) 
+          (cache-then-fallback event static-cache-name))))))
+
 (chain self
  (add-event-listener "activate"
   (lambda (event)
@@ -78,4 +84,4 @@
               (lambda (cache-name)
                 (var fun (chain caches delete))
                 (chain console (log cache-name))
-                (chain fun (call caches cache-name))))))))))))))) 
+                (chain fun (call caches cache-name)))))))))))))))
