@@ -1,10 +1,12 @@
 
-(var __-p-s_-m-v_-r-e-g) 
-(i "./test.lisp") 
-(i "./show-tab.lisp" "showTab") 
-(i "./read-cookie.lisp" "readCookie") 
-(i "./replace-state.lisp" "replaceState") 
-(i "./handle-error.lisp" "handleError") 
+(var __-p-s_-m-v_-r-e-g)
+(i "./test.lisp")
+(i "./show-tab.lisp" "showTab")
+(i "./read-cookie.lisp" "readCookie")
+(i "./replace-state.lisp" "replaceState")
+(i "./handle-error.lisp" "handleError")
+(i "./utils.lisp" "showModal" "all" "one" "hideModal" "clearChildren")
+
 (defroute "/logout" (chain (one ".edit-button") (add-class "disabled"))
  (show-tab "#loading")
  (chain $
@@ -12,4 +14,4 @@
    (lambda (data)
      (chain window local-storage (remove-item "name"))
      (replace-state "/login")))
-  (fail (lambda (jq-xhr text-status error-thrown) (handle-error jq-xhr t))))) 
+  (fail (lambda (jq-xhr text-status error-thrown) (handle-error jq-xhr t)))))

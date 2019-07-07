@@ -1,9 +1,11 @@
 
-(var __-p-s_-m-v_-r-e-g) 
-(i "./test.lisp") 
-(i "./push-state.lisp" "pushState") 
-(i "./editor.lisp" "showEditor") 
-(i "./show-tab.lisp" "showTab") 
+(var __-p-s_-m-v_-r-e-g)
+(i "./test.lisp")
+(i "./push-state.lisp" "pushState")
+(i "./editor.lisp" "showEditor")
+(i "./show-tab.lisp" "showTab")
+(i "./utils.lisp" "showModal" "all" "one" "hideModal" "clearChildren")
+
 (defroute "/wiki/:name/create"
  (chain (one ".edit-button") (add-class "disabled"))
  (chain (one "#is-outdated-article") (add-class "d-none"))
@@ -11,7 +13,7 @@
           (not (null (chain window history state content))))
      (chain (one "article") (html (chain window history state content)))
      (chain (one "article") (html "")))
- (show-editor) (show-tab "#page")) 
+ (show-editor) (show-tab "#page"))
 (chain (one "#create-article")
  (click
   (lambda (e)
@@ -19,4 +21,4 @@
     (let ((pathname (chain window location pathname (split "/"))))
       (push-state (concatenate 'string "/wiki/" (chain pathname 2) "/create")
        (chain window history state))
-      f)))) 
+      f))))

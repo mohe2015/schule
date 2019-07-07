@@ -1,5 +1,7 @@
 
-(i "./test.lisp") 
+(i "./test.lisp")
+(i "./utils.lisp" "showModal" "all" "one" "hideModal" "clearChildren")
+
 (export
  (defun get-url-parameter (param)
    (let* ((page-url (chain window location search (substring 1)))
@@ -13,4 +15,4 @@
                                                                            (return
                                                                             (chain
                                                                              parameter-name
-                                                                             1))))))) 
+                                                                             1)))))))

@@ -2,9 +2,11 @@
 (var __-p-s_-m-v_-r-e-g)
 (i "./test.lisp")
 (i "./file-upload.lisp" "sendFile")
-(i "./categories.lisp") 
+(i "./categories.lisp")
 (i "./handle-error.lisp" "handleError")
 (i "./fetch.lisp" "cacheThenNetwork")
+(i "./utils.lisp" "showModal" "all" "one" "hideModal" "clearChildren")
+
 (defun save-range ()
   (chain document (get-elements-by-tag-name "article") 0 (focus))
   (setf (chain window saved-range)

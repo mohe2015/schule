@@ -1,10 +1,12 @@
 
-(var __-p-s_-m-v_-r-e-g) 
-(i "./test.lisp") 
-(i "./editor-lib.lisp") 
-(i "./math.lisp" "revertMath") 
-(i "./read-cookie.lisp" "readCookie") 
-(i "./push-state.lisp" "pushState") 
+(var __-p-s_-m-v_-r-e-g)
+(i "./test.lisp")
+(i "./editor-lib.lisp")
+(i "./math.lisp" "revertMath")
+(i "./read-cookie.lisp" "readCookie")
+(i "./push-state.lisp" "pushState")
+(i "./utils.lisp" "showModal" "all" "one" "hideModal" "clearChildren")
+
 (chain (one "#publish-changes")
  (click
   (lambda ()
@@ -27,7 +29,7 @@
         (lambda (jq-xhr text-status error-thrown)
           (chain (one "#publish-changes") (show))
           (chain (one "#publishing-changes") (hide))
-          (handle-error jq-xhr f)))))))) 
+          (handle-error jq-xhr f))))))))
 (export
  (defun show-editor ()
    (chain (one "#editor") (remove-class "d-none"))
@@ -35,4 +37,4 @@
    (if (= (chain (one "article") (html)) "")
        (chain (one "article") (html "<p></p>")))
    (chain (one ".article-editor") (add-class "fullscreen"))
-   (chain document (exec-command "defaultParagraphSeparator" f "p")))) 
+   (chain document (exec-command "defaultParagraphSeparator" f "p"))))

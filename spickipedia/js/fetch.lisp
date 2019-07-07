@@ -1,6 +1,8 @@
 
-(var __-p-s_-m-v_-r-e-g) 
-(i "./push-state.lisp" "pushState") 
+(var __-p-s_-m-v_-r-e-g)
+(i "./push-state.lisp" "pushState")
+(i "./utils.lisp" "showModal" "all" "one" "hideModal" "clearChildren")
+
 (export
  (defun handle-fetch-error (error)
    (chain console (log (chain error)))
@@ -20,7 +22,7 @@
              (let ((error-message
                     (concatenate 'string "Unbekannter Fehler: "
                                  (chain error response status-text))))
-               (alert error-message))))))) 
+               (alert error-message)))))))
 (export
  (defun handle-fetch-error-show (error)
    (chain console (log (chain error)))
@@ -42,20 +44,20 @@
                     (concatenate 'string "Unbekannter Fehler: "
                                  (chain error response status-text))))
                (chain (one "#errorMessage") (text error-message))
-               (show-tab "#error"))))))) 
+               (show-tab "#error")))))))
 (export
  (defun check-status (response)
    (if (= (chain response status) 200)
        (chain -promise (resolve response))
        (let ((error (new (-error (chain response status-text)))))
          (setf (chain error response) response)
-         (throw error))))) 
+         (throw error)))))
 (export
  (defun json (response)
    (if (not response)
        (throw (new (-error "No data"))))
-   (chain response (json)))) 
-(export (defun html () (chain response (text)))) 
+   (chain response (json))))
+(export (defun html () (chain response (text))))
 (export
  (defun cache-then-network (url callback)
    (var networkdatareceived f)
@@ -67,4 +69,4 @@
      (lambda (data)
        (if (not networkdatareceived)
            (callback data))))
-    (catch (lambda () networkupdate))))) 
+    (catch (lambda () networkupdate)))))

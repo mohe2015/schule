@@ -1,8 +1,10 @@
 
-(var __-p-s_-m-v_-r-e-g) 
-(i "./test.lisp") 
-(i "./push-state.lisp" "pushState") 
-(i "./show-tab.lisp" "showTab") 
+(var __-p-s_-m-v_-r-e-g)
+(i "./test.lisp")
+(i "./push-state.lisp" "pushState")
+(i "./show-tab.lisp" "showTab")
+(i "./utils.lisp" "showModal" "all" "one" "hideModal" "clearChildren")
+
 (export
  (defun handle-error (jq-xhr show-error-page)
    (let ((status (chain jq-xhr status)))
@@ -30,4 +32,4 @@
                    (progn
                     (chain (one "#errorMessage") (text error-message))
                     (show-tab "#error"))
-                   (alert error-message)))))))) 
+                   (alert error-message))))))))

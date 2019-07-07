@@ -3,6 +3,8 @@
 (i "./test.lisp")
 (i "./show-tab.lisp" "showTab")
 (i "./handle-error.lisp" "handleError")
+(i "./utils.lisp" "showModal" "all" "one" "hideModal" "clearChildren")
+
 (chain (one document)
  (on "input" "#search-query" (lambda (e) (chain (one "#button-search") (click)))))
 (defroute "/search" (chain (one ".edit-button") (add-class "disabled"))

@@ -1,9 +1,11 @@
 
-(var __-p-s_-m-v_-r-e-g) 
-(i "./test.lisp") 
-(i "./show-tab.lisp" "showTab") 
-(i "./read-cookie.lisp" "readCookie") 
-(i "./handle-error.lisp" "handleError") 
+(var __-p-s_-m-v_-r-e-g)
+(i "./test.lisp")
+(i "./show-tab.lisp" "showTab")
+(i "./read-cookie.lisp" "readCookie")
+(i "./handle-error.lisp" "handleError")
+(i "./utils.lisp" "showModal" "all" "one" "hideModal" "clearChildren")
+
 (chain (one "#add-tag-form")
  (submit
   (lambda (e)
@@ -15,9 +17,9 @@
         (:span :class "closable-badge-label" (chain (one "#new-category") (val)))
         (:button :type "button" :class "close close-tag" :aria-label "Close"
          (:span :aria-hidden "true" "&times;"))))))
-    (chain (one "#new-category") (val ""))))) 
+    (chain (one "#new-category") (val "")))))
 (chain (one "body")
- (on "click" ".close-tag" (lambda (e) (chain (one this) (parent) (remove))))) 
+ (on "click" ".close-tag" (lambda (e) (chain (one this) (parent) (remove)))))
 (defroute "/tags/.rest" (show-tab "#loading")
  (chain console (log (chain rest (split "/"))))
  (chain $
@@ -36,4 +38,4 @@
                       (attr "href" (concatenate 'string "/wiki/" page)))
                      (chain (one "#tags-list") (append templ))))))
      (show-tab "#tags")))
-  (fail (lambda (jq-xhr text-status error-thrown) (handle-error jq-xhr t))))) 
+  (fail (lambda (jq-xhr text-status error-thrown) (handle-error jq-xhr t)))))
