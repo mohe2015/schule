@@ -56,7 +56,7 @@
                  (to-fixed 1) (to-locale-string))
                 " %"))))
 
-(on "click" ".multiple-choice-submit-html" event
+(on ("click" ".multiple-choice-submit-html" event)
   (let ((everything-correct t) (i 0))
     (loop for answer in (chain window current-question responses)
           do (chain (one (concatenate 'string "#" i))
@@ -100,7 +100,7 @@
     (chain (one ".multiple-choice-submit-html") (hide))
     (chain (one ".next-question") (show))))
 
-(on "click" ".text-submit-html" event
+(on ("click" ".text-submit-html" event)
   (if (= (chain (one "#text-response") (val))
          (chain window current-question answer))
       (progn
@@ -112,7 +112,7 @@
   (chain (one ".text-submit-html") (hide))
   (chain (one ".next-question") (show)))
 
-(on "click" ".next-question" event
+(on ("click" ".next-question" event)
   (chain (one ".next-question") (hide))
   (chain (one ".text-submit-html") (show))
   (chain (one ".multiple-choice-submit-html") (show))
@@ -121,20 +121,18 @@
      (concatenate 'string "/quiz/" (chain pathname 2) "/play/"
                   (1+ (parse-int (chain pathname 4)))))))
 
-(on "click" ".create-multiple-choice-question" event
+(on ("click" ".create-multiple-choice-question" event)
   (chain (one "#questions")
    (append (one (chain (one "#multiple-choice-question") (html))))))
 
-(on "click" ".create-text-question" event
+(on ("click" ".create-text-question" event)
   (chain (one "#questions") (append (one (chain (one "#text-question") (html))))))
 
-(chain (one "body")
- (on "click" ".add-response-possibility"
-  (lambda (e)
-    (chain (one this) (siblings ".responses")
-     (append (one (chain (one "#multiple-choice-response-possibility") (html))))))))
+(on ("click" "body" event :dynamic-selector ".add-response-possibility")
+  (chain (one this) (siblings ".responses")
+   (append (one (chain (one "#multiple-choice-response-possibility") (html))))))
 
-(on "click" ".save-quiz" event
+(on ("click" ".save-quiz" event)
   (let ((obj (new (-object)))
         (pathname (chain window location pathname (split "/"))))
     (setf (chain obj questions) (list))

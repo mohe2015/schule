@@ -50,11 +50,11 @@
                  (setf (chain option inner-text) text)
                  (chain course-select (append-child option)))))))
 
- (on "click" "#add-student-course" event
+ (on ("click" "#add-student-course" event)
    (chain event (prevent-default))
    (show-modal (one "#modal-student-courses")))
 
- (on "submit" "#form-student-courses" event
+ (on ("submit" "#form-student-courses" event)
    (chain event (prevent-default))
    (let* ((form-element (one "#form-student-courses"))
           (form-data (new (-form-data form-element))))
@@ -66,9 +66,7 @@
        (lambda (data) (hide-modal (one "#modal-student-courses")) (render)))
       (catch handle-fetch-error)))))
 
-(on "click" "body" event
-  (if (not (chain event target (closest ".button-student-course-delete")))
-      (return))
+(on ("click" "body" event :dynamic-selector ".button-student-course-delete")
   (let* ((form-data (new (-form-data))))
     (chain form-data
      (append "student-course" (chain (one this) (data "id-student-course"))))

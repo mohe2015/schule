@@ -23,7 +23,7 @@
     (catch handle-fetch-error))
    (show-tab "#create-course-tab")))
 
-(on "submit" "#create-course-form" event
+(on ("submit" "#create-course-form" event)
   (let* ((formelement
           (chain document (query-selector "#create-course-form")))
          (formdata (new (-form-data formelement))))

@@ -122,196 +122,166 @@
                  (chain input next-element-sibling (append element))))
       nil))))
 
-(chain (one "body")
- (on "click" ".editLink"
-  (lambda (event)
-    (chain event (prevent-default))
-    (chain event (stop-propagation))
-    (let ((target (get-popover-target (chain event target))))
-      (chain (one target) (popover "hide"))
-      (chain (one "#link") (val (chain (one target) (attr "href"))))
-      (chain (one "#link-form") (off "submit")
-       (submit
-        (lambda (event)
-          (chain event (prevent-default))
-          (chain event (stop-propagation))
-          (chain (one "#link-modal") (modal "hide"))
-          (chain document (get-elements-by-tag-name "article") 0 (focus))
-          (chain (one target) (attr "href" (chain (one "#link") (val)))))))
-      (chain (one "#link-modal") (modal "show"))))))
+(on ("click" "body" event :dynamic-selector ".editLink")
+  (chain event (prevent-default))
+  (chain event (stop-propagation))
+  (let ((target (get-popover-target (chain event target))))
+    (chain (one target) (popover "hide"))
+    (chain (one "#link") (val (chain (one target) (attr "href"))))
+    (chain (one "#link-form") (off "submit")
+     (submit
+      (lambda (event)
+        (chain event (prevent-default))
+        (chain event (stop-propagation))
+        (chain (one "#link-modal") (modal "hide"))
+        (chain document (get-elements-by-tag-name "article") 0 (focus))
+        (chain (one target) (attr "href" (chain (one "#link") (val)))))))
+    (chain (one "#link-modal") (modal "show"))))
 
-(chain (one "body")
- (on "click" ".deleteLink"
-  (lambda (event)
-    (chain event (prevent-default))
-    (chain event (stop-propagation))
-    (let ((target (get-popover-target (chain event target))))
-      (chain (one target) (popover "hide"))
-      (chain (one target) (remove))))))
+(on ("click" "body" event :dynamic-selector ".deleteLink")
+  (chain event (prevent-default))
+  (chain event (stop-propagation))
+  (let ((target (get-popover-target (chain event target))))
+    (chain (one target) (popover "hide"))
+    (chain (one target) (remove))))
 
-(chain (one "body")
- (on "click" "article[contenteditable=true] a"
-  (lambda (event)
-    (let ((target (chain event current-target)))
-      (create-popover-for target
-       "<a href=\"#\" class=\"editLink\"><span class=\"fas fa-link\"></span></a> <a href=\"#\" class=\"deleteLink\"><span class=\"fas fa-unlink\"></span></a>")
-      (chain (one target) (popover "show"))))))
+(on ("click" "body" event :dynamic-selector "article[contenteditable=true] a")
+  (let ((target (chain event current-target)))
+    (create-popover-for target
+     "<a href=\"#\" class=\"editLink\"><span class=\"fas fa-link\"></span></a> <a href=\"#\" class=\"deleteLink\"><span class=\"fas fa-unlink\"></span></a>")
+    (chain (one target) (popover "show"))))
 
 (tool "insertImage" (chain (one "#image-modal") (modal "show")))
 
-(chain (one "body")
- (on "click" "article[contenteditable=true] figure"
-  (lambda (event)
-    (let ((target (chain event current-target)))
-      (create-popover-for target
-       "<a href=\"#\" class=\"floatImageLeft\"><span class=\"fas fa-align-left\"></span></a> <a href=\"#\" class=\"floatImageRight\"><span class=\"fas fa-align-right\"></span></a> <a href=\"#\" class=\"resizeImage25\">25%</a> <a href=\"#\" class=\"resizeImage50\">50%</a> <a href=\"#\" class=\"resizeImage100\">100%</a> <a href=\"#\" class=\"deleteImage\"><span class=\"fas fa-trash\"></span></a>")
-      (chain (one target) (popover "show"))))))
+(on ("click" "body" event :dynamic-selector "article[contenteditable=true] figure")
+  (let ((target (chain event current-target)))
+    (create-popover-for target
+     "<a href=\"#\" class=\"floatImageLeft\"><span class=\"fas fa-align-left\"></span></a> <a href=\"#\" class=\"floatImageRight\"><span class=\"fas fa-align-right\"></span></a> <a href=\"#\" class=\"resizeImage25\">25%</a> <a href=\"#\" class=\"resizeImage50\">50%</a> <a href=\"#\" class=\"resizeImage100\">100%</a> <a href=\"#\" class=\"deleteImage\"><span class=\"fas fa-trash\"></span></a>")
+    (chain (one target) (popover "show"))))
 
-(chain (one "body")
- (on "click" ".floatImageLeft"
-  (lambda (event)
-    (chain event (prevent-default))
-    (chain event (stop-propagation))
-    (let ((target (get-popover-target (chain event current-target))))
-      (chain (one target) (popover "hide"))
-      (chain document (get-elements-by-tag-name "article") 0 (focus))
-      (chain target class-list (remove "float-right"))
-      (chain target class-list (add "float-left"))))))
-
-(chain (one "body")
- (on "click" ".floatImageRight"
-  (lambda (event)
-    (chain event (prevent-default))
-    (chain event (stop-propagation))
-    (let ((target (get-popover-target (chain event current-target))))
-      (chain (one target) (popover "hide"))
-      (chain document (get-elements-by-tag-name "article") 0 (focus))
-      (chain target class-list (remove "float-left"))
-      (chain target class-list (add "float-right"))))))
-
-(chain (one "body")
- (on "click" ".resizeImage25"
-  (lambda (event)
-    (chain event (prevent-default))
-    (chain event (stop-propagation))
-    (let ((target (get-popover-target (chain event current-target))))
-      (chain (one target) (popover "hide"))
-      (chain document (get-elements-by-tag-name "article") 0 (focus))
-      (chain target class-list (remove "w-50"))
-      (chain target class-list (remove "w-100"))
-      (chain target class-list (add "w-25")))
-    f)))
-
-(chain (one "body")
- (on "click" ".resizeImage50"
-  (lambda (event)
-    (chain event (prevent-default))
-    (chain event (stop-propagation))
-    (let ((target (get-popover-target (chain event current-target))))
-      (chain (one target) (popover "hide"))
-      (chain document (get-elements-by-tag-name "article") 0 (focus))
-      (chain target class-list (remove "w-25"))
-      (chain target class-list (remove "w-100"))
-      (chain target class-list (add "w-50"))))))
-
-(chain (one "body")
- (on "click" ".resizeImage100"
-  (lambda (event)
-    (chain event (prevent-default))
-    (chain event (stop-propagation))
-    (let ((target (get-popover-target (chain event current-target))))
-      (chain (one target) (popover "hide"))
-      (chain document (get-elements-by-tag-name "article") 0 (focus))
-      (chain target class-list (remove "w-25"))
-      (chain target class-list (remove "w-50"))
-      (chain target class-list (add "w-100"))))))
-
-(chain (one "body")
- (on "click" ".deleteImage"
-  (lambda (event)
-    (chain event (prevent-default))
-    (chain event (stop-propagation))
-    (let ((target (get-popover-target (chain event current-target))))
-      (chain (one target) (popover "hide"))
-      (chain document (get-elements-by-tag-name "article") 0 (focus))
-      (chain target (remove))))))
-
-(chain (one "#update-image")
- (click
-  (lambda (event)
-    (chain (one "#image-modal") (modal "hide"))
+(on ("click" "body" event :dynamic-selector ".floatImageLeft")
+  (chain event (prevent-default))
+  (chain event (stop-propagation))
+  (let ((target (get-popover-target (chain event current-target))))
+    (chain (one target) (popover "hide"))
     (chain document (get-elements-by-tag-name "article") 0 (focus))
-    (if (chain (one "#image-url") (val))
-        (chain document
-         (exec-command "insertHTML" f
-          (concatenate 'string "<img src=\"" (chain (one "#image-url") (val))
-                       "\"></img>")))
-        (send-file
-         (chain document (get-element-by-id "image-file") files 0))))))
+    (chain target class-list (remove "float-right"))
+    (chain target class-list (add "float-left"))))
+
+(on ("click" "body" event :dynamic-selector ".floatImageRight")
+  (chain event (prevent-default))
+  (chain event (stop-propagation))
+  (let ((target (get-popover-target (chain event current-target))))
+    (chain (one target) (popover "hide"))
+    (chain document (get-elements-by-tag-name "article") 0 (focus))
+    (chain target class-list (remove "float-left"))
+    (chain target class-list (add "float-right"))))
+
+(on ("click" "body" event :dynamic-selector ".resizeImage25")
+  (chain event (prevent-default))
+  (chain event (stop-propagation))
+  (let ((target (get-popover-target (chain event current-target))))
+    (chain (one target) (popover "hide"))
+    (chain document (get-elements-by-tag-name "article") 0 (focus))
+    (chain target class-list (remove "w-50"))
+    (chain target class-list (remove "w-100"))
+    (chain target class-list (add "w-25")))
+  f)
+
+(on ("click" "body" event :dynamic-selector ".resizeImage50")
+  (chain event (prevent-default))
+  (chain event (stop-propagation))
+  (let ((target (get-popover-target (chain event current-target))))
+    (chain (one target) (popover "hide"))
+    (chain document (get-elements-by-tag-name "article") 0 (focus))
+    (chain target class-list (remove "w-25"))
+    (chain target class-list (remove "w-100"))
+    (chain target class-list (add "w-50"))))
+
+(on ("click" "body" event :dynamic-selector ".resizeImage100")
+  (chain event (prevent-default))
+  (chain event (stop-propagation))
+  (let ((target (get-popover-target (chain event current-target))))
+    (chain (one target) (popover "hide"))
+    (chain document (get-elements-by-tag-name "article") 0 (focus))
+    (chain target class-list (remove "w-25"))
+    (chain target class-list (remove "w-50"))
+    (chain target class-list (add "w-100"))))
+
+(on ("click" "body" event :dynamic-selector ".deleteImage")
+  (chain event (prevent-default))
+  (chain event (stop-propagation))
+  (let ((target (get-popover-target (chain event current-target))))
+    (chain (one target) (popover "hide"))
+    (chain document (get-elements-by-tag-name "article") 0 (focus))
+    (chain target (remove))))
+
+(on ("click" "#update-image" event)
+  (chain (one "#image-modal") (modal "hide"))
+  (chain document (get-elements-by-tag-name "article") 0 (focus))
+  (if (chain (one "#image-url") (val))
+      (chain document
+       (exec-command "insertHTML" f
+        (concatenate 'string "<img src=\"" (chain (one "#image-url") (val))
+                     "\"></img>")))
+      (send-file
+       (chain document (get-element-by-id "image-file") files 0))))
 
 (tool "table" (chain (one "#table-modal") (modal "show")))
 
-(chain (one "#update-table")
- (click
-  (lambda (event)
-    (chain (one "#table-modal") (modal "hide"))
-    (chain document (get-elements-by-tag-name "article") 0 (focus))
-    (let* ((columns (parse-int (chain (one "#table-columns") (val))))
-           (rows (parse-int (chain (one "#table-rows") (val))))
-           (row-html (chain "<td></td>" (repeat columns)))
-           (inner-table-html
-            (chain (concatenate 'string "<tr>" row-html "</tr>")
-             (repeat rows)))
-           (table-html
-            (concatenate 'string
-                         "<div class=\"table-responsive\"><table class=\"table table-bordered\">"
-                         inner-table-html "</table></div>")))
-      (chain document (exec-command "insertHTML" f table-html))))))
+(on "click" "#update-table" event
+  (chain (one "#table-modal") (modal "hide"))
+  (chain document (get-elements-by-tag-name "article") 0 (focus))
+  (let* ((columns (parse-int (chain (one "#table-columns") (val))))
+         (rows (parse-int (chain (one "#table-rows") (val))))
+         (row-html (chain "<td></td>" (repeat columns)))
+         (inner-table-html
+          (chain (concatenate 'string "<tr>" row-html "</tr>")
+           (repeat rows)))
+         (table-html
+          (concatenate 'string
+                       "<div class=\"table-responsive\"><table class=\"table table-bordered\">"
+                       inner-table-html "</table></div>")))
+    (chain document (exec-command "insertHTML" f table-html))))
 
-(chain (one "body")
- (on "click" "article[contenteditable=true] td"
-  (lambda (event)
-    (let ((target (chain event current-target)))
-      (create-popover-for target "table data")
-      (chain (one target) (popover "show"))))))
+(on ("click" "body" event :dynamic-selector "article[contenteditable=true] td")
+  (let ((target (chain event current-target)))
+    (create-popover-for target "table data")
+    (chain (one target) (popover "show"))))
 
 (tool "insertFormula"
- (chain (one "#update-formula") (off "click")
-  (click
-   (lambda (event)
-     (chain (one "#formula-modal") (modal "hide"))
-     (chain document (get-elements-by-tag-name "article") 0 (focus))
-     (let ((latex (chain window mathfield (latex))))
-       (chain window mathfield (revert-to-original-content))
-       (chain document
-        (exec-command "insertHTML" f
-         (concatenate 'string
-                      "<span class=\"formula\" contenteditable=\"false\">\\("
-                      latex "\\)</span>")))
-       (loop for element in (chain document
-                             (get-elements-by-class-name "formula"))
-             do (chain -math-live (render-math-in-element element)))))))
+ (on ("click" "#update-formula" event :remove-old-listeners t)
+   (chain (one "#formula-modal") (modal "hide"))
+   (chain document (get-elements-by-tag-name "article") 0 (focus))
+   (let ((latex (chain window mathfield (latex))))
+     (chain window mathfield (revert-to-original-content))
+     (chain document
+      (exec-command "insertHTML" f
+       (concatenate 'string
+                    "<span class=\"formula\" contenteditable=\"false\">\\("
+                    latex "\\)</span>")))
+     (loop for element in (chain document
+                           (get-elements-by-class-name "formula"))
+           do (chain -math-live (render-math-in-element element)))))
  (chain (one "#formula-modal") (modal "show"))
  (setf (chain window mathfield)
        (chain -math-live
         (make-math-field (chain document (get-element-by-id "formula"))
-         (create virtual-keyboard-mode "manual")))))
+         (create virtual-keyboard-mode "manual"))))
 
-(chain (one "#update-formula") (off "click")
- (click
-  (lambda (event)
-    (chain (one "#formula-modal") (modal "hide"))
-    (chain document (get-elements-by-tag-name "article") 0 (focus))
-    (let ((latex (chain window mathfield (latex))))
-      (chain window mathfield (revert-to-original-content))
-      (chain document
-       (exec-command "insertHTML" f
-        (concatenate 'string
-                     "<span class=\"formula\" contenteditable=\"false\">\\("
-                     latex "\\)</span>")))
-      (loop for element in (chain document
-                            (get-elements-by-class-name "formula"))
-            do (chain -math-live (render-math-in-element element)))))))
+(on ("click" "#update-formula" event :remove-old-listeners t)
+  (chain (one "#formula-modal") (modal "hide"))
+  (chain document (get-elements-by-tag-name "article") 0 (focus))
+  (let ((latex (chain window mathfield (latex))))
+    (chain window mathfield (revert-to-original-content))
+    (chain document
+     (exec-command "insertHTML" f
+      (concatenate 'string
+                   "<span class=\"formula\" contenteditable=\"false\">\\("
+                   latex "\\)</span>")))
+    (loop for element in (chain document
+                          (get-elements-by-class-name "formula"))
+          do (chain -math-live (render-math-in-element element)))))
 
 (stool "undo")
 
@@ -320,10 +290,9 @@
 (tool "settings" (chain (one "#settings-modal") (modal "show")))
 
 (tool "finish"
- (chain (one "#publish-changes-modal")
-  (on "shown.bs.modal"
-   (lambda () (chain (one "#change-summary") (trigger "focus")))))
- (chain (one "#publish-changes-modal") (modal "show")))
+  (on "shown.bs.modal" "#publish-changes-modal" event
+    (chain (one "#change-summary") (trigger "focus")))
+  (chain (one "#publish-changes-modal") (modal "show")))
 
 (defun random-int ()
   (chain -math (floor (* (chain -math (random)) 10000000000000000))))
@@ -359,50 +328,44 @@
 
 (chain (one "body") (click remove-old-popovers))
 
-(chain (one "body")
- (on "click" "article[contenteditable=true] .formula"
-  (lambda (event)
-    (let ((target (chain event current-target)))
-      (create-popover-for target
-       "<a href=\"#\" class=\"editFormula\"><span class=\"fas fa-pen\"></span></a> <a href=\"#\" class=\"deleteFormula\"><span class=\"fas fa-trash\"></span></a>")
-      (chain (one target) (popover "show"))))))
+(on ("click" "body" event :dynamic-selector "article[contenteditable=true] .formula")
+  (let ((target (chain event current-target)))
+    (create-popover-for target
+     "<a href=\"#\" class=\"editFormula\"><span class=\"fas fa-pen\"></span></a> <a href=\"#\" class=\"deleteFormula\"><span class=\"fas fa-trash\"></span></a>")
+    (chain (one target) (popover "show"))))
 
-(chain (one "body")
- (on "click" ".deleteFormula"
-  (lambda (event)
-    (chain event (prevent-default))
-    (chain event (stop-propagation))
-    (let ((target (get-popover-target (chain event current-target))))
-      (chain (one target) (popover "hide"))
-      (chain document (get-elements-by-tag-name "article") 0 (focus))
-      (chain target (remove))))))
+(on ("click" "body" event :dynamic-selector ".deleteFormula")
+  (chain event (prevent-default))
+  (chain event (stop-propagation))
+  (let ((target (get-popover-target (chain event current-target))))
+    (chain (one target) (popover "hide"))
+    (chain document (get-elements-by-tag-name "article") 0 (focus))
+    (chain target (remove))))
 
-(chain (one "body")
- (on "click" ".editFormula"
-  (lambda (event)
-    (chain event (prevent-default))
-    (chain event (stop-propagation))
-    (let* ((target (get-popover-target (chain event current-target)))
-           (content (chain -math-live (get-original-content target))))
-      (chain (one target) (popover "hide"))
-      (chain document (get-elements-by-tag-name "article") 0 (focus))
-      (setf (chain document (get-element-by-id "formula") inner-h-t-m-l)
-            (concatenate 'string "\\( " content " \\)"))
-      (setf (chain window mathfield)
-            (chain -math-live
-             (make-math-field (chain document (get-element-by-id "formula"))
-              (create virtual-keyboard-mode "manual"))))
-      (chain (one "#formula-modal") (modal "show"))
-      (chain (one "#update-formula") (off "click")
-       (click
-        (lambda (event)
-          (chain (one "#formula-modal") (modal "hide"))
-          (chain document (get-elements-by-tag-name "article") 0 (focus))
-          (let ((latex (chain window mathfield (latex))))
-            (chain window mathfield (revert-to-original-content))
-            (setf (chain target inner-h-t-m-l)
-                  (concatenate 'string "\\( " latex " \\)"))
-            (loop for element in (chain document
-                                  (get-elements-by-class-name "formula"))
-                  do (chain -math-live
-                      (render-math-in-element element)))))))))))
+(on ("click" "body" event :dynamic-selector ".editFormula")
+  (chain event (prevent-default))
+  (chain event (stop-propagation))
+  (let* ((target (get-popover-target (chain event current-target)))
+         (content (chain -math-live (get-original-content target))))
+    (chain (one target) (popover "hide"))
+    (chain document (get-elements-by-tag-name "article") 0 (focus))
+    (setf (chain document (get-element-by-id "formula") inner-h-t-m-l)
+          (concatenate 'string "\\( " content " \\)"))
+    (setf (chain window mathfield)
+          (chain -math-live
+           (make-math-field (chain document (get-element-by-id "formula"))
+            (create virtual-keyboard-mode "manual"))))
+    (chain (one "#formula-modal") (modal "show"))
+    (chain (one "#update-formula") (off "click")
+     (click
+      (lambda (event)
+        (chain (one "#formula-modal") (modal "hide"))
+        (chain document (get-elements-by-tag-name "article") 0 (focus))
+        (let ((latex (chain window mathfield (latex))))
+          (chain window mathfield (revert-to-original-content))
+          (setf (chain target inner-h-t-m-l)
+                (concatenate 'string "\\( " latex " \\)"))
+          (loop for element in (chain document
+                                (get-elements-by-class-name "formula"))
+                do (chain -math-live
+                    (render-math-in-element element)))))))))

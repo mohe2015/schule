@@ -45,22 +45,17 @@
   (if (@ e length-computable)
       (chain (one "#uploadProgress")
        (css "width"
-        (concatenate 'string (* 100 (/ (@ e loaded) (@ e total))) "%")))))
+        (concatenate 'string (* 100 (/ (@ e loaded) (@ e total))) "%"))))
 
-(chain (one "#uploadProgressModal")
- (on "shown.bs.modal"
-  (lambda (e)
+  (on ("shown.bs.modal" "#uploadProgressModal" event)
     (if (@ window file-upload-finished)
-        (chain (one "#uploadProgressModal") (modal "hide"))))))
+        (chain (one "#uploadProgressModal") (modal "hide"))))
 
-(chain (one "#uploadProgressModal")
- (on "hide.bs.modal"
-  (lambda (e)
+  (on ("hide.bs.modal" "#uploadProgressModal" event)
     (if (not (@ window file-upload-finished))
         (progn
          (setf (@ window file-upload-finished) t)
-         (chain window file-upload-xhr (abort)))))))
+         (chain window file-upload-xhr (abort)))))
 
-(chain (one "#uploadProgressModal")
- (on "hidden.bs.modal"
-  (lambda (e) (chain (one "#uploadProgress") (attr "width" "0%")))))
+  (on ("hidden.bs.modal" "#uploadProgressModal" event)
+    (chain (one "#uploadProgress") (attr "width" "0%"))))

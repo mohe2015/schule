@@ -15,7 +15,7 @@
      (chain (one "article") (html "")))
  (show-editor) (show-tab "#page"))
 
-(on "click" "#create-article" event
+(on ("click" "#create-article" event)
   (chain event (prevent-default))
   (let ((pathname (chain window location pathname (split "/"))))
     (push-state (concatenate 'string "/wiki/" (chain pathname 2) "/create")

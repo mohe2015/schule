@@ -20,7 +20,7 @@
     (chain (one "#new-category") (val "")))))
 
 (chain (one "body")
- (on "click" ".close-tag" (lambda (e) (chain (one this) (parent) (remove)))))
+ (on ("click" ".close-tag" event) (chain (one this) (parent) (remove))))
 
 (defroute "/tags/.rest" (show-tab "#loading")
  (chain console (log (chain rest (split "/"))))

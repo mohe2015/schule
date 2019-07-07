@@ -23,14 +23,12 @@
    (chain (one ".login-hide") (attr "style" "display: none !important"))
    (chain (one ".navbar-collapse") (remove-class "show"))))
 
-(chain (one "#login-form")
- (on "submit"
-  (lambda (e)
-    (chain e (prevent-default))
-    (chain (one "#login-button") (prop "disabled" t)
-     (html
-      "<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span> Anmelden..."))
-    (login-post f))))
+(on ("submit" "#login-form" event)
+  (chain event (prevent-default))
+  (chain (one "#login-button") (prop "disabled" t)
+   (html
+    "<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span> Anmelden..."))
+  (login-post f))
 
 (defun login-post (repeated)
   (let ((name (chain (one "#inputName") (val)))
