@@ -113,11 +113,10 @@
       (:ul :id "articles-list"))
      (:div :style "display: none;" :class "container my-tab position-absolute"
       :id "tags" (:h1 :class "text-center" "Tags") (:ul :id "tags-list"))
-     (:div :style "display: none;" :class
-      "container-fluid my-tab position-absolute" :id "create-schedule-tab"
-      (:form :method "POST" :action "/api/schedules" :id "create-schedule-form"
-       ,(text-input "Jahrgang" "schedule-grade" "grade")
-       ,(submit-button "Stundenplan erstellen")))
+     ,(tab "create-schedule-tab"
+        `(:form :method "POST" :action "/api/schedules" :id "create-schedule-form"
+           ,(text-input "Jahrgang" "schedule-grade" "grade")
+           ,(submit-button "Stundenplan erstellen")))
      ,@(html-settings)
      (:div :style "display: none;" :class "container my-tab position-absolute"
       :id "multiple-choice-question-html"
@@ -171,88 +170,91 @@
          :placeholder "Passwort" :required "" :autocomplete
          "current-password"))
        ,(submit-button "Anmelden" :id "login-button")))
-     (:div :style "display: none;" :class
-      "container-fluid my-tab position-absolute word-wrap" :id "page"
-      (:div :class "alert alert-warning mt-1 d-none" :id "is-outdated-article"
-       :role "alert"
-       " Dies zeigt den Artikel zu einem bestimmten Zeitpunkt und ist somit nicht unbedingt aktuell! "
-       (:a :href "#" :id "currentVersionLink" :class "alert-link "
-        "Zur aktuellen Version"))
-      (:h1 :class "text-center" :id "wiki-article-title" "title")
-      (:div :class "article-editor"
-       (:div :id "editor" :class "d-none"
-        (:a :href "#" :id "format-p" (:span :class "fas fa-paragraph")) " "
-        (:a :href "#" :id "format-h2" (:span :class "fas fa-heading")) " "
-        (:a :href "#" :id "format-h3" (:span :class "fas fa-heading")) " "
-        (:a :href "#" :id "superscript" (:span :class "fas fa-superscript"))
-        " " (:a :href "#" :id "subscript" (:span :class "fas fa-subscript"))
-        " "
-        (:a :href "#" :id "insertUnorderedList"
-         (:span :class "fas fa-list-ul"))
-        " "
-        (:a :href "#" :id "insertOrderedList" (:span :class "fas fa-list-ol"))
-        " " (:a :href "#" :id "indent" (:span :class "fas fa-indent")) " "
-        (:a :href "#" :id "outdent" (:span :class "fas fa-outdent")) " "
-        (:a :href "#" :id "createLink" (:span :class "fas fa-link")) " "
-        (:a :href "#" :id "insertImage" (:span :class "fas fa-image")) " "
-        (:a :href "#" :id "table" (:span :class "fas fa-table")) " "
-        (:a :href "#" :id "insertFormula" (:span :class "fas fa-calculator"))
-        " " (:a :href "#" :id "undo" (:span :class "fas fa-undo")) " "
-        (:a :href "#" :id "redo" (:span :class "fas fa-redo")) " "
-        (:a :href "#" :id "settings" (:span :class "fas fa-cog")) " "
-        (:a :href "#" :id "finish" (:span :class "fas fa-check")))
-       (:article))
-      (:div :id "categories")
-      (:div
-       (:button :id "show-history" :type "button" :class
-        "btn btn-outline-primary" "Änderungsverlauf"))
-      (:small "Dieses Werk ist lizenziert unter einer "
-       (:a :target "_blank" :rel "license noopener" :href
-        "http://creativecommons.org/licenses/by-sa/4.0/deed.de"
-        "Creative Commons Namensnennung - Weitergabe unter gleichen Bedingungen 4.0 International Lizenz")
-       "."))
-     (:div :style "display: none;" :class
-      "container-fluid my-tab position-absolute" :id "not-found"
-      (:div :class "alert alert-danger" :role "alert"
-       " Der Artikel konnte nicht gefunden werden. Möchtest du ihn "
-       (:a :id "create-article" :href "#" :class "alert-link" "erstellen")
-       "?"))
-     (:div :style "display: none;" :class
-      "container-fluid my-tab position-absolute" :id "history"
-      (:h1 :class "text-center" "Änderungsverlauf")
-      (:div :class "list-group" :id "history-list"))
-     (:div :style "display: none;" :class
-      "container-fluid my-tab position-absolute" :id "search" " " (:br)
-      (:div :class "input-group mb-3"
-       (:input :type "text" :class "form-control" :id "search-query"
-        :placeholder "Suchbegriff")
-       (:div :class "input-group-append"
-        (:button :class "btn btn-outline-secondary" :type "button" :id
-         "button-search" (:i :class "fas fa-search"))))
-      (:div
-       (:div :style "display: none; left: 50%; margin-left: -1rem;" :class
-        "position-absolute" :id "search-results-loading"
-        (:div :class "spinner-border" :role "status"
-         (:span :class "sr-only" "Loading...")))
-       (:div :style "display: none;" :id "search-results"
-        (:div :style "display: none;" :class "text-center" :id
-         "no-search-results"
-         (:div :class "alert alert-warning" :role "alert"
-          " Es konnte kein Artikel mit genau diesem Titel gefunden werden. Möchtest du ihn "
-          (:a :id "search-create-article" :href "#" :class "alert-link "
-           "erstellen")
-          "?"))
-        (:div :class "list-group" :id "search-results-content"))))
+     ,(tab "page"
+        `((:div :class "alert alert-warning mt-1 d-none" :id "is-outdated-article"
+           :role "alert"
+           " Dies zeigt den Artikel zu einem bestimmten Zeitpunkt und ist somit nicht unbedingt aktuell! "
+           (:a :href "#" :id "currentVersionLink" :class "alert-link "
+            "Zur aktuellen Version"))
+          (:h1 :class "text-center" :id "wiki-article-title" "title")
+          (:div :class "article-editor"
+           (:div :id "editor" :class "d-none"
+            (:a :href "#" :id "format-p" (:span :class "fas fa-paragraph")) " "
+            (:a :href "#" :id "format-h2" (:span :class "fas fa-heading")) " "
+            (:a :href "#" :id "format-h3" (:span :class "fas fa-heading")) " "
+            (:a :href "#" :id "superscript" (:span :class "fas fa-superscript"))
+            " " (:a :href "#" :id "subscript" (:span :class "fas fa-subscript"))
+            " "
+            (:a :href "#" :id "insertUnorderedList"
+             (:span :class "fas fa-list-ul"))
+            " "
+            (:a :href "#" :id "insertOrderedList" (:span :class "fas fa-list-ol"))
+            " " (:a :href "#" :id "indent" (:span :class "fas fa-indent")) " "
+            (:a :href "#" :id "outdent" (:span :class "fas fa-outdent")) " "
+            (:a :href "#" :id "createLink" (:span :class "fas fa-link")) " "
+            (:a :href "#" :id "insertImage" (:span :class "fas fa-image")) " "
+            (:a :href "#" :id "table" (:span :class "fas fa-table")) " "
+            (:a :href "#" :id "insertFormula" (:span :class "fas fa-calculator"))
+            " " (:a :href "#" :id "undo" (:span :class "fas fa-undo")) " "
+            (:a :href "#" :id "redo" (:span :class "fas fa-redo")) " "
+            (:a :href "#" :id "settings" (:span :class "fas fa-cog")) " "
+            (:a :href "#" :id "finish" (:span :class "fas fa-check")))
+           (:article))
+          (:div :id "categories")
+          (:div
+           (:button :id "show-history" :type "button" :class
+            "btn btn-outline-primary" "Änderungsverlauf"))
+          (:small "Dieses Werk ist lizenziert unter einer "
+           (:a :target "_blank" :rel "license noopener" :href
+            "http://creativecommons.org/licenses/by-sa/4.0/deed.de"
+            "Creative Commons Namensnennung - Weitergabe unter gleichen Bedingungen 4.0 International Lizenz"))))
+
+
+     ,(tab "not-found"
+        `(:div :class "alert alert-danger" :role "alert"
+           " Der Artikel konnte nicht gefunden werden. Möchtest du ihn "
+           (:a :id "create-article" :href "#" :class "alert-link" "erstellen")
+           "?"))
+
+     ,(tab "history"
+        `((:h1 :class "text-center" "Änderungsverlauf")
+          (:div :class "list-group" :id "history-list")))
+
+     ,(tab "search"
+        `((:div :class "input-group mb-3"
+            (:input :type "text" :class "form-control" :id "search-query"
+             :placeholder "Suchbegriff")
+            (:div :class "input-group-append"
+             (:button :class "btn btn-outline-secondary" :type "button" :id
+              "button-search" (:i :class "fas fa-search"))))
+          (:div
+           (:div :style "display: none; left: 50%; margin-left: -1rem;" :class
+            "position-absolute" :id "search-results-loading"
+            (:div :class "spinner-border" :role "status"
+             (:span :class "sr-only" "Loading...")))
+           (:div :style "display: none;" :id "search-results"
+            (:div :style "display: none;" :class "text-center" :id
+             "no-search-results"
+             (:div :class "alert alert-warning" :role "alert"
+              " Es konnte kein Artikel mit genau diesem Titel gefunden werden. Möchtest du ihn "
+              (:a :id "search-create-article" :href "#" :class "alert-link "
+               "erstellen")
+              "?"))
+            (:div :class "list-group" :id "search-results-content")))))
+
+
      (:div :class "my-tab position-absolute" :style
       "top: 50%; left: 50%; margin-left: -1rem; margin-top: -1rem;" :id
       "loading"
       (:div :class "spinner-border" :role "status"
        (:span :class "sr-only" "Loading...")))
-     (:div :style "display: none;" :class
-      "container-fluid my-tab position-absolute" :id "error"
-      (:div :class "alert alert-danger" :role "alert"
-       (:span :id "errorMessage") " "
-       (:a :href "#" :id "refresh" :class "alert-link" "Erneut versuchen")))
+
+     ,(tab "error"
+        `(:div :class "alert alert-danger" :role "alert"
+           (:span :id "errorMessage") " "
+           (:a :href "#" :id "refresh" :class "alert-link" "Erneut versuchen")))
+
+
      ,(modal "publish-changes" "Änderungen veröffentlichen"
         `((:button :type "button" :class "btn btn-secondary" :data-dismiss
             "modal" "Bearbeitung fortsetzen")
