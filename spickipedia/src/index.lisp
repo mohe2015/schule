@@ -108,16 +108,21 @@
          ,(text-input "Name" "teacher-name" "name")
          ,(text-input "Initialien" "teacher-initial" "initial")
          ,(submit-button "LehrerIn erstellen")))
+
      (:div :style "display: none;" :class "container my-tab position-absolute"
       :id "articles" (:h1 :class "text-center" "Alle Artikel")
       (:ul :id "articles-list"))
+
      (:div :style "display: none;" :class "container my-tab position-absolute"
       :id "tags" (:h1 :class "text-center" "Tags") (:ul :id "tags-list"))
+
      ,(tab "create-schedule-tab"
         `(:form :method "POST" :action "/api/schedules" :id "create-schedule-form"
            ,(text-input "Jahrgang" "schedule-grade" "grade")
            ,(submit-button "Stundenplan erstellen")))
+
      ,@(html-settings)
+
      (:div :style "display: none;" :class "container my-tab position-absolute"
       :id "multiple-choice-question-html"
       (:h2 :class "text-center question-html" "Dies ist eine Testfrage?")
@@ -127,28 +132,34 @@
          "btn btn-primary mt-1 multiple-choice-submit-html" "Absenden")
         (:button :type "button" :style "display: none;" :class
          "btn btn-primary mt-1 next-question" "Nächste Frage"))))
+
      (:div :style "display: none;" :class "container my-tab position-absolute"
       :id "quiz-results" (:h1 :class "text-center" "Ergebnisse")
       (:p :id "result"))
+
      (:div :style "display: none;" :class "container my-tab position-absolute"
       :id "list-teachers"
       (:h2 :class "text-center" "Lehrer"
        (:a :href "/teachers/new" :type "button" :class
         "btn btn-primary norefresh" "+"))
       (:ul :id "teachers-list"))
+
      (:div :style "display: none;" :class "container my-tab position-absolute"
       :id "list-courses"
       (:h2 :class "text-center" "Kurse"
        (:a :href "/courses/new" :type "button" :class
         "btn btn-primary norefresh" "+"))
       (:ul :id "courses-list"))
+
      ,@(html-user-courses) ,@(html-schedule)
+
      (:div :style "display: none;" :class "container my-tab position-absolute"
       :id "list-schedules"
       (:h2 :class "text-center" "Stundenpläne"
        (:a :href "/schedules/new" :type "button" :class
         "btn btn-primary norefresh" "+"))
       (:ul :id "schedules-list"))
+
      (:div :style "display: none;" :class "container my-tab position-absolute"
       :id "text-question-html"
       (:h2 :class "text-center question-html" "Dies ist eine Testfrage?")
@@ -160,6 +171,7 @@
          "Absenden")
         (:button :type "button" :style "display: none;" :class
          "btn btn-primary mt-1 next-question" "Nächste Frage"))))
+
      (:div :style "display: none;" :class
       "container my-tab position-absolute col-sm-6 offset-sm-3 col-md-4 offset-md-4 text-center"
       :id "login" (:h1 "Anmelden")
@@ -170,6 +182,7 @@
          :placeholder "Passwort" :required "" :autocomplete
          "current-password"))
        ,(submit-button "Anmelden" :id "login-button")))
+      
      ,(tab "page"
         `((:div :class "alert alert-warning mt-1 d-none" :id "is-outdated-article"
            :role "alert"
