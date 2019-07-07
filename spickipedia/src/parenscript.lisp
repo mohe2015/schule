@@ -1,6 +1,7 @@
-
 (in-package :spickipedia.parenscript)
+
 (defparameter *js-target-version* "1.8.5")
+
 (defpsmacro defroute (route &body body)
  `(progn
    (export
@@ -36,7 +37,9 @@
      ,(make-symbol
        (concatenate 'string "handle-"
                     (subseq (regex-replace-all "/[:\\.]?" route "-") 1)))))))
+
 (defpsmacro i (file &rest contents) `(import ,file ,@contents))
+
 (defun file-js-gen (file)
   (in-package :spickipedia.parenscript)
   (handler-bind ((simple-warning
