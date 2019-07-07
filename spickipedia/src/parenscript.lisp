@@ -1,6 +1,6 @@
 
-(in-package :spickipedia.parenscript) 
-(defparameter *js-target-version* "1.8.5") 
+(in-package :spickipedia.parenscript)
+(defparameter *js-target-version* "1.8.5")
 (defpsmacro defroute (route &body body)
  `(progn
    (export
@@ -35,8 +35,8 @@
     (push
      ,(make-symbol
        (concatenate 'string "handle-"
-                    (subseq (regex-replace-all "/[:\\.]?" route "-") 1))))))) 
-(defpsmacro i (file &rest contents) `(import ,file ,@contents)) 
+                    (subseq (regex-replace-all "/[:\\.]?" route "-") 1)))))))
+(defpsmacro i (file &rest contents) `(import ,file ,@contents))
 (defun file-js-gen (file)
   (in-package :spickipedia.parenscript)
   (handler-bind ((simple-warning
@@ -45,4 +45,10 @@
                                  (simple-condition-format-control e))
                           (muffle-warning)))))
     (defparameter *ps-gensym-counter* 0)
-    (ps-compile-file file))) 
+    (ps-compile-file file)))
+
+(defpsmacro on (event-name element-selector event-variable &body body)
+  `(chain (one ,element-selector)
+     (add-event-listener ,event-name
+       (lambda (,event-variable)
+         ,@body))))
