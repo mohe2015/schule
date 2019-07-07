@@ -9,12 +9,17 @@
      (:link :rel "stylesheet" :href "/all.css")
      (:link :rel "stylesheet" :href "/index.css") (:title "Spickipedia"))
     (:body
+
      (:template :id "multiple-choice-answer-html"
        ,(checkbox-input "Check this custom" "customCheck1" "name"))
+
      (:template :id "teachers-list-html" (:li :class "teachers-list-name"))
+
      (:template :id "courses-list-html" (:li :class "courses-list-subject"))
+
      (:template :id "schedules-list-html"
       (:li (:a :class "schedules-list-grade norefresh")))
+
      (:template :id "multiple-choice-question"
       (:div :class "multiple-choice-question"
        (:form
@@ -24,12 +29,14 @@
          "btn btn-primary mb-1 add-response-possibility"
          "Antwortmöglichkeit hinzufügen"))
        (:hr)))
+
      (:template :id "text-question"
       (:div :class "text-question"
        (:form
         ,(text-input "Frage eingeben" "random-id-2" "question" :classes "question")
         ,(text-input "Antwort eingeben" "random-id-3" "answer" :classes "answer"))
        (:hr)))
+
      (:template :id "multiple-choice-response-possibility"
       (:div :class "input-group mb-3"
        (:div :class "input-group-prepend"
@@ -38,11 +45,13 @@
           :aria-label "Checkbox for following text input")))
        (:input :type "text" :class "form-control multiple-choice-response-text"
         :aria-label "Text input with checkbox")))
+
      (:template :id "search-result-template"
       (:a :class "list-group-item list-group-item-action"
        (:div
         (:div (:h5 :class "mt-0 s-title" "Media heading")
          (:div :class "search-result-summary word-wrap")))))
+
      (:template :id "history-item-template" " "
       (:div :class "list-group-item list-group-item-action"
        (:div :class "d-flex w-100 justify-content-between"
@@ -56,8 +65,10 @@
          (:i :class "fas fa-eye"))
         (:a :type "button" :class "btn btn-outline-dark history-diff"
          (:i :class "fas fa-columns")))))
+
      (:template :id "articles-entry"
       (:li (:a :class "" :href "#" "Hauptseite")))
+
      (:nav :class "navbar navbar-expand-md navbar-light bg-light"
       (:a :class "navbar-brand " :href "/wiki/Hauptseite" "Spickipedia ")
       (:div :class "login-hide"
@@ -79,7 +90,9 @@
          (:a :class "nav-link" :href "/settings" "Einstellungen"))
         (:li :class "nav-item"
          (:a :class "nav-link" :href "/logout" :id "logout" "Abmelden")))))
+
      (:div
+
       (:div :style "display: none;" :class
        "container my-tab position-absolution" :id "edit-quiz"
        (:h1 :class "text-center" "Quiz ändern") (:div :id "questions")
@@ -91,6 +104,7 @@
         "Frage mit Textantwort hinzufügen")
        (:button :type "button" :class "btn btn-primary mb-1 save-quiz"
         "Speichern")))
+
      ,(tab "create-course-tab"
            `(:form :method "POST" :action "/api/courses" :id
              "create-course-form"
@@ -103,6 +117,7 @@
              ,(text-input "Klasse" "course-class" "class")
              ,(text-input "Thema" "course-topic" "topic")
              `(submit-button "Kurs erstellen")))
+
      ,(tab "create-teacher-tab"
         `(:form :method "POST" :action "/api/teachers" :id "create-teacher-form"
            ,(text-input "Name" "teacher-name" "name")
@@ -149,7 +164,9 @@
              "btn btn-primary norefresh" "+"))
           (:ul :id "courses-list")))
 
-     ,@(html-user-courses) ,@(html-schedule)
+     ,@(html-user-courses)
+
+     ,@(html-schedule)
 
      ,(tab "list-schedules"
         `((:h2 :class "text-center" "Stundenpläne"
@@ -218,7 +235,6 @@
             "http://creativecommons.org/licenses/by-sa/4.0/deed.de"
             "Creative Commons Namensnennung - Weitergabe unter gleichen Bedingungen 4.0 International Lizenz"))))
 
-
      ,(tab "not-found"
         `(:div :class "alert alert-danger" :role "alert"
            " Der Artikel konnte nicht gefunden werden. Möchtest du ihn "
@@ -251,7 +267,6 @@
               "?"))
             (:div :class "list-group" :id "search-results-content")))))
 
-
      (:div :class "my-tab position-absolute" :style
       "top: 50%; left: 50%; margin-left: -1rem; margin-top: -1rem;" :id
       "loading"
@@ -262,7 +277,6 @@
         `(:div :class "alert alert-danger" :role "alert"
            (:span :id "errorMessage") " "
            (:a :href "#" :id "refresh" :class "alert-link" "Erneut versuchen")))
-
 
      ,(modal "publish-changes" "Änderungen veröffentlichen"
         `((:button :type "button" :class "btn btn-secondary" :data-dismiss
@@ -290,6 +304,7 @@
             "progress-bar progress-bar-striped progress-bar-animated" :role
             "progressbar" :aria-valuenow "75" :aria-valuemin "0" :aria-valuemax
             "100" :style "width: 0%"))))
+
      ,(modal "wiki-link" "Spickipedia-Link einfügen"
        `((:button :type "button" :class "btn btn-primary" :id "publish-changes"
            "Änderungen veröffentlichen"))
