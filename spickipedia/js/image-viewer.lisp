@@ -3,7 +3,7 @@
 (i "./test.lisp")
 (i "./utils.lisp" "showModal" "all" "one" "hideModal" "clearChildren")
 
-(on ("click" "body" event :dynamic-selector "article[contenteditable=false] img")
+(on ("click" (one "body") event :dynamic-selector "article[contenteditable=false] img")
   (if (null (chain document fullscreen-element))
       (chain event target (request-fullscreen))
       (chain document (exit-fullscreen))))

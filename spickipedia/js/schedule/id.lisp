@@ -64,7 +64,7 @@
                (prepend template))))))
   (catch handle-fetch-error)))
 
-(on ("submit" "#form-schedule-data" event)
+(on ("submit" (one "#form-schedule-data") event)
   (chain event (prevent-default))
   (let* ((day (chain (one "#schedule-data-weekday") value))
          (hour (chain (one "#schedule-data-hour") value))
@@ -90,7 +90,7 @@
         (hide-modal (one "#schedule-data-modal"))))
      (catch handle-fetch-error))))
 
-(on ("click" ".add-course" event :multiple t)
+(on ("click" (one ".add-course") event)
   (chain console (log event))
   (let* ((y (chain event target (closest "tr") row-index))
          (x-element (chain event target (closest "div")))
@@ -101,7 +101,7 @@
     (setf (chain (one "#schedule-data-hour") value) y)
     (show-modal (one "#schedule-data-modal"))))
 
-(on ("click" "body" event :dynamic-selector ".button-delete-schedule-data")
+(on ("click" (one "body") event :dynamic-selector ".button-delete-schedule-data")
   (chain console (log event))
   (let* ((id
           (chain event target (closest ".button-delete-schedule-data")

@@ -9,7 +9,7 @@
 (i "./handle-error.lisp" "handleError")
 (i "./utils.lisp" "showModal" "all" "one" "hideModal" "clearChildren")
 
-(on ("click" ".edit-button" event)
+(on ("click" (one ".edit-button") event)
   (chain event (prevent-default))
   (let ((pathname (chain window location pathname (split "/"))))
     (push-state (concatenate 'string "/wiki/" (chain pathname 2) "/edit")

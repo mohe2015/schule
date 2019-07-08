@@ -122,7 +122,7 @@
                  (chain input next-element-sibling (append element))))
       nil))))
 
-(on ("click" "body" event :dynamic-selector ".editLink")
+(on ("click" (one "body") event :dynamic-selector ".editLink")
   (chain event (prevent-default))
   (chain event (stop-propagation))
   (let ((target (get-popover-target (chain event target))))
@@ -138,14 +138,14 @@
         (chain (one target) (attr "href" (chain (one "#link") (val)))))))
     (chain (one "#link-modal") (modal "show"))))
 
-(on ("click" "body" event :dynamic-selector ".deleteLink")
+(on ("click" (one "body") event :dynamic-selector ".deleteLink")
   (chain event (prevent-default))
   (chain event (stop-propagation))
   (let ((target (get-popover-target (chain event target))))
     (chain (one target) (popover "hide"))
     (chain (one target) (remove))))
 
-(on ("click" "body" event :dynamic-selector "article[contenteditable=true] a")
+(on ("click" (one "body") event :dynamic-selector "article[contenteditable=true] a")
   (let ((target (chain event current-target)))
     (create-popover-for target
      "<a href=\"#\" class=\"editLink\"><span class=\"fas fa-link\"></span></a> <a href=\"#\" class=\"deleteLink\"><span class=\"fas fa-unlink\"></span></a>")
@@ -153,13 +153,13 @@
 
 (tool "insertImage" (chain (one "#image-modal") (modal "show")))
 
-(on ("click" "body" event :dynamic-selector "article[contenteditable=true] figure")
+(on ("click" (one "body") event :dynamic-selector "article[contenteditable=true] figure")
   (let ((target (chain event current-target)))
     (create-popover-for target
      "<a href=\"#\" class=\"floatImageLeft\"><span class=\"fas fa-align-left\"></span></a> <a href=\"#\" class=\"floatImageRight\"><span class=\"fas fa-align-right\"></span></a> <a href=\"#\" class=\"resizeImage25\">25%</a> <a href=\"#\" class=\"resizeImage50\">50%</a> <a href=\"#\" class=\"resizeImage100\">100%</a> <a href=\"#\" class=\"deleteImage\"><span class=\"fas fa-trash\"></span></a>")
     (chain (one target) (popover "show"))))
 
-(on ("click" "body" event :dynamic-selector ".floatImageLeft")
+(on ("click" (one "body") event :dynamic-selector ".floatImageLeft")
   (chain event (prevent-default))
   (chain event (stop-propagation))
   (let ((target (get-popover-target (chain event current-target))))
@@ -168,7 +168,7 @@
     (chain target class-list (remove "float-right"))
     (chain target class-list (add "float-left"))))
 
-(on ("click" "body" event :dynamic-selector ".floatImageRight")
+(on ("click" (one "body") event :dynamic-selector ".floatImageRight")
   (chain event (prevent-default))
   (chain event (stop-propagation))
   (let ((target (get-popover-target (chain event current-target))))
@@ -177,7 +177,7 @@
     (chain target class-list (remove "float-left"))
     (chain target class-list (add "float-right"))))
 
-(on ("click" "body" event :dynamic-selector ".resizeImage25")
+(on ("click" (one "body") event :dynamic-selector ".resizeImage25")
   (chain event (prevent-default))
   (chain event (stop-propagation))
   (let ((target (get-popover-target (chain event current-target))))
@@ -188,7 +188,7 @@
     (chain target class-list (add "w-25")))
   f)
 
-(on ("click" "body" event :dynamic-selector ".resizeImage50")
+(on ("click" (one "body") event :dynamic-selector ".resizeImage50")
   (chain event (prevent-default))
   (chain event (stop-propagation))
   (let ((target (get-popover-target (chain event current-target))))
@@ -198,7 +198,7 @@
     (chain target class-list (remove "w-100"))
     (chain target class-list (add "w-50"))))
 
-(on ("click" "body" event :dynamic-selector ".resizeImage100")
+(on ("click" (one "body") event :dynamic-selector ".resizeImage100")
   (chain event (prevent-default))
   (chain event (stop-propagation))
   (let ((target (get-popover-target (chain event current-target))))
@@ -208,7 +208,7 @@
     (chain target class-list (remove "w-50"))
     (chain target class-list (add "w-100"))))
 
-(on ("click" "body" event :dynamic-selector ".deleteImage")
+(on ("click" (one "body") event :dynamic-selector ".deleteImage")
   (chain event (prevent-default))
   (chain event (stop-propagation))
   (let ((target (get-popover-target (chain event current-target))))
@@ -216,7 +216,7 @@
     (chain document (get-elements-by-tag-name "article") 0 (focus))
     (chain target (remove))))
 
-(on ("click" "#update-image" event)
+(on ("click" (one "#update-image") event)
   (chain (one "#image-modal") (modal "hide"))
   (chain document (get-elements-by-tag-name "article") 0 (focus))
   (if (chain (one "#image-url") (val))
@@ -229,7 +229,7 @@
 
 (tool "table" (chain (one "#table-modal") (modal "show")))
 
-(on "click" "#update-table" event
+(on ("click" (one "#update-table") event)
   (chain (one "#table-modal") (modal "hide"))
   (chain document (get-elements-by-tag-name "article") 0 (focus))
   (let* ((columns (parse-int (chain (one "#table-columns") (val))))
@@ -244,13 +244,13 @@
                        inner-table-html "</table></div>")))
     (chain document (exec-command "insertHTML" f table-html))))
 
-(on ("click" "body" event :dynamic-selector "article[contenteditable=true] td")
+(on ("click" (one "body") event :dynamic-selector "article[contenteditable=true] td")
   (let ((target (chain event current-target)))
     (create-popover-for target "table data")
     (chain (one target) (popover "show"))))
 
 (tool "insertFormula"
- (on ("click" "#update-formula" event)
+ (on ("click" (one "#update-formula") event)
    (chain (one "#formula-modal") (modal "hide"))
    (chain document (get-elements-by-tag-name "article") 0 (focus))
    (let ((latex (chain window mathfield (latex))))
@@ -269,7 +269,7 @@
         (make-math-field (chain document (get-element-by-id "formula"))
          (create virtual-keyboard-mode "manual")))))
 
-(on ("click" "#update-formula" event)
+(on ("click" (one "#update-formula") event)
   (chain (one "#formula-modal") (modal "hide"))
   (chain document (get-elements-by-tag-name "article") 0 (focus))
   (let ((latex (chain window mathfield (latex))))
@@ -290,7 +290,7 @@
 (tool "settings" (chain (one "#settings-modal") (modal "show")))
 
 (tool "finish"
-  (on "shown.bs.modal" "#publish-changes-modal" event
+  (on ("shown.bs.modal" (one "#publish-changes-modal") event)
     (chain (one "#change-summary") (trigger "focus")))
   (chain (one "#publish-changes-modal") (modal "show")))
 
@@ -328,13 +328,13 @@
 
 (chain (one "body") (click remove-old-popovers))
 
-(on ("click" "body" event :dynamic-selector "article[contenteditable=true] .formula")
+(on ("click" (one "body") event :dynamic-selector "article[contenteditable=true] .formula")
   (let ((target (chain event current-target)))
     (create-popover-for target
      "<a href=\"#\" class=\"editFormula\"><span class=\"fas fa-pen\"></span></a> <a href=\"#\" class=\"deleteFormula\"><span class=\"fas fa-trash\"></span></a>")
     (chain (one target) (popover "show"))))
 
-(on ("click" "body" event :dynamic-selector ".deleteFormula")
+(on ("click" (one "body") event :dynamic-selector ".deleteFormula")
   (chain event (prevent-default))
   (chain event (stop-propagation))
   (let ((target (get-popover-target (chain event current-target))))
@@ -342,7 +342,7 @@
     (chain document (get-elements-by-tag-name "article") 0 (focus))
     (chain target (remove))))
 
-(on ("click" "body" event :dynamic-selector ".editFormula")
+(on ("click" (one "body") event :dynamic-selector ".editFormula")
   (chain event (prevent-default))
   (chain event (stop-propagation))
   (let* ((target (get-popover-target (chain event current-target)))

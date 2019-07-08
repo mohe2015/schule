@@ -50,18 +50,11 @@
     (defparameter *ps-gensym-counter* 0)
     (ps-compile-file file)))
 
-(defpsmacro on ((event-name element-selector event-variable &key dynamic-selector multiple) &body body)
-  ;; TODO and multiple
-  `(chain (one ,element-selector)
+(defpsmacro on ((event-name element-s event-variable &key dynamic-selector) &body body)
+  `(chain ,element-s
      (add-event-listener ,event-name
-       ,(if remove-old-listeners-function-name
-          `(defun ,remove-old-listeners-function-name (,event-variable)
-             ,(if dynamic-selector
-               `(if (not (chain event target (closest ,dynamic-selector)))
-                  (return)))
-             ,@body)
-          `(lambda (,event-variable)
-            ,(if dynamic-selector
-               `(if (not (chain event target (closest ,dynamic-selector)))
-                  (return)))
-            ,@body)))))
+       (lambda (,event-variable)
+         ,(if dynamic-selector
+            `(if (not (chain event target (closest ,dynamic-selector)))
+               (return)))
+         ,@body))))

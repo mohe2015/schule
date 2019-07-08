@@ -19,8 +19,8 @@
          (:span :aria-hidden "true" "&times;"))))))
     (chain (one "#new-category") (val "")))))
 
-(chain (one "body")
- (on ("click" ".close-tag" event) (chain (one this) (parent) (remove))))
+(on ("click" (one "body") event :dynamic-selector ".close-tag")
+  (chain (one this) (parent) (remove)))
 
 (defroute "/tags/.rest" (show-tab "#loading")
  (chain console (log (chain rest (split "/"))))

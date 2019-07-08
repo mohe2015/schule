@@ -80,15 +80,15 @@
 (defroute "/settings"
   (render))
 
-(on ("click" "#settings-add-grade" event)
+(on ("click" (one "#settings-add-grade") event)
   (chain event (prevent-default))
   (show-modal "#modal-settings-create-grade"))
 
-(on ("click" "#settings-add-course" event)
+(on ("click" (one "#settings-add-course") event)
   (chain event (prevent-default))
   (show-modal "#modal-settings-create-course"))
 
-(on ("click" "#settings-show-schedule" event)
+(on ("click" (one "#settings-show-schedule") event)
   (chain event (prevent-default))
   (let* ((select
           (chain document (get-element-by-id "settings-select-grade")))
@@ -96,7 +96,7 @@
           (getprop select 'options (chain select selected-index) 'text)))
     (push-state (concatenate 'string "/schedule/" grade))))
 
-(on ("submit" "#form-settings-create-grade" event)
+(on ("submit" (one "#form-settings-create-grade") event)
   (chain event (prevent-default))
   (let* ((formelement
           (chain document (query-selector "#form-settings-create-grade")))
@@ -109,7 +109,7 @@
      (catch handle-fetch-error)))
   f)
 
-(on ("change" "#settings-select-grade" event)
+(on ("change" (one "#settings-select-grade") event)
   (let* ((formelement (chain document (query-selector "#settings-form-select-grade")))
          (formdata (new (-form-data formelement))))
     (chain formdata (append "_csrf_token" (read-cookie "_csrf_token")))
@@ -118,7 +118,7 @@
      (catch handle-fetch-error)))
   f)
 
-(on ("submit" "#form-settings-create-course" event)
+(on ("submit" (one "#form-settings-create-course") event)
   (chain event (prevent-default))
   (let* ((formelement
           (chain document (query-selector "#form-settings-create-course")))
@@ -131,7 +131,7 @@
      (catch handle-fetch-error)))
   f)
 
-(on ("change" "body" event)
+(on ("change" (one "body") event)
   (if (not (chain event target (closest ".student-course-checkbox")))
       (return))
   (let* ((formdata (new (-form-data))))

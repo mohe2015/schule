@@ -7,7 +7,7 @@
 (i "./push-state.lisp" "pushState")
 (i "./utils.lisp" "showModal" "all" "one" "hideModal" "clearChildren")
 
-(on ("click" "#publish-changes" event)
+(on ("click" (one "#publish-changes") event)
   (chain (one "#publish-changes") (hide))
   (chain (one "#publishing-changes") (show))
   (let ((change-summary (chain (one "#change-summary") (val)))

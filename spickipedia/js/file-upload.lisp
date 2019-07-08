@@ -47,15 +47,15 @@
        (css "width"
         (concatenate 'string (* 100 (/ (@ e loaded) (@ e total))) "%"))))
 
-  (on ("shown.bs.modal" "#uploadProgressModal" event)
+  (on ("shown.bs.modal" (one "#uploadProgressModal") event)
     (if (@ window file-upload-finished)
         (chain (one "#uploadProgressModal") (modal "hide"))))
 
-  (on ("hide.bs.modal" "#uploadProgressModal" event)
+  (on ("hide.bs.modal" (one "#uploadProgressModal") event)
     (if (not (@ window file-upload-finished))
         (progn
          (setf (@ window file-upload-finished) t)
          (chain window file-upload-xhr (abort)))))
 
-  (on ("hidden.bs.modal" "#uploadProgressModal" event)
+  (on ("hidden.bs.modal" (one "#uploadProgressModal") event)
     (chain (one "#uploadProgress") (attr "width" "0%"))))

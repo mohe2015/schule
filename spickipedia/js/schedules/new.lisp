@@ -12,7 +12,7 @@
 (defroute "/schedules/new"
   (show-tab "#create-schedule-tab"))
 
-(on ("submit" "#create-schedule-form" event)
+(on ("submit" (one "#create-schedule-form") event)
   (let* ((formelement
           (chain document (query-selector "#create-schedule-form")))
          (formdata (new (-form-data formelement))))

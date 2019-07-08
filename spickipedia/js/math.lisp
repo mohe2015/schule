@@ -7,7 +7,7 @@
  (defun render-math ()
    (chain (one ".formula")
     (each (lambda () (chain -math-live (render-math-in-element this)))))
-   (on ("summernote.init" "article" event)
+   (on ("summernote.init" (one "article") event)
      (chain (one ".formula") (attr "contenteditable" f)))))
 
 (export

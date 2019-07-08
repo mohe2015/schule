@@ -23,7 +23,7 @@
    (chain (one ".login-hide") (attr "style" "display: none !important"))
    (chain (one ".navbar-collapse") (remove-class "show"))))
 
-(on ("submit" "#login-form" event)
+(on ("submit" (one "#login-form") event)
   (chain event (prevent-default))
   (chain (one "#login-button") (prop "disabled" t)
    (html

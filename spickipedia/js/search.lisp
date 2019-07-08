@@ -3,9 +3,9 @@
 (i "./test.lisp")
 (i "./show-tab.lisp" "showTab")
 (i "./handle-error.lisp" "handleError")
-(i "./utils.lisp" "showModal" "all" "one" "hideModal" "clearChildren"
+(i "./utils.lisp" "showModal" "all" "one" "hideModal" "clearChildren")
 
-(on ("input" "#search-query" event)
+(on ("input" (one "#search-query") event)
   (chain (one "#button-search") (click)))
 
 (defroute "/search" (chain (one ".edit-button") (add-class "disabled"))
@@ -14,7 +14,7 @@
 (defroute "/search/:query" (chain (one ".edit-button") (add-class "disabled"))
  (show-tab "#search") (chain (one "#search-query") (val query)))
 
-(on ("click" "#button-search" event)
+(on ("click" (one "#button-search") event)
   (let ((query (chain (one "#search-query") (val))))
     (chain (one "#search-create-article")
      (attr "href" (concatenate 'string "/wiki/" query "/create")))
