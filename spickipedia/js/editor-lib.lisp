@@ -286,9 +286,9 @@
 (tool "settings" (chain (one "#settings-modal") (modal "show")))
 
 (tool "finish"
-  (on ("shown.bs.modal" (one "#publish-changes-modal") event)
+  (on ("shown.bs.modal" (one "#modal-publish-changes") event)
     (chain (one "#change-summary") (trigger "focus")))
-  (chain (one "#publish-changes-modal") (modal "show")))
+  (chain (one "#modal-publish-changes") (modal "show")))
 
 (defun random-int ()
   (chain -math (floor (* (chain -math (random)) 10000000000000000))))

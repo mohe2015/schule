@@ -90,21 +90,20 @@
         (:li :class "nav-item"
          (:a :class "nav-link" :href "/settings" "Einstellungen"))
         (:li :class "nav-item"
-         (:a :class "nav-link" :href "/logout" :id "logout" "Abmelden")))))
+         (:a :class "nav-link" :href "/logout" :id "logout" "Abmelden"))))))
 
-     (:div
 
-      (:div :style "display: none;" :class
-       "container my-tab position-absolution" :id "edit-quiz"
-       (:h1 :class "text-center" "Quiz ändern") (:div :id "questions")
-       (:button :type "button" :class
-        "btn btn-primary mb-1 create-multiple-choice-question"
-        "Multiple-Choice-Frage hinzufügen")
-       (:button :type "button" :class
-        "btn btn-primary mb-1 create-text-question"
-        "Frage mit Textantwort hinzufügen")
-       (:button :type "button" :class "btn btn-primary mb-1 save-quiz"
-        "Speichern")))
+    ,(tab "edit-quiz"
+       `(:h1 :class "text-center" "Quiz ändern")
+       `(:div :id "questions")
+       `(:button :type "button" :class
+          "btn btn-primary mb-1 create-multiple-choice-question"
+          "Multiple-Choice-Frage hinzufügen")
+       `(:button :type "button" :class
+          "btn btn-primary mb-1 create-text-question"
+          "Frage mit Textantwort hinzufügen")
+       `(:button :type "button" :class "btn btn-primary mb-1 save-quiz"
+          "Speichern"))
 
      ,(tab "create-course-tab"
            `(:form :method "POST" :action "/api/courses" :id
@@ -146,8 +145,8 @@
            (:div :class "col col-sm-10 col-md-6" (:div :id "answers-html")
             (:button :type "button" :class
              "btn btn-primary mt-1 multiple-choice-submit-html" "Absenden")
-            (:button :type "button" :style "display: none;" :class
-             "btn btn-primary mt-1 next-question" "Nächste Frage"))))
+            (:button :type "button" :class
+             "btn btn-primary mt-1 next-question d-none" "Nächste Frage"))))
 
      ,(tab "quiz-results"
         `(:h1 :class "text-center" "Ergebnisse")
@@ -183,11 +182,11 @@
               (:input :type "text" :class "form-control" :id "text-response"))
              (:button :type "button" :class "btn btn-primary mt-1 text-submit-html"
               "Absenden")
-             (:button :type "button" :style "display: none;" :class
-              "btn btn-primary mt-1 next-question" "Nächste Frage"))))
+             (:button :type "button" :class
+              "btn btn-primary mt-1 next-question d-none" "Nächste Frage"))))
 
-     (:div :style "display: none;" :class
-      "container my-tab position-absolute col-sm-6 offset-sm-3 col-md-4 offset-md-4 text-center"
+     (:div :class
+      "container my-tab position-absolute col-sm-6 offset-sm-3 col-md-4 offset-md-4 text-center d-none"
       :id "login" (:h1 "Anmelden")
       (:form :id "login-form"
        ,(text-input "Name" "inputName" "username" :required t :autofocus t :autocomplete "username" :no-label? t)
@@ -254,12 +253,12 @@
              (:button :class "btn btn-outline-secondary" :type "button" :id
               "button-search" (:i :class "fas fa-search"))))
          `(:div
-            (:div :style "display: none; left: 50%; margin-left: -1rem;" :class
-             "position-absolute" :id "search-results-loading"
+            (:div :style "left: 50%; margin-left: -1rem;" :class
+             "position-absolute d-none" :id "search-results-loading"
              (:div :class "spinner-border" :role "status"
               (:span :class "sr-only" "Loading...")))
-            (:div :style "display: none;" :id "search-results"
-             (:div :style "display: none;" :class "text-center" :id
+            (:div :class "d-none" :id "search-results"
+             (:div :class "text-center d-none" :id
               "no-search-results"
               (:div :class "alert alert-warning" :role "alert"
                " Es konnte kein Artikel mit genau diesem Titel gefunden werden. Möchtest du ihn "
@@ -284,8 +283,7 @@
             "modal" "Bearbeitung fortsetzen")
           (:button :type "button" :class "btn btn-primary" :id "publish-changes"
            "Änderungen veröffentlichen")
-          (:button :id "publishing-changes" :class "btn btn-primary" :style
-           "display: none;" :type "button" :disabled "" " ")
+          (:button :id "publishing-changes" :class "btn btn-primary d-none" :type "button" :disabled "" " ")
           (:span :class "spinner-border spinner-border-sm" :role "status"
             :aria-hidden "true" " Veröffentlichen... "))
         `((:div :class "form-group" " " (:label "Änderungszusammenfassung:")
@@ -380,11 +378,11 @@
            ,(text-input "Raum" "room" "room")))
 
       (:script :src "/bootstrap.js")
-      (:script :type "module" :src "/js/index.lisp"))))
+      (:script :type "module" :src "/js/index.lisp")))
 
 #|
-     (:link :rel "stylesheet" :href "/mathlive.core.css")
-     (:link :rel "stylesheet" :href "/mathlive.css")
-     (:script :src "/mathlive.js")
-     (:script :src "/visual-diff.js")
+(:link :rel "stylesheet" :href "/mathlive.core.css")
+(:link :rel "stylesheet" :href "/mathlive.css")
+(:script :src "/mathlive.js")
+(:script :src "/visual-diff.js")
 |#

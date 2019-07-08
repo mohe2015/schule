@@ -10,7 +10,7 @@
 
 (defroute "/login"
  (add-class (one ".edit-button") "disabled")
- (hide-modal (one "#publish-changes-modal"))
+ (hide-modal (one "#modal-publish-changes"))
  (let ((url-username (get-url-parameter "username"))
        (url-password (get-url-parameter "password")))
    (if (and (not (undefined url-username)) (not (undefined url-password)))

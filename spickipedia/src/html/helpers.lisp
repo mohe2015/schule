@@ -28,5 +28,4 @@
 (defun submit-button (label &key id)
   `(:button :type "submit" :class "btn btn-primary" :id ,id ,label))
 (defun tab (id &rest content)
-  `(:div :style "display: none;" :class
-    "container-fluid my-tab position-absolute" :id ,id ,@content))
+  `(:div :class "container-fluid my-tab position-absolute d-none" :id ,id ,@content))
