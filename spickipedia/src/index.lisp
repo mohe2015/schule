@@ -5,9 +5,10 @@
     (:head (:meta :charset "utf-8")
      (:meta :name "viewport" :content
       "width=device-width, initial-scale=1, shrink-to-fit=no")
-     (:link :rel "stylesheet" :href "/bootstrap.min.css")
+     (:link :rel "stylesheet" :href "/bootstrap.css")
      (:link :rel "stylesheet" :href "/all.css")
-     (:link :rel "stylesheet" :href "/index.css") (:title "Spickipedia"))
+     (:link :rel "stylesheet" :href "/index.css")
+     (:title "Spickipedia"))
     (:body
 
      (:template :id "multiple-choice-answer-html"
@@ -378,10 +379,12 @@
             (:select :class "custom-select" :id "course" :name "course"))
            ,(text-input "Raum" "room" "room")))
 
-     (:script :src "/jquery-3.3.1.js")
+      (:script :src "/bootstrap.js")
+      (:script :type "module" :src "/js/index.lisp"))))
+
+#|
      (:link :rel "stylesheet" :href "/mathlive.core.css")
      (:link :rel "stylesheet" :href "/mathlive.css")
-     (:script :src "/mathlive.js") (:script :src "/popper.js")
-     (:script :src "/bootstrap.min.js") (:script :src "/visual-diff.js")
-     (:script :nomodule "" :src "no_module_support.js")
-     (:script :type "module" :src "/js/index.lisp"))))
+     (:script :src "/mathlive.js")
+     (:script :src "/visual-diff.js")
+|#
