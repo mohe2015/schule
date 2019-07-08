@@ -10,6 +10,15 @@
               (hide element))))
         this))
 
+(setf (chain -Array prototype remove)
+      (lambda ()
+        (chain this
+          (for-each
+            (lambda (element)
+              (remove element))))
+        this))
+
+
 (export
  (defun all (selector)
    (chain -array (from (chain document (query-selector-all selector))))))

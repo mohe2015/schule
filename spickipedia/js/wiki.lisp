@@ -10,8 +10,8 @@
 (i "./utils.lisp" "all" "one" "clearChildren")
 
 (defun update-page (data)
-  (chain (one ".closable-badge") (remove))
-  (chain (one "#categories") (html ""))
+  (remove (all ".closable-badge"))
+  (setf (inner-html (one "#categories")) "")
   (if (chain data categories)
       (loop for category in (chain data categories)
             do (chain (one "#categories")
@@ -28,7 +28,7 @@
                                      "close close-tag" :aria-label "Close"
                                      (:span :aria-hidden "true"
                                       "&times;"))))))))
-  (chain (one "article") (html (chain data content)))
+  (setf (inner-html (one "article")) (chain data content))
   (render-math)
   (show-tab "#page"))
 
@@ -51,7 +51,7 @@
                  (handle-error (chain error response) t))))))
 
  (chain
-  caches 
+  caches
   (match (concatenate 'string "/api/wiki/" name))
   (then check-status) (then json)
   (then

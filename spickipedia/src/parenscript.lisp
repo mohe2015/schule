@@ -65,14 +65,14 @@
 (defpsmacro class-list (element)
   `(chain ,element class-list))
 
-(defpsmacro remove (array element)
+(defpsmacro array-remove (array element)
   `(chain ,array (remove ,element)))
 
 (defpsmacro add (array element)
   `(chain ,array (add ,element)))
 
 (defpsmacro remove-class (element class)
-  `(remove (class-list ,element) ,class))
+  `(array-remove (class-list ,element) ,class))
 
 (defpsmacro add-class (element class)
   `(add (class-list ,element) ,class))
@@ -103,3 +103,9 @@
 
 (defpsmacro disabled (element)
   `(chain ,element disabled))
+
+(defpsmacro remove (element)
+  `(chain ,element (remove)))
+
+(defpsmacro href (element)
+  `(chain ,element href))

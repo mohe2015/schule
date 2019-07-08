@@ -1,5 +1,5 @@
-
 (var __-p-s_-m-v_-r-e-g)
+
 (i "./test.lisp")
 (i "./replace-state.lisp" "replaceState")
 (i "./update-state.lisp" "updateState")
@@ -16,50 +16,11 @@
                       message " source: " source " lineno: " lineno
                       " colno: " colno " error: " error))))
 
-(if (not (chain window caches))
-    (alert
-     "Kein Support für Cache API, die Seite funktioniert vermutlich nicht. Melde dies dem Entwickler!"))
-
-(on ("click" (one "body") event :dynamic-selector "article[contenteditable=false] a")
-  (let ((url (chain (one this) (attr "href"))))
+(on ("click" (one "body") event :dynamic-selector "a")
+  (let ((url (href (chain event target))))
     (if (is-local-url url)
         (progn (chain event (prevent-default)) (push-state url) f)
         t)))
-
-(on ("click" (one "body") event :dynamic-selector "nav a")
-  (let ((url (chain (one this) (attr "href"))))
-    (if (is-local-url url)
-        (progn (chain event (prevent-default)) (push-state url) f)
-        t)))
-
-(on ("click" (one "body") event :dynamic-selector "#search a")
-  (let ((url (chain (one this) (attr "href"))))
-    (if (is-local-url url)
-        (progn (chain e (prevent-default)) (push-state url) f)
-        t)))
-
-(on ("click" (one "body") event :dynamic-selector "#articles a")
-  (let ((url (chain (one this) (attr "href"))))
-    (if (is-local-url url)
-        (progn (chain event (prevent-default)) (push-state url) f)
-        t)))
-
-(on ("click" (one "body") event :dynamic-selector "#history-list a")
-  (let ((url (chain (one this) (attr "href"))))
-    (if (is-local-url url)
-        (progn (chain event (prevent-default)) (push-state url) f)
-        t)))
-
-(on ("click" (one "body") event :dynamic-selector "a.norefresh")
-  (let ((url (chain (one this) (attr "href"))))
-    (if (is-local-url url)
-        (progn (chain e (prevent-default)) (push-state url) f)
-        t)))
-
-(on ("click" (one "#refresh") event)
-  (chain event (prevent-default))
-  (update-state)
-  f)
 
 (setf (chain window onpopstate)
       (lambda (event)

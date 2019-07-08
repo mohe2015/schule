@@ -44,5 +44,5 @@
    (loop for route in (chain window routes)
          do (if (route (chain window location pathname))
                 (return-from update-state)))
-   (chain (one "#errorMessage") (text "Unbekannter Pfad!"))
+   (setf (inner-text (one "#errorMessage")) "Unbekannter Pfad!")
    (show-tab "#error")))
