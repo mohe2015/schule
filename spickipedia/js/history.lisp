@@ -8,19 +8,17 @@
 (i "./fetch.lisp" "checkStatus" "json" "html" "handleFetchError")
 (i "./utils.lisp" "all" "one" "clearChildren")
 
-(chain (one "#show-history")
- (click
-  (lambda (e)
-    (chain e (prevent-default))
-    (let ((pathname (chain window location pathname (split "/"))))
-      (push-state (concatenate 'string "/wiki/" (chain pathname 2) "/history")
-       (chain window history state))
-      f))))
+(on ("click" (one "#show-history") event)
+  (chain event (prevent-default))
+  (let ((pathname (chain window location pathname (split "/"))))
+    (push-state (concatenate 'string "/wiki/" (chain pathname 2) "/history")
+     (chain window history state))
+    f))
 
 (defroute "/wiki/:name/history"
- (chain (one ".edit-button") (remove-class "disabled")) (show-tab "#loading")
- (var pathname (chain window location pathname (split "/")))
- (chain (fetch (concatenate 'string "/api/history/" (chain pathname 2)))
+ (remove-class (one ".edit-button") "disabled")
+ (show-tab "#loading")
+ (chain (fetch (concatenate 'string "/api/history/" name))
   (then check-status) (then json)
   (then
    (lambda (data)
@@ -37,11 +35,11 @@
                  (text (chain page size)))
                 (chain template (find ".history-show")
                  (attr "href"
-                  (concatenate 'string "/wiki/" (chain pathname 2) "/history/"
+                  (concatenate 'string "/wiki/" name "/history/"
                                (chain page id))))
                 (chain template (find ".history-diff")
                  (attr "href"
-                  (concatenate 'string "/wiki/" (chain pathname 2) "/history/"
+                  (concatenate 'string "/wiki/" name "/history/"
                                (chain page id) "/changes")))
                 (chain (one "#history-list") (append template))))
      (show-tab "#history")))))
