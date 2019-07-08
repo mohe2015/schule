@@ -83,6 +83,9 @@
 (defpsmacro content-editable (element)
   `(chain ,element content-editable))
 
+(defpsmacro style (element style-type)
+  `(getprop ,element 'style ',style-type))
+
 (defpsmacro show (element)
   `(chain ($ ,element) (show)))
 
@@ -94,3 +97,6 @@
 
 (defpsmacro hide-modal (element)
   `(chain ($ ,element) (modal "hide")))
+
+(defpsmacro value (element)
+  `(chain ,element value))

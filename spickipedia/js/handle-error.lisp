@@ -6,17 +6,16 @@
 (i "./utils.lisp" "all" "one" "clearChildren")
 
 (export
- (defun handle-error (jq-xhr show-error-page)
-   (let ((status (chain jq-xhr status)))
+ (defun handle-error (response show-error-page)
+   (let ((status (chain response status)))
      (if (= status 401)
-         (let ((name
-                (chain (one "#inputName")
-                 (val (chain window local-storage name)))))
+         (progn
+           (setf (value (one "#inputName")) (chain window local-storage name))
            (chain window local-storage (remove-item "name"))
            (push-state "/login"
             (create last-url (chain window location href) last-state
              (chain window history state))))
-         (if (= jq-xhr 403)
+         (if (= status 403)
              (let ((error-message
                     "Du hast nicht die benötigten Berechtigungen, um diese Aktion durchzuführen. Sag mir Bescheid, wenn du glaubst, dass dies ein Fehler ist."))
                (chain (one "#errorMessage") (text error-message))
@@ -27,7 +26,7 @@
                    (alert error-message)))
              (let ((error-message
                     (concatenate 'string "Unbekannter Fehler: "
-                                 (chain jq-xhr status-text))))
+                                 (chain response status-text))))
                (if show-error-page
                    (progn
                     (chain (one "#errorMessage") (text error-message))

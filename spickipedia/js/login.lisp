@@ -8,20 +8,20 @@
 (i "./handle-error.lisp" "handleError")
 (i "./utils.lisp" "all" "one" "clearChildren")
 
-(defroute "/login" (chain (one ".edit-button") (add-class "disabled"))
- (chain (one "#publish-changes-modal") (modal "hide"))
+(defroute "/login"
+ (add-class (one ".edit-button") "disabled")
+ (hide-modal (one "#publish-changes-modal"))
  (let ((url-username (get-url-parameter "username"))
        (url-password (get-url-parameter "password")))
    (if (and (not (undefined url-username)) (not (undefined url-password)))
        (progn
-        (chain (one "#inputName") (val (decode-u-r-i-component url-username)))
-        (chain (one "#inputPassword")
-         (val (decode-u-r-i-component url-password))))
+        (setf (value (one "#inputName")) (decode-u-r-i-component url-username))
+        (setf (value (one "#inputPassword")) (decode-u-r-i-component url-password)))
        (if (not (undefined (chain window local-storage name)))
            (progn (replace-state "/wiki/Hauptseite") (return))))
    (show-tab "#login")
-   (chain (one ".login-hide") (attr "style" "display: none !important"))
-   (chain (one ".navbar-collapse") (remove-class "show"))))
+   (setf (style (one ".login-hide") display) "none !important")
+   (remove-class (one ".navbar-collapse") "show")))
 
 (on ("submit" (one "#login-form") event)
   (chain event (prevent-default))
