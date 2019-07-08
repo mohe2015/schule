@@ -109,3 +109,6 @@
 
 (defpsmacro href (element)
   `(chain ,element href))
+
+(defpsmacro focus (element)
+  `(chain ,element (focus)))

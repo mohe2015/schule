@@ -8,9 +8,9 @@
 (i "./utils.lisp" "all" "one" "clearChildren")
 
 (on ("click" (one "#publish-changes") event)
-  (chain (one "#publish-changes") (hide))
-  (chain (one "#publishing-changes") (show))
-  (let ((change-summary (chain (one "#change-summary") (val)))
+  (hide (one "#publish-changes"))
+  (show (one "#publishing-changes"))
+  (let ((change-summary (value (one "#change-summary")))
         (temp-dom (chain (one "article") (clone)))
         (article-path (chain window location pathname (split "/") 2)))
     (revert-math temp-dom)
@@ -31,9 +31,9 @@
 
 (export
  (defun show-editor ()
-   (chain (one "#editor") (remove-class "d-none"))
-   (chain (one "article") (attr "contenteditable" t))
-   (if (= (chain (one "article") (html)) "")
-       (chain (one "article") (html "<p></p>")))
-   (chain (one ".article-editor") (add-class "fullscreen"))
+   (remove-class (one "#editor") "d-none")
+   (setf (content-editable (one "article")) t)
+   (if (= (inner-html (one "article")) "")
+       (setf (inner-html (one "article")) "<p></p>"))
+   (add-class (one ".article-editor") "fullscreen")
    (chain document (exec-command "defaultParagraphSeparator" f "p"))))

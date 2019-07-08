@@ -22,6 +22,7 @@
     (when depth-first-p (funcall fn entry))))
 (defun development ()
   (start)
+  (mito:connect-toplevel :sqlite3 :database-name (asdf/system:system-relative-pathname :spickipedia #P"spickipedia.db"))
   (let ((top-level *standard-output*))
     (bordeaux-threads:make-thread
      (lambda ()
