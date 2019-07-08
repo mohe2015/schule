@@ -32,7 +32,8 @@
 
 (defun login-post (repeated)
   (let* ((form-element (one "#login-form"))
-         (form-data (new (-form-data form-element))))
+         (form-data (new (-form-data form-element)))
+         (login-button (one "#login-button")))
     (chain form-data (append "_csrf_token" (read-cookie "_csrf_token")))
     (chain
      (fetch "/api/login" (create method "POST" body form-data))

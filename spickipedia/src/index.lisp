@@ -191,7 +191,7 @@
       (:form :id "login-form"
        ,(text-input "Name" "inputName" "username" :required t :autofocus t :autocomplete "username" :no-label? t)
        (:div :class "form-group"
-        (:input :type "password" :id "inputPassword" :class "form-control"
+        (:input :type "password" :id "inputPassword" :name "password" :class "form-control"
          :placeholder "Passwort" :required "" :autocomplete
          "current-password"))
        ,(submit-button "Anmelden" :id "login-button")))

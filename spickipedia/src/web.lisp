@@ -205,12 +205,14 @@
         '(unsigned-byte 8))
      (write-sequence (slot-value filecontents 'vector) stream))
    filehash))
-(my-defroute :post "/api/login" nil (|name| |password|) "text/html"
- (format t "~A ~A~%" |name| |password|)
- (let* ((user (find-dao 'user :name |name|)))
-   (if (and user (verify |password| (user-hash user)))
+
+(my-defroute :post "/api/login" nil (|username| |password|) "text/html"
+ (format t "~A ~A~%" (first |username|) (first |password|))
+ (let* ((user (find-dao 'user :name (first |username|))))
+   (if (and user (verify (first |password|) (user-hash user)))
        (progn (setf (gethash :user *session*) (object-id user)) nil)
        (throw-code 403))))
+
 (my-defroute :post "/api/logout" (:admin :user :anonymous) nil "text/html"
  (setf (gethash :user *session*) nil) nil)
 (defun my-quit () (sb-ext:quit))
