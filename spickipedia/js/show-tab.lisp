@@ -5,5 +5,10 @@
 
 (export
  (defun show-tab (id)
-   (chain (one ".my-tab") (not id) (hide))
-   (chain (one id) (show))))
+   ;; temp1.filter(function (tab) { return tab.id != "edit-quiz" })
+   (chain (all ".my-tab")
+          (filter
+            (lambda (tab)
+              (not (= (chain tab id) id))))
+          (hide))
+   (show (one id))))

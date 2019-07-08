@@ -2,18 +2,17 @@
 
 (export (defun one (selector) (chain document (query-selector selector))))
 
+(setf (chain -Array prototype hide)
+      (lambda ()
+        (chain this
+          (for-each
+            (lambda (element)
+              (hide element))))
+        this))
+
 (export
  (defun all (selector)
-   (let ((elements
-          (chain -array (from (chain document (query-selector-all selector))))))
-     (setf (chain elements on)
-           (lambda (event handler)
-             (chain this
-              (for-each
-               (lambda (element)
-                 (chain element (add-event-listener event handler)))))
-             this))
-     elements)))
+   (chain -array (from (chain document (query-selector-all selector))))))
 
 (export
  (defun clear-children (element)
