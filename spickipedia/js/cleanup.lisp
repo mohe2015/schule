@@ -7,6 +7,6 @@
 (export
  (defun cleanup ()
    (hide-editor)
-   (hide-modal (one "#publish-changes-modal"))
+   (hide-modal (one "#modal-publish-changes"))
    (show (one "#publish-changes"))
    (hide (one "#publishing-changes"))))

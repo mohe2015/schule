@@ -84,13 +84,13 @@
   `(chain ,element content-editable))
 
 (defpsmacro show (element)
-  `(chain ,element (show)))
+  `(chain ($ ,element) (show)))
 
 (defpsmacro hide (element)
-  `(chain ,element (hide)))
+  `(chain ($ ,element) (hide)))
 
 (defpsmacro show-modal (element)
-  `(chain ,element (modal "show")))
+  `(chain ($ ,element) (modal "show")))
 
 (defpsmacro hide-modal (element)
-  `(chain ,element (modal "hide")))
+  `(chain ($ ,element) (modal "hide")))
