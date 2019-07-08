@@ -5,7 +5,7 @@
 (i "./read-cookie.lisp" "readCookie")
 (i "./replace-state.lisp" "replaceState")
 (i "./handle-error.lisp" "handleError")
-(i "./utils.lisp" "showModal" "all" "one" "hideModal" "clearChildren")
+(i "./utils.lisp" "all" "one" "clearChildren")
 
 (defroute "/logout" (chain (one ".edit-button") (add-class "disabled"))
  (show-tab "#loading")

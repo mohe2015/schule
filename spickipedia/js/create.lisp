@@ -4,7 +4,7 @@
 (i "./push-state.lisp" "pushState")
 (i "./editor.lisp" "showEditor")
 (i "./show-tab.lisp" "showTab")
-(i "./utils.lisp" "showModal" "all" "one" "hideModal" "clearChildren")
+(i "./utils.lisp" "all" "one" "clearChildren")
 
 (defroute "/wiki/:name/create"
  (chain (one ".edit-button") (add-class "disabled"))

@@ -23,16 +23,14 @@
 (i "./schedules/index.lisp" "handleSchedules")
 (i "./student-courses/index.lisp" "handleStudentCourses")
 (i "./settings/index.lisp" "handleSettings")
-(i "./utils.lisp" "showModal" "all" "one" "hideModal" "clearChildren")
+(i "./utils.lisp" "all" "one" "clearChildren")
 
 (export
  (defun update-state ()
    (setf (chain window last-url) (chain window location pathname))
    (if (undefined (chain window local-storage name))
-       (chain (one "#logout") (text "Abmelden"))
-       (chain (one "#logout")
-        (text
-         (concatenate 'string (chain window local-storage name) " abmelden"))))
+       (setf (inner-text (one "#logout")) "Abmelden")
+       (setf (inner-text (one "#logout")) (concatenate 'string (chain window local-storage name) " abmelden")))
    (if (and (not (= (chain window location pathname) "/login"))
             (undefined (chain window local-storage name)))
        (progn
@@ -42,7 +40,7 @@
            (chain window history state))
           nil "/login"))
         (update-state)))
-   (chain (one ".login-hide") (attr "style" ""))
+   (setf (style (one ".login-hide")) "")
    (loop for route in (chain window routes)
          do (if (route (chain window location pathname))
                 (return-from update-state)))

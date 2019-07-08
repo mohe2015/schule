@@ -5,7 +5,7 @@
 (i "../handle-error.lisp" "handleError")
 (i "../fetch.lisp" "checkStatus" "json" "html" "handleFetchError")
 (i "../template.lisp" "getTemplate")
-(i "../utils.lisp" "showModal" "all" "one" "hideModal" "clearChildren")
+(i "../utils.lisp" "all" "one" "clearChildren")
 
 (defroute "/schedules" (show-tab "#list-schedules")
  (chain (fetch "/api/schedules") (then check-status) (then json)

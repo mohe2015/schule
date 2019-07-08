@@ -3,7 +3,7 @@
 (i "./test.lisp")
 (i "./push-state.lisp" "pushState")
 (i "./show-tab.lisp" "showTab")
-(i "./utils.lisp" "showModal" "all" "one" "hideModal" "clearChildren")
+(i "./utils.lisp" "all" "one" "clearChildren")
 
 (export
  (defun handle-error (jq-xhr show-error-page)

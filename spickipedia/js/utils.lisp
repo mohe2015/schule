@@ -19,7 +19,3 @@
  (defun clear-children (element)
    (while (chain element (has-child-nodes))
     (chain element (remove-child (chain element last-child))))))
-
-(export (defun show-modal (element) (chain (one element) (modal "show"))))
-
-(export (defun hide-modal (element) (chain (one element) (modal "hide"))))

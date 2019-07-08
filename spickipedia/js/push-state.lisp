@@ -2,7 +2,7 @@
 
 (i "./test.lisp")
 (i "./update-state.lisp" "updateState")
-(i "./utils.lisp" "showModal" "all" "one" "hideModal" "clearChildren")
+(i "./utils.lisp" "all" "one" "clearChildren")
 
 (export
  (defun push-state (url data)

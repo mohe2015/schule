@@ -7,7 +7,7 @@
 (i "./math.lisp" "renderMath")
 (i "./image-viewer.lisp")
 (i "./fetch.lisp" "checkStatus" "json")
-(i "./utils.lisp" "showModal" "all" "one" "hideModal" "clearChildren")
+(i "./utils.lisp" "all" "one" "clearChildren")
 
 (defun update-page (data)
   (chain (one ".closable-badge") (remove))
@@ -34,10 +34,9 @@
 
 (defroute "/wiki/:name"
  (var pathname (chain window location pathname (split "/")))
- (chain (one ".edit-button") (remove-class "disabled"))
- (chain (one "#is-outdated-article") (add-class "d-none"))
- (chain (one "#wiki-article-title")
-  (text (decode-u-r-i-component (chain pathname 2))))
+ (remove-class (one ".edit-button") "disabled")
+ (add-class (one "#is-outdated-article") "d-none")
+ (setf (inner-text (one "#wiki-article-title")) (decode-u-r-i-component (chain pathname 2)))
  (cleanup) (var network-data-received f) (show-tab "#loading")
  (var network-update
       (chain (fetch (concatenate 'string "/api/wiki/" (chain pathname 2)))

@@ -7,7 +7,7 @@
 (i "./math.lisp" "renderMath")
 (i "./editor.lisp" "showEditor")
 (i "./handle-error.lisp" "handleError")
-(i "./utils.lisp" "showModal" "all" "one" "hideModal" "clearChildren")
+(i "./utils.lisp" "all" "one" "clearChildren")
 
 (on ("click" (one ".edit-button") event)
   (chain event (prevent-default))

@@ -6,7 +6,7 @@
 (i "../fetch.lisp" "cacheThenNetwork" "checkStatus" "json" "html" "handleFetchError")
 (i "../template.lisp" "getTemplate")
 (i "../push-state.lisp" "pushState")
-(i "../utils.lisp" "showModal" "all" "one" "hideModal" "clearChildren")
+(i "../utils.lisp" "all" "one" "clearChildren")
 
 (defun render ()
   (show-tab "#loading")
@@ -82,11 +82,11 @@
 
 (on ("click" (one "#settings-add-grade") event)
   (chain event (prevent-default))
-  (show-modal "#modal-settings-create-grade"))
+  (show-modal (one "#modal-settings-create-grade")))
 
 (on ("click" (one "#settings-add-course") event)
   (chain event (prevent-default))
-  (show-modal "#modal-settings-create-course"))
+  (show-modal (one "#modal-settings-create-course")))
 
 (on ("click" (one "#settings-show-schedule") event)
   (chain event (prevent-default))
@@ -105,7 +105,7 @@
     (chain (fetch "/api/schedules" (create method "POST" body formdata))
      (then check-status)
      (then
-      (lambda (data) (hide-modal "#modal-settings-create-grade") (render)))
+      (lambda (data) (hide-modal (one "#modal-settings-create-grade")) (render)))
      (catch handle-fetch-error)))
   f)
 
@@ -127,7 +127,7 @@
     (chain (fetch "/api/courses" (create method "POST" body formdata))
      (then check-status)
      (then
-      (lambda (data) (hide-modal "#modal-settings-create-course") (render)))
+      (lambda (data) (hide-modal (one "#modal-settings-create-course")) (render)))
      (catch handle-fetch-error)))
   f)
 

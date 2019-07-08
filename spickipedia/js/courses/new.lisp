@@ -6,7 +6,7 @@
 (i "../fetch.lisp" "checkStatus" "json" "html" "handleFetchError")
 (i "../template.lisp" "getTemplate")
 (i "../push-state.lisp" "pushState")
-(i "../utils.lisp" "showModal" "all" "one" "hideModal" "clearChildren")
+(i "../utils.lisp" "all" "one" "clearChildren")
 
 (defroute "/courses/new"
  (let ((select (chain document (query-selector "#teachers-select"))))

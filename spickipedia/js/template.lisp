@@ -1,4 +1,4 @@
-(i "./utils.lisp" "showModal" "all" "one" "hideModal" "clearChildren")
+(i "./utils.lisp" "all" "one" "clearChildren")
 
 (var __-p-s_-m-v_-r-e-g)
 (export

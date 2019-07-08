@@ -6,7 +6,7 @@
 (i "./replace-state.lisp" "replaceState")
 (i "./show-tab.lisp" "showTab")
 (i "./handle-error.lisp" "handleError")
-(i "./utils.lisp" "showModal" "all" "one" "hideModal" "clearChildren")
+(i "./utils.lisp" "all" "one" "clearChildren")
 
 (defroute "/login" (chain (one ".edit-button") (add-class "disabled"))
  (chain (one "#publish-changes-modal") (modal "hide"))

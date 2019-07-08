@@ -6,7 +6,7 @@
 (i "../handle-error.lisp" "handleError")
 (i "../fetch.lisp" "checkStatus" "json" "html" "handleFetchError"
  "cacheThenNetwork")
-(i "../utils.lisp" "showModal" "all" "one" "hideModal" "clearChildren")
+(i "../utils.lisp" "all" "one" "clearChildren")
 (i "../template.lisp" "getTemplate")
 (i "../read-cookie.lisp" "readCookie")
 

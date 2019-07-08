@@ -6,7 +6,7 @@
 (i "./push-state.lisp" "pushState")
 (i "./editor-lib.lisp" "isLocalUrl")
 (i "./register-sw.lisp")
-(i "./utils.lisp" "showModal" "all" "one" "hideModal" "clearChildren")
+(i "./utils.lisp" "all" "one" "clearChildren")
 
 (setf (chain window onerror)
       (lambda (message source lineno colno error)

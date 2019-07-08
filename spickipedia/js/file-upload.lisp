@@ -2,7 +2,7 @@
 (var __-p-s_-m-v_-r-e-g)
 (i "./test.lisp")
 (i "./read-cookie.lisp" "readCookie")
-(i "./utils.lisp" "showModal" "all" "one" "hideModal" "clearChildren")
+(i "./utils.lisp" "all" "one" "clearChildren")
 
 (export
  (defun send-file (file)

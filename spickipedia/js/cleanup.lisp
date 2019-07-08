@@ -2,11 +2,11 @@
 
 (i "./test.lisp")
 (i "./hide-editor.lisp" "hideEditor")
-(i "./utils.lisp" "showModal" "all" "one" "hideModal" "clearChildren")
+(i "./utils.lisp" "all" "one" "clearChildren")
 
 (export
  (defun cleanup ()
    (hide-editor)
-   (chain (one "#publish-changes-modal") (modal "hide"))
-   (chain (one "#publish-changes") (show))
-   (chain (one "#publishing-changes") (hide))))
+   (hide-modal (one "#publish-changes-modal"))
+   (show (one "#publish-changes"))
+   (hide (one "#publishing-changes"))))

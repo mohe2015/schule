@@ -3,7 +3,7 @@
 (i "./test.lisp")
 (i "./show-tab.lisp" "showTab")
 (i "./handle-error.lisp" "handleError")
-(i "./utils.lisp" "showModal" "all" "one" "hideModal" "clearChildren")
+(i "./utils.lisp" "all" "one" "clearChildren")
 
 (defroute "/articles" (show-tab "#loading")
  (get "/api/articles" t

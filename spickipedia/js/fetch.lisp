@@ -1,7 +1,7 @@
 
 (var __-p-s_-m-v_-r-e-g)
 (i "./push-state.lisp" "pushState")
-(i "./utils.lisp" "showModal" "all" "one" "hideModal" "clearChildren")
+(i "./utils.lisp" "all" "one" "clearChildren")
 
 (export
  (defun handle-fetch-error (error)

@@ -58,3 +58,39 @@
             `(if (not (chain event target (closest ,dynamic-selector)))
                (return)))
          ,@body))))
+
+(defpsmacro inner-text (element)
+  `(chain ,element inner-text))
+
+(defpsmacro style (element)
+  `(chain ,element style))
+
+(defpsmacro class-list (element)
+  `(chain ,element class-list))
+
+(defpsmacro remove (array element)
+  `(chain ,array (remove ,element)))
+
+(defpsmacro add (array element)
+  `(chain ,array (add ,element)))
+
+(defpsmacro remove-class (element class)
+  `(remove (class-list ,element) ,class))
+
+(defpsmacro add-class (element class)
+  `(add (class-list ,element) ,class))
+
+(defpsmacro content-editable (element)
+  `(chain ,element content-editable))
+
+(defpsmacro show (element)
+  `(chain ,element (show)))
+
+(defpsmacro hide (element)
+  `(chain ,element (hide)))
+
+(defpsmacro show-modal (element)
+  `(chain ,element (modal "show")))
+
+(defpsmacro hide-modal (element)
+  `(chain ,element (modal "hide")))

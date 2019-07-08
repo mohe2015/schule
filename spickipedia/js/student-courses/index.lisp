@@ -6,7 +6,7 @@
 (i "../fetch.lisp" "cacheThenNetwork" "checkStatus" "json" "html"
  "handleFetchError")
 (i "../template.lisp" "getTemplate")
-(i "../utils.lisp" "showModal" "all" "one" "hideModal" "clearChildren")
+(i "../utils.lisp" "all" "one" "clearChildren")
 
 (defun render ()
   (show-tab "#loading")

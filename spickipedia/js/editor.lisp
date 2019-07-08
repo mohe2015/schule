@@ -5,7 +5,7 @@
 (i "./math.lisp" "revertMath")
 (i "./read-cookie.lisp" "readCookie")
 (i "./push-state.lisp" "pushState")
-(i "./utils.lisp" "showModal" "all" "one" "hideModal" "clearChildren")
+(i "./utils.lisp" "all" "one" "clearChildren")
 
 (on ("click" (one "#publish-changes") event)
   (chain (one "#publish-changes") (hide))

@@ -7,7 +7,7 @@
 (i "./math.lisp" "renderMath")
 (i "./handle-error.lisp" "handleError")
 (i "./fetch.lisp" "checkStatus" "json" "html" "handleFetchError")
-(i "./utils.lisp" "showModal" "all" "one" "hideModal" "clearChildren")
+(i "./utils.lisp" "all" "one" "clearChildren")
 
 (chain (one "#show-history")
  (click

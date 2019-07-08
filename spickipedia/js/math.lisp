@@ -1,7 +1,7 @@
 (var __-p-s_-m-v_-r-e-g)
 
 (i "./test.lisp")
-(i "./utils.lisp" "showModal" "all" "one" "hideModal" "clearChildren")
+(i "./utils.lisp" "all" "one" "clearChildren")
 
 (export
  (defun render-math ()

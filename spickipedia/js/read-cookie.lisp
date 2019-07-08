@@ -1,6 +1,6 @@
 
 (i "./test.lisp")
-(i "./utils.lisp" "showModal" "all" "one" "hideModal" "clearChildren")
+(i "./utils.lisp" "all" "one" "clearChildren")
 
 (export
  (defun read-cookie (name)

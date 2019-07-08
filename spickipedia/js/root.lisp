@@ -1,8 +1,9 @@
-
 (var __-p-s_-m-v_-r-e-g)
+
 (i "./test.lisp")
 (i "./replace-state.lisp" "replaceState")
-(i "./utils.lisp" "showModal" "all" "one" "hideModal" "clearChildren")
+(i "./utils.lisp" "all" "one" "clearChildren")
 
-(defroute "/" (chain (one ".edit-button") (remove-class "disabled"))
- (replace-state "/wiki/Hauptseite"))
+(defroute "/"
+  (remove-class (one ".edit-button") "disabled")
+  (replace-state "/wiki/Hauptseite"))

@@ -5,7 +5,7 @@
 (i "./categories.lisp")
 (i "./handle-error.lisp" "handleError")
 (i "./fetch.lisp" "cacheThenNetwork")
-(i "./utils.lisp" "showModal" "all" "one" "hideModal" "clearChildren")
+(i "./utils.lisp" "all" "one" "clearChildren")
 
 (defun save-range ()
   (chain document (get-elements-by-tag-name "article") 0 (focus))
