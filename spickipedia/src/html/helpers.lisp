@@ -16,8 +16,9 @@
     (:select :class "custom-select teacher-select" :id ,id :name "teacher"
      (:option "Wird geladen..."))))
 ;; TODO accept arbitrary additional html attributes as keys
-(defun text-input (label id name &key classes required autofocus autocomplete)
-  `(:div :class "form-group" (:label ,label)
+(defun text-input (label id name &key no-label? classes required autofocus autocomplete)
+  `(:div :class "form-group"
+    ,(if no-label? nil `(:label ,label))
     (:input :type "text" :class ,(concatenate 'string "form-control " classes) :placeholder ,label :name ,name
      :id ,id :required ,required :autofocus ,autofocus :autocomplete ,autocomplete)))
 (defun checkbox-input (label id name)
@@ -25,7 +26,7 @@
     (:input :type "checkbox" :class "custom-control-input" :name ,name :id ,id)
     (:label :class "custom-control-label" :for ,id ,label)))
 (defun submit-button (label &key id)
-  `(:button :type "submit" :class "btn btn-primary" ,label :id ,id))
+  `(:button :type "submit" :class "btn btn-primary" :id ,id ,label))
 (defun tab (id &rest content)
   `(:div :style "display: none;" :class
     "container-fluid my-tab position-absolute" :id ,id ,@content))

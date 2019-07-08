@@ -1,8 +1,10 @@
 
-(var __-p-s_-m-v_-r-e-g) 
-(i "./test.lisp") 
+(var __-p-s_-m-v_-r-e-g)
+(i "./test.lisp")
+(i "./utils.lisp" "all" "one" "clearChildren")
+
 (export
  (defun hide-editor ()
-   (chain ($ "#editor") (add-class "d-none"))
-   (chain ($ "article") (attr "contenteditable" f))
-   (chain ($ ".article-editor") (remove-class "fullscreen")))) 
+   (add-class (one "#editor") "d-none")
+   (setf (content-editable (one "article")) f)
+   (remove-class (one ".article-editor") "fullscreen")))

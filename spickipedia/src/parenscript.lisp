@@ -1,6 +1,7 @@
+(in-package :spickipedia.parenscript)
 
-(in-package :spickipedia.parenscript) 
-(defparameter *js-target-version* "1.8.5") 
+(defparameter *js-target-version* "1.8.5")
+
 (defpsmacro defroute (route &body body)
  `(progn
    (export
@@ -35,8 +36,10 @@
     (push
      ,(make-symbol
        (concatenate 'string "handle-"
-                    (subseq (regex-replace-all "/[:\\.]?" route "-") 1))))))) 
-(defpsmacro i (file &rest contents) `(import ,file ,@contents)) 
+                    (subseq (regex-replace-all "/[:\\.]?" route "-") 1)))))))
+
+(defpsmacro i (file &rest contents) `(import ,file ,@contents))
+
 (defun file-js-gen (file)
   (in-package :spickipedia.parenscript)
   (handler-bind ((simple-warning
@@ -45,4 +48,64 @@
                                  (simple-condition-format-control e))
                           (muffle-warning)))))
     (defparameter *ps-gensym-counter* 0)
-    (ps-compile-file file))) 
+    (ps-compile-file file)))
+
+(defpsmacro on ((event-name element-s event-variable &key dynamic-selector) &body body)
+  `(chain ,element-s
+     (add-event-listener ,event-name
+       (lambda (,event-variable)
+         ,(if dynamic-selector
+            `(if (not (chain event target (closest ,dynamic-selector)))
+               (return)))
+         ,@body))))
+
+(defpsmacro inner-text (element)
+  `(chain ,element inner-text))
+
+(defpsmacro class-list (element)
+  `(chain ,element class-list))
+
+(defpsmacro array-remove (array element)
+  `(chain ,array (remove ,element)))
+
+(defpsmacro add (array element)
+  `(chain ,array (add ,element)))
+
+(defpsmacro remove-class (element class)
+  `(array-remove (class-list ,element) ,class))
+
+(defpsmacro add-class (element class)
+  `(add (class-list ,element) ,class))
+
+(defpsmacro content-editable (element)
+  `(chain ,element content-editable))
+
+(defpsmacro style (element)
+  `(chain ,element style))
+
+(defpsmacro display (element)
+  `(chain ,element display))
+
+(defpsmacro show (element)
+  `(chain ($ ,element) (show)))
+
+(defpsmacro hide (element)
+  `(chain ($ ,element) (hide)))
+
+(defpsmacro show-modal (element)
+  `(chain ($ ,element) (modal "show")))
+
+(defpsmacro hide-modal (element)
+  `(chain ($ ,element) (modal "hide")))
+
+(defpsmacro value (element)
+  `(chain ,element value))
+
+(defpsmacro disabled (element)
+  `(chain ,element disabled))
+
+(defpsmacro remove (element)
+  `(chain ,element (remove)))
+
+(defpsmacro href (element)
+  `(chain ,element href))

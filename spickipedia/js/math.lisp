@@ -1,13 +1,15 @@
-
 (var __-p-s_-m-v_-r-e-g)
+
 (i "./test.lisp")
+(i "./utils.lisp" "all" "one" "clearChildren")
+
 (export
  (defun render-math ()
-   (chain ($ ".formula")
-    (each (lambda () (chain -math-live (render-math-in-element this)))))
-   (chain ($ "article")
-    (on "summernote.init"
-     (lambda () (chain ($ ".formula") (attr "contenteditable" f)))))))
+   (chain (all ".formula")
+    (for-each (lambda () (chain -math-live (render-math-in-element this)))))
+   (on ("summernote.init" (one "article") event)
+     (chain (one ".formula") (attr "contenteditable" f)))))
+
 (export
  (defun revert-math (dom)
    (chain dom (find ".formula")

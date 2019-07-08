@@ -1,10 +1,12 @@
+(var __-p-s_-m-v_-r-e-g)
 
-(var __-p-s_-m-v_-r-e-g) 
-(i "./test.lisp") 
-(i "./hide-editor.lisp" "hideEditor") 
+(i "./test.lisp")
+(i "./hide-editor.lisp" "hideEditor")
+(i "./utils.lisp" "all" "one" "clearChildren")
+
 (export
  (defun cleanup ()
    (hide-editor)
-   (chain ($ "#publish-changes-modal") (modal "hide"))
-   (chain ($ "#publish-changes") (show))
-   (chain ($ "#publishing-changes") (hide)))) 
+   (hide-modal (one "#modal-publish-changes"))
+   (show (one "#publish-changes"))
+   (hide (one "#publishing-changes"))))

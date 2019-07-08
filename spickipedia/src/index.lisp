@@ -119,7 +119,7 @@
              `(submit-button "Kurs erstellen")))
 
      ,(tab "create-teacher-tab"
-        `(:form :method "POST" :action "/api/teachers" :id "create-teacher-form"
+        `(:form :method "POST" :action "/api/teachers1" :id "create-teacher-form"
            ,(text-input "Name" "teacher-name" "name")
            ,(text-input "Initialien" "teacher-initial" "initial")
            ,(submit-button "LehrerIn erstellen")))
@@ -189,7 +189,7 @@
       "container my-tab position-absolute col-sm-6 offset-sm-3 col-md-4 offset-md-4 text-center"
       :id "login" (:h1 "Anmelden")
       (:form :id "login-form"
-       ,(text-input "Name" "inputName" "username" :required t :autofocus t :autocomplete "username")
+       ,(text-input "Name" "inputName" "username" :required t :autofocus t :autocomplete "username" :no-label? t)
        (:div :class "form-group"
         (:input :type "password" :id "inputPassword" :class "form-control"
          :placeholder "Passwort" :required "" :autocomplete
@@ -246,26 +246,26 @@
           (:div :class "list-group" :id "history-list")))
 
      ,(tab "search"
-        `((:div :class "input-group mb-3"
+        '(:div :class "input-group mb-3"
             (:input :type "text" :class "form-control" :id "search-query"
              :placeholder "Suchbegriff")
             (:div :class "input-group-append"
              (:button :class "btn btn-outline-secondary" :type "button" :id
               "button-search" (:i :class "fas fa-search"))))
-          (:div
-           (:div :style "display: none; left: 50%; margin-left: -1rem;" :class
-            "position-absolute" :id "search-results-loading"
-            (:div :class "spinner-border" :role "status"
-             (:span :class "sr-only" "Loading...")))
-           (:div :style "display: none;" :id "search-results"
-            (:div :style "display: none;" :class "text-center" :id
-             "no-search-results"
-             (:div :class "alert alert-warning" :role "alert"
-              " Es konnte kein Artikel mit genau diesem Titel gefunden werden. Möchtest du ihn "
-              (:a :id "search-create-article" :href "#" :class "alert-link "
-               "erstellen")
-              "?"))
-            (:div :class "list-group" :id "search-results-content")))))
+         '(:div
+            (:div :style "display: none; left: 50%; margin-left: -1rem;" :class
+             "position-absolute" :id "search-results-loading"
+             (:div :class "spinner-border" :role "status"
+              (:span :class "sr-only" "Loading...")))
+            (:div :style "display: none;" :id "search-results"
+             (:div :style "display: none;" :class "text-center" :id
+              "no-search-results"
+              (:div :class "alert alert-warning" :role "alert"
+               " Es konnte kein Artikel mit genau diesem Titel gefunden werden. Möchtest du ihn "
+               (:a :id "search-create-article" :href "#" :class "alert-link "
+                "erstellen")
+               "?"))
+             (:div :class "list-group" :id "search-results-content"))))
 
      (:div :class "my-tab position-absolute" :style
       "top: 50%; left: 50%; margin-left: -1rem; margin-top: -1rem;" :id
@@ -314,8 +314,7 @@
      ,(modal "settings" "Kategorien"
         `((:button :type "button" :class "btn btn-secondary" :data-dismiss
             "modal" "Fertig"))
-        `((:form :class "form-inline" :id "add-tag-form"
-            (text-input "Kategorie..." "new-category" "category"))))
+        `(,(text-input "Kategorie..." "new-category" "category")))
 
      ,(modal "link" "Link"
         `((:button :type "button" :class "btn btn-secondary" :data-dismiss

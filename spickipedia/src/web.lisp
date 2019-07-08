@@ -1,45 +1,45 @@
 
-(in-package :spickipedia.web) 
-(declaim (optimize (debug 3))) 
+(in-package :spickipedia.web)
+(declaim (optimize (debug 3)))
 (defparameter *default-cost*
   13
-  "The default value for the COST parameter to HASH.") 
-(defclass <web> (<app>) nil) 
-(defvar *web* (make-instance '<web>)) 
-(clear-routing-rules *web*) 
+  "The default value for the COST parameter to HASH.")
+(defclass <web> (<app>) nil)
+(defvar *web* (make-instance '<web>))
+(clear-routing-rules *web*)
 (defmacro with-user (&body body)
   `(if (gethash :user *session*)
        (let ((user (find-dao 'user :id (gethash :user *session*))))
          ,@body)
-       (throw-code 401))) 
-(defun random-base64 () (usb8-array-to-base64-string (random-data 64))) 
+       (throw-code 401)))
+(defun random-base64 () (usb8-array-to-base64-string (random-data 64)))
 (defmacro with-group (groups &body body)
   `(if (member (user-group user) ,groups)
        (progn ,@body)
-       (throw-code 403))) 
-(defparameter *version* "1") 
+       (throw-code 403)))
+(defparameter *version* "1")
 (defun valid-csrf ()
   (string= (my-session-csrf-token *session*)
-           (assoc "csrf_token" (request-query-parameters *request*)))) 
+           (assoc "csrf_token" (request-query-parameters *request*))))
 (defun hash-contents (content)
   (byte-array-to-hex-string
-   (digest-sequence :sha256 (ascii-string-to-byte-array content)))) 
+   (digest-sequence :sha256 (ascii-string-to-byte-array content))))
 (defun hash-contents-vector (content)
-  (byte-array-to-hex-string (digest-sequence :sha256 content))) 
+  (byte-array-to-hex-string (digest-sequence :sha256 content)))
 (defun cache ()
   (setf (getf (response-headers *response*) :cache-control)
-          "public, max-age=0")
-  (setf (getf (response-headers *response*) :vary) "Accept-Encoding")) 
+        "public, max-age=0")
+  (setf (getf (response-headers *response*) :vary) "Accept-Encoding"))
 (defun cache-forever ()
   (setf (getf (response-headers *response*) :cache-control) "max-age=31556926")
   (setf (getf (response-headers *response*) :vary) "Accept-Encoding")
-  (setf (getf (response-headers *response*) :etag) *version*)) 
+  (setf (getf (response-headers *response*) :etag) *version*))
 (defmacro with-cache-forever (&body body)
   `(progn
     (cache-forever)
     (if (equal (gethash "if-none-match" (request-headers *request*)) *version*)
         (throw-code 304)
-        (progn ,@body)))) 
+        (progn ,@body))))
 (defmacro with-cache (key &body body)
   `(progn
     (cache)
@@ -49,8 +49,8 @@
           (throw-code 304)
           (progn
            (setf (getf (response-headers *response*) :etag)
-                   (concatenate 'string "W/\"" key-hash "\""))
-           (progn ,@body)))))) 
+                 (concatenate 'string "W/\"" key-hash "\""))
+           (progn ,@body))))))
 (defmacro with-cache-vector (key &body body)
   `(progn
     (cache)
@@ -60,22 +60,22 @@
           (throw-code 304)
           (progn
            (setf (getf (response-headers *response*) :etag)
-                   (concatenate 'string "W/\"" key-hash "\""))
-           (progn ,@body)))))) 
+                 (concatenate 'string "W/\"" key-hash "\""))
+           (progn ,@body))))))
 (defun basic-headers ()
   (setf (getf (response-headers *response*) :x-frame-options) "DENY")
   (setf (getf (response-headers *response*) :content-security-policy)
-          "default-src 'none'; script-src 'self'; img-src * data: ; style-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self'; frame-src www.youtube.com youtube.com; frame-ancestors 'none';")
+        "default-src 'none'; script-src 'self'; img-src * data: ; style-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self'; frame-src www.youtube.com youtube.com; frame-ancestors 'none';")
   (setf (getf (response-headers *response*) :x-xss-protection) "1; mode=block")
   (setf (getf (response-headers *response*) :x-content-type-options) "nosniff")
-  (setf (getf (response-headers *response*) :referrer-policy) "no-referrer")) 
+  (setf (getf (response-headers *response*) :referrer-policy) "no-referrer"))
 (defmacro my-defroute (method path permissions params content-type &body body)
   `(defroute (,path :method ,method) (&key ,@params) (basic-headers)
     (setf (getf (response-headers *response*) :content-type) ,content-type)
     (with-connection (db)
      ,(if permissions
           `(with-user (with-group ',permissions ,@body))
-          `(progn ,@body))))) 
+          `(progn ,@body)))))
 (my-defroute :get "/api/wiki/:title" (:admin :user :anonymous) (title)
  "application/json"
  (let* ((article (find-dao 'wiki-article :title title)))
@@ -93,7 +93,7 @@
         (categories
          . ,(mapcar #'(lambda (v) (wiki-article-revision-category-category v))
                     (retrieve-dao 'wiki-article-revision-category :revision
-                     (car revision))))))))) 
+                     (car revision)))))))))
 (my-defroute :get "/api/revision/:id" (:admin :user) (id) "application/json"
  (let* ((revision (find-dao 'wiki-article-revision :id (parse-integer id))))
    (if (not revision)
@@ -106,8 +106,8 @@
        . ,(list-to-array
            (mapcar #'(lambda (v) (wiki-article-revision-category-category v))
                    (retrieve-dao 'wiki-article-revision-category :revision
-                    revision)))))))) 
-(defun list-to-array (list) (make-array (length list) :initial-contents list)) 
+                    revision))))))))
+(defun list-to-array (list) (make-array (length list) :initial-contents list))
 (my-defroute :get "/api/previous-revision/:the-id" (:admin :user) (the-id)
  "application/json"
  (let* ((id (parse-integer the-id))
@@ -128,7 +128,7 @@
                   #'(lambda (v) (wiki-article-revision-category-category v))
                   (retrieve-dao 'wiki-article-revision-category :revision
                    revision)))))))
-       "{\"content\":\"\", \"categories\": []}"))) 
+       "{\"content\":\"\", \"categories\": []}")))
 (my-defroute :post "/api/wiki/:title" (:admin :user)
  (title |summary| |html| _parsed) "text/html"
  (dbi:with-transaction *connection*
@@ -142,16 +142,16 @@
        (loop for category in categories
              do (create-dao 'wiki-article-revision-category :revision revision
                  :category category)))
-     nil))) 
+     nil)))
 (my-defroute :post "/api/quiz/create" (:admin :user) nil "text/html"
- (format nil "~a" (object-id (create-dao 'quiz :creator user)))) 
+ (format nil "~a" (object-id (create-dao 'quiz :creator user))))
 (my-defroute :post "/api/quiz/:the-quiz-id" (:admin :user) (the-quiz-id |data|)
  "text/html"
  (let* ((quiz-id (parse-integer the-quiz-id)))
    (format nil "~a"
            (object-id
             (create-dao 'quiz-revision :quiz (find-dao 'quiz :id quiz-id)
-             :content |data| :author user))))) 
+             :content |data| :author user)))))
 (my-defroute :get "/api/quiz/:the-id" (:admin :user) (the-id)
  "application/json"
  (let* ((quiz-id (parse-integer the-id))
@@ -159,7 +159,7 @@
          (select-dao 'quiz-revision
           (where (:= :quiz (find-dao 'quiz :id quiz-id)))
           (order-by (:desc :id)) (limit 1))))
-   (quiz-revision-content (car revision)))) 
+   (quiz-revision-content (car revision))))
 (my-defroute :get "/api/history/:title" (:admin :user) (title)
  "application/json"
  (let* ((article (find-dao 'wiki-article :title title)))
@@ -175,7 +175,7 @@
                (size . ,(length (wiki-article-revision-content r)))))
          (select-dao 'wiki-article-revision (where (:= :article article))
           (order-by (:desc :created-at)))))
-       (throw-code 404)))) 
+       (throw-code 404))))
 (my-defroute :get "/api/search/:query" (:admin :user :anonymous) (query)
  "application/json"
  (let* ((searchquery (tsquery-convert query))
@@ -188,11 +188,11 @@
      #'(lambda (r)
          `((title . ,(getf r :|title|)) (rank . ,(getf r :|rank|))
            (summary . ,(getf r :|ts_headline|))))
-     (dbi.driver:fetch-all result))))) 
+     (dbi.driver:fetch-all result)))))
 (my-defroute :get "/api/articles" (:admin :user :anonymous) nil
  "application/json"
  (let* ((articles (select-dao 'wiki-article)))
-   (encode-json-to-string (mapcar 'wiki-article-title articles)))) 
+   (encode-json-to-string (mapcar 'wiki-article-title articles))))
 (my-defroute :post "/api/upload" (:admin :user) (|file|) "text/html"
  (let* ((filecontents (nth 0 |file|))
         (filehash
@@ -204,49 +204,49 @@
        (stream newpath :direction :output :if-exists :supersede :element-type
         '(unsigned-byte 8))
      (write-sequence (slot-value filecontents 'vector) stream))
-   filehash)) 
+   filehash))
 (my-defroute :post "/api/login" nil (|name| |password|) "text/html"
  (format t "~A ~A~%" |name| |password|)
  (let* ((user (find-dao 'user :name |name|)))
    (if (and user (verify |password| (user-hash user)))
        (progn (setf (gethash :user *session*) (object-id user)) nil)
-       (throw-code 403)))) 
+       (throw-code 403))))
 (my-defroute :post "/api/logout" (:admin :user :anonymous) nil "text/html"
- (setf (gethash :user *session*) nil) nil) 
-(defun my-quit () (sb-ext:quit)) 
-(my-defroute :get "/api/killswitch" nil nil "text/html" (my-quit)) 
+ (setf (gethash :user *session*) nil) nil)
+(defun my-quit () (sb-ext:quit))
+(my-defroute :get "/api/killswitch" nil nil "text/html" (my-quit))
 (defun starts-with-p (str1 str2)
   "Determine whether `str1` starts with `str2`"
   (let ((p (search str2 str1)))
-    (and p (= 0 p)))) 
+    (and p (= 0 p))))
 (defun get-safe-mime-type (file)
   (let ((mime-type (trivial-mimes:mime file)))
     (if (or (starts-with-p mime-type "image/")
             (starts-with-p mime-type "font/") (equal mime-type "text/css")
             (equal mime-type "application/javascript"))
         mime-type
-        (progn (format t "Forbidden mime-type: ~a~%" mime-type) "text/plain")))) 
+        (progn (format t "Forbidden mime-type: ~a~%" mime-type) "text/plain"))))
 (my-defroute :get "/api/file/:name" (:admin :user :anonymous) (name)
  (get-safe-mime-type (merge-pathnames (concatenate 'string "uploads/" name)))
- (merge-pathnames (concatenate 'string "uploads/" name))) 
+ (merge-pathnames (concatenate 'string "uploads/" name)))
 (defroute ("/js/*" :method :get) (&key splat) (print (first splat))
  (basic-headers)
  (setf (getf (response-headers *response*) :content-type)
-         "application/javascript")
+       "application/javascript")
  (with-cache
   (read-file-into-string
    (merge-pathnames (concatenate 'string "js/" (first splat))
                     *application-root*))
   (file-js-gen
-   (concatenate 'string (namestring *application-root*) "js/" (first splat))))) 
+   (concatenate 'string (namestring *application-root*) "js/" (first splat)))))
 (my-defroute :get "/sw.lisp" nil nil "application/javascript"
  (with-cache
   (read-file-into-string (merge-pathnames "js/sw.lisp" *application-root*))
   (file-js-gen
-   (concatenate 'string (namestring *application-root*) "js/sw.lisp")))) 
+   (concatenate 'string (namestring *application-root*) "js/sw.lisp"))))
 (defmethod on-exception ((app <web>) (code (eql 404)))
   (declare (ignore app))
-  (merge-pathnames #P"_errors/404.html" *template-directory*)) 
+  (merge-pathnames #P"_errors/404.html" *template-directory*))
 (my-defroute :post "/api/tags" (:admin :user) (_parsed) "application/json"
  (let* ((tags (cdr (assoc "tags" _parsed :test #'string=)))
         (result
@@ -260,4 +260,4 @@
           collect (wiki-article-title
                    (wiki-article-revision-article
                     (find-dao 'wiki-article-revision :id
-                     (getf revision :revision-id)))))))) 
+                     (getf revision :revision-id))))))))
