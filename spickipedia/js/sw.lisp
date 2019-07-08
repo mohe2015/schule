@@ -12,7 +12,7 @@
       "/js/logout.lisp" "/js/login.lisp" "/js/root.lisp" "/js/history.lisp"
       "/js/edit.lisp" "/js/create.lisp" "/js/articles.lisp" "/js/show-tab.lisp"
       "/js/categories.lisp" "/js/file-upload.lisp" "/js/cleanup.lisp"
-      "/js/handle-error.lisp" "/js/math.lisp" "/js/image-viewer.lisp"
+      "/js/math.lisp" "/js/image-viewer.lisp"
       "/js/read-cookie.lisp" "/js/get-url-parameter.lisp" "/js/editor.lisp"
       "/js/hide-editor.lisp" "/js/teachers.lisp" "/js/fetch.lisp"
       "/js/template.lisp" "/js/courses/new.lisp" "/js/courses/index.lisp"

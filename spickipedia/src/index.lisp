@@ -5,9 +5,10 @@
     (:head (:meta :charset "utf-8")
      (:meta :name "viewport" :content
       "width=device-width, initial-scale=1, shrink-to-fit=no")
-     (:link :rel "stylesheet" :href "/bootstrap.min.css")
+     (:link :rel "stylesheet" :href "/bootstrap.css")
      (:link :rel "stylesheet" :href "/all.css")
-     (:link :rel "stylesheet" :href "/index.css") (:title "Spickipedia"))
+     (:link :rel "stylesheet" :href "/index.css")
+     (:title "Spickipedia"))
     (:body
 
      (:template :id "multiple-choice-answer-html"
@@ -89,21 +90,20 @@
         (:li :class "nav-item"
          (:a :class "nav-link" :href "/settings" "Einstellungen"))
         (:li :class "nav-item"
-         (:a :class "nav-link" :href "/logout" :id "logout" "Abmelden")))))
+         (:a :class "nav-link" :href "/logout" :id "logout" "Abmelden"))))))
 
-     (:div
 
-      (:div :style "display: none;" :class
-       "container my-tab position-absolution" :id "edit-quiz"
-       (:h1 :class "text-center" "Quiz ändern") (:div :id "questions")
-       (:button :type "button" :class
-        "btn btn-primary mb-1 create-multiple-choice-question"
-        "Multiple-Choice-Frage hinzufügen")
-       (:button :type "button" :class
-        "btn btn-primary mb-1 create-text-question"
-        "Frage mit Textantwort hinzufügen")
-       (:button :type "button" :class "btn btn-primary mb-1 save-quiz"
-        "Speichern")))
+    ,(tab "edit-quiz"
+       `(:h1 :class "text-center" "Quiz ändern")
+       `(:div :id "questions")
+       `(:button :type "button" :class
+          "btn btn-primary mb-1 create-multiple-choice-question"
+          "Multiple-Choice-Frage hinzufügen")
+       `(:button :type "button" :class
+          "btn btn-primary mb-1 create-text-question"
+          "Frage mit Textantwort hinzufügen")
+       `(:button :type "button" :class "btn btn-primary mb-1 save-quiz"
+          "Speichern"))
 
      ,(tab "create-course-tab"
            `(:form :method "POST" :action "/api/courses" :id
@@ -125,12 +125,12 @@
            ,(submit-button "LehrerIn erstellen")))
 
      ,(tab "articles"
-        `((:h1 :class "text-center" "Alle Artikel")
-          (:ul :id "articles-list")))
+        `(:h1 :class "text-center" "Alle Artikel")
+        `(:ul :id "articles-list"))
 
      ,(tab "tags"
-        `((:h1 :class "text-center" "Tags")
-          (:ul :id "tags-list")))
+        `(:h1 :class "text-center" "Tags")
+        `(:ul :id "tags-list"))
 
      ,(tab "create-schedule-tab"
         `(:form :method "POST" :action "/api/schedules" :id "create-schedule-form"
@@ -140,70 +140,70 @@
      ,@(html-settings)
 
      ,(tab "multiple-choice-question-html"
-        `((:h2 :class "text-center question-html" "Dies ist eine Testfrage?")
-          (:div :class "row justify-content-center"
+        `(:h2 :class "text-center question-html" "Dies ist eine Testfrage?")
+        `(:div :class "row justify-content-center"
            (:div :class "col col-sm-10 col-md-6" (:div :id "answers-html")
             (:button :type "button" :class
              "btn btn-primary mt-1 multiple-choice-submit-html" "Absenden")
-            (:button :type "button" :style "display: none;" :class
-             "btn btn-primary mt-1 next-question" "Nächste Frage")))))
+            (:button :type "button" :class
+             "btn btn-primary mt-1 next-question d-none" "Nächste Frage"))))
 
      ,(tab "quiz-results"
-        `((:h1 :class "text-center" "Ergebnisse")
-          (:p :id "result")))
+        `(:h1 :class "text-center" "Ergebnisse")
+        `(:p :id "result"))
 
      ,(tab "list-teachers"
-       `((:h2 :class "text-center" "Lehrer"
+       `(:h2 :class "text-center" "Lehrer"
            (:a :href "/teachers/new" :type "button" :class
             "btn btn-primary norefresh" "+"))
-         (:ul :id "teachers-list")))
+        `(:ul :id "teachers-list"))
 
      ,(tab "list-courses"
-        `((:h2 :class "text-center" "Kurse"
+        `(:h2 :class "text-center" "Kurse"
             (:a :href "/courses/new" :type "button" :class
              "btn btn-primary norefresh" "+"))
-          (:ul :id "courses-list")))
+        `(:ul :id "courses-list"))
 
      ,@(html-user-courses)
 
      ,@(html-schedule)
 
      ,(tab "list-schedules"
-        `((:h2 :class "text-center" "Stundenpläne"
+        `(:h2 :class "text-center" "Stundenpläne"
             (:a :href "/schedules/new" :type "button" :class
              "btn btn-primary norefresh" "+"))
-          (:ul :id "schedules-list")))
+        `(:ul :id "schedules-list"))
 
      ,(tab "text-question-html"
-         `((:h2 :class "text-center question-html" "Dies ist eine Testfrage?")
-           (:div :class "row justify-content-center"
+         `(:h2 :class "text-center question-html" "Dies ist eine Testfrage?")
+         `(:div :class "row justify-content-center"
             (:div :class "col col-sm-10 col-md-6"
              (:div :id "answers-html" " "
               (:input :type "text" :class "form-control" :id "text-response"))
              (:button :type "button" :class "btn btn-primary mt-1 text-submit-html"
               "Absenden")
-             (:button :type "button" :style "display: none;" :class
-              "btn btn-primary mt-1 next-question" "Nächste Frage")))))
+             (:button :type "button" :class
+              "btn btn-primary mt-1 next-question d-none" "Nächste Frage"))))
 
-     (:div :style "display: none;" :class
-      "container my-tab position-absolute col-sm-6 offset-sm-3 col-md-4 offset-md-4 text-center"
+     (:div :class
+      "container my-tab position-absolute col-sm-6 offset-sm-3 col-md-4 offset-md-4 text-center d-none"
       :id "login" (:h1 "Anmelden")
       (:form :id "login-form"
        ,(text-input "Name" "inputName" "username" :required t :autofocus t :autocomplete "username" :no-label? t)
        (:div :class "form-group"
-        (:input :type "password" :id "inputPassword" :class "form-control"
+        (:input :type "password" :id "inputPassword" :name "password" :class "form-control"
          :placeholder "Passwort" :required "" :autocomplete
          "current-password"))
        ,(submit-button "Anmelden" :id "login-button")))
 
      ,(tab "page"
-        `((:div :class "alert alert-warning mt-1 d-none" :id "is-outdated-article"
+         `(:div :class "alert alert-warning mt-1 d-none" :id "is-outdated-article"
            :role "alert"
            " Dies zeigt den Artikel zu einem bestimmten Zeitpunkt und ist somit nicht unbedingt aktuell! "
            (:a :href "#" :id "currentVersionLink" :class "alert-link "
             "Zur aktuellen Version"))
-          (:h1 :class "text-center" :id "wiki-article-title" "title")
-          (:div :class "article-editor"
+         `(:h1 :class "text-center" :id "wiki-article-title" "title")
+         `(:div :class "article-editor"
            (:div :id "editor" :class "d-none"
             (:a :href "#" :id "format-p" (:span :class "fas fa-paragraph")) " "
             (:a :href "#" :id "format-h2" (:span :class "fas fa-heading")) " "
@@ -226,14 +226,14 @@
             (:a :href "#" :id "settings" (:span :class "fas fa-cog")) " "
             (:a :href "#" :id "finish" (:span :class "fas fa-check")))
            (:article))
-          (:div :id "categories")
-          (:div
+         `(:div :id "categories")
+         `(:div
            (:button :id "show-history" :type "button" :class
             "btn btn-outline-primary" "Änderungsverlauf"))
-          (:small "Dieses Werk ist lizenziert unter einer "
+         `(:small "Dieses Werk ist lizenziert unter einer "
            (:a :target "_blank" :rel "license noopener" :href
             "http://creativecommons.org/licenses/by-sa/4.0/deed.de"
-            "Creative Commons Namensnennung - Weitergabe unter gleichen Bedingungen 4.0 International Lizenz"))))
+            "Creative Commons Namensnennung - Weitergabe unter gleichen Bedingungen 4.0 International Lizenz")))
 
      ,(tab "not-found"
         `(:div :class "alert alert-danger" :role "alert"
@@ -242,23 +242,23 @@
            "?"))
 
      ,(tab "history"
-        `((:h1 :class "text-center" "Änderungsverlauf")
-          (:div :class "list-group" :id "history-list")))
+        `(:h1 :class "text-center" "Änderungsverlauf")
+        `(:div :class "list-group" :id "history-list"))
 
      ,(tab "search"
-        '(:div :class "input-group mb-3"
+        `(:div :class "input-group mb-3"
             (:input :type "text" :class "form-control" :id "search-query"
              :placeholder "Suchbegriff")
             (:div :class "input-group-append"
              (:button :class "btn btn-outline-secondary" :type "button" :id
               "button-search" (:i :class "fas fa-search"))))
-         '(:div
-            (:div :style "display: none; left: 50%; margin-left: -1rem;" :class
-             "position-absolute" :id "search-results-loading"
+         `(:div
+            (:div :style "left: 50%; margin-left: -1rem;" :class
+             "position-absolute d-none" :id "search-results-loading"
              (:div :class "spinner-border" :role "status"
               (:span :class "sr-only" "Loading...")))
-            (:div :style "display: none;" :id "search-results"
-             (:div :style "display: none;" :class "text-center" :id
+            (:div :class "d-none" :id "search-results"
+             (:div :class "text-center d-none" :id
               "no-search-results"
               (:div :class "alert alert-warning" :role "alert"
                " Es konnte kein Artikel mit genau diesem Titel gefunden werden. Möchtest du ihn "
@@ -283,8 +283,7 @@
             "modal" "Bearbeitung fortsetzen")
           (:button :type "button" :class "btn btn-primary" :id "publish-changes"
            "Änderungen veröffentlichen")
-          (:button :id "publishing-changes" :class "btn btn-primary" :style
-           "display: none;" :type "button" :disabled "" " ")
+          (:button :id "publishing-changes" :class "btn btn-primary d-none" :type "button" :disabled "" " ")
           (:span :class "spinner-border spinner-border-sm" :role "status"
             :aria-hidden "true" " Veröffentlichen... "))
         `((:div :class "form-group" " " (:label "Änderungszusammenfassung:")
@@ -376,12 +375,14 @@
              (:option :value "2" "Gerade Woche")))
            (:div :class "form-group" (:label :for "course" "Kurs:") " "
             (:select :class "custom-select" :id "course" :name "course"))
-           (text-input "Raum" "room" "room")))
+           ,(text-input "Raum" "room" "room")))
 
-     (:script :src "/jquery-3.3.1.js")
-     (:link :rel "stylesheet" :href "/mathlive.core.css")
-     (:link :rel "stylesheet" :href "/mathlive.css")
-     (:script :src "/mathlive.js") (:script :src "/popper.js")
-     (:script :src "/bootstrap.min.js") (:script :src "/visual-diff.js")
-     (:script :nomodule "" :src "no_module_support.js")
-     (:script :type "module" :src "/js/index.lisp"))))
+      (:script :src "/bootstrap.js")
+      (:script :type "module" :src "/js/index.lisp")))
+
+#|
+(:link :rel "stylesheet" :href "/mathlive.core.css")
+(:link :rel "stylesheet" :href "/mathlive.css")
+(:script :src "/mathlive.js")
+(:script :src "/visual-diff.js")
+|#

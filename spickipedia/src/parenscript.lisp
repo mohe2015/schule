@@ -87,16 +87,16 @@
   `(chain ,element display))
 
 (defpsmacro show (element)
-  `(chain ($ ,element) (show)))
+  `(remove-class ,element "d-none"))
 
 (defpsmacro hide (element)
-  `(chain ($ ,element) (hide)))
+  `(add-class ,element "d-none"))
 
 (defpsmacro show-modal (element)
-  `(chain ($ ,element) (modal "show")))
+  `(chain (new (bootstrap.-Modal ,element)) (show)))
 
 (defpsmacro hide-modal (element)
-  `(chain ($ ,element) (modal "hide")))
+  `(chain (new (bootstrap.-Modal ,element)) (hide)))
 
 (defpsmacro value (element)
   `(chain ,element value))

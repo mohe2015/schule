@@ -3,7 +3,6 @@
 (i "../test.lisp")
 (i "../show-tab.lisp" "showTab")
 (i "../cleanup.lisp" "cleanup")
-(i "../handle-error.lisp" "handleError")
 (i "../fetch.lisp" "checkStatus" "json" "html" "handleFetchError"
  "cacheThenNetwork")
 (i "../utils.lisp" "all" "one" "clearChildren")

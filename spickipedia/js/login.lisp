@@ -5,12 +5,12 @@
 (i "./read-cookie.lisp" "readCookie")
 (i "./replace-state.lisp" "replaceState")
 (i "./show-tab.lisp" "showTab")
-(i "./handle-error.lisp" "handleError")
 (i "./utils.lisp" "all" "one" "clearChildren")
+(i "./fetch.lisp" "checkStatus" "json" "html" "handleFetchError" "handleLoginError")
 
 (defroute "/login"
  (add-class (one ".edit-button") "disabled")
- (hide-modal (one "#publish-changes-modal"))
+ (hide-modal (one "#modal-publish-changes"))
  (let ((url-username (get-url-parameter "username"))
        (url-password (get-url-parameter "password")))
    (if (and (not (undefined url-username)) (not (undefined url-password)))
@@ -31,36 +31,25 @@
     (login-post f)))
 
 (defun login-post (repeated)
-  (let ((name (value (one "#inputName")))
-        (password (value (one "#inputPassword")))
-        (login-button (one "#login-button")))
-    (chain $
-     (post "/api/login"
-      (create _csrf_token (read-cookie "_csrf_token") name name password
-       password)
-      (lambda (data)
-        (setf (disabled login-button) f)
-        (setf (inner-html login-button) "Anmelden")
-        (setf (value (one "#inputPassword")) "")
-        (setf (chain window local-storage name) name)
-        (if (and (not (null (chain window history state)))
-                 (not (undefined (chain window history state last-state)))
-                 (not (undefined (chain window history state last-url))))
-            (replace-state (chain window history state last-url)
-             (chain window history state last-state))
-            (replace-state "/wiki/Hauptseite"))))
-     (fail
-      (lambda (jq-xhr text-status error-thrown)
-        (chain window local-storage (remove-item "name"))
-        (if (= (chain jq-xhr status) 403)
-            (progn
-             (alert "Ungültige Zugangsdaten!")
-             (chain (one "#login-button") (prop "disabled" f) (html "Anmelden")))
-            (if (= (chain jq-xhr status) 400)
-                (if repeated
-                    (progn
-                     (alert "Ungültige Zugangsdaten!")
-                     (chain (one "#login-button") (prop "disabled" f)
-                      (html "Anmelden")))
-                    (login-post t))
-                (handle-error jq-xhr t))))))))
+  (let* ((form-element (one "#login-form"))
+         (form-data (new (-form-data form-element)))
+         (login-button (one "#login-button")))
+    (chain form-data (append "_csrf_token" (read-cookie "_csrf_token")))
+    (chain
+     (fetch "/api/login" (create method "POST" body form-data))
+     (then check-status)
+     (then
+       (lambda (data)
+         (setf (disabled login-button) f)
+         (setf (inner-html login-button) "Anmelden")
+         (setf (value (one "#inputPassword")) "")
+         (setf (chain window local-storage name) name)
+         (if (and (not (null (chain window history state)))
+                  (not (undefined (chain window history state last-state)))
+                  (not (undefined (chain window history state last-url))))
+             (replace-state (chain window history state last-url)
+              (chain window history state last-state))
+             (replace-state "/wiki/Hauptseite"))))
+     (catch
+       (lambda (error)
+         (handle-login-error error repeated))))))

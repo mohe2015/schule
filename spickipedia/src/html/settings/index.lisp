@@ -1,26 +1,28 @@
 
-(in-package :spickipedia.web) 
+(in-package :spickipedia.web)
 (defun html-settings ()
   `((:template :id "settings-student-course-html"
      (:div :class "custom-control custom-checkbox"
       (:input :type "checkbox" :class
        "custom-control-input student-course-checkbox" :id "settings-course-n")
       (:label :class "custom-control-label" :for "settings-course-n" "")))
-    (:div :style "display: none;" :class "container my-tab position-absolute"
-     :id "tab-settings" (:h2 :class "text-center" "Einstellungen")
-     (:h3 :class "text-center" "Dein Jahrgang")
-     (:form :id "settings-form-select-grade"
-      (:select :class "custom-select" :id "settings-select-grade" :name
-       "grade"))
-     (:a :id "settings-add-grade" :type "button" :class
-      "btn btn-primary norefresh" "Jahrgang hinzufügen")
-     (:h3 :class "text-center" "Deine Kurse")
-     (:div :id "settings-list-courses"
-      (:label (:input :type "checkbox" :name "test") "Test1") (:br))
-     (:a :id "settings-add-course" :type "button" :class
-      "btn btn-primary norefresh" "Kurs erstellen")
-     (:a :id "settings-show-schedule" :type "button" :class
-      "btn btn-primary norefresh" "Stundenplan anzeigen"))
+
+    ,(tab "tab-settings"
+       `(:h2 :class "text-center" "Einstellungen")
+       `(:h3 :class "text-center" "Dein Jahrgang")
+       `(:form :id "settings-form-select-grade"
+          (:select :class "custom-select" :id "settings-select-grade" :name)
+         "grade")
+       `(:a :id "settings-add-grade" :type "button" :class
+          "btn btn-primary norefresh" "Jahrgang hinzufügen")
+       `(:h3 :class "text-center" "Deine Kurse")
+       `(:div :id "settings-list-courses"
+          (:label (:input :type "checkbox" :name "test") "Test1") (:br))
+       `(:a :id "settings-add-course" :type "button" :class
+          "btn btn-primary norefresh" "Kurs erstellen")
+       `(:a :id "settings-show-schedule" :type "button" :class
+          "btn btn-primary norefresh" "Stundenplan anzeigen"))
+
     ,(modal "settings-create-grade" "Jahrgang hinzufügen"
       `((:button :type "button" :class "btn btn-secondary" :data-dismiss
          "modal" "Abbrechen")
@@ -47,4 +49,4 @@
           "Tutorium?"))
         (:div :class "form-group" (:label "Thema")
          (:input :type "text" :class "form-control" :placeholder "Thema" :name
-          "topic" :id "course-topic")))))) 
+          "topic" :id "course-topic"))))))
