@@ -62,9 +62,6 @@
 (defpsmacro inner-text (element)
   `(chain ,element inner-text))
 
-(defpsmacro style (element)
-  `(chain ,element style))
-
 (defpsmacro class-list (element)
   `(chain ,element class-list))
 
@@ -83,8 +80,11 @@
 (defpsmacro content-editable (element)
   `(chain ,element content-editable))
 
-(defpsmacro style (element style-type)
-  `(getprop ,element 'style ',style-type))
+(defpsmacro style (element)
+  `(chain ,element style))
+
+(defpsmacro display (element)
+  `(chain ,element display))
 
 (defpsmacro show (element)
   `(chain ($ ,element) (show)))
@@ -100,3 +100,6 @@
 
 (defpsmacro value (element)
   `(chain ,element value))
+
+(defpsmacro disabled (element)
+  `(chain ,element disabled))

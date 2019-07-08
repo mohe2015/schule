@@ -20,26 +20,28 @@
        (if (not (undefined (chain window local-storage name)))
            (progn (replace-state "/wiki/Hauptseite") (return))))
    (show-tab "#login")
-   (setf (style (one ".login-hide") display) "none !important")
+   (setf (display (style (one ".login-hide"))) "none !important")
    (remove-class (one ".navbar-collapse") "show")))
 
 (on ("submit" (one "#login-form") event)
   (chain event (prevent-default))
-  (chain (one "#login-button") (prop "disabled" t)
-   (html
-    "<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span> Anmelden..."))
-  (login-post f))
+  (let ((login-button (one "#login-button")))
+    (setf (disabled login-button) t)
+    (setf (inner-html login-button) "<span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span> Anmelden...")
+    (login-post f)))
 
 (defun login-post (repeated)
-  (let ((name (chain (one "#inputName") (val)))
-        (password (chain (one "#inputPassword") (val))))
+  (let ((name (value (one "#inputName")))
+        (password (value (one "#inputPassword")))
+        (login-button (one "#login-button")))
     (chain $
      (post "/api/login"
       (create _csrf_token (read-cookie "_csrf_token") name name password
        password)
       (lambda (data)
-        (chain (one "#login-button") (prop "disabled" f) (html "Anmelden"))
-        (chain (one "#inputPassword") (val ""))
+        (setf (disabled login-button) f)
+        (setf (inner-html login-button) "Anmelden")
+        (setf (value (one "#inputPassword")) "")
         (setf (chain window local-storage name) name)
         (if (and (not (null (chain window history state)))
                  (not (undefined (chain window history state last-state)))
