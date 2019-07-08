@@ -50,9 +50,18 @@
     (defparameter *ps-gensym-counter* 0)
     (ps-compile-file file)))
 
-(defpsmacro on ((event-name element-selector event-variable &key dynamic-selector remove-old-listeners multiple) &body body)
-  ;; TODO FIXME implement remove-old-listeners and multiple
+(defpsmacro on ((event-name element-selector event-variable &key dynamic-selector multiple) &body body)
+  ;; TODO and multiple
   `(chain (one ,element-selector)
      (add-event-listener ,event-name
-       (lambda (,event-variable)
-         ,@body))))
+       ,(if remove-old-listeners-function-name
+          `(defun ,remove-old-listeners-function-name (,event-variable)
+             ,(if dynamic-selector
+               `(if (not (chain event target (closest ,dynamic-selector)))
+                  (return)))
+             ,@body)
+          `(lambda (,event-variable)
+            ,(if dynamic-selector
+               `(if (not (chain event target (closest ,dynamic-selector)))
+                  (return)))
+            ,@body)))))

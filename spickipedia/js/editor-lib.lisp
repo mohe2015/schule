@@ -250,7 +250,7 @@
     (chain (one target) (popover "show"))))
 
 (tool "insertFormula"
- (on ("click" "#update-formula" event :remove-old-listeners t)
+ (on ("click" "#update-formula" event)
    (chain (one "#formula-modal") (modal "hide"))
    (chain document (get-elements-by-tag-name "article") 0 (focus))
    (let ((latex (chain window mathfield (latex))))
@@ -267,9 +267,9 @@
  (setf (chain window mathfield)
        (chain -math-live
         (make-math-field (chain document (get-element-by-id "formula"))
-         (create virtual-keyboard-mode "manual"))))
+         (create virtual-keyboard-mode "manual")))))
 
-(on ("click" "#update-formula" event :remove-old-listeners t)
+(on ("click" "#update-formula" event)
   (chain (one "#formula-modal") (modal "hide"))
   (chain document (get-elements-by-tag-name "article") 0 (focus))
   (let ((latex (chain window mathfield (latex))))
