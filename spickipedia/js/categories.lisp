@@ -6,18 +6,16 @@
 (i "./handle-error.lisp" "handleError")
 (i "./utils.lisp" "showModal" "all" "one" "hideModal" "clearChildren")
 
-(chain (one "#add-tag-form")
- (submit
-  (lambda (e)
-    (chain e (prevent-default))
-    (chain (one "#new-category")
-     (before
-      (who-ps-html
-       (:span :class "closable-badge bg-secondary"
-        (:span :class "closable-badge-label" (chain (one "#new-category") (val)))
-        (:button :type "button" :class "close close-tag" :aria-label "Close"
-         (:span :aria-hidden "true" "&times;"))))))
-    (chain (one "#new-category") (val "")))))
+(on ("submit" (one "#form-settings") event)
+  (chain event (prevent-default))
+  (chain (one "#new-category")
+   (before
+    (who-ps-html
+     (:span :class "closable-badge bg-secondary"
+      (:span :class "closable-badge-label" (chain (one "#new-category") (val)))
+      (:button :type "button" :class "close close-tag" :aria-label "Close"
+       (:span :aria-hidden "true" "&times;"))))))
+  (chain (one "#new-category") (val "")))
 
 (on ("click" (one "body") event :dynamic-selector ".close-tag")
   (chain (one this) (parent) (remove)))

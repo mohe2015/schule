@@ -28,19 +28,17 @@
                    (append template)))))))
   (catch handle-fetch-error)))
 
-(chain (one "#create-teacher-form")
- (submit
-  (lambda (event)
-    (let* ((formelement
-            (chain document (query-selector "#create-teacher-form")))
-           (formdata (new (-form-data formelement))))
-      (chain formdata (append "_csrf_token" (read-cookie "_csrf_token")))
-      (chain (fetch "/api/teachers" (create method "POST" body formdata))
-       (then check-status) (then json)
-       (then
-        (lambda (data)
-          (push-state "/teachers")
-          (setf (chain (one "#teacher-name") value) "")
-          (setf (chain (one "#teacher-initial") value) "")))
-       (catch handle-fetch-error)))
-    f)))
+(on ("submit" (one "#create-teacher-form") event)
+  (let* ((formelement
+          (chain document (query-selector "#create-teacher-form")))
+         (formdata (new (-form-data formelement))))
+    (chain formdata (append "_csrf_token" (read-cookie "_csrf_token")))
+    (chain (fetch "/api/teachers" (create method "POST" body formdata))
+     (then check-status) (then json)
+     (then
+      (lambda (data)
+        (push-state "/teachers")
+        (setf (chain (one "#teacher-name") value) "")
+        (setf (chain (one "#teacher-initial") value) "")))
+     (catch handle-fetch-error)))
+  f)
