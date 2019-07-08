@@ -3,7 +3,6 @@
 (i "./test.lisp")
 (i "./file-upload.lisp" "sendFile")
 (i "./categories.lisp")
-(i "./handle-error.lisp" "handleError")
 (i "./fetch.lisp" "cacheThenNetwork")
 (i "./utils.lisp" "all" "one" "clearChildren")
 

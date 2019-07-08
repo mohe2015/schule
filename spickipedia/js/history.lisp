@@ -5,7 +5,6 @@
 (i "./show-tab.lisp" "showTab")
 (i "./cleanup.lisp" "cleanup")
 (i "./math.lisp" "renderMath")
-(i "./handle-error.lisp" "handleError")
 (i "./fetch.lisp" "checkStatus" "json" "html" "handleFetchError")
 (i "./utils.lisp" "all" "one" "clearChildren")
 

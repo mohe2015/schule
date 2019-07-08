@@ -2,7 +2,6 @@
 
 (i "../show-tab.lisp" "showTab")
 (i "../read-cookie.lisp" "readCookie")
-(i "../handle-error.lisp" "handleError")
 (i "../fetch.lisp" "cacheThenNetwork" "checkStatus" "json" "html"
  "handleFetchError")
 (i "../template.lisp" "getTemplate")

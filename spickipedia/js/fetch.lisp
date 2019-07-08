@@ -48,6 +48,23 @@
                (show-tab "#error")))))))
 
 (export
+  (defun handle-login-error (error repeated)
+    (let ((status (chain error response status)))
+      (chain window local-storage (remove-item "name"))
+      (if (= status 403)
+          (progn
+           (alert "Ungültige Zugangsdaten!")
+           (chain (one "#login-button") (prop "disabled" f) (html "Anmelden")))
+          (if (= status 400)
+              (if repeated
+                  (progn
+                   (alert "Ungültige Zugangsdaten!")
+                   (chain (one "#login-button") (prop "disabled" f)
+                    (html "Anmelden")))
+                  (login-post t))
+              (handle-fetch-error error))))))
+
+(export
  (defun check-status (response)
    (if (= (chain response status) 200)
        (chain -promise (resolve response))

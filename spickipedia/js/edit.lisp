@@ -6,7 +6,6 @@
 (i "./show-tab.lisp" "showTab")
 (i "./math.lisp" "renderMath")
 (i "./editor.lisp" "showEditor")
-(i "./handle-error.lisp" "handleError")
 (i "./utils.lisp" "all" "one" "clearChildren")
 
 (on ("click" (one ".edit-button") event)

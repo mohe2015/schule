@@ -3,7 +3,6 @@
 (i "./test.lisp")
 (i "./show-tab.lisp" "showTab")
 (i "./cleanup.lisp" "cleanup")
-(i "./handle-error.lisp" "handleError")
 (i "./math.lisp" "renderMath")
 (i "./image-viewer.lisp")
 (i "./fetch.lisp" "checkStatus" "json")

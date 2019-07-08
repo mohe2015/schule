@@ -3,7 +3,6 @@
 (i "../test.lisp")
 (i "../show-tab.lisp" "showTab")
 (i "../cleanup.lisp" "cleanup")
-(i "../handle-error.lisp" "handleError")
 (i "../read-cookie.lisp" "readCookie")
 (i "../fetch.lisp" "checkStatus" "json" "html" "handleFetchError")
 (i "../push-state.lisp" "pushState")
@@ -13,8 +12,7 @@
   (show-tab "#create-schedule-tab"))
 
 (on ("submit" (one "#create-schedule-form") event)
-  (let* ((formelement
-          (chain document (query-selector "#create-schedule-form")))
+  (let* ((formelement (one "#create-schedule-form"))
          (formdata (new (-form-data formelement))))
     (chain formdata (append "_csrf_token" (read-cookie "_csrf_token")))
     (chain (fetch "/api/schedules" (create method "POST" body formdata))

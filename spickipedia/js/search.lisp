@@ -2,7 +2,6 @@
 
 (i "./test.lisp")
 (i "./show-tab.lisp" "showTab")
-(i "./handle-error.lisp" "handleError")
 (i "./utils.lisp" "all" "one" "clearChildren")
 
 (on ("input" (one "#search-query") event)

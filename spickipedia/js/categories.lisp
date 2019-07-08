@@ -3,7 +3,6 @@
 (i "./test.lisp")
 (i "./show-tab.lisp" "showTab")
 (i "./read-cookie.lisp" "readCookie")
-(i "./handle-error.lisp" "handleError")
 (i "./utils.lisp" "all" "one" "clearChildren")
 
 (on ("submit" (one "#form-settings") event)
