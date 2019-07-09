@@ -8,12 +8,12 @@
 (on ("submit" (one "#form-settings") event)
   (chain event (prevent-default))
   (let ((template (get-template "template-category")))
-    (setf (inner-html (one ".closable-badge-label" template inner-text)) (value (one "#new-category")))
+    (setf (inner-html (one ".closable-badge-label" template)) (value (one "#new-category")))
     (before (one "#new-category") template))
   (setf (value (one "#new-category")) ""))
 
 (on ("click" (one "body") event :dynamic-selector ".close-tag")
-  (chain (one this) (parent) (remove)))
+  (chain event target (closest ".closable-badge") (remove)))
 
 (defroute "/tags/.rest" (show-tab "#loading")
  (chain console (log (chain rest (split "/"))))

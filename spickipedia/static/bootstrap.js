@@ -2922,8 +2922,16 @@
       this._isTransitioning = false;
       this._scrollbarWidth = 0;
       Data.setData(element, DATA_KEY$5, this);
-    } // Getters
+    }
 
+    Modal.get = function get(element, config) {
+      if (!element.modal) {
+        element.modal = new Modal(element, config);
+      }
+
+      return element.modal;
+    } // Getters
+    ;
 
     var _proto = Modal.prototype;
 

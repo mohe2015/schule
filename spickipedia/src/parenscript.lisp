@@ -93,10 +93,10 @@
   `(add-class ,element "d-none"))
 
 (defpsmacro show-modal (element)
-  `(chain (new (bootstrap.-Modal ,element)) (show)))
+  `(chain (bootstrap.-Modal.get ,element) (show)))
 
 (defpsmacro hide-modal (element)
-  `(chain (new (bootstrap.-Modal ,element)) (hide)))
+  `(chain (bootstrap.-Modal.get ,element) (hide)))
 
 (defpsmacro value (element)
   `(chain ,element value))

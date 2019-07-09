@@ -16,8 +16,7 @@
         (article-path (chain window location pathname (split "/") 2))
         (formdata (new (-form-data))))
     (revert-math temp-dom)
-    (var categories (chain (all ".closable-badge-label" (one "#modal-settings")) (map (lambda () (chain this inner-text)))))
-
+    (var categories (chain (all ".closable-badge-label" (one "#modal-settings")) (map (lambda (category) (chain category inner-text)))))
     (chain formdata (append "_csrf_token" (read-cookie "_csrf_token")))
     (chain formdata (append "summary" change-summary))
     (chain formdata (append "html" (inner-html temp-dom)))
@@ -27,6 +26,7 @@
            (then check-status)
            (then
              (lambda (data)
+               (hide-modal (one "#modal-publish-changes"))
                (push-state (concatenate 'string "/wiki/" article-path))))
            (catch
             (lambda (error)
