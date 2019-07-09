@@ -16,6 +16,14 @@
               (remove element))))
         this))
 
+(setf (chain -Array prototype add-event-listener)
+      (lambda (event func)
+        (chain this
+          (for-each
+            (lambda (element)
+              (chain element (add-event-listener event func)))))
+        this))
+
 (export (defun one (selector base-element) (chain (or base-element document) (query-selector selector))))
 
 (export

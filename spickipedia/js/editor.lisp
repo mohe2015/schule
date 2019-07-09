@@ -6,26 +6,32 @@
 (i "./read-cookie.lisp" "readCookie")
 (i "./push-state.lisp" "pushState")
 (i "./utils.lisp" "all" "one" "clearChildren")
+(i "./fetch.lisp" "checkStatus" "json" "html" "handleFetchError")
 
 (on ("click" (one "#publish-changes") event)
   (hide (one "#publish-changes"))
   (show (one "#publishing-changes"))
   (let ((change-summary (value (one "#change-summary")))
         (temp-dom (chain (one "article") (clone-node t)))
-        (article-path (chain window location pathname (split "/") 2)))
+        (article-path (chain window location pathname (split "/") 2))
+        (formdata (new (-form-data))))
     (revert-math temp-dom)
     (var categories (chain (all ".closable-badge-label" (one "#modal-settings")) (map (lambda () (chain this inner-text)))))
-    (chain $
-     (post (concatenate 'string "/api/wiki/" article-path)
-      (create summary change-summary html (chain temp-dom (html)) categories
-       categories _csrf_token (read-cookie "_csrf_token"))
-      (lambda (data)
-        (push-state (concatenate 'string "/wiki/" article-path))))
-     (fail
-      (lambda (jq-xhr text-status error-thrown)
-        (chain (one "#publish-changes") (show))
-        (chain (one "#publishing-changes") (hide))
-        (handle-error jq-xhr f))))))
+
+    (chain formdata (append "_csrf_token" (read-cookie "_csrf_token")))
+    (chain formdata (append "summary" change-summary))
+    (chain formdata (append "html" (inner-html temp-dom)))
+    (chain formdata (append "categories" categories))
+    (chain (fetch (concatenate 'string "/api/wiki/" article-path) (create method "POST" body formdata))
+           (then check-status)
+           (then
+             (lambda (data)
+               (push-state (concatenate 'string "/wiki/" article-path))))
+           (catch
+            (lambda (error)
+              (chain (one "#publish-changes") (show))
+              (chain (one "#publishing-changes") (hide))
+              (handle-fetch-error error))))))
 
 (export
  (defun show-editor ()

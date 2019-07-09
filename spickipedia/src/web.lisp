@@ -129,17 +129,17 @@
                   (retrieve-dao 'wiki-article-revision-category :revision
                    revision)))))))
        "{\"content\":\"\", \"categories\": []}")))
+
 (my-defroute :post "/api/wiki/:title" (:admin :user)
- (title |summary| |html| _parsed) "text/html"
+ (title |summary| |html| |categories|) "text/html"
  (dbi:with-transaction *connection*
-   (let* ((article (find-dao 'wiki-article :title title))
-          (categories (cdr (assoc "categories" _parsed :test #'string=))))
+   (let* ((article (find-dao 'wiki-article :title title)))
      (if (not article)
          (setf article (create-dao 'wiki-article :title title)))
      (let ((revision
             (create-dao 'wiki-article-revision :article article :author user
-             :summary |summary| :content |html|)))
-       (loop for category in categories
+             :summary (first |summary|) :content (first |html|))))
+       (loop for category in (first |categories|)
              do (create-dao 'wiki-article-revision-category :revision revision
                  :category category)))
      nil)))
