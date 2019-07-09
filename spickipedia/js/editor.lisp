@@ -14,9 +14,7 @@
         (temp-dom (chain (one "article") (clone-node t)))
         (article-path (chain window location pathname (split "/") 2)))
     (revert-math temp-dom)
-    (var categories
-         (chain (one "#modal-settings") (query-selector ".closable-badge-label")
-          (map (lambda () (chain this inner-text))) (get)))
+    (var categories (chain (all ".closable-badge-label" (one "#modal-settings")) (map (lambda () (chain this inner-text)))))
     (chain $
      (post (concatenate 'string "/api/wiki/" article-path)
       (create summary change-summary html (chain temp-dom (html)) categories
