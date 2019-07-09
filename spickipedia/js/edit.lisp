@@ -7,6 +7,7 @@
 (i "./editor.lisp" "showEditor")
 (i "./utils.lisp" "all" "one" "clearChildren")
 (i "./fetch.lisp" "checkStatus" "json" "handleFetchError")
+(i "./template.lisp" "getTemplate")
 
 (on ("click" (all ".edit-button") event)
   (chain event (prevent-default))
@@ -16,14 +17,10 @@
 (defun init-editor (data)
   (chain (all ".closable-badge") (remove))
   (if (chain data categories)
-      (loop for category in (chain data categories)
-            do (chain (one "#new-category")
-                (before
-                 (who-ps-html
-                  (:span :class "closable-badge bg-secondary"
-                   (:span :class "closable-badge-label" category)
-                   (:button :type "button" :class "close close-tag" :aria-label
-                    "Close" (:span :aria-hidden "true" "&times;"))))))))
+      (loop for category in (chain data categories) do
+        (let ((template (get-template "template-category")))
+          (setf (inner-html (one ".closable-badge-label" template)) category)
+          (before (one "#new-category") template))))
   (setf (inner-html (one "article")) (chain data content))
   (render-math)
   (show-editor)

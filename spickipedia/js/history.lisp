@@ -7,6 +7,7 @@
 (i "./math.lisp" "renderMath")
 (i "./fetch.lisp" "checkStatus" "json" "html" "handleFetchError")
 (i "./utils.lisp" "all" "one" "clearChildren")
+(i "./template.lisp" "getTemplate")
 
 (on ("click" (one "#show-history") event)
   (chain event (prevent-default))
@@ -54,11 +55,10 @@
           (attr "href" (concatenate 'string "/wiki/" page)))
          (chain (one "#is-outdated-article") (remove-class "d-none"))
          (chain (one "#categories") (html ""))
-         (loop for category in (chain data categories)
-               do (chain (one "#categories")
-                   (append
-                    (who-ps-html
-                     (:span :class "closable-badge bg-secondary" category)))))
+         (loop for category in (chain data categories) do
+           (let ((template (get-template "template-readonly-category")))
+             (setf (inner-html (one ".closable-badge" template)) category)
+             (append (one "#categories") template)))
          (chain (one "article") (html (chain data content)))
          (chain window history (replace-state (create content data) nil nil))
          (render-math)

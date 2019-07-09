@@ -115,3 +115,6 @@
 
 (defpsmacro before (element new-element)
   `(chain ,element (before ,new-element)))
+
+(defpsmacro append (element new-element)
+  `(chain ,element (append ,new-element)))

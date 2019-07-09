@@ -76,6 +76,9 @@
         (:button :type "button" :class "close close-tag" :aria-label "Close"
          (:span :aria-hidden "true" "&times;"))))
 
+     (:template :id "template-readonly-category"
+       (:span :class "closable-badge bg-secondary"))
+
      (:nav :class "navbar navbar-expand-md navbar-light bg-light"
       (:a :class "navbar-brand " :href "/wiki/Hauptseite" "Spickipedia ")
       (:div :class "login-hide"

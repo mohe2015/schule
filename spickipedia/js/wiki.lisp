@@ -1,6 +1,6 @@
 (var __-p-s_-m-v_-r-e-g)
 
-
+(i "./template.lisp" "getTemplate")
 (i "./show-tab.lisp" "showTab")
 (i "./cleanup.lisp" "cleanup")
 (i "./math.lisp" "renderMath")
@@ -12,21 +12,13 @@
   (remove (all ".closable-badge"))
   (setf (inner-html (one "#categories")) "")
   (if (chain data categories)
-      (loop for category in (chain data categories)
-            do (chain (one "#categories")
-                (append
-                 (who-ps-html
-                  (:span :class "closable-badge bg-secondary"
-                   category)))) (chain (one "#new-category")
-                                 (before
-                                  (who-ps-html
-                                   (:span :class "closable-badge bg-secondary"
-                                    (:span :class "closable-badge-label"
-                                     category)
-                                    (:button :type "button" :class
-                                     "close close-tag" :aria-label "Close"
-                                     (:span :aria-hidden "true"
-                                      "&times;"))))))))
+      (loop for category in (chain data categories) do
+        (let ((template (get-template "template-readonly-category")))
+          (setf (inner-html (one ".closable-badge" template)) category)
+          (append (one "#categories") template))
+        (let ((template (get-template "template-category")))
+          (setf (inner-html (one ".closable-badge-label" template)) category)
+          (before (one "#new-category") template))))
   (setf (inner-html (one "article")) (chain data content))
   (render-math)
   (show-tab "#page"))

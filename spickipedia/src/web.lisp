@@ -130,18 +130,17 @@
                    revision)))))))
        "{\"content\":\"\", \"categories\": []}")))
 
-(my-defroute :post "/api/wiki/:title" (:admin :user)
- (title |summary| |html| |categories|) "text/html"
+(my-defroute :post "/api/wiki/:title" (:admin :user) (title |summary| |html| _parsed) "text/html"
  (dbi:with-transaction *connection*
-   (let* ((article (find-dao 'wiki-article :title title)))
+   (let* ((article (find-dao 'wiki-article :title title))
+          (categories (cdr (assoc "categories" _parsed :test #'string=))))
      (if (not article)
          (setf article (create-dao 'wiki-article :title title)))
      (let ((revision
             (create-dao 'wiki-article-revision :article article :author user
              :summary (first |summary|) :content (first |html|))))
-       (loop for category in (first |categories|)
-             do (create-dao 'wiki-article-revision-category :revision revision
-                 :category category)))
+       (loop for category in categories do
+         (create-dao 'wiki-article-revision-category :revision revision :category (first category))))
      nil)))
 (my-defroute :post "/api/quiz/create" (:admin :user) nil "text/html"
  (format nil "~a" (object-id (create-dao 'quiz :creator user))))
