@@ -1,6 +1,5 @@
 (var __-p-s_-m-v_-r-e-g)
 
-(i "../test.lisp")
 (i "../show-tab.lisp" "showTab")
 (i "../cleanup.lisp" "cleanup")
 (i "../fetch.lisp" "checkStatus" "json" "html" "handleFetchError"

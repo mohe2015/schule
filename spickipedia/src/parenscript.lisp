@@ -32,11 +32,11 @@
            ,@body
            (return t)))
       (return f)))
-   (chain window routes
-    (push
-     ,(make-symbol
-       (concatenate 'string "handle-"
-                    (subseq (regex-replace-all "/[:\\.]?" route "-") 1)))))))
+   (chain (setf (chain window routes) (or (chain window routes) ([])))
+          (push
+            ,(make-symbol
+               (concatenate 'string "handle-" (subseq (regex-replace-all "/[:\\.]?" route "-") 1)))))))
+
 
 (defpsmacro i (file &rest contents) `(import ,file ,@contents))
 

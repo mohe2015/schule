@@ -1,6 +1,6 @@
 (var __-p-s_-m-v_-r-e-g)
 
-(i "./test.lisp")
+
 (i "./file-upload.lisp" "sendFile")
 (i "./categories.lisp")
 (i "./fetch.lisp" "cacheThenNetwork")
