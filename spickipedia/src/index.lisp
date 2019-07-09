@@ -70,6 +70,15 @@
      (:template :id "articles-entry"
       (:li (:a :class "" :href "#" "Hauptseite")))
 
+     (:template :id "template-category"
+       (:span :class "closable-badge bg-secondary"
+        (:span :class "closable-badge-label")
+        (:button :type "button" :class "close close-tag" :aria-label "Close"
+         (:span :aria-hidden "true" "&times;"))))
+
+     (:template :id "template-readonly-category"
+       (:span :class "closable-badge bg-secondary"))
+
      (:nav :class "navbar navbar-expand-md navbar-light bg-light"
       (:a :class "navbar-brand " :href "/wiki/Hauptseite" "Spickipedia ")
       (:div :class "login-hide"
@@ -283,9 +292,9 @@
             "modal" "Bearbeitung fortsetzen")
           (:button :type "button" :class "btn btn-primary" :id "publish-changes"
            "Änderungen veröffentlichen")
-          (:button :id "publishing-changes" :class "btn btn-primary d-none" :type "button" :disabled "" " ")
-          (:span :class "spinner-border spinner-border-sm" :role "status"
-            :aria-hidden "true" " Veröffentlichen... "))
+          (:button :id "publishing-changes" :class "btn btn-primary d-none" :type "button" :disabled "" " "
+            (:span :class "spinner-border spinner-border-sm" :role "status"
+              :aria-hidden "true" " Veröffentlichen... ")))
         `((:div :class "form-group" " " (:label "Änderungszusammenfassung:")
            (:br)
            (:textarea :class "form-control" :id "change-summary" :rows "3"))
@@ -313,7 +322,7 @@
      ,(modal "settings" "Kategorien"
         `((:button :type "button" :class "btn btn-secondary" :data-dismiss
             "modal" "Fertig"))
-        `(,(text-input "Kategorie..." "new-category" "category")))
+        `(,(text-input "Kategorie..." "new-category" "category" :no-label? t)))
 
      ,(modal "link" "Link"
         `((:button :type "button" :class "btn btn-secondary" :data-dismiss

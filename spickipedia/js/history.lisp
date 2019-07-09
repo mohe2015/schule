@@ -1,47 +1,46 @@
 
 (var __-p-s_-m-v_-r-e-g)
-(i "./test.lisp")
+
 (i "./push-state.lisp" "pushState")
 (i "./show-tab.lisp" "showTab")
 (i "./cleanup.lisp" "cleanup")
 (i "./math.lisp" "renderMath")
 (i "./fetch.lisp" "checkStatus" "json" "html" "handleFetchError")
 (i "./utils.lisp" "all" "one" "clearChildren")
+(i "./template.lisp" "getTemplate")
 
-(chain (one "#show-history")
- (click
-  (lambda (e)
-    (chain e (prevent-default))
-    (let ((pathname (chain window location pathname (split "/"))))
-      (push-state (concatenate 'string "/wiki/" (chain pathname 2) "/history")
-       (chain window history state))
-      f))))
+(on ("click" (one "#show-history") event)
+  (chain event (prevent-default))
+  (let ((pathname (chain window location pathname (split "/"))))
+    (push-state (concatenate 'string "/wiki/" (chain pathname 2) "/history")
+     (chain window history state))
+    f))
 
 (defroute "/wiki/:name/history"
- (chain (one ".edit-button") (remove-class "disabled")) (show-tab "#loading")
- (var pathname (chain window location pathname (split "/")))
- (chain (fetch (concatenate 'string "/api/history/" (chain pathname 2)))
+ (remove-class (one ".edit-button") "disabled")
+ (show-tab "#loading")
+ (chain (fetch (concatenate 'string "/api/history/" name))
   (then check-status) (then json)
   (then
    (lambda (data)
      (chain (one "#history-list") (html ""))
      (loop for page in data
            do (let ((template (one (chain (one "#history-item-template") (html)))))
-                (chain template (find ".history-username")
+                (chain template (query-selector ".history-username")
                  (text (chain page user)))
-                (chain template (find ".history-date")
+                (chain template (query-selector ".history-date")
                  (text (new (-date (chain page created)))))
-                (chain template (find ".history-summary")
+                (chain template (query-selector ".history-summary")
                  (text (chain page summary)))
-                (chain template (find ".history-characters")
+                (chain template (query-selector ".history-characters")
                  (text (chain page size)))
-                (chain template (find ".history-show")
+                (chain template (query-selector ".history-show")
                  (attr "href"
-                  (concatenate 'string "/wiki/" (chain pathname 2) "/history/"
+                  (concatenate 'string "/wiki/" name "/history/"
                                (chain page id))))
-                (chain template (find ".history-diff")
+                (chain template (query-selector ".history-diff")
                  (attr "href"
-                  (concatenate 'string "/wiki/" (chain pathname 2) "/history/"
+                  (concatenate 'string "/wiki/" name "/history/"
                                (chain page id) "/changes")))
                 (chain (one "#history-list") (append template))))
      (show-tab "#history")))))
@@ -56,11 +55,10 @@
           (attr "href" (concatenate 'string "/wiki/" page)))
          (chain (one "#is-outdated-article") (remove-class "d-none"))
          (chain (one "#categories") (html ""))
-         (loop for category in (chain data categories)
-               do (chain (one "#categories")
-                   (append
-                    (who-ps-html
-                     (:span :class "closable-badge bg-secondary" category)))))
+         (loop for category in (chain data categories) do
+           (let ((template (get-template "template-readonly-category")))
+             (setf (inner-html (one ".closable-badge" template)) category)
+             (append (one "#categories") template)))
          (chain (one "article") (html (chain data content)))
          (chain window history (replace-state (create content data) nil nil))
          (render-math)

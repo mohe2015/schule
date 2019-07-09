@@ -23,16 +23,14 @@ ln -s $PWD/clack/ ~/.roswell/local-projects/
 
 ```lisp
 (ql:quickload :spickipedia)
-(spickipedia.db:do-generate-migrations)
+;;(spickipedia.db:do-generate-migrations)
 ;;(spickipedia.db:do-migration-status)
 (spickipedia.db:do-migrate)
-(spickipedia:start)
 (spickipedia:development)
 (in-package :spickipedia.web)
-(with-connection (db)
-  (create-dao 'user :name "Administrator" :hash (hash "xfg3zte94h62j392h") :group "admin")
-  (create-dao 'user :name "Anonymous" :hash (hash "xfg3zte94h") :group "anonymous")
-  (create-dao 'user :name "<your name>" :hash (hash "fjd8sh3l2h") :group "user"))
+(create-dao 'user :name "Administrator" :hash (hash "xfg3zte94h62j392h") :group "admin")
+(create-dao 'user :name "Anonymous" :hash (hash "xfg3zte94h") :group "anonymous")
+(create-dao 'user :name "<your name>" :hash (hash "fjd8sh3l2h") :group "user"))
 
 (declaim (optimize (compilation-speed 0) (debug 0) (safety 0) (space 3) (speed 0)))
 (save-application "spickipedia"  :clear-clos-caches t :impurify t :prepend-kernel t)
@@ -51,7 +49,6 @@ purgecss --content www/index.html --css www/s/all.css --css www/s/bootstrap.min.
 ### Accessing modules
 
 import('../js/utils.lisp').then(m => module = m)
-
 
 ## Buggy quicklisp
 

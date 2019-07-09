@@ -1,10 +1,15 @@
+(in-package :spickipedia.argon2)
 
-(in-package :spickipedia.argon2) 
-(define-foreign-library libargon2 (:unix (:or "libargon2.so.1" "libargon2.so"))
- (:t (:default "libargon2"))) 
-(use-foreign-library libargon2) 
-(defctype size :unsigned-int) 
-(defcenum argon2_errorcodes (:argon2_ok 0) (:argon2_output_ptr_null -1)
+(define-foreign-library libargon2
+  (:unix (:or "libargon2.so.1" "libargon2.so"))
+  (:t (:default "libargon2")))
+
+(use-foreign-library libargon2)
+
+(defctype size :unsigned-int)
+
+(defcenum argon2_errorcodes
+ (:argon2_ok 0) (:argon2_output_ptr_null -1)
  (:argon2_output_too_short -2) (:argon2_output_too_long -3)
  (:argon2_pwd_too_short -4) (:argon2_pwd_too_long -5)
  (:argon2_salt_too_short -6) (:argon2_salt_too_long -7)
@@ -21,18 +26,25 @@
  (:argon2_threads_too_few -28) (:argon2_threads_too_many -29)
  (:argon2_missing_args -30) (:argon2_encoding_fail -31)
  (:argon2_decoding_fail -32) (:argon2_thread_fail -33)
- (:argon2_decoding_length_fail -34) (:argon2_verify_mismatch -35)) 
-(defcenum argon2_type (:argon2_d 0) (:argon2_i 1) (:argon2_id 2)) 
+ (:argon2_decoding_length_fail -34) (:argon2_verify_mismatch -35))
+
+(defcenum argon2_type (:argon2_d 0) (:argon2_i 1) (:argon2_id 2))
+
 (defcfun "argon2_encodedlen" size (t-cost :uint32) (m-cost :uint32)
- (parallelism :uint32) (saltlen size) (hashlen size) (type argon2_type)) 
+ (parallelism :uint32) (saltlen size) (hashlen size) (type argon2_type))
+
 (defcfun "argon2id_hash_encoded" argon2_errorcodes (t-cost :uint32)
  (m-cost :uint32) (parallelism :uint32) (pwd :pointer) (pwdlen size)
  (salt :pointer) (saltlen size) (hashlen size) (encoded :pointer)
- (encodedlen size)) 
+ (encodedlen size))
+
 (defcfun "argon2id_verify" argon2_errorcodes (encoded :pointer) (pwd :pointer)
- (pwdlen size)) 
-(defparameter *hashlen* 32) 
-(defparameter *saltlen* 16) 
+ (pwdlen size))
+
+(defparameter *hashlen* 32)
+
+(defparameter *saltlen* 16)
+
 (defun hash (password)
   (with-foreign-array
    (salt (random-data *saltlen*) `(:array :uint8 ,*saltlen*))
@@ -47,8 +59,9 @@
         (eq :argon2_ok
             (argon2id-hash-encoded t-cost m-cost parallelism pwd pwdlen salt
              *saltlen* *hashlen* encoded encodedlen)))
-       (foreign-string-to-lisp encoded)))))) 
+       (foreign-string-to-lisp encoded))))))
+
 (defun verify (password hash)
   (with-foreign-string ((pwd pwdlen) password)
    (with-foreign-string (encoded hash)
-    (eq :argon2_ok (argon2id-verify encoded pwd pwdlen))))) 
+    (eq :argon2_ok (argon2id-verify encoded pwd pwdlen)))))

@@ -1,16 +1,15 @@
-
 (defpackage spickipedia.argon2
-  (:use :cl :cffi)
-  (:export :hash :verify)) 
+  (:use :cl :cffi :ironclad)
+  (:export :hash :verify))
 (defpackage spickipedia.sanitize
   (:use :cl :sanitize)
-  (:export :*sanitize-spickipedia*)) 
+  (:export :*sanitize-spickipedia*))
 (defpackage spickipedia.tsquery-converter
   (:use :cl :str)
-  (:export :tsquery-convert)) 
+  (:export :tsquery-convert))
 (defpackage spickipedia.parenscript
   (:use :cl :parenscript :ppcre :ironclad)
-  (:export :file-js-gen :js-files)) 
+  (:export :file-js-gen :js-files))
 (defpackage spickipedia.config
   (:use :cl)
   (:import-from :envy :config-env-var :defconfig)
@@ -21,7 +20,7 @@
            :*database-path*
            :appenv
            :developmentp
-           :productionp)) 
+           :productionp))
 (defpackage spickipedia.db
   (:use :cl :mito)
   (:import-from :spickipedia.config :config)
@@ -88,7 +87,7 @@
            :student-course
            :student-course-student
            :student-course-course
-           :setup-db)) 
+           :setup-db))
 (defpackage spickipedia.web
   (:use :cl
         :caveman2
@@ -112,4 +111,4 @@
   (:shadowing-import-from :ironclad :xor)
   (:shadowing-import-from :cl-fad :copy-file)
   (:shadowing-import-from :cl-fad :copy-stream)
-  (:export :*web* :schedule-tab)) 
+  (:export :*web* :schedule-tab))

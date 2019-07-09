@@ -1,6 +1,6 @@
 (var __-p-s_-m-v_-r-e-g)
 
-(i "./test.lisp")
+
 (i "./show-tab.lisp" "showTab")
 (i "./utils.lisp" "all" "one" "clearChildren")
 
@@ -10,8 +10,8 @@
       (chain (one "#articles-list") (html ""))
       (loop for page in data
             do (let ((templ (one (chain (one "#articles-entry") (html)))))
-                 (chain templ (find "a") (text page))
-                 (chain templ (find "a")
+                 (chain templ (query-selector "a") (text page))
+                 (chain templ (query-selector "a")
                   (attr "href" (concatenate 'string "/wiki/" page)))
                  (chain (one "#articles-list") (append templ))))
       (show-tab "#articles")))

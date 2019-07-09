@@ -1,6 +1,6 @@
 (var __-p-s_-m-v_-r-e-g)
 
-(i "./test.lisp")
+
 (i "./utils.lisp" "all" "one" "clearChildren")
 
 (export
@@ -12,8 +12,8 @@
 
 (export
  (defun revert-math (dom)
-   (chain dom (find ".formula")
-    (each
+   (chain dom (query-selector-all ".formula")
+    (for-each
      (lambda ()
        (setf (@ this inner-h-t-m-l)
              (concatenate 'string "\\( "

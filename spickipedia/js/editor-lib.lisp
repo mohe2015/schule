@@ -1,6 +1,6 @@
 (var __-p-s_-m-v_-r-e-g)
 
-(i "./test.lisp")
+
 (i "./file-upload.lisp" "sendFile")
 (i "./categories.lisp")
 (i "./fetch.lisp" "cacheThenNetwork")
@@ -78,7 +78,7 @@
    (chain (one "#link-modal") (modal "hide"))
    (restore-range)
    (update-link (chain (one "#link") (val))))
- (chain (one "#link-modal") (modal "show")))
+ (show-modal (one "#link-modal")))
 
 (var articles (array))
 
@@ -102,8 +102,8 @@
       (chain console (log result))
       (setf (chain input next-element-sibling inner-h-t-m-l) "")
       (if (> (chain result length) 0)
-          (chain input next-element-sibling class-list (add "show"))
-          (chain input next-element-sibling class-list (remove "show")))
+          (add-class (chain input next-element-sibling) "show")
+          (remove-class (chain input next-element-sibling) "show"))
       (loop for article in result
             do (let ((element (chain document (create-element "div"))))
                  (setf (chain element class-name) "dropdown-item")
@@ -114,8 +114,7 @@
                      (setf (chain input value)
                            (concatenate 'string "/wiki/"
                                         (chain element inner-h-t-m-l)))
-                     (chain input next-element-sibling class-list
-                      (remove "show")))))
+                     (remove-class (chain input next-element-sibling) "show"))))
                  (chain input next-element-sibling (append element))))
       nil))))
 
@@ -131,7 +130,7 @@
       (chain (one "#link-modal") (modal "hide"))
       (chain document (get-elements-by-tag-name "article") 0 (focus))
       (chain (one target) (attr "href" (chain (one "#link") (val)))))
-    (chain (one "#link-modal") (modal "show"))))
+    (show-modal (one "#link-modal"))))
 
 (on ("click" (one "body") event :dynamic-selector ".deleteLink")
   (chain event (prevent-default))
@@ -146,7 +145,8 @@
      "<a href=\"#\" class=\"editLink\"><span class=\"fas fa-link\"></span></a> <a href=\"#\" class=\"deleteLink\"><span class=\"fas fa-unlink\"></span></a>")
     (chain (one target) (popover "show"))))
 
-(tool "insertImage" (chain (one "#image-modal") (modal "show")))
+(tool "insertImage"
+  (show-modal (one "#image-modal")))
 
 (on ("click" (one "body") event :dynamic-selector "article[contenteditable=true] figure")
   (let ((target (chain event current-target)))
@@ -222,7 +222,8 @@
       (send-file
        (chain document (get-element-by-id "image-file") files 0))))
 
-(tool "table" (chain (one "#table-modal") (modal "show")))
+(tool "table"
+  (show-modal (one "#table-modal")))
 
 (on ("click" (one "#update-table") event)
   (chain (one "#table-modal") (modal "hide"))
@@ -258,7 +259,7 @@
      (loop for element in (chain document
                            (get-elements-by-class-name "formula"))
            do (chain -math-live (render-math-in-element element)))))
- (chain (one "#formula-modal") (modal "show"))
+ (show-modal (one "#formula-modal"))
  (setf (chain window mathfield)
        (chain -math-live
         (make-math-field (chain document (get-element-by-id "formula"))
@@ -282,12 +283,13 @@
 
 (stool "redo")
 
-(tool "settings" (chain (one "#settings-modal") (modal "show")))
+(tool "settings"
+  (show-modal (one "#modal-settings")))
 
 (tool "finish"
   (on ("shown.bs.modal" (one "#modal-publish-changes") event)
-    (chain (one "#change-summary") (trigger "focus")))
-  (chain (one "#modal-publish-changes") (modal "show")))
+    (focus (one "#change-summary")))
+  (show-modal (one "#modal-publish-changes")))
 
 (defun random-int ()
   (chain -math (floor (* (chain -math (random)) 10000000000000000))))
@@ -350,7 +352,7 @@
           (chain -math-live
            (make-math-field (chain document (get-element-by-id "formula"))
             (create virtual-keyboard-mode "manual"))))
-    (chain (one "#formula-modal") (modal "show"))
+    (show-modal (one "#formula-modal"))
     (chain (one "#update-formula") (off "click")
      (click
       (lambda (event)

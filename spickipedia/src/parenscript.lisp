@@ -32,11 +32,11 @@
            ,@body
            (return t)))
       (return f)))
-   (chain window routes
-    (push
-     ,(make-symbol
-       (concatenate 'string "handle-"
-                    (subseq (regex-replace-all "/[:\\.]?" route "-") 1)))))))
+   (chain (setf (chain window routes) (or (chain window routes) ([])))
+          (push
+            ,(make-symbol
+               (concatenate 'string "handle-" (subseq (regex-replace-all "/[:\\.]?" route "-") 1)))))))
+
 
 (defpsmacro i (file &rest contents) `(import ,file ,@contents))
 
@@ -93,10 +93,10 @@
   `(add-class ,element "d-none"))
 
 (defpsmacro show-modal (element)
-  `(chain (new (bootstrap.-Modal ,element)) (show)))
+  `(chain (bootstrap.-Modal.get ,element) (show)))
 
 (defpsmacro hide-modal (element)
-  `(chain (new (bootstrap.-Modal ,element)) (hide)))
+  `(chain (bootstrap.-Modal.get ,element) (hide)))
 
 (defpsmacro value (element)
   `(chain ,element value))
@@ -109,3 +109,12 @@
 
 (defpsmacro href (element)
   `(chain ,element href))
+
+(defpsmacro focus (element)
+  `(chain ,element (focus)))
+
+(defpsmacro before (element new-element)
+  `(chain ,element (before ,new-element)))
+
+(defpsmacro append (element new-element)
+  `(chain ,element (append ,new-element)))

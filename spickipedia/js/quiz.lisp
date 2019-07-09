@@ -1,6 +1,6 @@
 (var __-p-s_-m-v_-r-e-g)
 
-(i "./test.lisp")
+
 (i "./utils.lisp" "all" "one" "clearChildren")
 
 (defroute "/quiz/create" (show-tab "#loading")
@@ -32,10 +32,10 @@
       (dotimes (i (chain window current-question responses length))
         (let ((answer (elt (chain window current-question responses) i))
               (template (one (chain (one "#multiple-choice-answer-html") (html)))))
-          (chain template (find ".custom-control-label")
+          (chain template (query-selector ".custom-control-label")
            (text (chain answer text)))
-          (chain template (find ".custom-control-label") (attr "for" i))
-          (chain template (find ".custom-control-input") (attr "id" i))
+          (chain template (query-selector ".custom-control-label") (attr "for" i))
+          (chain template (query-selector ".custom-control-input") (attr "id" i))
           (chain (one "#answers-html") (append template))))))
  (if (= (chain window current-question type) "text")
      (progn
@@ -152,21 +152,21 @@
        (concatenate 'string "/quiz/" (chain pathname 2) "/play"))))))
 
 (defun text-question (element)
-  (create type "text" question (chain element (find ".question") (val)) answer
-   (chain element (find ".answer") (val))))
+  (create type "text" question (chain element (query-selector ".question") (val)) answer
+   (chain element (query-selector ".answer") (val))))
 
 (defun multiple-choice-question (element)
   (let ((obj
          (create type "multiple-choice" question
-          (chain element (find ".question") (val)) responses (list))))
-    (chain element (find ".responses") (children)
+          (chain element (query-selector ".question") (val)) responses (list))))
+    (chain element (query-selector ".responses") (children)
      (each
       (lambda ()
         (let ((is-correct
-               (chain (one this) (find ".multiple-choice-response-correct")
+               (chain (one this) (query-selector ".multiple-choice-response-correct")
                 (prop "checked")))
               (response-text
-               (chain (one this) (find ".multiple-choice-response-text") (val))))
+               (chain (one this) (query-selector ".multiple-choice-response-text") (val))))
           (chain obj responses
            (push (create text response-text is-correct is-correct)))))))
     obj))

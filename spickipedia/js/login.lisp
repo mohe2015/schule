@@ -1,6 +1,6 @@
 (var __-p-s_-m-v_-r-e-g)
 
-(i "./test.lisp")
+
 (i "./get-url-parameter.lisp" "getUrlParameter")
 (i "./read-cookie.lisp" "readCookie")
 (i "./replace-state.lisp" "replaceState")
@@ -33,7 +33,8 @@
 (defun login-post (repeated)
   (let* ((form-element (one "#login-form"))
          (form-data (new (-form-data form-element)))
-         (login-button (one "#login-button")))
+         (login-button (one "#login-button"))
+         (input-name (one "#inputName")))
     (chain form-data (append "_csrf_token" (read-cookie "_csrf_token")))
     (chain
      (fetch "/api/login" (create method "POST" body form-data))
@@ -43,7 +44,7 @@
          (setf (disabled login-button) f)
          (setf (inner-html login-button) "Anmelden")
          (setf (value (one "#inputPassword")) "")
-         (setf (chain window local-storage name) name)
+         (setf (chain window local-storage name) (value input-name))
          (if (and (not (null (chain window history state)))
                   (not (undefined (chain window history state last-state)))
                   (not (undefined (chain window history state last-url))))

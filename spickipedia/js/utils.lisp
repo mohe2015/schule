@@ -1,7 +1,5 @@
 (var __-p-s_-m-v_-r-e-g)
 
-(export (defun one (selector) (chain document (query-selector selector))))
-
 (setf (chain -Array prototype hide)
       (lambda ()
         (chain this
@@ -18,10 +16,19 @@
               (remove element))))
         this))
 
+(setf (chain -Array prototype add-event-listener)
+      (lambda (event func)
+        (chain this
+          (for-each
+            (lambda (element)
+              (chain element (add-event-listener event func)))))
+        this))
+
+(export (defun one (selector base-element) (chain (or base-element document) (query-selector selector))))
 
 (export
- (defun all (selector)
-   (chain -array (from (chain document (query-selector-all selector))))))
+ (defun all (selector base-element)
+   (chain -array (from (chain (or base-element document) (query-selector-all selector))))))
 
 (export
  (defun clear-children (element)
