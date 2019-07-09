@@ -5,7 +5,7 @@
 (i "./cleanup.lisp" "cleanup")
 (i "./math.lisp" "renderMath")
 (i "./image-viewer.lisp")
-(i "./fetch.lisp" "checkStatus" "json")
+(i "./fetch.lisp" "checkStatus" "json" "handleFetchError")
 (i "./utils.lisp" "all" "one" "clearChildren")
 
 (defun update-page (data)
@@ -47,7 +47,7 @@
            (lambda (error)
              (if (= (chain error response status) 404)
                  (show-tab "#not-found")
-                 (handle-error (chain error response) t))))))
+                 (handle-fetch-error error))))))
 
  (chain
   caches
@@ -62,4 +62,4 @@
       (lambda (error)
         (if (= (chain error response status) 404)
             (show-tab "#not-found")
-            (handle-error (chain error response) t))))))
+            (handle-fetch-error error))))))

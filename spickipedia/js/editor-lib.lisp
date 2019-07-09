@@ -284,7 +284,7 @@
 (stool "redo")
 
 (tool "settings"
-  (show-modal (one "#settings-modal")))
+  (show-modal (one "#modal-settings")))
 
 (tool "finish"
   (on ("shown.bs.modal" (one "#modal-publish-changes") event)

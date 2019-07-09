@@ -11,11 +11,11 @@
   (hide (one "#publish-changes"))
   (show (one "#publishing-changes"))
   (let ((change-summary (value (one "#change-summary")))
-        (temp-dom (chain (one "article") (clone)))
+        (temp-dom (chain (one "article") (clone-node t)))
         (article-path (chain window location pathname (split "/") 2)))
     (revert-math temp-dom)
     (var categories
-         (chain (one "#settings-modal") (find ".closable-badge-label")
+         (chain (one "#modal-settings") (query-selector ".closable-badge-label")
           (map (lambda () (chain this inner-text))) (get)))
     (chain $
      (post (concatenate 'string "/api/wiki/" article-path)

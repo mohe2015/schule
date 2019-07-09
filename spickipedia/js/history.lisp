@@ -25,19 +25,19 @@
      (chain (one "#history-list") (html ""))
      (loop for page in data
            do (let ((template (one (chain (one "#history-item-template") (html)))))
-                (chain template (find ".history-username")
+                (chain template (query-selector ".history-username")
                  (text (chain page user)))
-                (chain template (find ".history-date")
+                (chain template (query-selector ".history-date")
                  (text (new (-date (chain page created)))))
-                (chain template (find ".history-summary")
+                (chain template (query-selector ".history-summary")
                  (text (chain page summary)))
-                (chain template (find ".history-characters")
+                (chain template (query-selector ".history-characters")
                  (text (chain page size)))
-                (chain template (find ".history-show")
+                (chain template (query-selector ".history-show")
                  (attr "href"
                   (concatenate 'string "/wiki/" name "/history/"
                                (chain page id))))
-                (chain template (find ".history-diff")
+                (chain template (query-selector ".history-diff")
                  (attr "href"
                   (concatenate 'string "/wiki/" name "/history/"
                                (chain page id) "/changes")))

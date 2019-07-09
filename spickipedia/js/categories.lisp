@@ -32,8 +32,8 @@
           (chain data (sort (lambda (a b) (chain a (locale-compare b)))))
           (loop for page in data
                 do (let ((templ (one (chain (one "#articles-entry") (html)))))
-                     (chain templ (find "a") (text page))
-                     (chain templ (find "a")
+                     (chain templ (query-selector "a") (text page))
+                     (chain templ (query-selector "a")
                       (attr "href" (concatenate 'string "/wiki/" page)))
                      (chain (one "#tags-list") (append templ))))))
      (show-tab "#tags")))

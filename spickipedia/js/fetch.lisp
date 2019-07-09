@@ -65,6 +65,8 @@
 
 (export
  (defun check-status (response)
+   (if (not response)
+       (throw (new (-error "No data"))))
    (if (= (chain response status) 200)
        (chain -promise (resolve response))
        (let ((error (new (-error (chain response status-text)))))
@@ -73,8 +75,6 @@
 
 (export
  (defun json (response)
-   (if (not response)
-       (throw (new (-error "No data"))))
    (chain response (json))))
 
 (export (defun html () (chain response (text))))
@@ -83,9 +83,9 @@
  (defun cache-then-network (url callback)
    (var networkdatareceived f)
    (var networkupdate
-        (chain (fetch url) (then json)
+        (chain (fetch url) (then check-status) (then json)
          (then (lambda (data) (setf networkdatareceived t) (callback data)))))
-   (chain caches (match url) (then json)
+   (chain caches (match url) (then check-status) (then json)
     (then
      (lambda (data)
        (if (not networkdatareceived)
