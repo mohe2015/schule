@@ -11,10 +11,10 @@
    (before
     (who-ps-html
      (:span :class "closable-badge bg-secondary"
-      (:span :class "closable-badge-label" (chain (one "#new-category") (val)))
+      (:span :class "closable-badge-label" (value (one "#new-category")))
       (:button :type "button" :class "close close-tag" :aria-label "Close"
        (:span :aria-hidden "true" "&times;"))))))
-  (chain (one "#new-category") (val "")))
+  (setf (value (one "#new-category")) ""))
 
 (on ("click" (one "body") event :dynamic-selector ".close-tag")
   (chain (one this) (parent) (remove)))
