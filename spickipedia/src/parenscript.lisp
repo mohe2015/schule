@@ -112,3 +112,6 @@
 
 (defpsmacro focus (element)
   `(chain ,element (focus)))
+
+(defpsmacro before (element new-element)
+  `(chain ,element (before ,new-element)))

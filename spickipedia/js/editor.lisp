@@ -21,7 +21,8 @@
     (chain formdata (append "_csrf_token" (read-cookie "_csrf_token")))
     (chain formdata (append "summary" change-summary))
     (chain formdata (append "html" (inner-html temp-dom)))
-    (chain formdata (append "categories" categories))
+    (loop for category in categories do
+      (chain formdata (append "categories[]" category)))
     (chain (fetch (concatenate 'string "/api/wiki/" article-path) (create method "POST" body formdata))
            (then check-status)
            (then

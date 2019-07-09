@@ -70,6 +70,12 @@
      (:template :id "articles-entry"
       (:li (:a :class "" :href "#" "Hauptseite")))
 
+     (:template :id "template-category"
+       (:span :class "closable-badge bg-secondary"
+        (:span :class "closable-badge-label")
+        (:button :type "button" :class "close close-tag" :aria-label "Close"
+         (:span :aria-hidden "true" "&times;"))))
+
      (:nav :class "navbar navbar-expand-md navbar-light bg-light"
       (:a :class "navbar-brand " :href "/wiki/Hauptseite" "Spickipedia ")
       (:div :class "login-hide"

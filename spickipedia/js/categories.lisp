@@ -1,19 +1,15 @@
 (var __-p-s_-m-v_-r-e-g)
 
-
 (i "./show-tab.lisp" "showTab")
 (i "./read-cookie.lisp" "readCookie")
 (i "./utils.lisp" "all" "one" "clearChildren")
+(i "./template.lisp" "getTemplate")
 
 (on ("submit" (one "#form-settings") event)
   (chain event (prevent-default))
-  (chain (one "#new-category")
-   (before
-    (who-ps-html
-     (:span :class "closable-badge bg-secondary"
-      (:span :class "closable-badge-label" (value (one "#new-category")))
-      (:button :type "button" :class "close close-tag" :aria-label "Close"
-       (:span :aria-hidden "true" "&times;"))))))
+  (let ((template (get-template "template-category")))
+    (setf (inner-html (one ".closable-badge-label" template inner-text)) (value (one "#new-category")))
+    (before (one "#new-category") template))
   (setf (value (one "#new-category")) ""))
 
 (on ("click" (one "body") event :dynamic-selector ".close-tag")
