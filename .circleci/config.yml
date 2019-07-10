@@ -13,7 +13,7 @@ jobs:
 
       - run:
           name: Make spickipedia loadable
-          command: ln -s $PWD/{spickipedia,lack,parenscript,clack} ~/.roswell/local-projects/
+          command: ln -s $PWD/{spickipedia,lack,parenscript,clack,cl-coveralls} ~/.roswell/local-projects/
 
       - run:
           name: Run tests
