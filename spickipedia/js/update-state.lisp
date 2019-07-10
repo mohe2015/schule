@@ -25,6 +25,40 @@
 (i "./settings/index.lisp" "handleSettings")
 (i "./utils.lisp" "all" "one" "clearChildren")
 
+(defparameter *STATE* 'LOADING)
+
+(defun enter-loading ()
+  (show-tab "#loading"))
+
+(defun exit-loading ()
+  (hide-tab "#loading"))
+
+(defun enter-wiki-page (page))
+  ;;(fetch wiki page))
+  ;; show wiki page
+
+(defun exit-wiki-page ())
+  ;; abort fetch
+
+(defun enter-settings ())
+  ;; fetch settings
+  ;; show settings
+
+(defun exit-settings ())
+  ;; abort fetch
+
+(defun enter-settings-add-grade ())
+  ;; show-dialog
+
+(defun exit-settings-add-grade ())
+  ;; hide dialog
+
+(defun enter-login ())
+  ;; show login
+
+(defun enter-logout ())
+  ;; logging out
+
 (export
  (defun update-state ()
    (setf (chain window last-url) (chain window location pathname))
