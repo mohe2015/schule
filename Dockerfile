@@ -11,4 +11,3 @@ RUN curl -sOL `curl -s https://api.github.com/repos/roswell/roswell/releases/lat
 RUN dpkg -i *.deb
 RUN ros install sbcl-bin/1.5.4
 RUN ros install prove
-RUN ros install cl-coveralls
