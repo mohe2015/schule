@@ -7,7 +7,7 @@ jobs:
     steps:
       - restore_cache:
           keys:
-            - source-v1
+            - source-v2
 
       - checkout # git clone https://github.com/mohe2015/wiki && cd wiki && git checkout master
 
@@ -28,7 +28,7 @@ jobs:
           command: ~/.roswell/bin/sblint | ~/go/bin/reviewdog -efm="%f:%l:%c: %m" -diff="git diff master" -reporter=github-pr-check
 
       - save-cache:
-          key: source-v1
+          key: source-v2
           paths:
               - ~/.cache/common-lisp/
               - ~/.roswell/
