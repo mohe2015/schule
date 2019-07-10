@@ -25,3 +25,6 @@
 [submodule "clack"]
 	path = clack
 	url = https://github.com/mohe2015/clack.git
+[submodule "cl-coveralls"]
+	path = cl-coveralls
+	url = https://github.com/mohe2015/cl-coveralls
