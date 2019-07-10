@@ -8,5 +8,9 @@ jobs:
       - checkout
 
       - run:
+          name: Make spickipedia loadable
+          command: ln -s $PWD/{spickipedia,lack,parenscript,clack} ~/.roswell/local-projects/
+
+      - run:
           name: Run tests
           command: $HOME/.roswell/bin/run-prove spickipedia/spickipedia-test.asd
