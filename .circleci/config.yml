@@ -25,7 +25,7 @@ jobs:
 
       - run:
           name: Hotfix for sblint
-          command: ros -e "(ql:quickload '(:marshal :hunchentoot :clsql :cl-oauth :postmodern :rucksack))"
+          command: ros -e "(ql:quickload '(:marshal :hunchentoot :clsql :cl-oauth :postmodern :rucksack :cl-fastcgi))"
 
       - run:
           name: sblint
