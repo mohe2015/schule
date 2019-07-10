@@ -1,6 +1,6 @@
 # wiki
 [![CircleCI](https://circleci.com/gh/mohe2015/wiki.svg?style=svg)](https://circleci.com/gh/mohe2015/wiki)
-[![Coverage Status](https://coveralls.io/repos/github/mohe2015/wiki/badge.svg?branch=testing)](https://coveralls.io/github/mohe2015/wiki?branch=testing)
+[![Coverage Status](https://coveralls.io/repos/github/mohe2015/wiki/badge.svg?branch=testing)](https://coveralls.io/github/mohe2015/wiki)
 
 ## Requirements
 
