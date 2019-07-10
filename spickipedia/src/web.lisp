@@ -214,7 +214,7 @@
 
 (my-defroute :post "/api/logout" (:admin :user :anonymous) nil "text/html"
  (setf (gethash :user *session*) nil) nil)
-(defun my-quit () (sb-ext:quit))
+(defun my-quit () (uiop:quit))
 (my-defroute :get "/api/killswitch" nil nil "text/html" (my-quit))
 (defun starts-with-p (str1 str2)
   "Determine whether `str1` starts with `str2`"
