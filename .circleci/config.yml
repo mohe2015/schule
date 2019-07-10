@@ -17,4 +17,4 @@ jobs:
 
       - run:
           name: Run tests
-          command: $HOME/.roswell/bin/run-prove spickipedia/spickipedia-test.asd
+          command: COVERALLS=true ros -s prove -s cl-coveralls -e '(or (coveralls:with-coveralls (:exclude (list "t")) (prove:run :spickipedia-test)) (uiop:quit -1))'
