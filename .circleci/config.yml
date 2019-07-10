@@ -9,7 +9,7 @@ jobs:
           keys:
             - v1
 
-      - checkout # git clone https://github.com/mohe2015/wiki && cd wiki && git checkout testing
+      - checkout # git clone https://github.com/mohe2015/wiki && cd wiki && git checkout master
 
       - run:
           name: Initialize Submodules
@@ -21,10 +21,11 @@ jobs:
 
       - run:
           name: Run tests
-          command: COVERALLS=true ros -s prove -s cl-coveralls -e '(or (coveralls:with-coveralls (:exclude (list "t") :project-dir ".") (prove:run :spickipedia-test)) (uiop:quit -1))'
+          command: COVERALLS=true ros --verbose -s prove -s cl-coveralls -e '(or (coveralls:with-coveralls (:exclude (list "t") :project-dir ".") (prove:run :spickipedia-test)) (uiop:quit -1))'
 
       - save-cache:
           key: v1
           paths:
+              - ~/.cache/common-lisp/
               - ~/.roswell/
-#              - .git
+#              - .git/
