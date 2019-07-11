@@ -1,39 +1,30 @@
 image: devmohe/debian-roswell
 
+# git clone http://192.168.2.150/root/wiki.git && cd wiki && git checkout state-machine
+
 stages:
-  - build
-  - test
+  - build-and-test
 
 cache:
   paths:
-    - cache
-    - roswell
-
-# git clone https://github.com/mohe2015/wiki && cd wiki && git checkout state-machine
+    - cache-common-lisp
+    - roswell-quicklisp-dists
 
 before_script:
-  - mkdir -p cache
-  - mkdir -p roswell
-  - cp -ruT cache/ ~/.cache/
-  - cp -ruT roswell/ ~/.roswell/
+  - mkdir -p cache-common-lisp
+  - mkdir -p roswell-quicklisp-dists
+  - cp -ruT cache-common-lisp/ ~/.cache/common-lisp/
+  - cp -ruT roswell-quicklisp-dists/ ~/.roswell/lisp/quicklisp/dists/
   - ln -sf $PWD/{spickipedia,lack,parenscript,clack,cl-coveralls} ~/.roswell/local-projects/
 
 after_script:
-  - cp -ruT ~/.cache/ cache/
-  - cp -ruT ~/.roswell/ roswell/
+  - cp -ruT ~/.cache/common-lisp/ cache-common-lisp/
+  - cp -ruT ~/.roswell/lisp/quicklisp/dists/ roswell-quicklisp-dists/
 
-build:
-  stage: build
-  script:
-    - ros -e "(ql:quickload '(:spickipedia :spickipedia-test))"
-
-test:
-  stage: test
+build-and-test:
+  stage: build-and-test
   script:
     - ros --verbose -s prove -e '(or (ignore-errors (prove:run :spickipedia-test)) (uiop:quit -1))'
-
-lint:
-  stage: test
-  script:
-    - ros -e "(ql:quickload '(:marshal :hunchentoot :clsql :cl-oauth :postmodern :rucksack :cl-fastcgi :toot :wookie :cl-redis :sqlite :fiveam :cl-js))"
     - ~/.roswell/bin/sblint
+
+# ros -e "(ql:quickload '(:marshal :hunchentoot :clsql :cl-oauth :postmodern :rucksack :cl-fastcgi :toot :wookie :cl-redis :sqlite :fiveam :cl-js))"
