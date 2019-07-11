@@ -5,9 +5,7 @@ stages:
   - test
 
 cache:
-  paths:
-    - ~/.cache/common-lisp/
-    - ~/.roswell/
+  untracked: true
 
 before_script:
   - "export ASDF_OUTPUT_TRANSLATIONS='(:output-translations :disable-cache :inherit-configuration)'"
