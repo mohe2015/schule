@@ -9,24 +9,22 @@ cache:
     - ~/.cache/common-lisp/
     - ~/.roswell/
 
+before_script:
+  - "export ASDF_OUTPUT_TRANSLATIONS='(:output-translations :disable-cache :inherit-configuration)'"
+  - ln -sf $PWD/{spickipedia,lack,parenscript,clack,cl-coveralls} ~/.roswell/local-projects/
+
 build:
   stage: build
-  before_script:
-    - ln -sf $PWD/{spickipedia,lack,parenscript,clack,cl-coveralls} ~/.roswell/local-projects/
   script:
     - ros -e "(ql:quickload '(:spickipedia :spickipedia-test))"
-    - pwd
-    - ls ~/.cache/common-lisp/
-    - ls ~/.roswell/
 
 test:
   stage: test
   script:
-    - ros --verbose -s prove -e '(or (prove:run :spickipedia-test) (uiop:quit -1))'
+    - ros --verbose -s prove -e '(or (ignore-errors (prove:run :spickipedia-test)) (uiop:quit -1))'
 
 lint:
   stage: test
-  before_script:
-    - ros -e "(ql:quickload '(:marshal :hunchentoot :clsql :cl-oauth :postmodern :rucksack :cl-fastcgi :toot :wookie :cl-redis :sqlite :fiveam :cl-js))"
   script:
+    - ros -e "(ql:quickload '(:marshal :hunchentoot :clsql :cl-oauth :postmodern :rucksack :cl-fastcgi :toot :wookie :cl-redis :sqlite :fiveam :cl-js))"
     - '~/.roswell/bin/sblint | ~/go/bin/reviewdog -efm="%f:%l:%c: %m" -diff="git diff master" -reporter=github-pr-check'
