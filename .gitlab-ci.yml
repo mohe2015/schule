@@ -2,24 +2,27 @@ image: devmohe/debian-roswell
 
 # git clone http://192.168.2.150/root/wiki.git && cd wiki && git checkout state-machine
 
+
+
+
 stages:
   - build-and-test
 
 cache:
   paths:
-    - cache-common-lisp
-    - roswell-quicklisp-dists
+    - cache
+    - roswell
 
 before_script:
-  - mkdir -p cache-common-lisp
-  - mkdir -p roswell-quicklisp-dists
-  - cp -ruT cache-common-lisp/ ~/.cache/common-lisp/
-  - cp -ruT roswell-quicklisp-dists/ ~/.roswell/lisp/quicklisp/dists/
+  - mkdir -p cache
+  - mkdir -p roswell
+  - cp -ruT cache/ ~/.cache/
+  - cp -ruT roswell/ ~/.roswell/
   - ln -sf $PWD/{spickipedia,lack,parenscript,clack,cl-coveralls} ~/.roswell/local-projects/
 
 after_script:
-  - cp -ruT ~/.cache/common-lisp/ cache-common-lisp/
-  - cp -ruT ~/.roswell/lisp/quicklisp/dists/ roswell-quicklisp-dists/
+  - cp -ruT ~/.cache/ cache/
+  - cp -ruT ~/.roswell/ roswell/
 
 build-and-test:
   stage: build-and-test
