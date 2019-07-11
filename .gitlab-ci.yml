@@ -1,0 +1,11 @@
+image: devmohe/debian-roswell
+
+build:
+  script:
+    - ln -sf $PWD/{spickipedia,lack,parenscript,clack,cl-coveralls} ~/.roswell/local-projects/
+
+test:
+  script:
+    - ros --verbose -s prove -e '(or (prove:run :spickipedia-test) (uiop:quit -1))'
+    - ros -e "(ql:quickload '(:marshal :hunchentoot :clsql :cl-oauth :postmodern :rucksack :cl-fastcgi :toot :wookie :cl-redis :sqlite :fiveam :cl-js))"
+    - '~/.roswell/bin/sblint | ~/go/bin/reviewdog -efm="%f:%l:%c: %m" -diff="git diff master" -reporter=github-pr-check'
