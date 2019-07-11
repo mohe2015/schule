@@ -12,23 +12,21 @@ cache:
 build:
   stage: build
   before_script:
-    - echo ln
     - ln -sf $PWD/{spickipedia,lack,parenscript,clack,cl-coveralls} ~/.roswell/local-projects/
   script:
-    - echo build spickipedia
     - ros -e "(ql:quickload '(:spickipedia :spickipedia-test))"
+    - pwd
+    - ls ~/.cache/common-lisp/
+    - ls ~/.roswell/
 
 test:
   stage: test
   script:
-    - echo prove
     - ros --verbose -s prove -e '(or (prove:run :spickipedia-test) (uiop:quit -1))'
 
 lint:
   stage: test
   before_script:
-    - echo quickload
     - ros -e "(ql:quickload '(:marshal :hunchentoot :clsql :cl-oauth :postmodern :rucksack :cl-fastcgi :toot :wookie :cl-redis :sqlite :fiveam :cl-js))"
   script:
-    - echo lint
     - '~/.roswell/bin/sblint | ~/go/bin/reviewdog -efm="%f:%l:%c: %m" -diff="git diff master" -reporter=github-pr-check'
