@@ -1,8 +1,8 @@
 FROM ubuntu:devel
 MAINTAINER Moritz Hedtke dev.mohe@github.com
 
-RUN apt update
-RUN apt install -y curl jq libcurl3-gnutls bzip2 make git gcc libxml2 libargon2-dev locales file golang libfcgi-dev libuv1-dev libssl-dev
+RUN apt update && apt upgrade -y && apt install -y curl && curl -O https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && apt install -y ./*.deb
+RUN apt install -y jq libcurl3-gnutls bzip2 make git gcc libxml2 libargon2-dev locales file golang libfcgi-dev libuv1-dev libssl-dev firefox
 RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && locale-gen
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
