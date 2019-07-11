@@ -24,7 +24,7 @@ after_script:
 build-and-test:
   stage: build-and-test
   script:
-    - ros --verbose -s prove -e '(or (ignore-errors (prove:run :spickipedia-test)) (uiop:quit -1))'
+    - ros -s prove -e '(or (ignore-errors (prove:run :spickipedia-test)) (uiop:quit -1))'
     - ~/.roswell/bin/sblint
 
 # ros -e "(ql:quickload '(:marshal :hunchentoot :clsql :cl-oauth :postmodern :rucksack :cl-fastcgi :toot :wookie :cl-redis :sqlite :fiveam :cl-js))"
