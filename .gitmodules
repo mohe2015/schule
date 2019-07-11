@@ -31,3 +31,6 @@
 [submodule "cl-selenium-webdriver"]
 	path = cl-selenium-webdriver
 	url = https://github.com/mohe2015/cl-selenium-webdriver.git
+[submodule "cl-inside-docker"]
+	path = cl-inside-docker
+	url = http://192.168.2.150/root/cl-inside-docker.git
