@@ -7,7 +7,7 @@ stages:
 cache:
   untracked: true
 
-;; git clone https://github.com/mohe2015/wiki && cd wiki && git checkout state-machine
+# git clone https://github.com/mohe2015/wiki && cd wiki && git checkout state-machine
 
 before_script:
   - mkdir -p cache
