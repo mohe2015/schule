@@ -2,8 +2,8 @@ image: devmohe/debian-roswell
 
 # git clone http://192.168.2.150/root/wiki.git && cd wiki && git checkout state-machine
 
-
-
+variables:
+  GIT_SUBMODULE_STRATEGY: recursive
 
 stages:
   - build-and-test
