@@ -1,5 +1,14 @@
 (var __-p-s_-m-v_-r-e-g)
 
+(i "./template.lisp" "getTemplate")
+(i "./show-tab.lisp" "showTab")
+(i "./cleanup.lisp" "cleanup")
+(i "./math.lisp" "renderMath")
+(i "./image-viewer.lisp")
+(i "./fetch.lisp" "checkStatus" "json" "handleFetchError")
+(i "./utils.lisp" "all" "one" "clearChildren")
+(i "./wiki.lisp" "handleWikiName" "handleWikiNameEnter")
+
 (defun node (value)
   (setf (chain this value) value)
   (setf (chain this children) (array))
@@ -54,7 +63,7 @@
     (defun enter-state (state)
       (let ((module (await (funcall import (chain import meta url)))))
         (loop for transition in (current-state-to-new-state *STATE* state) do
-          (funcall (getprop module transition)))))))
+          (funcall (getprop window 'states transition)))))))
         ;; state handleWikiName
 
 (export
@@ -64,12 +73,6 @@
 (export
   (defun exit-loading ()
     (hide-tab "#loading")))
-
-(export
-  (defun handle-wiki-name-enter (page)
-    (chain console (log "1"))))
-    ;;(fetch wiki page))
-    ;; show wiki page
 
 (export
   (defun exit-wiki-page ()))

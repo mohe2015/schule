@@ -25,34 +25,43 @@
   (show-tab "#page"))
 
 (defroute "/wiki/:name"
-  (enter-state "handleWikiName")
-  (remove-class (one ".edit-button") "disabled")
-  (add-class (one "#is-outdated-article") "d-none")
-  (setf (inner-text (one "#wiki-article-title")) (decode-u-r-i-component name))
-  (cleanup)
-  (var network-data-received f)
-  (show-tab "#loading")
-  (var network-update
-       (chain (fetch (concatenate 'string "/api/wiki/" name))
-        (then check-status)
-        (then json)
-        (then (lambda (data) (setf network-data-received t) (update-page data)))
-        (catch
-            (lambda (error)
-              (if (= (chain error response status) 404)
-                  (show-tab "#not-found")
-                  (handle-fetch-error error))))))
-  (chain
-   caches
-   (match (concatenate 'string "/api/wiki/" name))
-   (then check-status) (then json)
-   (then
-    (lambda (data)
-      (if (not network-data-received)
-          (update-page data))))
-   (catch (lambda () network-update))
-   (catch
-       (lambda (error)
-         (if (= (chain error response status) 404)
-             (show-tab "#not-found")
-             (handle-fetch-error error))))))
+  (enter-state "handleWikiName"))
+
+(export
+  (defun handle-wiki-name-enter (page)
+    ;; TODO FIXME
+    (var name (chain window location pathname (split "/") 2))
+
+    (remove-class (one ".edit-button") "disabled")
+    (add-class (one "#is-outdated-article") "d-none")
+    (setf (inner-text (one "#wiki-article-title")) (decode-u-r-i-component name))
+    (cleanup)
+    (var network-data-received f)
+    (show-tab "#loading")
+    (var network-update
+         (chain (fetch (concatenate 'string "/api/wiki/" name))
+          (then check-status)
+          (then json)
+          (then (lambda (data) (setf network-data-received t) (update-page data)))
+          (catch
+              (lambda (error)
+                (if (= (chain error response status) 404)
+                    (show-tab "#not-found")
+                    (handle-fetch-error error))))))
+    (chain
+     caches
+     (match (concatenate 'string "/api/wiki/" name))
+     (then check-status) (then json)
+     (then
+      (lambda (data)
+        (if (not network-data-received)
+            (update-page data))))
+     (catch (lambda (error) network-update))
+     (catch
+         (lambda (error)
+           (if (= (chain error response status) 404)
+               (show-tab "#not-found")
+               (handle-fetch-error error)))))))
+
+(setf (chain window states) (or (chain window states) (new (-object))))
+(setf (@ window 'states "handleWikiNameEnter") (lisp (make-symbol "handle-wiki-name-enter")))
