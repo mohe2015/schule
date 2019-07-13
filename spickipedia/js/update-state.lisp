@@ -25,42 +25,30 @@
 (i "./utils.lisp" "all" "one" "clearChildren")
 
 #|
-
-graph like
-
                                     loading
     page history histories      edit
                           publish settings
                                   add-tag
-
 |#
-
-;; this format should be easily readable - the first subelement always belongs to the parent list
-(defparameter *TEST* '(loading (page) (history) (histories) (edit (publish) (settings (add-tag)))))
-
-;; everything not in subarray belongs to current level; the next array is child of previous element
-(defparameter *TEST2* '(loading (page history histories edit (publish settings (add-tag)))))
-
 (defparameter
   *TEST3*
   (create
     :element "loading"
     :children
       (array
-        (create :element "test" :test "jo"))))      
-#|
-{
- element: "loading",
- children:
-  [
-   {
-    element: "page"
-    children:
-     [
-      {
-       element: "test"}]}]}
-...
-|#
+        (create :element "page")
+        (create :element "history")
+        (create :element "histories")
+        (create
+          :element "edit"
+          :children
+            (array
+              (create :element "publish")
+              (create
+                :element "settings"
+                :children
+                  (array
+                    (create :element "add-tag"))))))))
 
 (defparameter *STATE* 'LOADING)
 
