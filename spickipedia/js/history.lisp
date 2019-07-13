@@ -40,26 +40,28 @@
   (remove-class (one ".edit-button") "disabled")
   (cleanup)
   (setf (inner-text (one "#wiki-article-title")) (decode-u-r-i-component page))
-  (chain $
-   (get (concatenate 'string "/api/revision/" id)
-        (lambda (data)
-          (chain (one "#currentVersionLink")
-           (attr "href" (concatenate 'string "/wiki/" page)))
-          (chain (one "#is-outdated-article") (remove-class "d-none"))
-          (chain (one "#categories") (html ""))
-          (loop for category in (chain data categories) do
-            (let ((template (get-template "template-readonly-category")))
-              (setf (inner-html (one ".closable-badge" template)) category)
-              (append (one "#categories") template)))
-          (chain (one "article") (html (chain data content)))
-          (chain window history (replace-state (create content data) nil nil))
-          (render-math)
-          (show-tab "#page")))
-   (fail
-    (lambda (jq-xhr text-status error-thrown)
-      (if (= (chain jq-xhr status) 404)
-          (show-tab "#not-found")
-          (handle-error jq-xhr t))))))
+  (chain
+    (fetch (concatenate 'string "/api/revision/" id))
+    (then check-status)
+    (then json)
+    (then
+      (lambda (data)
+        (setf (href (one "#currentVersionLink")) (concatenate 'string "/wiki/" page))
+        (remove-class (one "#is-outdated-article") "d-none")
+        (setf (inner-html (one "#categories")) "")
+        (loop for category in (chain data categories) do
+          (let ((template (get-template "template-readonly-category")))
+            (setf (inner-html (one ".closable-badge" template)) category)
+            (append (one "#categories") template)))
+        (setf (inner-html (one "article")) (chain data content))
+        (chain window history (replace-state (create content data) nil nil))
+        (render-math)
+        (show-tab "#page")))
+    (catch
+      (lambda (error)
+        (if (= (chain error response status) 404)
+            (show-tab "#not-found")
+            (handle-fetch-error error))))))
 
 (defroute "/wiki/:page/history/:id/changes"
  (chain (one ".edit-button") (add-class "disabled"))
