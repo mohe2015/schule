@@ -1,10 +1,10 @@
 (in-package :spickipedia.web)
 
-(my-defroute :post "/api/teachers" (:admin :user) (|name| |initial|)) "text/html"
+(my-defroute :post "/api/teachers" (:admin :user) (|name| |initial|) "text/html"
   (dbi:with-transaction *connection*
     (let* ((teacher (create-dao 'teacher))
            (revision (create-dao 'teacher-revision :author user :teacher teacher :name (first |name|) :initial (first |initial|))))
-      (format nil "~a" (object-id teacher))))
+      (format nil "~a" (object-id teacher)))))
 
 (my-defroute :get "/api/teachers" (:admin :user) () "application/json"
   (let* ((teachers (select-dao 'teacher))

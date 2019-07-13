@@ -2,25 +2,19 @@
 
 (defparameter *js-target-version* "1.8.5")
 
-(defpsmacro route2symbol (route)
-  `(make-symbol (concatenate 'string "handle-" (subseq (regex-replace-all "/[:\\.]?" ,route "-") 1))))
-
-(defpsmacro route2regex (route)
-  `(concatenate 'string "^" (regex-replace-all "\\.[^/]*" (regex-replace-all ":[^/]*" route "([^/]*)") "(.*)") "$"))
-
 (defpsmacro defroute (route &body body)
   `(progn
      (export
-       (defun ,(route2symbol route) (path)
+       (defun ,(make-symbol (concatenate 'string "handle-" (subseq (regex-replace-all "/[:\\.]?" route "-") 1))) (path)
          (var results nil)
-         (when (var results (chain (new reg-exp ,(route2regex route))) (exec path))
+         (when (var results (chain (new (-reg-exp ,(concatenate 'string "^" (regex-replace-all "\\.[^/]*" (regex-replace-all ":[^/]*" route "([^/]*)") "(.*)") "$"))) (exec path)))
                ,@(loop for variable in (all-matches-as-strings "[:.][^/]*" route) for i from 1 collect
                    `(defparameter ,(make-symbol (string-upcase (subseq variable 1))) (chain results ,i)))
                ,@body
                (return t))
          (return f)))
      (chain (setf (chain window routes) (or (chain window routes) ([])))
-            (push (route2symbol route)))))
+            (push ,(make-symbol (concatenate 'string "handle-" (subseq (regex-replace-all "/[:\\.]?" route "-") 1)))))))
 
 (defpsmacro i (file &rest contents) `(import ,file ,@contents))
 
