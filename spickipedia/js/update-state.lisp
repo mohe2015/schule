@@ -24,73 +24,6 @@
 (i "./settings/index.lisp" "handleSettings")
 (i "./utils.lisp" "all" "one" "clearChildren")
 
-#|
-                                    loading
-    page history histories      edit
-                          publish settings
-                                  add-tag
-|#
-
-(defun node (value)
-  (setf (chain this value) value)
-  (setf (chain this children) (array))
-  (setf (chain this parent) nil)
-
-  (setf (chain this set-parent-node)
-        (lambda (node)
-          (setf (chain this parent) node)))
-
-  (setf (chain this get-parent-node)
-        (lambda ()
-          (chain this parent)))
-
-  (setf (chain this add-child)
-        (lambda (node)
-          (chain node (set-parent-node this))
-          (setf (@ this 'children (chain this children length)) node)))
-
-  (setf (chain this get-children)
-        (lambda ()
-          (chain this children)))
-
-  (setf (chain this remove-children)
-        (lambda ()
-          (setf (chain this children) (array)))))
-
-(defparameter *STATE* 'LOADING)
-
-(defun enter-loading ()
-  (show-tab "#loading"))
-
-(defun exit-loading ()
-  (hide-tab "#loading"))
-
-(defun enter-wiki-page (page))
-  ;;(fetch wiki page))
-  ;; show wiki page
-
-(defun exit-wiki-page ())
-  ;; abort fetch
-
-(defun enter-settings ())
-  ;; fetch settings
-  ;; show settings
-
-(defun exit-settings ())
-  ;; abort fetch
-
-(defun enter-settings-add-grade ())
-  ;; show-dialog
-
-(defun exit-settings-add-grade ())
-  ;; hide dialog
-
-(defun enter-login ())
-  ;; show login
-
-(defun enter-logout ())
-  ;; logging out
-
 (export
  (defun update-state ()
    (setf (chain window last-url) (chain window location pathname))
@@ -108,7 +41,8 @@
         (update-state)))
    (setf (style (one ".login-hide")) "")
    (loop for route in (chain window routes)
-         do (if (route (chain window location pathname))
-                (return-from update-state)))
+         do (when (route (chain window location pathname))
+              (chain console (log (chain route name)))
+              (return-from update-state)))
    (setf (inner-text (one "#errorMessage")) "Unbekannter Pfad!")
    (show-tab "#error")))
