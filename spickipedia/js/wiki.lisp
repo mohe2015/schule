@@ -42,18 +42,17 @@
               (if (= (chain error response status) 404)
                   (show-tab "#not-found")
                   (handle-fetch-error error))))))
-
- (chain
-  caches
-  (match (concatenate 'string "/api/wiki/" name))
-  (then check-status) (then json)
-  (then
-   (lambda (data)
-     (if (not network-data-received)
-         (update-page data))))
-  (catch (lambda () network-update))
-  (catch
-      (lambda (error)
-        (if (= (chain error response status) 404)
-            (show-tab "#not-found")
-            (handle-fetch-error error))))))
+  (chain
+   caches
+   (match (concatenate 'string "/api/wiki/" name))
+   (then check-status) (then json)
+   (then
+    (lambda (data)
+      (if (not network-data-received)
+          (update-page data))))
+   (catch (lambda () network-update))
+   (catch
+       (lambda (error)
+         (if (= (chain error response status) 404)
+             (show-tab "#not-found")
+             (handle-fetch-error error))))))
