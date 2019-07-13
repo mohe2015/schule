@@ -51,13 +51,9 @@
 
 (export
   (defun enter-state (state)
-    (chain
-      (funcall import (chain import meta url))
-      (then
-        (lambda (module)
-          ;; state handleWikiName
-
-          (chain console (log module)))))))
+    (let ((module (await (funcall import (chain import meta url)))))
+      ;; state handleWikiName
+      (chain console (log module)))))
 
 (defun enter-loading ()
   (show-tab "#loading"))
