@@ -47,42 +47,55 @@
         (return (array)))
     (loop for state in (chain old-state (get-children)) do
       (if (current-state-to-new-state state new-state)
-          (return (chain (array (concatenate 'string "enter-" (chain state value))) (concat (current-state-to-new-state state new-state))))))))
+          (return (chain (array (concatenate 'string (chain state value) "Enter")) (concat (current-state-to-new-state state new-state))))))))
 
 (export
-  (defun enter-state (state)
-    (let ((module (await (funcall import (chain import meta url)))))
-      ;; state handleWikiName
-      (chain console (log module)))))
+  (async
+    (defun enter-state (state)
+      (let ((module (await (funcall import (chain import meta url)))))
+        (loop for transition in (current-state-to-new-state *STATE* state) do
+          (funcall (getprop module transition)))))))
+        ;; state handleWikiName
 
-(defun enter-loading ()
-  (show-tab "#loading"))
+(export
+  (defun enter-loading ()
+    (show-tab "#loading")))
 
-(defun exit-loading ()
-  (hide-tab "#loading"))
+(export
+  (defun exit-loading ()
+    (hide-tab "#loading")))
 
-(defun enter-wiki-page (page))
-  ;;(fetch wiki page))
-  ;; show wiki page
+(export
+  (defun handle-wiki-name-enter (page)
+    (chain console (log "1"))))
+    ;;(fetch wiki page))
+    ;; show wiki page
 
-(defun exit-wiki-page ())
-  ;; abort fetch
+(export
+  (defun exit-wiki-page ()))
+    ;; abort fetch
 
-(defun enter-settings ())
-  ;; fetch settings
-  ;; show settings
+(export
+  (defun enter-settings ()))
+    ;; fetch settings
+    ;; show settings
 
-(defun exit-settings ())
-  ;; abort fetch
+(export
+  (defun exit-settings ()))
+    ;; abort fetch
 
-(defun enter-settings-add-grade ())
-  ;; show-dialog
+(export
+  (defun enter-settings-add-grade ()))
+    ;; show-dialog
 
-(defun exit-settings-add-grade ())
-  ;; hide dialog
+(export
+  (defun exit-settings-add-grade ()))
+    ;; hide dialog
 
-(defun enter-login ())
-  ;; show login
+(export
+  (defun enter-login ()))
+    ;; show login
 
-(defun enter-logout ())
-  ;; logging out
+(export
+  (defun enter-logout ()))
+    ;; logging out
