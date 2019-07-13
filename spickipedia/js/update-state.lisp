@@ -1,6 +1,5 @@
 (var __-p-s_-m-v_-r-e-g)
 
-
 (i "./wiki.lisp" "handleWikiName")
 (i "./search.lisp" "handleSearchQuery" "handleSearch")
 (i "./quiz.lisp" "handleQuizIdResults" "handleQuizIdPlayIndex"
@@ -24,6 +23,44 @@
 (i "./student-courses/index.lisp" "handleStudentCourses")
 (i "./settings/index.lisp" "handleSettings")
 (i "./utils.lisp" "all" "one" "clearChildren")
+
+#|
+
+graph like
+
+                                    loading
+    page history histories      edit
+                          publish settings
+                                  add-tag
+
+|#
+
+;; this format should be easily readable - the first subelement always belongs to the parent list
+(defparameter *TEST* '(loading (page) (history) (histories) (edit (publish) (settings (add-tag)))))
+
+;; everything not in subarray belongs to current level; the next array is child of previous element
+(defparameter *TEST2* '(loading (page history histories edit (publish settings (add-tag)))))
+
+(defparameter
+  *TEST3*
+  (create
+    :element "loading"
+    :children
+      (array
+        (create :element "test" :test "jo"))))      
+#|
+{
+ element: "loading",
+ children:
+  [
+   {
+    element: "page"
+    children:
+     [
+      {
+       element: "test"}]}]}
+...
+|#
 
 (defparameter *STATE* 'LOADING)
 
