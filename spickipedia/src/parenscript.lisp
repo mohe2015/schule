@@ -37,15 +37,13 @@
             ,(make-symbol
                (concatenate 'string "handle-" (subseq (regex-replace-all "/[:\\.]?" route "-") 1)))))))
 
-
 (defpsmacro i (file &rest contents) `(import ,file ,@contents))
 
 (defun file-js-gen (file)
   (in-package :spickipedia.parenscript)
   (handler-bind ((simple-warning
                   #'(lambda (e)
-                      (if (equal "Returning from unknown block ~A"
-                                 (simple-condition-format-control e))
+                      (if (equal "Returning from unknown block ~A" (simple-condition-format-control e))
                           (muffle-warning)))))
     (defparameter *ps-gensym-counter* 0)
     (ps-compile-file file)))
@@ -56,7 +54,7 @@
        (lambda (,event-variable)
          ,(if dynamic-selector
             `(if (not (chain event target (closest ,dynamic-selector)))
-               (return)))
+                 (return)))
          ,@body))))
 
 (defpsmacro inner-text (element)

@@ -1,5 +1,5 @@
-
 (in-package :spickipedia.web)
+
 (defun html-user-courses ()
   `((:template :id "student-courses-list-html"
      (:li

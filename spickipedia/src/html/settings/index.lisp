@@ -1,5 +1,5 @@
-
 (in-package :spickipedia.web)
+
 (defun html-settings ()
   `((:template :id "settings-student-course-html"
      (:div :class "custom-control custom-checkbox"
