@@ -42,7 +42,7 @@
    (setf (style (one ".login-hide")) "")
    (loop for route in (chain window routes)
          do (when (route (chain window location pathname))
-              (chain console (log (chain route name)))
+              ;;(chain console (log (chain route name)))
               (return-from update-state)))
    (setf (inner-text (one "#errorMessage")) "Unbekannter Pfad!")
    (show-tab "#error")))

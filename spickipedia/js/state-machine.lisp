@@ -27,7 +27,8 @@
           (setf (chain this children) (array))))
   this)
 
-(defparameter *STATE* (new (node "loading")))
+(export
+  (defparameter *STATE* (new (node "loading"))))
 
 (let ((edit (new (node "edit")))
       (settings (new (node "settings"))))
@@ -41,11 +42,21 @@
   (chain console (log *STATE*)))
 
 (export
+  (defun current-state-to-new-state (old-state new-state)
+    (if (= (chain old-state value) new-state)
+        (return (array)))
+    (loop for state in (chain old-state (get-children)) do
+      (if (current-state-to-new-state state new-state)
+          (return (chain (array (concatenate 'string "enter-" (chain state value))) (concat (current-state-to-new-state state new-state))))))))
+
+(export
   (defun enter-state (state)
     (chain
       (funcall import (chain import meta url))
       (then
         (lambda (module)
+          ;; state handleWikiName
+
           (chain console (log module)))))))
 
 (defun enter-loading ()
