@@ -30,25 +30,32 @@
                           publish settings
                                   add-tag
 |#
-(defparameter
-  *TEST3*
-  (create
-    :element "loading"
-    :children
-      (array
-        (create :element "page")
-        (create :element "history")
-        (create :element "histories")
-        (create
-          :element "edit"
-          :children
-            (array
-              (create :element "publish")
-              (create
-                :element "settings"
-                :children
-                  (array
-                    (create :element "add-tag"))))))))
+
+(defun node (value)
+  (setf (chain this value) value)
+  (setf (chain this children) (array))
+  (setf (chain this parent) nil)
+
+  (setf (chain this set-parent-node)
+        (lambda (node)
+          (setf (chain this parent) node)))
+
+  (setf (chain this get-parent-node)
+        (lambda ()
+          (chain this parent)))
+
+  (setf (chain this add-child)
+        (lambda (node)
+          (chain node (set-parent-node this))
+          (setf (@ this 'children (chain this children length)) node)))
+
+  (setf (chain this get-children)
+        (lambda ()
+          (chain this children)))
+
+  (setf (chain this remove-children)
+        (lambda ()
+          (setf (chain this children) (array)))))
 
 (defparameter *STATE* 'LOADING)
 
