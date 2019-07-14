@@ -11,17 +11,19 @@
 
 (on ("click" (all ".edit-button") event)
   (chain event (prevent-default))
+  (chain event (stop-propagation))
   (let ((pathname (chain window location pathname (split "/"))))
-    (push-state (concatenate 'string "/wiki/" (chain pathname 2) "/edit") (chain window history state))))
+    (push-state (concatenate 'string "/wiki/" (chain pathname 2) "/edit") (chain window history state)))
+  f)
 
 (defun init-editor (data)
-  (chain window history (replace-state data nil nil))
-  (if (chain data categories)
-      ;; TODO clear categories
-      (loop for category in (chain data categories) do
-        (let ((template (get-template "template-category")))
-          (setf (inner-html (one ".closable-badge-label" template)) category)
-          (before (one "#new-category") template))))
+  ;;(chain window history (replace-state data nil nil))
+  (when (chain data categories)
+    (remove (all ".closable-badge" (one "#form-settings")))
+    (loop for category in (chain data categories) do
+      (let ((template (get-template "template-category")))
+        (setf (inner-html (one ".closable-badge-label" template)) category)
+        (before (one "#new-category") template))))
   (setf (inner-html (one "article")) (chain data content))
   (show-editor)
   (show-tab "#page"))

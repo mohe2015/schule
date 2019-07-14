@@ -54,6 +54,7 @@
 
 (export
  (defun push-state (url data)
+   (debug "PUSH-STATE" url)
    (chain window history (push-state data nil url))
    (update-state)))
 

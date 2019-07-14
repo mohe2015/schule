@@ -95,7 +95,7 @@
         (:li :class "nav-item d-none d-md-block"
          (:a :class "nav-link search-button " :href "/search" "Suchen"))
         (:li :class "nav-item d-none d-md-block"
-         (:a :class "nav-link edit-button" :href "#" "Bearbeiten"))
+         (:a :class "nav-link edit-button" :href "" "Bearbeiten"))
         (:li :class "nav-item"
          (:a :class "nav-link" :href "/settings" "Einstellungen"))
         (:li :class "nav-item"

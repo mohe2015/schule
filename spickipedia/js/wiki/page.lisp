@@ -9,12 +9,12 @@
 (i "../state-machine.lisp" "enterState")
 
 (defun update-page (data)
-  (if (chain data categories)
-      (setf (inner-html (one "#categories")) "")
-      (loop for category in (chain data categories) do
-        (let ((template (get-template "template-readonly-category")))
-          (setf (inner-html (one ".closable-badge" template)) category)
-          (append (one "#categories") template))))
+  (when (chain data categories)
+    (remove (all ".closable-badge" (one "#categories")))
+    (loop for category in (chain data categories) do
+      (let ((template (get-template "template-readonly-category")))
+        (setf (inner-html (one ".closable-badge" template)) category)
+        (append (one "#categories") template))))
   (setf (inner-html (one "article")) (chain data content))
   (show-tab "#page"))
 

@@ -103,3 +103,15 @@
 
 (defpsmacro append (element new-element)
   `(chain ,element (append ,new-element)))
+
+(defpsmacro debug (&rest message)
+  `(chain console (log "DEBUG: " ,@message)))
+
+(defpsmacro info (&rest message)
+  `(chain console (log "INFO: " ,@message)))
+
+(defpsmacro warning (&rest message)
+  `(chain console (log "WARNING: " ,@message)))
+
+(defpsmacro error (&rest message)
+  `(chain console (log "ERROR: " ,@message)))
