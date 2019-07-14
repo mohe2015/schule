@@ -25,6 +25,7 @@
                                  (chain error response status-text))))
                (alert error-message)))))))
 
+;; TODO (if (not (= text-status "abort"))
 (export
  (defun handle-fetch-error-show (error)
    (chain console (log (chain error)))
