@@ -17,6 +17,10 @@
 ros install ccl-bin
 ros install slime
 
+(ql-dist:install-dist "http://dist.ultralisp.org/" :prompt nil)
+(ql:update-dist "ultralisp")
+(ql:update-client)
+
 ln -s $PWD/spickipedia/ ~/.roswell/local-projects/
 ln -s $PWD/lack/ ~/.roswell/local-projects/
 ln -s $PWD/parenscript/ ~/.roswell/local-projects/

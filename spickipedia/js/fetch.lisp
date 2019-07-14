@@ -1,12 +1,13 @@
 (var __-p-s_-m-v_-r-e-g)
 
-(i "./push-state.lisp" "pushState")
+(i "./state-machine.lisp" "pushState")
 (i "./utils.lisp" "all" "one" "clearChildren")
 
 ;; TODO clean up
 
 (export
  (defun handle-fetch-error (error)
+   ;; TODO switch
    (let ((status (chain error response status)))
      (if (= status 401)
          (progn
@@ -24,9 +25,11 @@
                                  (chain error response status-text))))
                (alert error-message)))))))
 
+;; TODO (if (not (= text-status "abort"))
 (export
  (defun handle-fetch-error-show (error)
    (chain console (log (chain error)))
+   ;; TODO switch
    (let ((status (chain error response status)))
      (if (= status 401)
          (progn
@@ -40,11 +43,13 @@
                     "Du hast nicht die benötigten Berechtigungen, um diese Aktion durchzuführen. Sag mir Bescheid, wenn du glaubst, dass dies ein Fehler ist."))
                (chain (one "#errorMessage") (text error-message))
                (show-tab "#error"))
-             (let ((error-message
-                    (concatenate 'string "Unbekannter Fehler: "
-                                 (chain error response status-text))))
-               (chain (one "#errorMessage") (text error-message))
-               (show-tab "#error")))))))
+             (if (= (chain error response status) 404)
+                 (show-tab "#not-found")
+                 (let ((error-message
+                        (concatenate 'string "Unbekannter Fehler: "
+                                     (chain error response status-text))))
+                   (chain (one "#errorMessage") (text error-message))
+                   (show-tab "#error"))))))))
 
 (export
   (defun handle-login-error (error repeated)
@@ -77,17 +82,31 @@
  (defun json (response)
    (chain response (json))))
 
-(export (defun html () (chain response (text))))
+(export
+  (defun html ()
+    (chain response (text))))
 
 (export
  (defun cache-then-network (url callback)
-   (var networkdatareceived f)
-   (var networkupdate
-        (chain (fetch url) (then check-status) (then json)
-         (then (lambda (data) (setf networkdatareceived t) (callback data)))))
-   (chain caches (match url) (then check-status) (then json)
-    (then
-     (lambda (data)
-       (if (not networkdatareceived)
-           (callback data))))
-    (catch (lambda () networkupdate)))))
+   (var network-data-received f)
+   (var network-update
+        (chain
+          (fetch url)
+          (then check-status)
+          (then json)
+          (then
+            (lambda (data)
+              (setf network-data-received t)
+              (callback data)))
+          (catch handle-fetch-error-show)))
+   (chain
+     caches
+     (match url)
+     (then check-status)
+     (then json)
+     (then
+      (lambda (data)
+        (if (not network-data-received)
+            (callback data))))
+     (catch (lambda () network-update))
+     (catch handle-fetch-error-show))))

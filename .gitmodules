@@ -25,6 +25,9 @@
 [submodule "clack"]
 	path = clack
 	url = https://github.com/mohe2015/clack.git
-[submodule "cl-coveralls"]
-	path = cl-coveralls
-	url = https://github.com/mohe2015/cl-coveralls
+[submodule "cl-selenium-webdriver"]
+	path = cl-selenium-webdriver
+	url = https://github.com/mohe2015/cl-selenium-webdriver.git
+[submodule "cl-inside-docker"]
+	path = cl-inside-docker
+	url = https://github.com/mohe2015/cl-inside-docker.git

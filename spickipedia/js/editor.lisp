@@ -1,10 +1,9 @@
-
 (var __-p-s_-m-v_-r-e-g)
 
 (i "./editor-lib.lisp")
 (i "./math.lisp" "revertMath")
 (i "./read-cookie.lisp" "readCookie")
-(i "./push-state.lisp" "pushState")
+(i "./state-machine.lisp" "pushState")
 (i "./utils.lisp" "all" "one" "clearChildren")
 (i "./fetch.lisp" "checkStatus" "json" "html" "handleFetchError")
 
@@ -42,3 +41,9 @@
        (setf (inner-html (one "article")) "<p></p>"))
    (add-class (one ".article-editor") "fullscreen")
    (chain document (exec-command "defaultParagraphSeparator" f "p"))))
+
+(export
+ (defun hide-editor ()
+   (add-class (one "#editor") "d-none")
+   (setf (content-editable (one "article")) f)
+   (remove-class (one ".article-editor") "fullscreen")))

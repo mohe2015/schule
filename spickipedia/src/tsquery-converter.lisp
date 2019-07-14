@@ -1,7 +1,9 @@
+(in-package :spickipedia.tsquery-converter)
 
-(in-package :spickipedia.tsquery-converter) 
-(defun handle-quoted (query) (concat "(" (join " <-> " (split " " query)) ")")) 
-(defun handle-unquoted (query) (concat "(" (join " & " (split " " query)) ")")) 
+(defun handle-quoted (query) (concat "(" (join " <-> " (split " " query)) ")"))
+
+(defun handle-unquoted (query) (concat "(" (join " & " (split " " query)) ")"))
+
 (defun tsquery-convert-part (query add-wildcard)
   (setf query (split #\" query))
   (if add-wildcard
@@ -15,7 +17,8 @@
                 collect e))
   (setf query (remove "()" query :test #'string=))
   (setf query (join " & " query))
-  query) 
+  query)
+
 (defun tsquery-convert (query)
   (if (oddp (count #\" query))
       (setf query (concatenate 'string query "\"")))
@@ -24,4 +27,4 @@
           (loop for e in query
                 collect (tsquery-convert-part (trim e) (= 1 (length query)))))
   (setf query (join " | " query))
-  query) 
+  query)

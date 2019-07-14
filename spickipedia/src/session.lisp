@@ -1,8 +1,10 @@
+(in-package :cl-user)
 
-(in-package :cl-user) 
 (defpackage spickipedia.session
-  (:use :cl)) 
-(in-package :spickipedia.session) 
+  (:use :cl))
+
+(in-package :spickipedia.session)
+
 (defmethod session-verify ((request request))
   (let ((*connection*
          (dbi:connect-cached :sqlite3 :database-name *database-path*))
@@ -10,9 +12,11 @@
          (cookie-in (session-cookie-name *acceptor*) request)))
     (if session-identifier
         (find-dao 'my-session :session-cookie session-identifier)
-        nil))) 
+        nil)))
+
 (defmethod session-cookie-value ((my-session my-session))
-  (and my-session (my-session-cookie my-session))) 
+  (and my-session (my-session-cookie my-session)))
+
 (defun start-my-session ()
   "Returns the current SESSION object. If there is no current session,
 creates one and updates the corresponding data structures. In this
@@ -29,7 +33,8 @@ case the function will also send a session cookie to the browser."
     (set-cookie "_csrf_token" :value (my-session-csrf-token session) :path "/"
      :max-age (* 60 60 24 365))
     (session-created *acceptor* session)
-    (setq *session* session))) 
+    (setq *session* session)))
+
 (defun regenerate-session (session)
   "Regenerates the cookie value. This should be used
 when a user logs in according to the application to prevent against
@@ -46,4 +51,4 @@ function twice in the same second will regenerate twice the same value."
    (my-session-cookie session) :path "/" :http-only t :max-age
    (* 60 60 24 365))
   (set-cookie "_csrf_token" :value (my-session-csrf-token session) :path "/"
-   :max-age (* 60 60 24 365))) 
+   :max-age (* 60 60 24 365)))

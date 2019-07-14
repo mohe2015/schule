@@ -4,7 +4,7 @@
 (i "./read-cookie.lisp" "readCookie")
 (i "./fetch.lisp" "checkStatus" "json" "html" "handleFetchError")
 (i "./template.lisp" "getTemplate")
-(i "./push-state.lisp" "pushState")
+(i "./state-machine.lisp" "pushState")
 (i "./utils.lisp" "all" "one" "clearChildren")
 
 (defroute "/teachers/new" (show-tab "#create-teacher-tab"))

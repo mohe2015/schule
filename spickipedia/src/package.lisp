@@ -1,15 +1,19 @@
 (defpackage spickipedia.argon2
   (:use :cl :cffi :ironclad)
   (:export :hash :verify))
+
 (defpackage spickipedia.sanitize
   (:use :cl :sanitize)
   (:export :*sanitize-spickipedia*))
+
 (defpackage spickipedia.tsquery-converter
   (:use :cl :str)
   (:export :tsquery-convert))
+
 (defpackage spickipedia.parenscript
   (:use :cl :parenscript :ppcre :ironclad)
   (:export :file-js-gen :js-files))
+
 (defpackage spickipedia.config
   (:use :cl)
   (:import-from :envy :config-env-var :defconfig)
@@ -21,6 +25,7 @@
            :appenv
            :developmentp
            :productionp))
+
 (defpackage spickipedia.db
   (:use :cl :mito)
   (:import-from :spickipedia.config :config)
@@ -88,6 +93,7 @@
            :student-course-student
            :student-course-course
            :setup-db))
+
 (defpackage spickipedia.web
   (:use :cl
         :caveman2

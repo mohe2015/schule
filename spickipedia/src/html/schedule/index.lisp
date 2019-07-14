@@ -1,5 +1,5 @@
-
 (in-package :spickipedia.web)
+
 (defun schedule-tab (day)
   `(:div :class "tab-pane fade" :id ,day :role "tabpanel" :aria-labeledby
     ,(concatenate 'string day "-tab")
@@ -13,6 +13,7 @@
                   (:button :type "button" :class
                    "add-course btn btn-sm btn-outline-primary w-100"
                    (:span :class "fa fa-plus"))))))))))
+
 (defun html-schedule ()
   `((:template :id "schedule-data-cell-template"
      (:div :class "mb-3 mt-3 schedule-data test"

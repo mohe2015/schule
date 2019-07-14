@@ -7,7 +7,7 @@
       "/mathlive.core.css" "/mathlive.css" "/mathlive.js" "/popper.js"
       "/bootstrap.min.js" "/visual-diff.js" "/webfonts/fa-solid-900.woff2"
       "/js/index.lisp" "/js/replace-state.lisp"
-      "/js/update-state.lisp" "/js/push-state.lisp" "/js/editor-lib.lisp"
+      "/js/state-machine.lisp" "/js/push-state.lisp" "/js/editor-lib.lisp"
       "/js/register-sw.lisp" "/js/wiki.lisp" "/js/search.lisp" "/js/quiz.lisp"
       "/js/logout.lisp" "/js/login.lisp" "/js/root.lisp" "/js/history.lisp"
       "/js/edit.lisp" "/js/create.lisp" "/js/articles.lisp" "/js/show-tab.lisp"
