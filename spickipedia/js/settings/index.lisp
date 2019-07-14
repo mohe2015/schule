@@ -155,6 +155,23 @@
           (setf (disabled (one "button[type=submit" (one "#form-settings-create-course"))) f)))))
   f)
 
+(on ("click" (one "#button-create-teacher") event)
+  (show-modal (one "#modal-settings-create-teacher")))
+
+(on ("submit" (one "#form-settings-create-teacher") event)
+  (chain event (prevent-default))
+  (let* ((formelement (one "#form-settings-create-teacher"))
+         (formdata (new (-form-data formelement))))
+    (chain formdata (append "_csrf_token" (read-cookie "_csrf_token")))
+    (chain (fetch "/api/teachers" (create method "POST" body formdata))
+     (then check-status) (then json)
+     (then
+      (lambda (data)
+        (hide-modal (one "#modal-settings-create-teacher"))
+        (load-teachers)))
+     (catch handle-fetch-error)))
+  f)
+
 (on ("change" (one "body") event)
   (if (not (chain event target (closest ".student-course-checkbox")))
       (return))

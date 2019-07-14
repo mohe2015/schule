@@ -3,7 +3,7 @@
 (defun modal (base-id title footer body)
   `(:div :class "modal fade" :id ,(concatenate 'string "modal-" base-id)
     :tabindex "-1" :role "dialog" :aria-hidden "true"
-    (:div :class "modal-dialog" :role "document"
+    (:div :class "modal-dialog  modal-dialog-centered" :role "document"
      (:div :class "modal-content"
       (:form :method "POST" :id ,(concatenate 'string "form-" base-id)
        (:div :class "modal-header" (:h5 :class "modal-title" ,title)
