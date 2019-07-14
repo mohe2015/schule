@@ -95,9 +95,10 @@
   (defparameter *STATE* (new (node "loading"))))
 
 (let ((handle-wiki-page-edit (new (node "handleWikiPageEdit")))
-      (settings (new (node "settings")))
-      (handle-wiki-page (new (node "handleWikiPage"))))
+      (handle-wiki-page (new (node "handleWikiPage")))
+      (settings (new (node "settings"))))
   (chain *STATE* (add-child handle-wiki-page))
+  (chain *STATE* (add-child (new (node "handleSettings"))))
   (chain *STATE* (add-child (new (node "history"))))
   (chain *STATE* (add-child (new (node "histories"))))
   (chain handle-wiki-page (add-child handle-wiki-page-edit))

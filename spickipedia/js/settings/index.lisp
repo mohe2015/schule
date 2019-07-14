@@ -1,11 +1,11 @@
 (var __-p-s_-m-v_-r-e-g)
 
-(i "../show-tab.lisp" "showTab")
-(i "../read-cookie.lisp" "readCookie")
-(i "../fetch.lisp" "cacheThenNetwork" "checkStatus" "json" "html" "handleFetchError")
-(i "../template.lisp" "getTemplate")
-(i "../state-machine.lisp" "pushState")
-(i "../utils.lisp" "all" "one" "clearChildren")
+(i "/js/show-tab.lisp" "showTab")
+(i "/js/read-cookie.lisp" "readCookie")
+(i "/js/fetch.lisp" "cacheThenNetwork" "checkStatus" "json" "html" "handleFetchError")
+(i "/js/template.lisp" "getTemplate")
+(i "/js/utils.lisp" "all" "one" "clearChildren")
+(i "/js/state-machine.lisp" "enterState" "pushState")
 
 (defun render ()
   (show-tab "#loading")
@@ -77,7 +77,14 @@
      (catch handle-fetch-error))))
 
 (defroute "/settings"
+  (enter-state "handleSettings")
   (render))
+
+(defstate handle-settings-enter
+  (add-class (all ".edit-button") "disabled"))
+
+(defstate handle-settings-exit
+  (remove-class (all ".edit-button") "disabled"))
 
 (on ("click" (one "#settings-add-grade") event)
   (chain event (prevent-default))

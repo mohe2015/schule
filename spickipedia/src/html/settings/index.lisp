@@ -11,8 +11,7 @@
        `(:h2 :class "text-center" "Einstellungen")
        `(:h3 :class "text-center" "Dein Jahrgang")
        `(:form :id "settings-form-select-grade"
-          (:select :class "custom-select" :id "settings-select-grade" :name)
-         "grade")
+          (:select :class "custom-select" :id "settings-select-grade" :name "grade"))
        `(:a :id "settings-add-grade" :type "button" :class
           "btn btn-primary norefresh" "Jahrgang hinzufügen")
        `(:h3 :class "text-center" "Deine Kurse")
