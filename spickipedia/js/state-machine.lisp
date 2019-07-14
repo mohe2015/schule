@@ -40,11 +40,12 @@
   (defparameter *STATE* (new (node "loading"))))
 
 (let ((edit (new (node "edit")))
-      (settings (new (node "settings"))))
-  (chain *STATE* (add-child (new (node "handleWikiName"))))
+      (settings (new (node "settings")))
+      (handle-wiki-name (new (node "handleWikiName"))))
+  (chain *STATE* (add-child handle-wiki-name))
   (chain *STATE* (add-child (new (node "history"))))
   (chain *STATE* (add-child (new (node "histories"))))
-  (chain *STATE* (add-child edit))
+  (chain handle-wiki-name (add-child edit))
   (chain edit (add-child (new (node "publish"))))
   (chain edit (add-child settings))
   (chain settings (add-child (new (node "add-tag"))))
@@ -53,18 +54,30 @@
 (export
   (defun current-state-to-new-state (old-state new-state)
     (if (= (chain old-state value) new-state)
-        (return (array)))
+        (return (values (array) old-state)))
     (loop for state in (chain old-state (get-children)) do
-      (if (current-state-to-new-state state new-state)
-          (return (chain (array (concatenate 'string (chain state value) "Enter")) (concat (current-state-to-new-state state new-state))))))))
+      (multiple-value-bind (transitions new-state-object) (current-state-to-new-state state new-state)
+        (if transitions
+            (return (values (chain (array (concatenate 'string (chain state value) "Enter")) (concat transitions)) new-state-object)))))))
+
+(export
+  (defun current-state-to-new-state2 (old-state new-state)
+    (multiple-value-bind (transitions new-state-object) (current-state-to-new-state old-state new-state)
+      (if transitions
+        (return (values transitions new-state-object))))
+    (if (chain old-state (get-parent-node))
+      (multiple-value-bind (transitions new-state-object) (current-state-to-new-state (chain old-state (get-parent-node)) new-state)
+        (return (values (chain (array (concatenate 'string (chain old-state value) "Exit")) (concat transitions)) new-state-object))))))
 
 (export
   (async
     (defun enter-state (state)
       (let ((module (await (funcall import (chain import meta url)))))
-        (loop for transition in (current-state-to-new-state *STATE* state) do
-          (funcall (getprop window 'states transition)))))))
-        ;; state handleWikiName
+        (multiple-value-bind (transitions new-state-object) (current-state-to-new-state2 *STATE* state)
+          (loop for transition in transitions do
+            (funcall (getprop window 'states transition)))
+          (setf *STATE* new-state-object))))))
+          ;; state handleWikiName
 
 (export
   (defun enter-loading ()
