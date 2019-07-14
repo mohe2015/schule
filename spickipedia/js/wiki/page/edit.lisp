@@ -5,17 +5,17 @@
 (i "/js/math.lisp" "renderMath")
 (i "/js/editor.lisp" "showEditor" "hideEditor")
 (i "/js/utils.lisp" "all" "one" "clearChildren")
-(i "/js/fetch.lisp" "checkStatus" "json" "handleFetchErrorShow")
+(i "/js/fetch.lisp" "checkStatus" "json" "handleFetchErrorShow" "cacheThenNetwork")
 (i "/js/template.lisp" "getTemplate")
 (i "/js/state-machine.lisp" "enterState" "pushState")
 
-;; TODO FIXME if lazy loading this would need to be loaded before
 (on ("click" (all ".edit-button") event)
   (chain event (prevent-default))
   (let ((pathname (chain window location pathname (split "/"))))
     (push-state (concatenate 'string "/wiki/" (chain pathname 2) "/edit") (chain window history state))))
 
 (defun init-editor (data)
+  (chain window history (replace-state data nil nil))
   (if (chain data categories)
       ;; TODO clear categories
       (loop for category in (chain data categories) do
@@ -28,21 +28,10 @@
 
 (defroute "/wiki/:page/edit"
   (enter-state "handleWikiPageEdit")
- (setf (inner-text (one "#wiki-article-title")) (decode-u-r-i-component page))
+  (setf (inner-text (one "#wiki-article-title")) (decode-u-r-i-component page))
 
- (if (not (null (chain window history state)))
-     (init-editor (chain window history state))
-     (progn
-      (show-tab "#loading")
-      (chain
-        (fetch (concatenate 'string "/api/wiki/" page))
-        (then check-status)
-        (then json)
-        (then
-          (lambda (data)
-            (init-editor data)
-            (chain window history (replace-state data nil nil))))
-        (catch handle-fetch-error-show)))))
+  (show-tab "#loading")
+  (cache-then-network (concatenate 'string "/api/wiki/" page) init-editor))
 
 (defstate handle-wiki-page-edit-enter
   (add-class (one ".edit-button") "disabled"))

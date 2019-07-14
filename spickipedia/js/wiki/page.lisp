@@ -19,15 +19,14 @@
   (show-tab "#page"))
 
 (defroute "/wiki/:page"
-  (enter-state "handleWikiPage"))
+  (enter-state "handleWikiPage")
 
-(defstate handle-wiki-page-enter
-  (var page (chain window location pathname (split "/") 2)) ;; TODO cleanup
-  (remove-class (one ".edit-button") "disabled")
   (setf (inner-text (one "#wiki-article-title")) (decode-u-r-i-component page))
   (show-tab "#loading")
   (cache-then-network (concatenate 'string "/api/wiki/" page) update-page))
 
+(defstate handle-wiki-page-enter
+  (remove-class (one ".edit-button") "disabled"))
+
 (defstate handle-wiki-page-exit
-  (add-class (one ".edit-button") "disabled")
-  (show-tab "#loading"))
+  (add-class (one ".edit-button") "disabled"))
