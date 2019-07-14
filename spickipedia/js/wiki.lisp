@@ -10,6 +10,7 @@
 
 (defun update-page (data)
   (if (chain data categories)
+      (setf (inner-html (one "#categories")) "")
       (loop for category in (chain data categories) do
         (let ((template (get-template "template-readonly-category")))
           (setf (inner-html (one ".closable-badge" template)) category)
@@ -21,7 +22,7 @@
   (enter-state "handleWikiName"))
 
 (export
-  (defun handle-wiki-name-enter (page)
+  (defun handle-wiki-name-enter ()
     (var name (chain window location pathname (split "/") 2)) ;; TODO cleanup
 
     (remove-class (one ".edit-button") "disabled")
@@ -32,3 +33,11 @@
 
 (setf (chain window states) (or (chain window states) (new (-object))))
 (setf (@ window 'states "handleWikiNameEnter") (lisp (make-symbol "handle-wiki-name-enter")))
+
+(export
+  (defun handle-wiki-name-exit ()
+    (add-class (one ".edit-button") "disabled")
+    (show-tab "#loading")))
+
+(setf (chain window states) (or (chain window states) (new (-object))))
+(setf (@ window 'states "handleWikiNameExit") (lisp (make-symbol "handle-wiki-name-exit")))
