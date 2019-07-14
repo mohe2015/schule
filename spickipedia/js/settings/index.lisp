@@ -102,45 +102,47 @@
 
 (on ("click" (one "#settings-show-schedule") event)
   (chain event (prevent-default))
-  (let* ((select
-          (chain document (get-element-by-id "settings-select-grade")))
-         (grade
-          (getprop select 'options (chain select selected-index) 'text)))
+  (let* ((select (chain document (get-element-by-id "settings-select-grade")))
+         (grade (getprop select 'options (chain select selected-index) 'text)))
     (push-state (concatenate 'string "/schedule/" grade))))
 
 (on ("submit" (one "#form-settings-create-grade") event)
   (chain event (prevent-default))
-  (let* ((formelement
-          (chain document (query-selector "#form-settings-create-grade")))
+  (let* ((formelement (chain document (query-selector "#form-settings-create-grade")))
          (formdata (new (-form-data formelement))))
     (chain formdata (append "_csrf_token" (read-cookie "_csrf_token")))
     (chain (fetch "/api/schedules" (create method "POST" body formdata))
-     (then check-status)
-     (then
-      (lambda (data) (hide-modal (one "#modal-settings-create-grade")) (render)))
-     (catch handle-fetch-error)))
+      (then check-status)
+      (then
+        (lambda (data)
+          (hide-modal (one "#modal-settings-create-grade"))
+          (render)))
+      (catch handle-fetch-error)))
   f)
 
 (on ("change" (one "#settings-select-grade") event)
   (let* ((formelement (chain document (query-selector "#settings-form-select-grade")))
          (formdata (new (-form-data formelement))))
     (chain formdata (append "_csrf_token" (read-cookie "_csrf_token")))
-    (chain (fetch "/api/settings" (create method "POST" body formdata))
-     (then check-status) (then (lambda (data) (render)))
-     (catch handle-fetch-error)))
+    (chain
+      (fetch "/api/settings" (create method "POST" body formdata))
+      (then check-status)
+      (then (lambda (data) (render)))
+      (catch handle-fetch-error)))
   f)
 
 (on ("submit" (one "#form-settings-create-course") event)
   (chain event (prevent-default))
-  (let* ((formelement
-          (chain document (query-selector "#form-settings-create-course")))
+  (let* ((formelement (chain document (query-selector "#form-settings-create-course")))
          (formdata (new (-form-data formelement))))
     (chain formdata (append "_csrf_token" (read-cookie "_csrf_token")))
     (chain (fetch "/api/courses" (create method "POST" body formdata))
-     (then check-status)
-     (then
-      (lambda (data) (hide-modal (one "#modal-settings-create-course")) (render)))
-     (catch handle-fetch-error)))
+      (then check-status)
+      (then
+        (lambda (data)
+          (hide-modal (one "#modal-settings-create-course"))
+          (render))
+       (catch handle-fetch-error))))
   f)
 
 (on ("change" (one "body") event)
@@ -148,18 +150,15 @@
       (return))
   (let* ((formdata (new (-form-data))))
     (chain console (log (chain event target)))
-    (chain formdata
-     (append "student-course"
-             (chain (chain event target id) (substring 15))))
+    (chain formdata (append "student-course" (chain (chain event target id) (substring 15))))
     (chain formdata (append "_csrf_token" (read-cookie "_csrf_token")))
     (if (chain event target checked)
         (chain
-         (fetch "/api/student-courses" (create method "POST" body formdata))
-         (then check-status) (then (lambda (data) nil))
-         (catch handle-fetch-error))
+          (fetch "/api/student-courses" (create method "POST" body formdata))
+          (then check-status)
+          (catch handle-fetch-error))
         (chain
-         (fetch "/api/student-courses"
-          (create method "DELETE" body formdata))
-         (then check-status) (then (lambda (data) nil))
-         (catch handle-fetch-error))))
+          (fetch "/api/student-courses" (create method "DELETE" body formdata))
+          (then check-status)
+          (catch handle-fetch-error))))
   f)
