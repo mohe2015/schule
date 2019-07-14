@@ -39,15 +39,15 @@
 (export
   (defparameter *STATE* (new (node "loading"))))
 
-(let ((edit (new (node "edit")))
+(let ((handle-wiki-page-edit (new (node "handleWikiPageEdit")))
       (settings (new (node "settings")))
       (handle-wiki-page (new (node "handleWikiPage"))))
   (chain *STATE* (add-child handle-wiki-page))
   (chain *STATE* (add-child (new (node "history"))))
   (chain *STATE* (add-child (new (node "histories"))))
-  (chain handle-wiki-page (add-child edit))
-  (chain edit (add-child (new (node "publish"))))
-  (chain edit (add-child settings))
+  (chain handle-wiki-page (add-child handle-wiki-page-edit))
+  (chain handle-wiki-page-edit (add-child (new (node "publish"))))
+  (chain handle-wiki-page-edit (add-child settings))
   (chain settings (add-child (new (node "add-tag"))))
   (chain console (log *STATE*)))
 

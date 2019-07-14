@@ -9,7 +9,7 @@
 (i "./root.lisp" "handle")
 (i "./history.lisp" "handleWikiPageHistoryIdChanges" "handleWikiPageHistoryId"
  "handleWikiNameHistory")
-(i "./edit.lisp" "handleWikiNameEdit")
+(i "./wiki/page/edit.lisp" "handleWikiPageEdit")
 (i "./create.lisp" "handleWikiNameCreate")
 (i "./articles.lisp" "handleArticles")
 (i "./show-tab.lisp" "showTab")
