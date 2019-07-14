@@ -7,63 +7,37 @@
 (i "/js/utils.lisp" "all" "one" "clearChildren")
 (i "/js/state-machine.lisp" "enterState" "pushState")
 
-(defun render ()
-  (show-tab "#loading")
-  (cache-then-network "/api/schedules"
-   (lambda (data)
-     (let ((grade-select (one "#settings-select-grade")))
-       (clear-children grade-select)
-       (let ((default-option (chain document (create-element "option"))))
-         (setf (chain default-option disabled) t)
-         (setf (chain default-option selected) t)
-         (setf (chain default-option value) "")
-         (setf (chain default-option inner-text) "Jahrgang auswählen...")
-         (chain grade-select (append-child default-option)))
-       (loop for grade in data
-             do (let ((option (chain document (create-element "option")))
-                      (text (chain grade grade)))
-                  (setf (chain option value) (chain grade id))
-                  (setf (chain option inner-text) text)
-                  (chain grade-select (append-child option))))
-       (cache-then-network "/api/settings"
-        (lambda (data)
-          (if data
-              (setf (chain grade-select value) (chain data id)))
-          (chain (fetch "/api/courses") (then check-status) (then json)
-           (then
-            (lambda (data)
-              (let ((courses-list
-                     (chain document
-                      (get-element-by-id "settings-list-courses"))))
-                (setf (chain courses-list inner-h-t-m-l) "")
-                (loop for page in data
-                      do (let ((template
-                                (get-template "settings-student-course-html"))
-                               (id
-                                (concatenate 'string "student-course-"
-                                             (chain page course-id))))
-                           (setf (chain template (query-selector "label")
-                                  inner-text)
-                                 (chain page subject))
-                           (chain template (query-selector "label")
-                            (set-attribute "for" id))
-                           (setf (chain template (query-selector "input") id)
-                                 id)
-                           (chain courses-list (append template)))))
-              (chain (fetch "/api/student-courses") (then check-status)
-               (then json)
-               (then
-                (lambda (data)
-                  (loop for student-course in data
-                        do (setf (chain document
-                                  (get-element-by-id
-                                   (concatenate 'string "student-course-"
-                                                (chain student-course course
-                                                 course-id)))
-                                  checked)
-                                 t)))))
-              (show-tab "#tab-settings")))
-           (catch handle-fetch-error)))))))
+(defun load-student-courses ()
+  (chain
+    (fetch "/api/student-courses")
+    (then check-status)
+    (then json)
+    (then
+     (lambda (data)
+       (loop for student-course in data do
+         (setf (chain document (get-element-by-id (concatenate 'string "student-course-" (chain student-course course course-id))) checked) t))))))
+
+(defun load-courses ()
+  (chain
+    (fetch "/api/courses")
+    (then check-status)
+    (then json)
+    (then
+      (lambda (data)
+        (let ((courses-list (chain document (get-element-by-id "settings-list-courses"))))
+          (setf (chain courses-list inner-h-t-m-l) "")
+          (loop for page in data do
+            (let ((template (get-template "settings-student-course-html"))
+                  (id (concatenate 'string "student-course-" (chain page course-id))))
+              (setf (chain template (query-selector "label") inner-text) (chain page subject))
+              (chain template (query-selector "label") (set-attribute "for" id))
+              (setf (chain template (query-selector "input") id) id)
+              (chain courses-list (append template)))))
+        (load-student-courses)
+        (show-tab "#tab-settings")))
+    (catch handle-fetch-error)))
+
+(defun load-teachers ()
   (let ((select (chain document (query-selector "#settings-teachers-select"))))
     (setf (chain select inner-h-t-m-l) "")
     (chain (fetch "/api/teachers") (then check-status) (then json)
@@ -75,6 +49,38 @@
                    (setf (chain element value) (chain teacher id))
                    (chain select (append-child element))))))
      (catch handle-fetch-error))))
+
+(defun load-settings ()
+  (let ((grade-select (one "#settings-select-grade")))
+    (cache-then-network "/api/settings"
+     (lambda (data)
+       (if data
+           (setf (chain grade-select value) (chain data id)))
+       (load-courses)))))
+
+(defun load-schedules ()
+  (cache-then-network "/api/schedules"
+    (lambda (data)
+      (let ((grade-select (one "#settings-select-grade")))
+        (clear-children grade-select)
+        (let ((default-option (chain document (create-element "option"))))
+          (setf (chain default-option disabled) t)
+          (setf (chain default-option selected) t)
+          (setf (chain default-option value) "")
+          (setf (chain default-option inner-text) "Jahrgang auswählen...")
+          (chain grade-select (append-child default-option)))
+        (loop for grade in data do
+          (let ((option (chain document (create-element "option")))
+                (text (chain grade grade)))
+            (setf (chain option value) (chain grade id))
+            (setf (chain option inner-text) text)
+            (chain grade-select (append-child option))))
+        (load-settings)))))
+
+(defun render ()
+  (show-tab "#loading")
+  (load-schedules)
+  (load-teachers))
 
 (defroute "/settings"
   (enter-state "handleSettings")
