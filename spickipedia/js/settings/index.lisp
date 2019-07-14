@@ -90,15 +90,20 @@
   (add-class (all ".edit-button") "disabled"))
 
 (defstate handle-settings-exit
+  (hide-modal (one "#modal-settings-create-grade"))
   (remove-class (all ".edit-button") "disabled"))
 
 (on ("click" (one "#settings-add-grade") event)
   (chain event (prevent-default))
-  (show-modal (one "#modal-settings-create-grade")))
+  (chain event (stop-propagation))
+  (show-modal (one "#modal-settings-create-grade"))
+  f)
 
 (on ("click" (one "#settings-add-course") event)
   (chain event (prevent-default))
-  (show-modal (one "#modal-settings-create-course")))
+  (chain event (stop-propagation))
+  (show-modal (one "#modal-settings-create-course"))
+  f)
 
 (on ("click" (one "#settings-show-schedule") event)
   (chain event (prevent-default))
@@ -131,8 +136,10 @@
       (catch handle-fetch-error)))
   f)
 
+;; TODO form cancel should abort
 (on ("submit" (one "#form-settings-create-course") event)
   (chain event (prevent-default))
+  (setf (disabled (one "button[type=submit" (one "#form-settings-create-course"))) t)
   (let* ((formelement (chain document (query-selector "#form-settings-create-course")))
          (formdata (new (-form-data formelement))))
     (chain formdata (append "_csrf_token" (read-cookie "_csrf_token")))
@@ -141,8 +148,11 @@
       (then
         (lambda (data)
           (hide-modal (one "#modal-settings-create-course"))
-          (render))
-       (catch handle-fetch-error))))
+          (render)))
+      (catch handle-fetch-error)
+      (finally
+        (lambda (error)
+          (setf (disabled (one "button[type=submit" (one "#form-settings-create-course"))) f)))))
   f)
 
 (on ("change" (one "body") event)
