@@ -85,7 +85,7 @@
         (setf (chain template (query-selector ".data") inner-text)
               (concatenate 'string course " " room))
         (chain cell (prepend template))
-        (hide-modal (one "#schedule-data-modal"))))
+        (hide-modal (one "#modal-schedule-data"))))
      (catch handle-fetch-error))))
 
 (on ("click" (one ".add-course") event)
@@ -97,7 +97,7 @@
            (index-of x-element))))
     (setf (chain (one "#schedule-data-weekday") value) x)
     (setf (chain (one "#schedule-data-hour") value) y)
-    (show-modal (one "#schedule-data-modal"))))
+    (show-modal (one "#modal-schedule-data"))))
 
 (on ("click" (one "body") event :dynamic-selector ".button-delete-schedule-data")
   (chain console (log event))
