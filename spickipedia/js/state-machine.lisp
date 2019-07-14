@@ -51,29 +51,28 @@
   (chain settings (add-child (new (node "add-tag"))))
   (chain console (log *STATE*)))
 
-(export
-  (defun current-state-to-new-state (old-state new-state)
-    (if (= (chain old-state value) new-state)
-        (return (values (array) old-state)))
-    (loop for state in (chain old-state (get-children)) do
-      (multiple-value-bind (transitions new-state-object) (current-state-to-new-state state new-state)
-        (if transitions
-            (return (values (chain (array (concatenate 'string (chain state value) "Enter")) (concat transitions)) new-state-object)))))))
+(defun current-state-to-new-state-internal (old-state new-state)
+  (if (= (chain old-state value) new-state)
+      (return (values (array) old-state)))
+  (loop for state in (chain old-state (get-children)) do
+    (multiple-value-bind (transitions new-state-object) (current-state-to-new-state-internal state new-state)
+      (if transitions
+          (return (values (chain (array (concatenate 'string (chain state value) "Enter")) (concat transitions)) new-state-object))))))
 
 (export
-  (defun current-state-to-new-state2 (old-state new-state)
-    (multiple-value-bind (transitions new-state-object) (current-state-to-new-state old-state new-state)
+  (defun current-state-to-new-state (old-state new-state)
+    (multiple-value-bind (transitions new-state-object) (current-state-to-new-state-internal old-state new-state)
       (if transitions
         (return (values transitions new-state-object))))
     (if (chain old-state (get-parent-node))
-      (multiple-value-bind (transitions new-state-object) (current-state-to-new-state (chain old-state (get-parent-node)) new-state)
+      (multiple-value-bind (transitions new-state-object) (current-state-to-new-state-internal (chain old-state (get-parent-node)) new-state)
         (return (values (chain (array (concatenate 'string (chain old-state value) "Exit")) (concat transitions)) new-state-object))))))
 
 (export
   (async
     (defun enter-state (state)
       (let ((module (await (funcall import (chain import meta url)))))
-        (multiple-value-bind (transitions new-state-object) (current-state-to-new-state2 *STATE* state)
+        (multiple-value-bind (transitions new-state-object) (current-state-to-new-state *STATE* state)
           (loop for transition in transitions do
             (funcall (getprop window 'states transition)))
           (setf *STATE* new-state-object))))))
