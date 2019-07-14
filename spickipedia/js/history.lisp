@@ -1,7 +1,7 @@
 
 (var __-p-s_-m-v_-r-e-g)
 
-(i "./push-state.lisp" "pushState")
+(i "./state-machine.lisp" "pushState")
 (i "./show-tab.lisp" "showTab")
 (i "./cleanup.lisp" "cleanup")
 (i "./math.lisp" "renderMath")

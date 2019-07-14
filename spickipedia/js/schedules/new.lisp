@@ -4,7 +4,7 @@
 (i "../cleanup.lisp" "cleanup")
 (i "../read-cookie.lisp" "readCookie")
 (i "../fetch.lisp" "checkStatus" "json" "html" "handleFetchError")
-(i "../push-state.lisp" "pushState")
+(i "../state-machine.lisp" "pushState")
 (i "../utils.lisp" "all" "one" "clearChildren")
 
 (defroute "/schedules/new"

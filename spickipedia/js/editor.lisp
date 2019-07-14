@@ -3,7 +3,7 @@
 (i "./editor-lib.lisp")
 (i "./math.lisp" "revertMath")
 (i "./read-cookie.lisp" "readCookie")
-(i "./push-state.lisp" "pushState")
+(i "./state-machine.lisp" "pushState")
 (i "./utils.lisp" "all" "one" "clearChildren")
 (i "./fetch.lisp" "checkStatus" "json" "html" "handleFetchError")
 

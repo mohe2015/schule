@@ -1,9 +1,7 @@
 (var __-p-s_-m-v_-r-e-g)
 
-
-(i "./replace-state.lisp" "replaceState")
-(i "./update-state.lisp" "updateState")
-(i "./push-state.lisp" "pushState")
+(i "./state-machine.lisp" "updateState" "replaceState")
+(i "./state-machine.lisp" "pushState")
 (i "./editor-lib.lisp" "isLocalUrl")
 (i "./register-sw.lisp")
 (i "./utils.lisp" "all" "one" "clearChildren")

@@ -3,7 +3,7 @@
 
 (i "./show-tab.lisp" "showTab")
 (i "./read-cookie.lisp" "readCookie")
-(i "./replace-state.lisp" "replaceState")
+(i "./state-machine.lisp" "replaceState")
 (i "./utils.lisp" "all" "one" "clearChildren")
 (i "./fetch.lisp" "checkStatus" "json" "html" "handleFetchError")
 

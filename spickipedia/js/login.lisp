@@ -3,7 +3,7 @@
 
 (i "./get-url-parameter.lisp" "getUrlParameter")
 (i "./read-cookie.lisp" "readCookie")
-(i "./replace-state.lisp" "replaceState")
+(i "./state-machine.lisp" "replaceState")
 (i "./show-tab.lisp" "showTab")
 (i "./utils.lisp" "all" "one" "clearChildren")
 (i "./fetch.lisp" "checkStatus" "json" "html" "handleFetchError" "handleLoginError")

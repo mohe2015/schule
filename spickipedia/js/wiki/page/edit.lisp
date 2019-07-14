@@ -1,6 +1,5 @@
 (var __-p-s_-m-v_-r-e-g)
 
-(i "/js/push-state.lisp" "pushState")
 (i "/js/cleanup.lisp" "cleanup")
 (i "/js/show-tab.lisp" "showTab")
 (i "/js/math.lisp" "renderMath")
@@ -8,7 +7,7 @@
 (i "/js/utils.lisp" "all" "one" "clearChildren")
 (i "/js/fetch.lisp" "checkStatus" "json" "handleFetchErrorShow")
 (i "/js/template.lisp" "getTemplate")
-(i "/js/state-machine.lisp" "enterState")
+(i "/js/state-machine.lisp" "enterState" "pushState")
 
 ;; TODO FIXME if lazy loading this would need to be loaded before
 (on ("click" (all ".edit-button") event)
