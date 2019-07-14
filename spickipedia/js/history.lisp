@@ -17,7 +17,7 @@
     f))
 
 (defroute "/wiki/:name/history"
- (remove-class (one ".edit-button") "disabled")
+ (remove-class (all ".edit-button") "disabled")
  (show-tab "#loading")
  (chain (fetch (concatenate 'string "/api/history/" name))
   (then check-status) (then json)
@@ -37,7 +37,7 @@
 
 (defroute "/wiki/:page/history/:id"
   (show-tab "#loading")
-  (remove-class (one ".edit-button") "disabled")
+  (remove-class (all ".edit-button") "disabled")
   (cleanup)
   (setf (inner-text (one "#wiki-article-title")) (decode-u-r-i-component page))
   (chain
@@ -64,7 +64,7 @@
             (handle-fetch-error error))))))
 
 (defroute "/wiki/:page/history/:id/changes"
- (chain (one ".edit-button") (add-class "disabled"))
+ (chain (all ".edit-button") (add-class "disabled"))
  (chain (one "#currentVersionLink")
   (attr "href" (concatenate 'string "/wiki/" page)))
  (chain (one "#is-outdated-article") (remove-class "d-none")) (cleanup)

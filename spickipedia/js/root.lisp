@@ -5,5 +5,5 @@
 (i "./utils.lisp" "all" "one" "clearChildren")
 
 (defroute "/"
-  (remove-class (one ".edit-button") "disabled")
+  (remove-class (all ".edit-button") "disabled")
   (replace-state "/wiki/Hauptseite"))

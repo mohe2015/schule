@@ -1,24 +1,24 @@
 (var __-p-s_-m-v_-r-e-g)
 
-
 (i "./show-tab.lisp" "showTab")
 (i "./utils.lisp" "all" "one" "clearChildren")
 
 (on ("input" (one "#search-query") event)
   (chain (one "#button-search") (click)))
 
-(defroute "/search" (chain (one ".edit-button") (add-class "disabled"))
- (show-tab "#search"))
+(defroute "/search"
+  (add-class (all ".edit-button") "disabled")
+  (show-tab "#search"))
 
-(defroute "/search/:query" (chain (one ".edit-button") (add-class "disabled"))
- (show-tab "#search") (chain (one "#search-query") (val query)))
+(defroute "/search/:query"
+  (add-class (all ".edit-button") "disabled")
+  (show-tab "#search")
+  (chain (one "#search-query") (val query)))
 
 (on ("click" (one "#button-search") event)
   (let ((query (chain (one "#search-query") (val))))
-    (chain (one "#search-create-article")
-     (attr "href" (concatenate 'string "/wiki/" query "/create")))
-    (chain window history
-     (replace-state nil nil (concatenate 'string "/search/" query)))
+    (chain (one "#search-create-article") (attr "href" (concatenate 'string "/wiki/" query "/create")))
+    (chain window history  (replace-state nil nil (concatenate 'string "/search/" query)))
     (chain (one "#search-results-loading") (stop) (show))
     (chain (one "#search-results") (stop) (hide))
     (if (not (undefined (chain window search-xhr)))

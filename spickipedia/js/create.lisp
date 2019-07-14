@@ -7,7 +7,7 @@
 (i "./utils.lisp" "all" "one" "clearChildren")
 
 (defroute "/wiki/:name/create"
-  (add-class (one ".edit-button") "disabled")
+  (add-class (all ".edit-button") "disabled")
   (add-class (one "#is-outdated-article") "d-none")
   (if (and (not (null (chain window history state)))
            (not (null (chain window history state content))))

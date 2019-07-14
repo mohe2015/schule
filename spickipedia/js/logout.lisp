@@ -8,7 +8,7 @@
 (i "./fetch.lisp" "checkStatus" "json" "html" "handleFetchError")
 
 (defroute "/logout"
- (add-class (one ".edit-button") "disabled")
+ (add-class (all ".edit-button") "disabled")
  (show-tab "#loading")
  (let ((form-data (new (-form-data))))
    (chain form-data (append "_csrf_token" (read-cookie "_csrf_token")))

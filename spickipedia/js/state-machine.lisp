@@ -60,6 +60,7 @@
 
 (export
  (defun replace-state (url data)
+   (debug "REPLACE-STATE" url)
    (chain window history (replace-state data nil url))
    (update-state)))
 
@@ -102,8 +103,7 @@
   (chain handle-wiki-page (add-child handle-wiki-page-edit))
   (chain handle-wiki-page-edit (add-child (new (node "publish"))))
   (chain handle-wiki-page-edit (add-child settings))
-  (chain settings (add-child (new (node "add-tag"))))
-  (chain console (log *STATE*)))
+  (chain settings (add-child (new (node "add-tag")))))
 
 (defun current-state-to-new-state-internal (old-state new-state)
   (if (= (chain old-state value) new-state)
@@ -128,5 +128,7 @@
       (let ((module (await (funcall import (chain import meta url)))))
         (multiple-value-bind (transitions new-state-object) (current-state-to-new-state *STATE* state)
           (loop for transition in transitions do
+            (debug "TRANSITION " transition)
             (funcall (getprop window 'states transition)))
+          (debug "STATE " new-state-object)
           (setf *STATE* new-state-object))))))

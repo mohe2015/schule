@@ -9,7 +9,7 @@
 (i "./fetch.lisp" "checkStatus" "json" "html" "handleFetchError" "handleLoginError")
 
 (defroute "/login"
- (add-class (one ".edit-button") "disabled")
+ (add-class (all ".edit-button") "disabled")
  (hide-modal (one "#modal-publish-changes"))
  (let ((url-username (get-url-parameter "username"))
        (url-password (get-url-parameter "password")))

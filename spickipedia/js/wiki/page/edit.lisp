@@ -36,8 +36,8 @@
   (cache-then-network (concatenate 'string "/api/wiki/" page) init-editor))
 
 (defstate handle-wiki-page-edit-enter
-  (add-class (one ".edit-button") "disabled"))
+  (add-class (all ".edit-button") "disabled"))
 
 (defstate handle-wiki-page-edit-exit
-  (remove-class (one ".edit-button") "disabled")
+  (remove-class (all ".edit-button") "disabled")
   (hide-editor))
