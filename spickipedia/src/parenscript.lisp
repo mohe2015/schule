@@ -16,7 +16,15 @@
      (chain (setf (chain window routes) (or (chain window routes) ([])))
             (push ,(make-symbol (concatenate 'string "handle-" (subseq (regex-replace-all "/[:\\.]?" route "-") 1)))))))
 
-(defpsmacro i (file &rest contents) `(import ,file ,@contents))
+(defpsmacro defstate (state &body body)
+  `(progn
+     (export
+       (defun ,state ()
+         ,@body))
+     (setf (chain window states) (or (chain window states) (new (-object))))
+     (setf (@ window 'states ,state) ,state)))
+
+(defpsmacro i (file &rest contents) `(import ,file ,@contents)) ;; TODO remove
 
 (defun file-js-gen (file)
   (in-package :spickipedia.parenscript)

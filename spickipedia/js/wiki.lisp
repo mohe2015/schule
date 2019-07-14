@@ -21,23 +21,13 @@
 (defroute "/wiki/:name"
   (enter-state "handleWikiName"))
 
-(export
-  (defun handle-wiki-name-enter ()
-    (var name (chain window location pathname (split "/") 2)) ;; TODO cleanup
+(defstate handle-wiki-name-enter
+  (var name (chain window location pathname (split "/") 2)) ;; TODO cleanup
+  (remove-class (one ".edit-button") "disabled")
+  (setf (inner-text (one "#wiki-article-title")) (decode-u-r-i-component name))
+  (show-tab "#loading")
+  (cache-then-network (concatenate 'string "/api/wiki/" name) update-page))
 
-    (remove-class (one ".edit-button") "disabled")
-    (setf (inner-text (one "#wiki-article-title")) (decode-u-r-i-component name))
-    (show-tab "#loading")
-
-    (cache-then-network (concatenate 'string "/api/wiki/" name) update-page)))
-
-(setf (chain window states) (or (chain window states) (new (-object))))
-(setf (@ window 'states "handleWikiNameEnter") (lisp (make-symbol "handle-wiki-name-enter")))
-
-(export
-  (defun handle-wiki-name-exit ()
-    (add-class (one ".edit-button") "disabled")
-    (show-tab "#loading")))
-
-(setf (chain window states) (or (chain window states) (new (-object))))
-(setf (@ window 'states "handleWikiNameExit") (lisp (make-symbol "handle-wiki-name-exit")))
+(defstate handle-wiki-name-exit
+  (add-class (one ".edit-button") "disabled")
+  (show-tab "#loading"))
