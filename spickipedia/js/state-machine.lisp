@@ -7,7 +7,7 @@
 (i "./image-viewer.lisp")
 (i "./fetch.lisp" "checkStatus" "json" "handleFetchError")
 (i "./utils.lisp" "all" "one" "clearChildren")
-(i "./wiki.lisp" "handleWikiName" "handleWikiNameEnter")
+(i "./wiki/page.lisp" "handleWikiPage")
 
 (defun node (value)
   (setf (chain this value) value)
@@ -41,11 +41,11 @@
 
 (let ((edit (new (node "edit")))
       (settings (new (node "settings")))
-      (handle-wiki-name (new (node "handleWikiName"))))
-  (chain *STATE* (add-child handle-wiki-name))
+      (handle-wiki-page (new (node "handleWikiPage"))))
+  (chain *STATE* (add-child handle-wiki-page))
   (chain *STATE* (add-child (new (node "history"))))
   (chain *STATE* (add-child (new (node "histories"))))
-  (chain handle-wiki-name (add-child edit))
+  (chain handle-wiki-page (add-child edit))
   (chain edit (add-child (new (node "publish"))))
   (chain edit (add-child settings))
   (chain settings (add-child (new (node "add-tag"))))
@@ -76,41 +76,3 @@
           (loop for transition in transitions do
             (funcall (getprop window 'states transition)))
           (setf *STATE* new-state-object))))))
-          ;; state handleWikiName
-
-(export
-  (defun enter-loading ()
-    (show-tab "#loading")))
-
-(export
-  (defun exit-loading ()
-    (hide-tab "#loading")))
-
-(export
-  (defun exit-wiki-page ()))
-    ;; abort fetch
-
-(export
-  (defun enter-settings ()))
-    ;; fetch settings
-    ;; show settings
-
-(export
-  (defun exit-settings ()))
-    ;; abort fetch
-
-(export
-  (defun enter-settings-add-grade ()))
-    ;; show-dialog
-
-(export
-  (defun exit-settings-add-grade ()))
-    ;; hide dialog
-
-(export
-  (defun enter-login ()))
-    ;; show login
-
-(export
-  (defun enter-logout ()))
-    ;; logging out
