@@ -1,24 +1,42 @@
 (ql:quickload :cl-pdf-parser)
-(in-package :pdf)
-
 (ql:quickload :deflate)
 (ql:quickload :flexi-streams)
 
-(defparameter *JO* (car (content (content (cdr (assoc "/Contents" (dict-values (content (elt (cdr (assoc "/Kids" (dict-values (content (root-page (read-pdf-file #P"/home/moritz/Downloads/vs.pdf")))) :test #'equal)) 0))) :test #'equal))))))
-
-(let* ((pdf (read-pdf-file #P"/home/moritz/Downloads/vs.pdf"))
-       (contents (map 'list 'content (objects pdf)))
-       (streams (remove-if-not (lambda (x) (typep x 'pdf::pdf-stream)) contents))
-       (jo (remove-if-not (lambda (x) (equal "/FlateDecode" (cdr (assoc "/Filter" (dict-values x) :test #'equal)))) streams))
-       (strings (mapcar 'content jo))
-       (strings2 (mapcar 'car strings))
-       (decompressed (mapcar 'decompress-string strings2)))
-  decompressed)
+(use-package :pdf)
+(use-package :deflate)
+(use-package :flexi-streams)
 
 (defun decompress-string (string)
-  (flexi-streams:octets-to-string
-   (let ((in (flexi-streams:make-in-memory-input-stream (flexi-streams:string-to-octets string))))
-     (flexi-streams:with-output-to-sequence (out)
-       (deflate:inflate-zlib-stream in out)))))
+  (octets-to-string
+   (let ((in (make-in-memory-input-stream (string-to-octets string))))
+     (with-output-to-sequence (out)
+       (inflate-zlib-stream in out)))))
 
+(defun get-decompressed ()
+  (let* ((pdf (read-pdf-file #P"/home/moritz/Downloads/vs.pdf"))
+	 (contents (map 'list 'content (objects pdf)))
+	 (streams (remove-if-not (lambda (x) (typep x 'pdf-stream)) contents))
+	 (jo (remove-if-not (lambda (x) (equal "/FlateDecode" (cdr (assoc "/Filter" (dict-values x) :test #'equal)))) streams))
+	 (strings (mapcar 'content jo))
+	 (strings2 (mapcar 'car strings))
+	 (decompressed (mapcar 'decompress-string strings2)))
+    (car decompressed)))
 
+;; http://wwwimages.adobe.com/content/dam/acom/en/devnet/pdf/PDF32000_2008.pdf#page=259&zoom=auto,-16,826
+
+;; http://wwwimages.adobe.com/content/dam/acom/en/devnet/pdf/PDF32000_2008.pdf#page=135&zoom=120,-178,448
+
+(defun read-until (test &optional (stream *standard-input*))
+  (with-output-to-string (out)
+    (loop for c = (peek-char nil stream nil nil)
+       while (and c (not (funcall test c)))
+       do (write-char (read-char stream) out))))
+
+(defun spacep (char)
+  (char= #\space char))
+
+(with-input-from-string (in (get-decompressed))
+  (let ((e (read-until 'spacep in)))
+    (cond ((equal e "q") (print "push graphics"))
+	  ((equal e "Q") (print "pop graphics"))
+	  (t (print "unknown")))))
