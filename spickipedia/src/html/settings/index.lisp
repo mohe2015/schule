@@ -20,7 +20,7 @@
        `(:a :id "settings-add-course" :type "button" :class
           "btn btn-primary norefresh" "Kurs erstellen")
        `(:a :id "settings-show-schedule" :type "button" :class
-          "btn btn-primary norefresh" "Stundenplan anzeigen"))
+          "btn btn-primary norefresh" "Stundenplan ändern"))
 
     ,(modal "settings-create-grade" "Jahrgang hinzufügen"
       `((:button :type "button" :class "btn btn-secondary" :data-dismiss

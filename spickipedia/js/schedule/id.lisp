@@ -50,7 +50,7 @@
          (cell2 (chain cell1 (query-selector "tbody")))
          (cell (getprop cell2 'children (- hour 1) 'children 1))
          (template (get-template "schedule-data-cell-template"))
-         (course (chain (one "#course") selected-options 0 inner-text))
+         (course (chain (one ".course-select" (one "#form-schedule-data")) selected-options 0 inner-text))
          (room (chain (one "#room") value))
          (form-element (chain document (query-selector "#form-schedule-data")))
          (form-data (new (-form-data form-element)))

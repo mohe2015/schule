@@ -52,7 +52,7 @@
      ,(modal "schedule-data" "Unterrichtsstunde"
         `((:button :type "button" :class "btn btn-secondary" :data-dismiss
            "modal" "Abbrechen")
-          ,(submit-button "Ok" :id "update-table"))
+          ,(submit-button "Ok"))
         `((:input :type "hidden" :id "schedule-data-weekday" :name "weekday"
             :value "monday")
           (:input :type "hidden" :id "schedule-data-hour" :name "hour" :value
