@@ -23,16 +23,15 @@
                   (setf (chain option inner-text) text)
                   (chain course-select (append-child option))))))))
 
-;; TODO FIXME make the whole schedule a template and just replace it each time?
-
-(defroute "/schedule/:grade" (show-tab "#schedule")
+(defroute "/schedule/:grade"
+  (show-tab "#loading")
   (load-courses)
   (chain (fetch (concatenate 'string "/api/schedule/" grade)) ;; TODO cache then network
    (then check-status) (then json)
    (then
     (lambda (data)
+      (remove (all ".schedule-data"))
       (loop for element in (chain data data) do
-            (chain console (log element))
             (let* ((cell1 (getprop (one "#schedule-table") 'children (chain element weekday)))
                    (cell2 (chain cell1 (query-selector "tbody")))
                    (cell (getprop cell2 'children (- (chain element hour) 1) 'children 1))
@@ -42,7 +41,8 @@
                (chain
                  (one ".button-delete-schedule-data" template)
                  (set-attribute "data-id" (chain element id)))
-               (chain cell (prepend template))))))
+               (chain cell (prepend template))))
+      (show-tab "#schedule")))
    (catch handle-fetch-error)))
 
 (on ("submit" (one "#form-schedule-data") event)
