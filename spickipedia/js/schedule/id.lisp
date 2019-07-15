@@ -8,6 +8,8 @@
 (i "../template.lisp" "getTemplate")
 (i "../read-cookie.lisp" "readCookie")
 
+;; TODO FIXME make the whole schedule a template and just replace it each time?
+
 (defroute "/schedule/:grade" (show-tab "#schedule")
  (chain (fetch (concatenate 'string "/api/schedule/" grade))
   (then check-status) (then json)
@@ -15,51 +17,16 @@
    (lambda (data)
      (loop for element in (chain data data) do
            (chain console (log element))
-           (let* ((cell1
-                    (getprop
-                     (one "#schedule-table")
-                     'children
-                     (chain element weekday))
-                   (cell2
-                    (chain cell1
-                     (query-selector "tbody")))
-                   (cell
-                    (getprop cell2 'children
-                     (- (chain element hour) 1)
-                     'children 1))
-                   (template
-                    (get-template
-                     "schedule-data-cell-template"))))
-              (setf (chain template
-                     (query-selector ".data")
-                     inner-text)
-                    (concatenate 'string
-                                 (chain
-                                  element
-                                  course
-                                  subject)
-                                 " "
-                                 (chain
-                                  element
-                                  course
-                                  type)
-                                 " "
-                                 (chain
-                                  element
-                                  course
-                                  teacher
-                                  name)
-                                 " "
-                                 (chain
-                                  element
-                                  room)))
-              (chain template
-               (query-selector
-                ".button-delete-schedule-data")
-               (set-attribute "data-id"
-                (chain element id)))
-              (chain cell
-               (prepend template))))))
+           (let* ((cell1 (getprop (one "#schedule-table") 'children (chain element weekday)))
+                  (cell2 (chain cell1 (query-selector "tbody")))
+                  (cell (getprop cell2 'children (- (chain element hour) 1) 'children 1))
+                  (template (get-template "schedule-data-cell-template")))
+              (setf (inner-text (one ".data" template))
+                    (concatenate 'string (chain element course subject) " " (chain element course type) " " (chain element course teacher name) " " (chain element room)))
+              (chain
+                (one ".button-delete-schedule-data" template)
+                (set-attribute "data-id" (chain element id)))
+              (chain cell (prepend template))))))
   (catch handle-fetch-error)))
 
 (on ("submit" (one "#form-schedule-data") event)
@@ -88,22 +55,27 @@
         (hide-modal (one "#modal-schedule-data"))))
      (catch handle-fetch-error))))
 
+(on ("click" (all ".schedule-tab-link") event)
+  (chain event (prevent-default))
+  (chain event (stop-propagation))
+  (chain window history (push-state null null (href (chain event target))))
+  f)
+
+(when (chain document location hash)
+  (chain (new (bootstrap.-Tab (one (concatenate 'string "a[href=\"" (chain document location hash) "\"]")))) (show)))
+
 (on ("click" (one ".add-course") event)
   (chain console (log event))
   (let* ((y (chain event target (closest "tr") row-index))
          (x-element (chain event target (closest "div")))
-         (x
-          (chain -array (from (chain x-element parent-node children))
-           (index-of x-element))))
+         (x (chain -array (from (chain x-element parent-node children)) (index-of x-element))))
     (setf (chain (one "#schedule-data-weekday") value) x)
     (setf (chain (one "#schedule-data-hour") value) y)
     (show-modal (one "#modal-schedule-data"))))
 
 (on ("click" (one "body") event :dynamic-selector ".button-delete-schedule-data")
   (chain console (log event))
-  (let* ((id
-          (chain event target (closest ".button-delete-schedule-data")
-           (get-attribute "data-id")))
+  (let* ((id (chain event target (closest ".button-delete-schedule-data") (get-attribute "data-id")))
          (form-data (new (-form-data)))
          (grade (chain location pathname (split "/") 2)))
     (chain form-data (append "id" id))
