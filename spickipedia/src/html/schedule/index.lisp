@@ -8,7 +8,7 @@
      (:tbody
       (loop for i from 1 to 11
             do (htm
-                (:tr (:td (str i))
+                (:tr (:td :class "min" (str i))
                  (:td
                   (:button :type "button" :class
                    "add-course btn btn-sm btn-outline-primary w-100"
