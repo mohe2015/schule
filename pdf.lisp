@@ -29,6 +29,8 @@
 ;; read-object
 
 (defun read-until (test &optional (stream *standard-input*))
+  (unless (peek-char nil stream nil nil)
+    (return-from read-until nil))
   (with-output-to-string (out)
     (loop for c = (peek-char nil stream nil nil)
        while (and c (not (funcall test c)))
@@ -51,7 +53,6 @@
 	       (push (read-object in) stack)
 	       (format t "read-object ~a~%" stack))	 
 	     (let ((e (read-until 'boundary-char-p in)))
-	       (break)
 	       (cond ((equal e "q") (format t "push graphics~%"))
 		     ((equal e "Q") (format t "pop graphics~%"))
 		     ((equal e "BT") (format t "begin text~%"))
@@ -73,6 +74,7 @@
 		     ((equal e "re") (format t "rectangle ~a~%" stack) (setf stack '()))
 		     ((equal e "gs") (format t "graphics state operator~%"))
 		     ((equal e "S") (format t "stroke the path ~%"))
+		     ((eq e nil) (return))
 		     ((eq (elt e 0) #\/) (format t "literal name ~a~%" e))
 		     (t (push e stack) (format t "push-stack ~a~%" e)))
 	       (when (whitespace-char-p (peek-char nil in nil nil))
