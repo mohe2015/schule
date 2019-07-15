@@ -26,9 +26,7 @@
 (defroute "/schedule/:grade"
   (show-tab "#loading")
   (load-courses)
-  (chain (fetch (concatenate 'string "/api/schedule/" grade)) ;; TODO cache then network
-   (then check-status) (then json)
-   (then
+  (cache-then-network (concatenate 'string "/api/schedule/" grade)
     (lambda (data)
       (remove (all ".schedule-data"))
       (loop for element in (chain data data) do
@@ -42,8 +40,7 @@
                  (one ".button-delete-schedule-data" template)
                  (set-attribute "data-id" (chain element id)))
                (chain cell (prepend template))))
-      (show-tab "#schedule")))
-   (catch handle-fetch-error)))
+      (show-tab "#schedule"))))
 
 (on ("submit" (one "#form-schedule-data") event)
   (chain event (prevent-default))

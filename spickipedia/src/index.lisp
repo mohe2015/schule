@@ -240,9 +240,7 @@
            (:button :id "show-history" :type "button" :class
             "btn btn-outline-primary" "Änderungsverlauf"))
          `(:small "Dieses Werk ist lizenziert unter einer "
-           (:a :target "_blank" :rel "license noopener" :href
-            "http://creativecommons.org/licenses/by-sa/4.0/deed.de"
-            "Creative Commons Namensnennung - Weitergabe unter gleichen Bedingungen 4.0 International Lizenz")))
+            ,(license)))
 
      ,(tab "not-found"
         `(:div :class "alert alert-danger" :role "alert"
@@ -298,12 +296,7 @@
         `((:div :class "form-group" " " (:label "Änderungszusammenfassung:")
            (:br)
            (:textarea :class "form-control" :id "change-summary" :rows "3"))
-          (:p
-           "Mit dem Veröffentlichen dieses Artikels garantierst du, dass er nicht die Rechte anderer verletzt und bist damit einverstanden, ihn unter der "
-           (:a :target "_blank" :rel "noopener" :href
-            "https://creativecommons.org/licenses/by-sa/4.0/deed.de"
-            "Creative Commons Namensnennung - Weitergabe unter gleichen Bedingungen 4.0 International Lizenz")
-           " zu veröffentlichen.")))
+          ,(license-disclaimer)))
 
      ,(modal "upload-progress" ""
         `()

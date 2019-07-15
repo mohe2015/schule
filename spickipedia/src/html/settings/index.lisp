@@ -29,7 +29,8 @@
          "settings-button-create-grade" "Hinzufügen"))
       `((:div :class "form-group"
          (:label :for "settings-input-grade" "Jahrgang:") " "
-         (:input :type "text" :id "settings-input-grade" :name "grade"))))
+         (:input :type "text" :id "settings-input-grade" :name "grade"))
+        ,(license-disclaimer)))
 
     ,(modal "settings-create-course" "Kurs erstellen"
       `((:button :type "button" :class "btn btn-secondary" :data-dismiss
@@ -50,7 +51,8 @@
           "Tutorium?"))
         (:div :class "form-group" (:label "Thema")
          (:input :type "text" :class "form-control" :placeholder "Thema" :name
-          "topic" :id "course-topic"))))
+          "topic" :id "course-topic"))
+        ,(license-disclaimer)))
 
      ,(modal "settings-create-teacher" "LehrerIn hinzufügen"
        `((:button :type "button" :class "btn btn-secondary" :data-dismiss "modal" "Abbrechen")

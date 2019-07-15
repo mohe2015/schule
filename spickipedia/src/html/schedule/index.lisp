@@ -65,4 +65,5 @@
             (:option :value "1" "Ungerade Woche")
             (:option :value "2" "Gerade Woche")))
           ,(course-select)
-          ,(text-input "Raum" "room" "room")))))
+          ,(text-input "Raum" "room" "room")
+          ,(license-disclaimer)))))
