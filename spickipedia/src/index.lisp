@@ -367,25 +367,6 @@
             "Formeln editieren funktioniert nur in Google Chrome zuverlässig!")
            (:span :id "formula" "e=mc^2"))))
 
-      ,(modal "schedule-data" "Unterrichtsstunde"
-         `((:button :type "button" :class "btn btn-secondary" :data-dismiss
-            "modal" "Abbrechen")
-           ,(submit-button "Ok" :id "update-table"))
-         `((:input :type "hidden" :id "schedule-data-weekday" :name "weekday"
-             :value "monday")
-           (:input :type "hidden" :id "schedule-data-hour" :name "hour" :value
-            "1")
-           (:div :class "form-group"
-            (:label :for "week-modulo" "Regelmäßigkeit")
-            (:select :class "custom-select" :id "week-modulo" :name
-             "week-modulo"
-             (:option :selected "selected" :value "0" "Jede Woche")
-             (:option :value "1" "Ungerade Woche")
-             (:option :value "2" "Gerade Woche")))
-           (:div :class "form-group" (:label :for "course" "Kurs:") " "
-            (:select :class "custom-select" :id "course" :name "course"))
-           ,(text-input "Raum" "room" "room")))
-
       (:script :src "/bootstrap.js")
       (:script :type "module" :src "/js/index.lisp")))
 

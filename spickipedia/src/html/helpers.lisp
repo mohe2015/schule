@@ -17,6 +17,10 @@
     (:select :class "custom-select teacher-select" :id ,id :name "teacher"
      (:option "Wird geladen..."))))
 
+(defun course-select ()
+  `(:div :class "form-group"
+     (:select :class "custom-select course-select" :name "course")))
+
 (defun text-input (label id name &key no-label? classes required autofocus autocomplete)
   `(:div :class "form-group"
     ,(if no-label? nil `(:label ,label))
