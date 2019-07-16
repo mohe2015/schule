@@ -1,6 +1,5 @@
 extern crate tokio;
 extern crate web_push;
-extern crate base64;
 extern crate futures;
 
 use web_push::*;
@@ -9,10 +8,6 @@ use std::fs::File;
 
 #[no_mangle]
 pub extern "C" fn call_from_c() {
-    println!("Just called a Rust function from C!");
-}
-
-fn main() {
     let subscription_info = SubscriptionInfo {
         keys: SubscriptionKeys {
             p256dh: String::from("BNDRhvO49PwYz5FqEapH9JtP2OMmI6rYA6wXIkJ0bwN_DFKyxPVxJw6O0Is-tGm8weReb0UwECEzWfvNMMQOvj0"),
@@ -23,10 +18,7 @@ fn main() {
 
     let file = File::open("private.pem").unwrap();
 
-    let mut sig_builder = VapidSignatureBuilder::from_pem(file, &subscription_info).unwrap();
-    sig_builder.add_claim("sub", "mailto:test@example.com");
-    sig_builder.add_claim("foo", "bar");
-    sig_builder.add_claim("omg", 123);
+    let sig_builder = VapidSignatureBuilder::from_pem(file, &subscription_info).unwrap();
 
     let signature = sig_builder.build().unwrap();
 
