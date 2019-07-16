@@ -1,10 +1,8 @@
-(ql:quickload :deflate)
-(ql:quickload :flexi-streams)
-(ql:quickload :cl-pdf-parser)
+(defpackage spickipedia.pdf
+  (:use :cl :pdf :deflate :flexi-streams)
+  (:export :parse))
 
-(use-package :pdf)
-(use-package :deflate)
-(use-package :flexi-streams)
+(in-package :spickipedia.pdf)
 
 (defun decompress-string (string)
   (octets-to-string
@@ -40,10 +38,15 @@
   (or (whitespace-char-p x)
       (char= #\[ x)))
 
+(defun escaped-to-char (string)
+  (if (= (length string) 2)
+      (subseq string 1 2)
+      string))
+
 (defun draw-text (text)
   (loop for x across text do
        (if (typep x 'string)
-	   (format t "~a" (subseq x 1 (- (length x) 1)))
+	   (format t "~a" (escaped-to-char (subseq x 1 (- (length x) 1))))
 	   (if (< x -280)
 	       (format t "|"))
 	   ;; -935 -1061 -280 -726 -619 -668 -299 -280 -987 -565
