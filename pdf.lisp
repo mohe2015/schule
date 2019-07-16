@@ -65,7 +65,7 @@
 	       (cond ((equal e "q") (format nil "push graphics~%"))
 		     ((equal e "Q") (format nil "pop graphics~%"))
 		     ((equal e "BT") (format nil "begin text~%"))
-		     ((equal e "ET") (format nil "end text~%"))
+		     ((equal e "ET") (format t "~%"))
 		     ((equal e "Tf") (format nil "font and size ~a~%" stack) (setf stack '())) ;; TODO the literal name belongs to it
 		     ((equal e "Tm") (format nil "text matrix ~a~%" stack) (setf stack '()))
 		     ((equal e "cm") (format nil "CTM ~a~%" stack) (setf stack '()))
