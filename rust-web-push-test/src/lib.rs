@@ -11,7 +11,7 @@ use std::ffi::CStr;
 use std::u32;
 
 #[no_mangle]
-pub extern "C" fn send_notification(p256dh_c : *const c_char, auth_c : *const c_char, endpoint_c : *const c_char, content_c : *const c_char) -> u32 {
+pub extern "C" fn send_notification(p256dh_c : *const c_char, auth_c : *const c_char, endpoint_c : *const c_char, private_key_c : *const c_char, content_c : *const c_char) -> u32 {
     let p256dh = unsafe {
         assert!(!p256dh_c.is_null());
         CStr::from_ptr(p256dh_c)
@@ -27,6 +27,11 @@ pub extern "C" fn send_notification(p256dh_c : *const c_char, auth_c : *const c_
         CStr::from_ptr(endpoint_c)
     }.to_str().unwrap().to_string();
 
+    let private_key = unsafe {
+        assert!(!private_key_c.is_null());
+        CStr::from_ptr(private_key_c)
+    }.to_str().unwrap().to_string();
+
     let content = unsafe {
         assert!(!content_c.is_null());
         CStr::from_ptr(content_c)
@@ -40,8 +45,7 @@ pub extern "C" fn send_notification(p256dh_c : *const c_char, auth_c : *const c_
         endpoint: endpoint,
     };
 
-    let file = File::open("private.pem").unwrap();
-
+    let file = File::open(private_key).unwrap();
     let sig_builder = VapidSignatureBuilder::from_pem(file, &subscription_info).unwrap();
 
     let signature = sig_builder.build().unwrap();
