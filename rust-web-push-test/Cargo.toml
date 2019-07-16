@@ -14,3 +14,4 @@ crate-type = ["dylib"]
 web-push = "*"
 tokio = "*"
 futures = "*"
+libc = "*"

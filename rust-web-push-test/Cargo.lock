@@ -744,6 +744,7 @@ name = "rust-web-push-test"
 version = "0.1.0"
 dependencies = [
  "futures 0.1.28 (registry+https://github.com/rust-lang/crates.io-index)",
+ "libc 0.2.60 (registry+https://github.com/rust-lang/crates.io-index)",
  "tokio 0.1.22 (registry+https://github.com/rust-lang/crates.io-index)",
  "web-push 0.5.0 (registry+https://github.com/rust-lang/crates.io-index)",
 ]

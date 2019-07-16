@@ -1,19 +1,43 @@
 extern crate tokio;
 extern crate web_push;
 extern crate futures;
+extern crate libc;
 
 use web_push::*;
 use futures::{Future, future::lazy};
 use std::fs::File;
+use libc::c_char;
+use std::ffi::CStr;
+use std::u32;
 
 #[no_mangle]
-pub extern "C" fn call_from_c() {
+pub extern "C" fn send_notification(p256dh_c : *const c_char, auth_c : *const c_char, endpoint_c : *const c_char, content_c : *const c_char) -> u32 {
+    let p256dh = unsafe {
+        assert!(!p256dh_c.is_null());
+        CStr::from_ptr(p256dh_c)
+    }.to_str().unwrap().to_string();
+
+    let auth = unsafe {
+        assert!(!auth_c.is_null());
+        CStr::from_ptr(auth_c)
+    }.to_str().unwrap().to_string();
+
+    let endpoint = unsafe {
+        assert!(!endpoint_c.is_null());
+        CStr::from_ptr(endpoint_c)
+    }.to_str().unwrap().to_string();
+
+    let content = unsafe {
+        assert!(!content_c.is_null());
+        CStr::from_ptr(content_c)
+    }.to_str().unwrap().to_string();
+
     let subscription_info = SubscriptionInfo {
         keys: SubscriptionKeys {
-            p256dh: String::from("BNDRhvO49PwYz5FqEapH9JtP2OMmI6rYA6wXIkJ0bwN_DFKyxPVxJw6O0Is-tGm8weReb0UwECEzWfvNMMQOvj0"),
-            auth: String::from("0S5U5eOryRe6pxVPCvla5A")
+            p256dh: p256dh,
+            auth: auth,
         },
-        endpoint: String::from("https://fcm.googleapis.com/fcm/send/c6XIlT4IvGs:APA91bEBZoXgfhD8ocTLjhYCdF-vf3s2lG94ICReKc_IG8pvBhyAClObjBfYRr2g8szLwX1VnGzwVIRXOEJGEPmLzGIUXYH23Cl-GuVIkAbt7q5nZQdcaMcKTtdBW-pCEMcmNZmziAQ9"),
+        endpoint: endpoint,
     };
 
     let file = File::open("private.pem").unwrap();
@@ -23,9 +47,8 @@ pub extern "C" fn call_from_c() {
     let signature = sig_builder.build().unwrap();
 
     let mut builder = WebPushMessageBuilder::new(&subscription_info).unwrap();
-    let content = "Encrypted payload to be sent in the notification".as_bytes();
-    builder.set_payload(ContentEncoding::AesGcm, content);
-    builder.set_ttl(1337);
+    builder.set_payload(ContentEncoding::AesGcm, content.as_bytes());
+    //builder.set_ttl(1337);
     builder.set_vapid_signature(signature);
 
     match builder.build() {
@@ -46,4 +69,5 @@ pub extern "C" fn call_from_c() {
            println!("ERROR in building message: {:?}", error)
        }
     }
+    return 1;
 }
