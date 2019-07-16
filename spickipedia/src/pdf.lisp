@@ -1,8 +1,48 @@
 (defpackage spickipedia.pdf
-  (:use :cl :pdf :deflate :flexi-streams)
+  (:use :cl :pdf :deflate :flexi-streams :queues)
   (:export :parse))
 
 (in-package :spickipedia.pdf)
+
+(defclass pdf-text-extractor ()
+  ((lines
+    :initarg :lines
+    :initform (make-queue :simple-queue)
+    :accessor lines)
+   (current-line
+    :initarg :current-line
+    :initform (make-queue :simple-queue)
+    :accessor current-line)
+   (current-part
+    :initarg :current-part
+    :initform (make-queue :simple-queue))))
+
+(defun queue-to-string (queue)
+  (let ((string (make-array 0
+                            :element-type 'character
+                            :fill-pointer 0
+                            :adjustable t)))
+    (queues:map-queue (lambda (test) (vector-push-extend test string)) queue)
+    string))
+
+(defmethod write-line-part-char ((extractor pdf-text-extractor) char)
+  (qpush (current-part extractor) char))
+
+(defmethod new-part ((extractor pdf-text-extractor))
+  (qpush (current-line extractor) (queue-to-string (current-part extractor))))
+
+(defmethod write-line-part ((extractor pdf-text-extractor) part)
+
+(defmethod new-line ((extractor pdf-text-extractor))
+  (qpush (lines extractor) (current-line extractor)))
+
+
+(defmethod read-line-part ((extractor pdf-text-extractor))
+  (qpop (current-line extractor)))
+
+(defmethod read-newline ((extractor pdf-text-extractor))
+  (assert (= 0 (qsize (current-line extractor))))
+  (setf (current-line extractor) (qpop (lines extractor))))
 
 (defun decompress-string (string)
   (octets-to-string
@@ -10,8 +50,8 @@
      (with-output-to-sequence (out)
        (inflate-zlib-stream in out)))))
 
-(defun get-decompressed ()
-  (let* ((pdf (read-pdf-file #P"/home/moritz/Downloads/vs.pdf"))
+(defun get-decompressed (file)
+  (let* ((pdf (read-pdf-file file))
 	 (contents (map 'list 'content (objects pdf)))
 	 (streams (remove-if-not (lambda (x) (typep x 'pdf-stream)) contents))
 	 (jo (remove-if-not (lambda (x) (equal "/FlateDecode" (cdr (assoc "/Filter" (dict-values x) :test #'equal)))) streams))
@@ -19,8 +59,6 @@
 	 (strings2 (mapcar 'car strings))
 	 (decompressed (mapcar 'decompress-string strings2)))
     (car decompressed)))
-
-;; http://wwwimages.adobe.com/content/dam/acom/en/devnet/pdf/PDF32000_2008.pdf#page=135&zoom=120,-178,448
 
 (defun read-until (test &optional (stream *standard-input*))
   (unless (peek-char nil stream nil nil)
@@ -52,9 +90,11 @@
 	   ;; -935 -1061 -280 -726 -619 -668 -299 -280 -987 -565
 	   )))
 
-(defun parse ()
-  (with-input-from-string (in (get-decompressed))
-    (let ((stack '()))
+(defun parse (file)
+  (with-input-from-string (in (get-decompressed file))
+    (let ((stack '())
+	  (lines '())
+	  (line '()))
       (loop
 	 (if (eq (peek-char nil in nil nil) #\[)
 	     (let ((*pdf-input-stream* in))
@@ -88,3 +128,5 @@
 	       (when (whitespace-char-p (peek-char nil in nil nil))
 		 (unless (read-char in nil)
 		   (return)))))))))
+
+(parse #P"/home/moritz/Downloads/vs.pdf")

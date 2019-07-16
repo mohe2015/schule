@@ -23,6 +23,7 @@
                :deflate
                :cl-pdf-parser
                :flexi-streams
+	       :queues
                :cl-who)
   :components ;; TODO FIXME fix all dependencies as otherwise there are compilation failures
     ((:module "src" :components (
