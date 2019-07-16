@@ -1,6 +1,6 @@
-(ql:quickload :cl-pdf-parser)
 (ql:quickload :deflate)
 (ql:quickload :flexi-streams)
+(ql:quickload :cl-pdf-parser)
 
 (use-package :pdf)
 (use-package :deflate)
@@ -44,6 +44,12 @@
   (or (whitespace-char-p x)
       (char= #\[ x)))
 
+(defun draw-text (text)
+  (loop for x across text do
+       (if (typep x 'string)
+	   (format t "~a" (subseq x 1 2))))
+  (format t "~%"))
+
 (defun parse ()
   (with-input-from-string (in (get-decompressed))
     (let ((stack '()))
@@ -62,7 +68,7 @@
 		     ((equal e "cm") (format t "CTM ~a~%" stack) (setf stack '()))
 		     ((equal e "RG") (format t "stroking color ~a~%" stack) (setf stack '()))
 		     ((equal e "rg") (format t "non-stroking color ~a~%" stack) (setf stack '()))
-		     ((equal e "TJ") (format t "print text with positioning ~a~%" stack) (setf stack '()))
+		     ((equal e "TJ") (format t "print text with positioning ~a~%" stack) (draw-text (car stack)) (setf stack '()))
 		     ((equal e "TL") (format t "set text leading ~a~%" stack) (setf stack '()))
 		     ((equal e "T*") (format t "new line ~%"))
 		     ((equal e "Td") (format t "new line with offset ~a~%" stack) (setf stack '()))
