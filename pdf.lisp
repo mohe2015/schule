@@ -22,11 +22,7 @@
 	 (decompressed (mapcar 'decompress-string strings2)))
     (car decompressed)))
 
-;; http://wwwimages.adobe.com/content/dam/acom/en/devnet/pdf/PDF32000_2008.pdf#page=259&zoom=auto,-16,826
-
 ;; http://wwwimages.adobe.com/content/dam/acom/en/devnet/pdf/PDF32000_2008.pdf#page=135&zoom=120,-178,448
-
-;; read-object
 
 (defun read-until (test &optional (stream *standard-input*))
   (unless (peek-char nil stream nil nil)
