@@ -30,9 +30,16 @@
 (defcfun mktime :uint32
   (time-struct (:pointer (:struct tm))))
 
+(constantenum lc
+  ((:lc-all "LC_ALL")))
+
+(defcfun setlocale :string
+  (category :int)
+  (locale :string))
+
 (defun strptime (string format)
   (with-foreign-strings ((c-string string)
-			 (c-format format)
+			 (c-format format))
     (with-foreign-object (time '(:pointer (:struct tm)))
       (with-foreign-slots ((tm-sec tm-min tm-hour tm-mday tm-mon tm-year tm-wday tm-yday tm-isdst) time (:struct tm))
 	(setf tm-sec 0)
@@ -44,6 +51,7 @@
 	(setf tm-wday 0)
 	(setf tm-yday 0)
 	(setf tm-isdst 0)
-	(unless (equal "" (strptime% c-string c-format time))
-	  (error "failed to parse date"))
-	(mktime time))))))
+	(let ((ret (strptime% c-string c-format time)))
+	  (unless ret
+	    (error "failed to parse date")))
+	(mktime time)))))
