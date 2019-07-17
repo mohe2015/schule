@@ -15,7 +15,8 @@
     :accessor current-line)
    (current-part
     :initarg :current-part
-    :initform (make-queue :simple-queue))))
+    :initform (make-queue :simple-queue)
+    :accessor current-part)))
 
 (defun queue-to-string (queue)
   (let ((string (make-array 0
@@ -29,13 +30,13 @@
   (qpush (current-part extractor) char))
 
 (defmethod new-part ((extractor pdf-text-extractor))
-  (qpush (current-line extractor) (queue-to-string (current-part extractor))))
-
-(defmethod write-line-part ((extractor pdf-text-extractor) part)
+  (qpush (current-line extractor) (queue-to-string (current-part extractor)))
+  (setf (current-part extractor) (make-queue :simple-queue)))
 
 (defmethod new-line ((extractor pdf-text-extractor))
-  (qpush (lines extractor) (current-line extractor)))
-
+  (new-part extractor)
+  (qpush (lines extractor) (current-line extractor))
+  (setf (current-line extractor) (make-queue :simple-queue)))
 
 (defmethod read-line-part ((extractor pdf-text-extractor))
   (qpop (current-line extractor)))
@@ -43,6 +44,8 @@
 (defmethod read-newline ((extractor pdf-text-extractor))
   (assert (= 0 (qsize (current-line extractor))))
   (setf (current-line extractor) (qpop (lines extractor))))
+
+
 
 (defun decompress-string (string)
   (octets-to-string
@@ -78,42 +81,37 @@
 
 (defun escaped-to-char (string)
   (if (= (length string) 2)
-      (subseq string 1 2)
-      string))
+      (char string 1)
+      (char string 0)))
 
-(defun draw-text (text)
+(defmethod draw-text ((extractor pdf-text-extractor) text)
   (loop for x across text do
        (if (typep x 'string)
-	   (format t "~a" (escaped-to-char (subseq x 1 (- (length x) 1))))
+	   (write-line-part-char extractor (escaped-to-char (subseq x 1 (- (length x) 1))))
 	   (if (< x -280)
-	       (format t "|"))
-	   ;; -935 -1061 -280 -726 -619 -668 -299 -280 -987 -565
-	   )))
+	       (new-part extractor)))))
 
-(defun parse (file)
+(defmethod parse ((extractor pdf-text-extractor) file)
   (with-input-from-string (in (get-decompressed file))
-    (let ((stack '())
-	  (lines '())
-	  (line '()))
+    (let ((stack '()))
       (loop
 	 (if (eq (peek-char nil in nil nil) #\[)
 	     (let ((*pdf-input-stream* in))
-	       (push (read-object in) stack)
-	       (format nil "read-object ~a~%" stack))	 
+	       (push (read-object in) stack))
 	     (let ((e (read-until 'boundary-char-p in)))
 	       (cond ((equal e "q") (format nil "push graphics~%"))
 		     ((equal e "Q") (format nil "pop graphics~%"))
 		     ((equal e "BT") (format nil "begin text~%"))
-		     ((equal e "ET") (format t "~%"))
-		     ((equal e "Tf") (format nil "font and size ~a~%" stack) (setf stack '())) ;; TODO the literal name belongs to it
+		     ((equal e "ET") (format t "~%") (new-line extractor))
+		     ((equal e "Tf") (format nil "font and size ~a~%" stack) (setf stack '()))
 		     ((equal e "Tm") (format nil "text matrix ~a~%" stack) (setf stack '()))
 		     ((equal e "cm") (format nil "CTM ~a~%" stack) (setf stack '()))
 		     ((equal e "RG") (format nil "stroking color ~a~%" stack) (setf stack '()))
 		     ((equal e "rg") (format nil "non-stroking color ~a~%" stack) (setf stack '()))
-		     ((equal e "TJ") (format nil "print text with positioning ~a~%" stack) (draw-text (car stack)) (setf stack '()))
+		     ((equal e "TJ") (format nil "print text with positioning ~a~%" stack) (draw-text extractor (car stack)) (setf stack '()))
 		     ((equal e "TL") (format nil "~%--ignore set text leading ~a~%" stack) (setf stack '()))
-		     ((equal e "T*") (format t "~%"))
-		     ((equal e "Td") (unless (equal "0" (car stack)) (format t "~%" stack)) (setf stack '()))
+		     ((equal e "T*") (format t "~%") (new-line extractor))
+		     ((equal e "Td") (unless (equal "0" (car stack)) (format t "~%" stack) (new-line extractor)) (setf stack '()))
 		     ((equal e "w") (format nil "line width ~a~%" stack) (setf stack '()))
 		     ((equal e "J") (format nil "line cap style ~a~%" stack) (setf stack '()))
 		     ((equal e "j") (format nil "line join style ~a~%" stack) (setf stack '()))
@@ -129,4 +127,6 @@
 		 (unless (read-char in nil)
 		   (return)))))))))
 
-(parse #P"/home/moritz/Downloads/vs.pdf")
+(let ((extractor (make-instance 'pdf-text-extractor)))
+  (parse extractor #P"/home/moritz/Downloads/vs.pdf")
+  extractor)
