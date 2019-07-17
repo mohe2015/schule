@@ -29,4 +29,5 @@
 		       (format "%A, %d. %b %Y"))
   (with-foreign-object (time '(:pointer (:struct tm)))
     (strptime string format time)
-    (foreign-slot-value time '(:pointer (:struct tm)) tm-year)))
+    (with-foreign-slots ((tm-sec tm-min tm-hour tm-mday tm-mon tm-year tm-wday tm-yday tm-isdst) time tm)
+      (list tm-sec tm-min tm-hour tm-mday tm-mon tm-year tm-wday tm-yday tm-isdst))))
