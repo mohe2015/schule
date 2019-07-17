@@ -1,5 +1,6 @@
 (defpackage spickipedia.libc
-  (:use :cl :cffi))
+  (:use :cl :cffi)
+  (:export :strptime))
 
 (in-package :spickipedia.libc)
 
@@ -21,7 +22,7 @@
   (tm-isdst :int))
 
 ;;; http://man7.org/linux/man-pages/man3/strptime.3.html
-(defcfun "strptime" :string
+(defcfun ("strptime" strptime%) :string
   (string :string)
   (format :string)
   (time-struct (:pointer (:struct tm))))
@@ -29,11 +30,20 @@
 (defcfun mktime :uint32
   (time-struct (:pointer (:struct tm))))
 
-(with-foreign-strings ((string "Freitag, 28. Jun 2019")
-		       (format "%A, %d. %b %Y"))
-  (with-foreign-object (time '(:pointer (:struct tm)))
-    (unless (equal "" (strptime string format time))
-      (error "failed to parse date"))
-    (print (mktime time))
-    (with-foreign-slots ((tm-sec tm-min tm-hour tm-mday tm-mon tm-year tm-wday tm-yday tm-isdst) time (:struct tm))
-      (list tm-sec tm-min tm-hour tm-mday tm-mon tm-year tm-wday tm-yday tm-isdst))))
+(defun strptime (string format)
+  (with-foreign-strings ((c-string string)
+			 (c-format format)
+    (with-foreign-object (time '(:pointer (:struct tm)))
+      (with-foreign-slots ((tm-sec tm-min tm-hour tm-mday tm-mon tm-year tm-wday tm-yday tm-isdst) time (:struct tm))
+	(setf tm-sec 0)
+	(setf tm-min 0)
+	(setf tm-hour 0)
+	(setf tm-mday 0)
+	(setf tm-mon 0)
+	(setf tm-year 0)
+	(setf tm-wday 0)
+	(setf tm-yday 0)
+	(setf tm-isdst 0)
+	(unless (equal "" (strptime% c-string c-format time))
+	  (error "failed to parse date"))
+	(mktime time))))))
