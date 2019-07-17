@@ -46,7 +46,6 @@
   (setf (current-line extractor) (qpop (lines extractor))))
 
 
-
 (defun decompress-string (string)
   (octets-to-string
    (let ((in (make-in-memory-input-stream (string-to-octets string))))
@@ -99,30 +98,30 @@
 	     (let ((*pdf-input-stream* in))
 	       (push (read-object in) stack))
 	     (let ((e (read-until 'boundary-char-p in)))
-	       (cond ((equal e "q") (format nil "push graphics~%"))
-		     ((equal e "Q") (format nil "pop graphics~%"))
-		     ((equal e "BT") (format nil "begin text~%"))
-		     ((equal e "ET") (format t "~%") (new-line extractor))
-		     ((equal e "Tf") (format nil "font and size ~a~%" stack) (setf stack '()))
-		     ((equal e "Tm") (format nil "text matrix ~a~%" stack) (setf stack '()))
-		     ((equal e "cm") (format nil "CTM ~a~%" stack) (setf stack '()))
-		     ((equal e "RG") (format nil "stroking color ~a~%" stack) (setf stack '()))
-		     ((equal e "rg") (format nil "non-stroking color ~a~%" stack) (setf stack '()))
-		     ((equal e "TJ") (format nil "print text with positioning ~a~%" stack) (draw-text extractor (car stack)) (setf stack '()))
-		     ((equal e "TL") (format nil "~%--ignore set text leading ~a~%" stack) (setf stack '()))
-		     ((equal e "T*") (format t "~%") (new-line extractor))
-		     ((equal e "Td") (unless (equal "0" (car stack)) (format t "~%" stack) (new-line extractor)) (setf stack '()))
-		     ((equal e "w") (format nil "line width ~a~%" stack) (setf stack '()))
-		     ((equal e "J") (format nil "line cap style ~a~%" stack) (setf stack '()))
-		     ((equal e "j") (format nil "line join style ~a~%" stack) (setf stack '()))
-		     ((equal e "m") (format nil "move to ~a~%" stack) (setf stack '()))
-		     ((equal e "l") (format nil "straight line ~a~%" stack) (setf stack '()))
-		     ((equal e "re") (format nil "rectangle ~a~%" stack) (setf stack '()))
-		     ((equal e "gs") (format nil "graphics state operator~%"))
-		     ((equal e "S") (format nil "stroke the path ~%"))
+	       (cond ((equal e "q"))  ;; push graphics
+		     ((equal e "Q"))  ;; pop graphics
+		     ((equal e "BT")) ;; begin text
+		     ((equal e "ET") (new-line extractor))
+		     ((equal e "Tf") (setf stack '())) ;; font and size
+		     ((equal e "Tm") (setf stack '())) ;; text matrix
+		     ((equal e "cm") (setf stack '())) ;; CTM
+		     ((equal e "RG") (setf stack '())) ;; stroking color
+		     ((equal e "rg") (setf stack '())) ;; non stroking color
+		     ((equal e "TJ") (draw-text extractor (car stack)) (setf stack '()))
+		     ((equal e "TL") (setf stack '())) ;; set text leading
+		     ((equal e "T*") (new-line extractor))
+		     ((equal e "Td") (unless (equal "0" (car stack)) (new-line extractor)) (setf stack '()))
+		     ((equal e "w")  (setf stack '())) ;; line width
+		     ((equal e "J")  (setf stack '())) ;; line cap style
+		     ((equal e "j")  (setf stack '())) ;; line join style
+		     ((equal e "m")  (setf stack '())) ;; move to
+		     ((equal e "l")  (setf stack '())) ;; straight line
+		     ((equal e "re") (setf stack '())) ;; rectangle
+		     ((equal e "gs")) ;; graphics state operator
+		     ((equal e "S"))  ;; stroke path
 		     ((eq e nil) (return))
-		     ((eq (elt e 0) #\/) (format nil "literal name ~a~%" e))
-		     (t (push e stack) (format nil "push-stack ~a~%" e)))
+		     ((eq (elt e 0) #\/)) ;; literal name
+		     (t (push e stack)))
 	       (when (whitespace-char-p (peek-char nil in nil nil))
 		 (unless (read-char in nil)
 		   (return)))))))))
