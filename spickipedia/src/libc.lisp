@@ -32,12 +32,17 @@
 
 ;; https://stackoverflow.com/questions/6256179/how-can-i-find-the-value-of-lc-xxx-locale-integr-constants-so-that-i-can-use-the/6561967#6561967
 
+;;  1561355700
+;; date 1561676400
+
 (defcenum lc_symbol
   (:lc-all 6))
 
 (defcfun setlocale :string
-  (category :int)
+  (category lc_symbol)
   (locale :string))
+
+(setlocale 6 "de_DE.UTF-8")
 
 (defun strptime (string format)
   (with-foreign-strings ((c-string string)
@@ -52,8 +57,9 @@
 	(setf tm-year 0)
 	(setf tm-wday 0)
 	(setf tm-yday 0)
-	(setf tm-isdst 0)
+	(setf tm-isdst -1)
 	(let ((ret (strptime% c-string c-format time)))
 	  (unless ret
 	    (error "failed to parse date")))
+	(setf tm-isdst -1)
 	(mktime time)))))

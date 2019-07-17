@@ -8,6 +8,8 @@ int main (void) {
 
   printf("%d\n", LC_ALL);
 
+  setlocale(LC_ALL, "de_DE.UTF-8");
+
   printf("%s\n", strptime("Friday, 28. Jun 2019", "%A, %d. %b %Y", &tm));
   time_t old_time = mktime(&tm);
   printf("%ld\n", old_time);
