@@ -26,10 +26,14 @@
   (format :string)
   (time-struct (:pointer (:struct tm))))
 
+(defcfun mktime :uint32
+  (time-struct (:pointer (:struct tm))))
+
 (with-foreign-strings ((string "Freitag, 28. Jun 2019")
 		       (format "%A, %d. %b %Y"))
   (with-foreign-object (time '(:pointer (:struct tm)))
     (unless (equal "" (strptime string format time))
       (error "failed to parse date"))
+    (print (mktime time))
     (with-foreign-slots ((tm-sec tm-min tm-hour tm-mday tm-mon tm-year tm-wday tm-yday tm-isdst) time (:struct tm))
       (list tm-sec tm-min tm-hour tm-mday tm-mon tm-year tm-wday tm-yday tm-isdst))))
