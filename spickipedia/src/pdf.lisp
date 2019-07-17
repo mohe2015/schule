@@ -1,6 +1,6 @@
 (defpackage spickipedia.pdf
   (:use :cl :pdf :deflate :flexi-streams :queues)
-  (:export :parse :read-line-part :read-newline))
+  (:export :parse :read-line-part :read-newline :line-length :current-line))
 
 (in-package :spickipedia.pdf)
 
@@ -43,6 +43,9 @@
 (defmethod read-line-part ((extractor pdf-text-extractor))
   "Get part of line from extracted text."
   (qpop (current-line extractor)))
+
+(defmethod line-length ((extractor pdf-text-extractor))
+  (qsize (current-line extractor)))
 
 (defmethod read-newline ((extractor pdf-text-extractor))
   "Expect a newline in extracted text."
