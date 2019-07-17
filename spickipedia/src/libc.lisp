@@ -20,6 +20,7 @@
   (tm-yday :int)
   (tm-isdst :int))
 
+;;; http://man7.org/linux/man-pages/man3/strptime.3.html
 (defcfun "strptime" :string
   (string :string)
   (format :string)
@@ -28,6 +29,7 @@
 (with-foreign-strings ((string "Freitag, 28. Jun 2019")
 		       (format "%A, %d. %b %Y"))
   (with-foreign-object (time '(:pointer (:struct tm)))
-    (strptime string format time)
+    (unless (equal "" (strptime string format time))
+      (error "failed to parse date"))
     (with-foreign-slots ((tm-sec tm-min tm-hour tm-mday tm-mon tm-year tm-wday tm-yday tm-isdst) time (:struct tm))
       (list tm-sec tm-min tm-hour tm-mday tm-mon tm-year tm-wday tm-yday tm-isdst))))
