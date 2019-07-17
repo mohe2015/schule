@@ -32,7 +32,8 @@
          (:file "argon2")
          
          (:file "pdf")
-	 (:file "vertretungsplan" :depends-on ("pdf"))
+	 (:file "libc")
+	 (:file "vertretungsplan" :depends-on ("pdf" "libc"))
 
          (:file "html/helpers" :depends-on ("package"))
          (:file "html/user-courses/index" :depends-on ("package" "html/helpers"))

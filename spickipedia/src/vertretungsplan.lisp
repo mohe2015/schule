@@ -17,7 +17,7 @@
       (cond ((equal for-header "Vertretungsplan für")
 	     (read-newline extractor)
 	     (let ((date (read-line-part extractor)))
-	       (format t "date ~a~%" date)))
+	       (format t "date ~a~%" date))) ;; "%a, %d. %b %Y %H:%M Uhr"
 	    (t (print for-header))))))
 
  (parse-vertretungsplan #P"/home/moritz/Downloads/vs.pdf")
