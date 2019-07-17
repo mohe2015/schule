@@ -1,6 +1,5 @@
 (defpackage spickipedia.vertretungsplan
   (:use :cl :spickipedia.pdf :spickipedia.libc :local-time))
-
 (in-package :spickipedia.vertretungsplan)
 
 (defclass vertretungsplan ()

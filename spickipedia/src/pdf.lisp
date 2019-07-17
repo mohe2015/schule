@@ -91,7 +91,7 @@
       (char string 1)
       (char string 0)))
 
-(defmethod draw-text ((extractor pdf-text-extractor) text)
+(defmethod draw-text-object ((extractor pdf-text-extractor) text)
   "Writes the text from the text object (pdf spec) into the text extractor."
   (loop for x across text do
        (if (typep x 'string)
@@ -118,7 +118,7 @@
 		     ((equal e "cm") (setf stack '())) ; CTM
 		     ((equal e "RG") (setf stack '())) ; stroking color
 		     ((equal e "rg") (setf stack '())) ; non stroking color
-		     ((equal e "TJ") (draw-text extractor (car stack)) (setf stack '()))
+		     ((equal e "TJ") (draw-text-object extractor (car stack)) (setf stack '()))
 		     ((equal e "TL") (setf stack '())) ; set text leading
 		     ((equal e "T*") (new-line extractor))
 		     ((equal e "Td") (unless (equal "0" (car stack)) (new-line extractor)) (setf stack '()))

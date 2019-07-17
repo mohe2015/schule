@@ -30,8 +30,10 @@
 (defcfun mktime :uint32
   (time-struct (:pointer (:struct tm))))
 
-(constantenum lc
-  ((:lc-all "LC_ALL")))
+;; https://stackoverflow.com/questions/6256179/how-can-i-find-the-value-of-lc-xxx-locale-integr-constants-so-that-i-can-use-the/6561967#6561967
+
+(defcenum lc_symbol
+  (:lc-all 6))
 
 (defcfun setlocale :string
   (category :int)
