@@ -1,6 +1,6 @@
 (defpackage spickipedia.pdf
   (:use :cl :pdf :deflate :flexi-streams :queues)
-  (:export :parse))
+  (:export :parse :read-line-part :read-newline))
 
 (in-package :spickipedia.pdf)
 
