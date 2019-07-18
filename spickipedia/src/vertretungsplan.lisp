@@ -124,9 +124,8 @@
 	   
 	   ((not element) (error "unexpected end"))
 	   
-	   (t (format t "~a~%" element)))))))
+	   (t (format t "~a~%" element) (break)))))))
 
 (loop for file in (uiop:directory-files "/home/moritz/Documents/vs/") do
      (format t "~%~a~%" file)
-     (break)
      (parse-vertretungsplan file))

@@ -69,7 +69,7 @@
 	 (strings (mapcar 'content jo))
 	 (strings2 (mapcar 'car strings))
 	 (decompressed (mapcar 'decompress-string strings2))
-	 (removed-fonts (remove-if-not (lambda (x) (str:starts-with? "q 0.12 0 0 0.12 0 0 cm" x)) *P*)))
+	 (removed-fonts (remove-if-not (lambda (x) (str:starts-with? "q 0.12 0 0 0.12 0 0 cm" x)) decompressed)))
     (apply 'str:concat removed-fonts)))
 
 (defun read-until (test &optional (stream *standard-input*))
