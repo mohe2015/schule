@@ -47,13 +47,26 @@
 	    (setf last-state nil))
 	   
 	   ((starts-with? "fehlende Lehrer:" (trim element))
-	    ;; TODO multiple missing teachers lines
 	    (loop for elem = (read-line-part extractor) while elem do
 		 (format t "~a~%" elem))
 	    (read-newline extractor)
 	    (setf element (read-line-part extractor))
 	    (setf last-state :missing-teachers))
 
+	   ((starts-with? "fehlende Klassen:" (trim element))
+	    (loop for elem = (read-line-part extractor) while elem do
+		 (format t "~a~%" elem))
+	    (read-newline extractor)
+	    (setf element (read-line-part extractor))
+	    (setf last-state :classes))
+
+	   ((starts-with? "fehlende Räume:" (trim element))
+	    (loop for elem = (read-line-part extractor) while elem do
+		 (format t "~a~%" elem))
+	    (read-newline extractor)
+	    (setf element (read-line-part extractor))
+	    (setf last-state :missing-rooms))
+	   
 	   ;; belongs to missing teachers
 	   ((and (eq last-state :missing-teachers) (starts-with? "(-) " (trim element)))
 	    (loop for elem = (read-line-part extractor) while elem do
@@ -70,8 +83,16 @@
 	    (setf element (read-line-part extractor))
 	    (setf last-state :classes))
 
+	   ;; belongs to missing rooms
+	   ((and (eq last-state :missing-rooms) (starts-with? "(-) " (trim element)))
+	    (loop for elem = (read-line-part extractor) while elem do
+		 (format t "~a~%" elem))
+	    (read-newline extractor)
+	    (setf element (read-line-part extractor))
+	    (setf last-state :missing-rooms))
+
 	   ;; :schedule
-	   ((and (or (eq last-state :missing-teachers) (eq last-state :classes)) (= 0 (line-length extractor)))
+	   ((and (or (eq last-state :missing-teachers) (eq last-state :classes) (eq last-state :missing-rooms)) (= 0 (line-length extractor)))
 	    ;; substituion schedule starts
 	    ;; TODO
 	    (format t "clazz ~a~%" element)
@@ -79,12 +100,7 @@
 	    (setf element (read-line-part extractor))
 	    (setf last-state :schedule))
 	   
-	   ((starts-with? "fehlende Klassen:" (trim element))
-	    (loop for elem = (read-line-part extractor) while elem do
-		 (format t "~a~%" elem))
-	    (read-newline extractor)
-	    (setf element (read-line-part extractor))
-	    (setf last-state :classes))
+	   
 	   
 	   ((or (eq last-state :reinigung) (starts-with? "Reinigung:" (trim element)))
 	    (read-newline extractor)
