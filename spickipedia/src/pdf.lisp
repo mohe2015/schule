@@ -164,5 +164,6 @@
   (let ((extractor (make-instance 'pdf-text-extractor)))
     (loop for page in (get-decompressed file) do
 	 (with-input-from-string (in page)
-	   (parse-page extractor in)))
+	   (parse-page extractor in)
+	   (new-page extractor)))
     extractor))

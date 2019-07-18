@@ -7,6 +7,7 @@
 
 (defun parse-vertretungsplan (file)
   (let ((extractor (parse file)))
+    (read-new-page extractor)
     (read-newline extractor)
     (format t "updated ~a~%" (strptime (replace-all "Mrz" "Mär" (read-line-part extractor)) "%a, %d. %b %Y %H:%M Uhr"))
     (read-newline extractor)
