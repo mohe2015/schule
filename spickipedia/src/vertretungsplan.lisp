@@ -6,7 +6,8 @@
   ())
 
 (defun parse-vertretungsplan (extractor)
-  (read-new-page extractor)
+  (unless (read-new-page extractor)
+    (return-from parse-vertretungsplan t))
   (read-newline extractor)
   (format t "updated ~a~%" (strptime (replace-all "Mrz" "Mär" (read-line-part extractor)) "%a, %d. %b %Y %H:%M Uhr"))
   (read-newline extractor)
