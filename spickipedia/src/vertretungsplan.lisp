@@ -119,13 +119,13 @@
 	  (loop for elem = (read-line-part extractor) while elem do
 	       (format t "~a~%" elem))
 	  (unless (read-newline extractor)
-	    (return-from parse-vertretungsplan t)) ;; TODO next page; tail recursiion?
+	    (return-from parse-vertretungsplan (parse-vertretungsplan extractor)))
 	  (setf element (read-line-part extractor))
 	  (setf last-state :schedule))
 	 
 	 ((not element) (error "unexpected end"))
 	 
-	 (t (format t "~a~%" element) (break)))))))
+	 (t (format t "~a~%" element) (break))))))
 
 (loop for file in (uiop:directory-files "/home/moritz/Documents/vs/") do
      (format t "~%~a~%" file)

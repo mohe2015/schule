@@ -56,21 +56,26 @@
 (defmethod line-length ((extractor pdf-text-extractor))
   (qsize (current-line extractor)))
 
+(defun qsize? (queue)
+  (if queue
+      (qsize queue)
+      0))
+
 (defmethod read-newline ((extractor pdf-text-extractor))
   "Expect a newline in extracted text."
-  (unless (= 0 (qsize (current-part extractor)))
+  (unless (= 0 (qsize? (current-part extractor)))
     (error "The current part still contains characters"))
-  (unless (= 0 (qsize (current-line extractor)))
+  (unless (= 0 (qsize? (current-line extractor)))
     (error "The current line still contains parts."))
   (setf (current-line extractor) (qpop (extractor-lines extractor))))
 
 (defmethod read-new-page ((extractor pdf-text-extractor))
   "Expect a new page in extracted text."
-  (unless (= 0 (qsize (current-part extractor)))
+  (unless (= 0 (qsize? (current-part extractor)))
     (error "The current part still contains characters"))
-  (unless (= 0 (qsize (current-line extractor)))
+  (unless (= 0 (qsize? (current-line extractor)))
     (error "The current line still contains parts."))
-  (unless (= 0 (qsize (extractor-lines extractor)))
+  (unless (= 0 (qsize? (extractor-lines extractor)))
     (error "The current page still contains lines."))
   (setf (extractor-lines extractor) (qpop (extractor-pages extractor))))
 

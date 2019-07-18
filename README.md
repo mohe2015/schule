@@ -65,3 +65,7 @@ import('../js/utils.lisp').then(m => module = m)
 cd $HOME/.roswell/local-projects
 find -L -name '*.asd' > system-index.txt
 ```
+
+
+
+(declaim (optimize (compilation-speed 0) (debug 3) (safety 3) (space 0) (speed 0)))
