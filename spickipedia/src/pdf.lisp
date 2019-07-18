@@ -68,8 +68,9 @@
 	 (jo (remove-if-not (lambda (x) (equal "/FlateDecode" (cdr (assoc "/Filter" (dict-values x) :test #'equal)))) streams))
 	 (strings (mapcar 'content jo))
 	 (strings2 (mapcar 'car strings))
-	 (decompressed (mapcar 'decompress-string strings2)))
-    (car decompressed)))
+	 (decompressed (mapcar 'decompress-string strings2))
+	 (removed-fonts (remove-if-not (lambda (x) (str:starts-with? "q 0.12 0 0 0.12 0 0 cm" x)) *P*)))
+    (apply 'str:concat removed-fonts)))
 
 (defun read-until (test &optional (stream *standard-input*))
   "Reads string from stream until test is true."
