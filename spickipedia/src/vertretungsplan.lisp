@@ -48,12 +48,12 @@
 	   (setf (substitution-new-teacher s) "?"))
        (unless (equal (nth 1 right) (substitution-course s)) ;; TODO FIXME
 	 (error "course not found"))
-       (setf (substition-new-subject s) (nth 2 right))
+       (setf (substitution-new-subject s) (nth 2 right))
        (setf (substitution-new-room s) (nth 3 right))
        (when (= 5 (length right))
 	 (setf (substitution-notes s) (nth 4 right))))
       
-      ((or (= 1 (length right) (= 2 (length right))))
+      ((or (= 1 (length right)) (= 2 (length right)))
        (unless (equal "-----" (nth 0 right))
 	 (if (equal "?????" (nth 0 right))
 	     (setf (substitution-notes s) "?????")

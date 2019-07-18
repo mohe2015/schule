@@ -126,7 +126,7 @@
   (loop for x across text do
        (if (typep x 'string)
 	   (write-line-part-char extractor (escaped-to-char (subseq x 1 (- (length x) 1))))
-	   (if (< x -280)
+	   (if (< x -100)
 	       (new-part extractor)))))
 
 (defmethod parse-page ((extractor pdf-text-extractor) in)
