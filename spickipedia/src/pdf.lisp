@@ -1,11 +1,15 @@
 (defpackage spickipedia.pdf
   (:use :cl :pdf :deflate :flexi-streams :queues)
-  (:export :parse :read-line-part :read-newline :line-length :current-line :extractor-lines))
+  (:export :parse :read-line-part :read-newline :line-length :current-line :extractor-lines :read-new-page))
 
 (in-package :spickipedia.pdf)
 
 (defclass pdf-text-extractor ()
-  ((lines
+  ((pages
+    :initarg :pages
+    :initform (make-queue :simple-queue)
+    :accessor extractor-pages)
+   (lines
     :initarg :lines
     :initform (make-queue :simple-queue)
     :accessor extractor-lines)
@@ -40,6 +44,11 @@
   (qpush (extractor-lines extractor) (current-line extractor))
   (setf (current-line extractor) (make-queue :simple-queue)))
 
+(defmethod new-page ((extractor pdf-text-extractor))
+  "New page in extracted text."
+  (qpush (extractor-pages extractor) (extractor-lines extractor))
+  (setf (extractor-lines extractor) (make-queue :simple-queue)))
+
 (defmethod read-line-part ((extractor pdf-text-extractor))
   "Get part of line from extracted text."
   (qpop (current-line extractor)))
@@ -49,9 +58,21 @@
 
 (defmethod read-newline ((extractor pdf-text-extractor))
   "Expect a newline in extracted text."
+  (unless (= 0 (qsize (current-part extractor)))
+    (error "The current part still contains characters"))
   (unless (= 0 (qsize (current-line extractor)))
     (error "The current line still contains parts."))
   (setf (current-line extractor) (qpop (extractor-lines extractor))))
+
+(defmethod read-new-page ((extractor pdf-text-extractor))
+  "Expect a new page in extracted text."
+  (unless (= 0 (qsize (current-part extractor)))
+    (error "The current part still contains characters"))
+  (unless (= 0 (qsize (current-line extractor)))
+    (error "The current line still contains parts."))
+  (unless (= 0 (qsize (extractor-lines extractor)))
+    (error "The current page still contains lines."))
+  (setf (extractor-lines extractor) (qpop (extractor-pages extractor))))
 
 (defun decompress-string (string)
   "Decompress a zlib string."
@@ -70,7 +91,7 @@
 	 (strings2 (mapcar 'car strings))
 	 (decompressed (mapcar 'decompress-string strings2))
 	 (removed-fonts (remove-if-not (lambda (x) (str:starts-with? "q 0.12 0 0 0.12 0 0 cm" x)) decompressed)))
-    (apply 'str:concat removed-fonts)))
+    removed-fonts))
 
 (defun read-until (test &optional (stream *standard-input*))
   "Reads string from stream until test is true."
@@ -103,40 +124,45 @@
 	   (if (< x -280)
 	       (new-part extractor)))))
 
+(defmethod parse-page ((extractor pdf-text-extractor) in)
+  (let ((stack '()))
+    (loop
+       (if (eq (peek-char nil in nil nil) #\[)
+	   (let ((*pdf-input-stream* in))
+	     (push (read-object in) stack))
+	   (let ((e (read-until 'boundary-char-p in)))
+	     (cond ((equal e "q"))                   ; push graphics
+		   ((equal e "Q"))                   ; pop graphics
+		   ((equal e "BT"))                  ; begin text
+		   ((equal e "ET") (new-line extractor))
+		   ((equal e "Tf") (setf stack '())) ; font and size
+		   ((equal e "Tm") (setf stack '())) ; text matrix
+		   ((equal e "cm") (setf stack '())) ; CTM
+		   ((equal e "RG") (setf stack '())) ; stroking color
+		   ((equal e "rg") (setf stack '())) ; non stroking color
+		   ((equal e "TJ") (draw-text-object extractor (car stack)) (setf stack '()))
+		   ((equal e "TL") (setf stack '())) ; set text leading
+		   ((equal e "T*") (new-line extractor))
+		   ((equal e "Td") (unless (equal "0" (car stack)) (new-line extractor)) (setf stack '()))
+		   ((equal e "w")  (setf stack '())) ; line width
+		   ((equal e "J")  (setf stack '())) ; line cap style
+		   ((equal e "j")  (setf stack '())) ; line join style
+		   ((equal e "m")  (setf stack '())) ; move to
+		   ((equal e "l")  (setf stack '())) ; straight line
+		   ((equal e "re") (setf stack '())) ; rectangle
+		   ((equal e "gs"))                  ; graphics state operator
+		   ((equal e "S"))                   ; stroke path
+		   ((eq e nil) (return-from parse-page extractor))
+		   ((eq (elt e 0) #\/))              ; literal name
+		   (t (push e stack)))
+	     (when (whitespace-char-p (peek-char nil in nil nil))
+	       (unless (read-char in nil)
+		 (return-from parse-page extractor))))))))
+
 (defun parse (file)
   "Parse a pdf file into a text extractor object. This can be used to read the text of an existing pdf file."
-  (with-input-from-string (in (get-decompressed file))
-    (let ((stack '())
-	  (extractor (make-instance 'pdf-text-extractor)))
-      (loop
-	 (if (eq (peek-char nil in nil nil) #\[)
-	     (let ((*pdf-input-stream* in))
-	       (push (read-object in) stack))
-	     (let ((e (read-until 'boundary-char-p in)))
-	       (cond ((equal e "q"))                   ; push graphics
-		     ((equal e "Q"))                   ; pop graphics
-		     ((equal e "BT"))                  ; begin text
-		     ((equal e "ET") (new-line extractor))
-		     ((equal e "Tf") (setf stack '())) ; font and size
-		     ((equal e "Tm") (setf stack '())) ; text matrix
-		     ((equal e "cm") (setf stack '())) ; CTM
-		     ((equal e "RG") (setf stack '())) ; stroking color
-		     ((equal e "rg") (setf stack '())) ; non stroking color
-		     ((equal e "TJ") (draw-text-object extractor (car stack)) (setf stack '()))
-		     ((equal e "TL") (setf stack '())) ; set text leading
-		     ((equal e "T*") (new-line extractor))
-		     ((equal e "Td") (unless (equal "0" (car stack)) (new-line extractor)) (setf stack '()))
-		     ((equal e "w")  (setf stack '())) ; line width
-		     ((equal e "J")  (setf stack '())) ; line cap style
-		     ((equal e "j")  (setf stack '())) ; line join style
-		     ((equal e "m")  (setf stack '())) ; move to
-		     ((equal e "l")  (setf stack '())) ; straight line
-		     ((equal e "re") (setf stack '())) ; rectangle
-		     ((equal e "gs"))                  ; graphics state operator
-		     ((equal e "S"))                   ; stroke path
-		     ((eq e nil) (return-from parse extractor))
-		     ((eq (elt e 0) #\/))              ; literal name
-		     (t (push e stack)))
-	       (when (whitespace-char-p (peek-char nil in nil nil))
-		 (unless (read-char in nil)
-		   (return-from parse extractor)))))))))
+  (let ((extractor (make-instance 'pdf-text-extractor)))
+    (loop for page in (get-decompressed file) do
+	 (with-input-from-string (in page)
+	   (parse-page extractor in)))
+    extractor))
