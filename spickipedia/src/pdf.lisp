@@ -1,6 +1,6 @@
 (defpackage spickipedia.pdf
   (:use :cl :pdf :deflate :flexi-streams :queues)
-  (:export :parse :read-line-part :read-newline :line-length :current-line))
+  (:export :parse :read-line-part :read-newline :line-length :current-line :extractor-lines))
 
 (in-package :spickipedia.pdf)
 
@@ -8,7 +8,7 @@
   ((lines
     :initarg :lines
     :initform (make-queue :simple-queue)
-    :accessor lines)
+    :accessor extractor-lines)
    (current-line
     :initarg :current-line
     :initform (make-queue :simple-queue)
@@ -37,7 +37,7 @@
 (defmethod new-line ((extractor pdf-text-extractor))
   "New line in extracted text."
   (new-part extractor)
-  (qpush (lines extractor) (current-line extractor))
+  (qpush (extractor-lines extractor) (current-line extractor))
   (setf (current-line extractor) (make-queue :simple-queue)))
 
 (defmethod read-line-part ((extractor pdf-text-extractor))
@@ -51,7 +51,7 @@
   "Expect a newline in extracted text."
   (unless (= 0 (qsize (current-line extractor)))
     (error "The current line still contains parts."))
-  (setf (current-line extractor) (qpop (lines extractor))))
+  (setf (current-line extractor) (qpop (extractor-lines extractor))))
 
 (defun decompress-string (string)
   "Decompress a zlib string."
@@ -139,6 +139,3 @@
 	       (when (whitespace-char-p (peek-char nil in nil nil))
 		 (unless (read-char in nil)
 		   (return-from parse extractor)))))))))
-
-
-(parse #P"/home/moritz/Downloads/vs.pdf")

@@ -24,7 +24,7 @@
 		  (return-from parse-vertretungsplan t))
 		(setf element (read-line-part extractor))
 		(setf last-state nil))
-	       ((equal element "Aufsicht: v. d. Unterricht:")
+	       ((equal (trim element) "Aufsicht: v. d. Unterricht:")
 		(read-newline extractor)
 		(setf element (read-line-part extractor))
 		(setf last-state nil))
@@ -94,4 +94,7 @@
 	       ((not element) (error "unexpected end"))
 	       (t (format t "~a~%" element)))))))
 
- (parse-vertretungsplan #P"/home/moritz/Downloads/vs.pdf")
+(loop for file in (uiop:directory-files "/home/moritz/Documents/vs/") do
+     (format t "~%~a~%" file)
+     (break)
+     (parse-vertretungsplan file))
