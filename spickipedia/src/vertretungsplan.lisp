@@ -24,7 +24,7 @@
 	  (unless (current-line extractor)
 	    (return-from parse-vertretungsplan t))
 	  (setf element (read-line-part extractor))
-	  (setf last-state nil))
+	  (setf last-state :for))
 	 
 	 ((equal (trim element) "Aufsicht: v. d. Unterricht:")
 	  (read-newline extractor)
@@ -92,7 +92,7 @@
 	  (setf last-state :missing-rooms))
 
 	 ;; :schedule
-	 ((and (or (eq last-state :missing-teachers) (eq last-state :classes) (eq last-state :missing-rooms)) (= 0 (line-length extractor)))
+	 ((and (or (eq last-state :for) (eq last-state :missing-teachers) (eq last-state :classes) (eq last-state :missing-rooms)) (= 0 (line-length extractor)))
 	  ;; substituion schedule starts
 	  ;; TODO
 	  (format t "clazz ~a~%" element)
