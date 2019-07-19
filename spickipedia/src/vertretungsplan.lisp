@@ -54,12 +54,13 @@
 	 (setf (substitution-notes s) (nth 4 right))))
       
       ((or (= 1 (length right)) (= 2 (length right)))
-       (unless (equal "-----" (nth 0 right))
-	 (if (equal "?????" (nth 0 right))
+       (if (equal "-----" (nth 0 right))
+	   (setf (substitution-notes s) "")
+	   (if (equal "?????" (nth 0 right))
 	     (setf (substitution-notes s) "?????")
 	     (error "wtf2")))
        (when (= 2 (length right))
-	 (setf (subsitution-notes s) (concatenate 'string (substitution-notes s) (nth 1 right)))))
+	 (setf (substitution-notes s) (concatenate 'string (substitution-notes s) (nth 1 right)))))
       (t (error "fail")))
     s))
   
@@ -71,6 +72,8 @@
     (return-from parse-vertretungsplan t))
   (read-newline extractor)
   (format t "updated ~a~%" (strptime (replace-all "Mrz" "Mär" (read-line-part extractor)) "%a, %d. %b %Y %H:%M Uhr"))
+  (unless (equal "" (read-line-part extractor))
+    (error "fail"))
   (read-newline extractor)
   (read-line-part extractor) ; date-code and school 
   (read-newline extractor)
@@ -182,6 +185,6 @@
 	 
 	 (t (format t "~a~%" element) (break))))))
 
-(loop for file in (uiop:directory-files "/home/moritz/Documents/vs/") do
+#|(loop for file in (uiop:directory-files "/home/moritz/Documents/vs/") do
      (format t "~%~a~%" file)
-     (parse-vertretungsplan (parse file)))
+     (parse-vertretungsplan (parse file)))|#

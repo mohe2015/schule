@@ -1,5 +1,5 @@
 (defpackage spickipedia.pdf
-  (:use :cl :pdf :deflate :flexi-streams :queues)
+  (:use :cl :pdf :deflate :flexi-streams :queues :log4cl)
   (:export :parse :read-line-part :read-newline :line-length :current-line :extractor-lines :read-new-page))
 
 (in-package :spickipedia.pdf)
@@ -121,8 +121,14 @@
       (char string 1)
       (char string 0)))
 
+(defparameter *DEBUG* -123423243243)
+
+;; 22 continue
 (defmethod draw-text-object ((extractor pdf-text-extractor) text)
   "Writes the text from the text object (pdf spec) into the text extractor."
+  (incf *DEBUG*)
+  (if (> *DEBUG* 22)
+      (break))
   (loop for x across text do
        (if (typep x 'string)
 	   (write-line-part-char extractor (escaped-to-char (subseq x 1 (- (length x) 1))))
@@ -136,27 +142,65 @@
 	   (let ((*pdf-input-stream* in))
 	     (push (read-object in) stack))
 	   (let ((e (read-until 'boundary-char-p in)))
-	     (cond ((equal e "q"))                   ; push graphics
-		   ((equal e "Q"))                   ; pop graphics
-		   ((equal e "BT"))                  ; begin text
-		   ((equal e "ET") (new-line extractor))
-		   ((equal e "Tf") (setf stack '())) ; font and size
-		   ((equal e "Tm") (setf stack '())) ; text matrix
-		   ((equal e "cm") (setf stack '())) ; CTM
-		   ((equal e "RG") (setf stack '())) ; stroking color
-		   ((equal e "rg") (setf stack '())) ; non stroking color
-		   ((equal e "TJ") (draw-text-object extractor (car stack)) (setf stack '()))
-		   ((equal e "TL") (setf stack '())) ; set text leading
-		   ((equal e "T*") (new-line extractor))
-		   ((equal e "Td") (unless (equal "0" (car stack)) (new-line extractor)) (setf stack '()))
-		   ((equal e "w")  (setf stack '())) ; line width
-		   ((equal e "J")  (setf stack '())) ; line cap style
-		   ((equal e "j")  (setf stack '())) ; line join style
-		   ((equal e "m")  (setf stack '())) ; move to
-		   ((equal e "l")  (setf stack '())) ; straight line
-		   ((equal e "re") (setf stack '())) ; rectangle
-		   ((equal e "gs"))                  ; graphics state operator
-		   ((equal e "S"))                   ; stroke path
+	     (cond ((equal e "q")
+		    (log:trace "q - push graphics"))
+		   ((equal e "Q")
+		    (log:trace "Q - pop graphics"))
+		   ((equal e "BT")
+		    (log:trace "BT - begin text"))
+		   ((equal e "ET")
+		    (log:trace "ET - end text")
+		    (new-line extractor))
+		   ((equal e "Tf")
+		    (log:trace "Tf - font and size")
+		    (setf stack '())) 
+		   ((equal e "Tm")
+		    (log:trace "Tm - text matrix")
+		    (setf stack '()))
+		   ((equal e "cm")
+		    (log:trace "cm - CTM")
+		    (setf stack '()))
+		   ((equal e "RG")
+		    (log:trace "RG - stroking color")
+		    (setf stack '()))
+		   ((equal e "rg")
+		    (log:trace "rg - non stroking color")
+		    (setf stack '()))
+		   ((equal e "TJ")
+		    (log:trace "TJ - draw text object")
+		    (draw-text-object extractor (car stack)) (setf stack '()))
+		   ((equal e "TL")
+		    (log:trace "TL - set text leading")
+		    (setf stack '()))
+		   ((equal e "T*")
+		    (log:trace "T* - newline")
+		    (new-line extractor))
+		   ((equal e "Td")
+		    (log:trace "Td - newline")
+		    (unless (equal "0" (car stack)) (new-line extractor)) (setf stack '()))
+		   ((equal e "w")
+		    (log:trace "w - line width")
+		    (setf stack '()))
+		   ((equal e "J")
+		    (log:trace "J - line cap style")
+		    (setf stack '()))
+		   ((equal e "j")
+		    (log:trace "j - line join style")
+		    (setf stack '()))
+		   ((equal e "m")
+		    (log:trace "m - move to")
+		    (setf stack '()))
+		   ((equal e "l")
+		    (log:trace "l - straight line")
+		    (setf stack '()))
+		   ((equal e "re")
+		    (log:trace "re - rectangle")
+		    (setf stack '()))
+		   ((equal e "gs")
+		    (log:trace "gs - graphics state operator"))
+		   ((equal e "S")
+		    (log:trace "S - stroke path")
+		    )                   ; stroke path
 		   ((eq e nil) (return-from parse-page extractor))
 		   ((eq (elt e 0) #\/))              ; literal name
 		   (t (push e stack)))
