@@ -85,8 +85,8 @@
     (salt (random-data *saltlen*) `(:array :uint8 ,*saltlen*))
     (with-foreign-string ((pwd pwdlen) password)
       (let ((t-cost 2) (m-cost (ash 1 16)) (parallelism 1))
-        (with-foreign-pointer (encoded (argon2-encodedlen t-cost m-cost parallelism *saltlen* *hashlen*  :argon2_id encodedlen))
-          (assert (eq :argon2_ok (argon2id-hash-encoded t-cost m-cost parallelism pwd pwdlen salt) *saltlen* *hashlen* encoded encodedlen))
+        (with-foreign-pointer (encoded (argon2-encodedlen t-cost m-cost parallelism *saltlen* *hashlen* :argon2_id) encodedlen)
+          (assert (eq :argon2_ok (argon2id-hash-encoded t-cost m-cost parallelism pwd pwdlen salt *saltlen* *hashlen* encoded encodedlen)))
           (foreign-string-to-lisp encoded))))))
 
 (defun verify (password hash)
