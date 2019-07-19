@@ -2,6 +2,7 @@
 
 (i "./state-machine.lisp" "pushState")
 (i "./utils.lisp" "all" "one" "clearChildren")
+(i "./show-tab.lisp" "showTab")
 
 ;; TODO clean up
 
