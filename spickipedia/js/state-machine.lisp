@@ -1,5 +1,6 @@
 (var __-p-s_-m-v_-r-e-g)
 
+(i "./contact/index.lisp" "handleContact")
 (i "./wiki/page.lisp" "handleWikiPage")
 (i "./search.lisp" "handleSearchQuery" "handleSearch")
 (i "./quiz.lisp" "handleQuizIdResults" "handleQuizIdPlayIndex"

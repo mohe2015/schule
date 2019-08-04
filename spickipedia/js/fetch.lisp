@@ -12,7 +12,7 @@
    (let ((status (chain error response status)))
      (if (= status 401)
          (progn
-           (setf (value (one "#inputName")) (chain window local-storage name))
+           (setf (value (one "#inputName")) (or (chain window local-storage name) ""))
            (chain window local-storage (remove-item "name"))
            (push-state "/login"
             (create last-url (chain window location href) last-state
@@ -34,7 +34,7 @@
    (let ((status (chain error response status)))
      (if (= status 401)
          (progn
-           (setf (value (one "#inputName")) (chain window local-storage name))
+           (setf (value (one "#inputName")) (or (chain window local-storage name) ""))
            (chain window local-storage (remove-item "name"))
            (push-state "/login"
             (create last-url (chain window location href) last-state

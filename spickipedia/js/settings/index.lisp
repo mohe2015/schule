@@ -15,7 +15,7 @@
     (then
      (lambda (data)
        (loop for student-course in data do
-         (setf (chain document (get-element-by-id (concatenate 'string "student-course-" (chain student-course course course-id))) checked) t))))))
+         (setf (chain document (get-element-by-id (concatenate 'string "student-course-" (chain student-course course-id))) checked) t))))))
 
 (defun load-courses ()
   (chain

@@ -20,7 +20,7 @@
        `(:a :id "settings-add-course" :type "button" :class
           "btn btn-primary norefresh" "Kurs erstellen")
        `(:a :id "settings-show-schedule" :type "button" :class
-          "btn btn-primary norefresh" "Stundenplan anzeigen"))
+          "btn btn-primary norefresh" "Stundenplan ändern"))
 
     ,(modal "settings-create-grade" "Jahrgang hinzufügen"
       `((:button :type "button" :class "btn btn-secondary" :data-dismiss
@@ -29,7 +29,8 @@
          "settings-button-create-grade" "Hinzufügen"))
       `((:div :class "form-group"
          (:label :for "settings-input-grade" "Jahrgang:") " "
-         (:input :type "text" :id "settings-input-grade" :name "grade"))))
+         (:input :type "text" :id "settings-input-grade" :name "grade"))
+        ,(license-disclaimer)))
 
     ,(modal "settings-create-course" "Kurs erstellen"
       `((:button :type "button" :class "btn btn-secondary" :data-dismiss
@@ -50,7 +51,8 @@
           "Tutorium?"))
         (:div :class "form-group" (:label "Thema")
          (:input :type "text" :class "form-control" :placeholder "Thema" :name
-          "topic" :id "course-topic"))))
+          "topic" :id "course-topic"))
+        ,(license-disclaimer)))
 
      ,(modal "settings-create-teacher" "LehrerIn hinzufügen"
        `((:button :type "button" :class "btn btn-secondary" :data-dismiss "modal" "Abbrechen")

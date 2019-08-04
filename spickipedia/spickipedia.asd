@@ -20,15 +20,26 @@
                :lack
                :lack-middleware-csrf
                :trivial-mimes
+               :deflate
+               :cl-pdf-parser
+               :flexi-streams
+	       :queues.simple-queue
+	       :cffi
+	       :log4cl
                :cl-who)
   :components ;; TODO FIXME fix all dependencies as otherwise there are compilation failures
     ((:module "src" :components (
          (:file "package") ;; TODO split up into the single packages or google how you should do it
 
          (:file "argon2")
+         
+         (:file "pdf")
+	 (:file "libc")
+	 (:file "vertretungsplan" :depends-on ("pdf" "libc"))
 
          (:file "html/helpers" :depends-on ("package"))
          (:file "html/user-courses/index" :depends-on ("package" "html/helpers"))
+         (:file "html/contact/index" :depends-on ("package" "html/helpers"))
          (:file "html/settings/index" :depends-on ("package" "html/helpers"))
          (:file "html/schedule/index" :depends-on ("package" "html/helpers"))
          (:file "index" :depends-on ("package" "html/helpers" "html/user-courses/index" "html/settings/index" "html/schedule/index"))

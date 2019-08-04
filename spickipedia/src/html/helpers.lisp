@@ -12,10 +12,22 @@
        (:div :class "modal-body" ,@body)
        (:div :class "modal-footer" ,@footer))))))
 
+(defun license ()
+ `(:a :target "_blank" :rel "license noopener noreferrer" :href "https://creativecommons.org/licenses/by-nc-sa/4.0/deed.de" "Creative Commons Namensnennung - Nicht-kommerziell - Weitergabe unter gleichen Bedingungen 4.0 International Lizenz"))
+
 (defun teacher-select (id)
   `(:div :class "form-group" (:label "LehrerIn")
     (:select :class "custom-select teacher-select" :id ,id :name "teacher"
      (:option "Wird geladen..."))))
+
+(defun course-select ()
+  `(:div :class "form-group"
+     (:select :class "custom-select course-select" :name "course")))
+
+(defun license-disclaimer ()
+  `(:small
+     "Mit dem Veröffentlichen garantierst du, dass du nicht die Rechte anderer verletzt und bist damit einverstanden, unter der "
+     ,(license) " zu veröffentlichen."))
 
 (defun text-input (label id name &key no-label? classes required autofocus autocomplete)
   `(:div :class "form-group"
