@@ -1,6 +1,11 @@
 (defpackage spickipedia.vertretungsplan
-  (:use :cl :spickipedia.pdf :spickipedia.libc :local-time :str))
+  (:use :cl :spickipedia.pdf :spickipedia.libc :local-time :str :dex))
 (in-package :spickipedia.vertretungsplan)
+
+(defun get-today-schedule ()
+  (dex:get "http://aesgb.de/_downloads/pws/vs.pdf"
+	   :headers '(("User-Agent" . "Vertretungsplan-App Moritz Hedtke <Moritz.Hedtke@t-online.de>"))
+	   :basic-auth (cons (uiop:getenv "SUBSTITUTION_SCHEDULE_USERNAME") (uiop:getenv "SUBSTITUTION_SCHEDULE_PASSWORD"))))
 
 (defclass substitution ()
   ((hour
