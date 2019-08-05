@@ -109,7 +109,7 @@
   (chain event (prevent-default))
   (let* ((select (chain document (get-element-by-id "settings-select-grade")))
          (grade (getprop select 'options (chain select selected-index) 'text)))
-    (push-state (concatenate 'string "/schedule/" grade))))
+    (push-state (concatenate 'string "/schedule/" grade "/edit"))))
 
 (on ("submit" (one "#form-settings-create-grade") event)
   (chain event (prevent-default))

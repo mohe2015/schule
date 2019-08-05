@@ -23,7 +23,7 @@
                   (setf (chain option inner-text) text)
                   (chain course-select (append-child option))))))))
 
-(defroute "/schedule/:grade"
+(defroute "/schedule/:grade/edit"
   (show-tab "#loading")
   (load-courses)
   (cache-then-network (concatenate 'string "/api/schedule/" grade)

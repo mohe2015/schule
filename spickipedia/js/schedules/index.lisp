@@ -23,7 +23,7 @@
                   (setf (chain template
                          (query-selector ".schedules-list-grade") href)
                         (concatenate 'string "/schedule/"
-                                     (chain page grade)))
+                                     (chain page grade) "/edit"))
                   (chain document (get-element-by-id "schedules-list")
                    (append template)))))))
   (catch handle-fetch-error)))
