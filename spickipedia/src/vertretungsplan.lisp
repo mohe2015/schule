@@ -1,9 +1,9 @@
 (defpackage spickipedia.vertretungsplan
-  (:use :cl :spickipedia.pdf :spickipedia.libc :local-time :str :dex))
+  (:use :cl :spickipedia.pdf :spickipedia.libc :local-time :str))
 (in-package :spickipedia.vertretungsplan)
 
-(defun get-today-schedule ()
-  (dex:get "http://aesgb.de/_downloads/pws/vs.pdf"
+(defun get-schedule (url)
+  (dex:get url
 	   :headers '(("User-Agent" . "Vertretungsplan-App Moritz Hedtke <Moritz.Hedtke@t-online.de>"))
 	   :basic-auth (cons (uiop:getenv "SUBSTITUTION_SCHEDULE_USERNAME") (uiop:getenv "SUBSTITUTION_SCHEDULE_PASSWORD"))))
 
@@ -62,13 +62,13 @@
        (if (equal "-----" (nth 0 right))
 	   (setf (substitution-notes s) "")
 	   (if (equal "?????" (nth 0 right))
-	     (setf (substitution-notes s) "?????")
-	     (error "wtf2")))
+	       (setf (substitution-notes s) "?????")
+	       (error "wtf2")))
        (when (= 2 (length right))
 	 (setf (substitution-notes s) (concatenate 'string (substitution-notes s) (nth 1 right)))))
       (t (error "fail")))
     s))
-  
+
 (defclass vertretungsplan ()
   ())
 
@@ -180,7 +180,7 @@
 	 ((eq last-state :schedule)
 	  (let ((substitution (cons element (loop for elem = (read-line-part extractor) while elem collect elem))))
 	    (print (parse-substitution substitution)))
-	    
+	  
 	  (unless (read-newline extractor)
 	    (return-from parse-vertretungsplan (parse-vertretungsplan extractor)))
 	  (setf element (read-line-part extractor))
@@ -191,5 +191,5 @@
 	 (t (format t "~a~%" element) (break))))))
 
 #|(loop for file in (uiop:directory-files "/home/moritz/Documents/vs/") do
-     (format t "~%~a~%" file)
-     (parse-vertretungsplan (parse file)))|#
+(format t "~%~a~%" file)
+(parse-vertretungsplan (parse file)))|#
