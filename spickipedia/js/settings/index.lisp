@@ -29,7 +29,7 @@
           (loop for page in data do
             (let ((template (get-template "settings-student-course-html"))
                   (id (concatenate 'string "student-course-" (chain page course-id))))
-              (setf (chain template (query-selector "label") inner-text) (chain page subject))
+              (setf (chain template (query-selector "label") inner-text) (concatenate 'string (chain page subject) " " (chain page teacher name)))
               (chain template (query-selector "label") (set-attribute "for" id))
               (setf (chain template (query-selector "input") id) id)
               (chain courses-list (append template)))))
