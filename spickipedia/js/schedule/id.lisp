@@ -15,6 +15,12 @@
     (let ((grade (chain window location pathname (split "/") 2)))
       (push-state (concatenate 'string "/schedule/" grade "/edit"))))
 
+(on ("click" (one "#schedule-show-button") event)
+    (chain event (prevent-default))
+    (chain event (stop-propagation))
+    (let ((grade (chain window location pathname (split "/") 2)))
+      (push-state (concatenate 'string "/schedule/" grade))))
+
 (defun load-courses ()
   (cache-then-network "/api/courses"
 		      (lambda (data)
@@ -33,6 +39,8 @@
 
 (defroute "/schedule/:grade"
     (show-tab "#loading")
+  (hide (one "#schedule-show-button"))
+  (show (one "#schedule-edit-button"))
   (hide (all ".add-course"))
   (load-courses)
   (cache-then-network (concatenate 'string "/api/schedule/" grade)
@@ -50,6 +58,8 @@
 
 (defroute "/schedule/:grade/edit"
     (show-tab "#loading")
+  (show (one "#schedule-show-button"))
+  (hide (one "#schedule-edit-button"))
   (show (all ".add-course"))
   (load-courses)
   (cache-then-network (concatenate 'string "/api/schedule/" grade)

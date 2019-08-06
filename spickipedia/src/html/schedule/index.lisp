@@ -49,6 +49,9 @@
             "Freitag"))
 
 	  (:li :class "nav-item"
+	       (:a :class "nav-link" :id "schedule-show-button" :href "" "Anzeigen"))
+	  
+	  (:li :class "nav-item"
 	       (:a :class "nav-link" :id "schedule-edit-button" :href "edit" "Bearbeiten"))
 	  
 	  )
