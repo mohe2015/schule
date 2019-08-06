@@ -105,11 +105,18 @@
   (show-modal (one "#modal-settings-create-course"))
   f)
 
-(on ("click" (one "#settings-show-schedule") event)
+(on ("click" (one "#settings-edit-schedule") event)
   (chain event (prevent-default))
   (let* ((select (chain document (get-element-by-id "settings-select-grade")))
          (grade (getprop select 'options (chain select selected-index) 'text)))
     (push-state (concatenate 'string "/schedule/" grade "/edit"))))
+
+
+(on ("click" (one "#settings-show-schedule") event)
+  (chain event (prevent-default))
+  (let* ((select (chain document (get-element-by-id "settings-select-grade")))
+         (grade (getprop select 'options (chain select selected-index) 'text)))
+    (push-state (concatenate 'string "/schedule/" grade))))
 
 (on ("submit" (one "#form-settings-create-grade") event)
   (chain event (prevent-default))

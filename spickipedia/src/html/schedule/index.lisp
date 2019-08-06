@@ -22,6 +22,9 @@
        (:button :type "button" :class
         "btn btn-sm btn-outline-primary button-delete-schedule-data"
         (:span :class "fa fa-trash")))))
+    (:template :id "schedule-data-static-cell-template"
+	       (:div :class "mb-3 mt-3 schedule-data test"
+		     (:span :class "data" "Mathe LK Keller B201")))
     ,(tab "schedule"
        `(:ul :id "schedule-tabs" :class "nav nav-tabs" :role "tablist"
           (:li :class "nav-item"
