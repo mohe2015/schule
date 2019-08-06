@@ -46,7 +46,12 @@
           (:li :class "nav-item"
            (:a :class "nav-link schedule-tab-link" :id "friday-tab" :data-toggle "tab" :href
             "#friday" :role "tab" :aria-controls "friday" :aria-selected "false"
-            "Freitag")))
+            "Freitag"))
+
+	  (:li :class "nav-item"
+	       (:a :class "nav-link" :id "schedule-edit-button" :href "edit" "Bearbeiten"))
+	  
+	  )
        `(:div :class "tab-content" :id "schedule-table"
           ,(schedule-tab "monday")
           ,(schedule-tab "tuesday") ,(schedule-tab "wednesday")

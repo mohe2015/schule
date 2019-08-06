@@ -107,14 +107,16 @@ O to STREAM (or to *JSON-OUTPUT*)."
    (encode-object-member 'student (student-course-student o) stream)))
 
 (my-defroute :get "/api/schedule/:grade" (:admin :user) (grade) "application/json"
- (let* ((schedule (find-dao 'schedule :grade grade))
-        (revision
-         (select-dao 'schedule-revision (where (:= :schedule schedule))
-          (order-by (:desc :id)) (limit 1))))
-   (encode-json-plist-to-string
-    `(:revision ,(car revision) :data
-      ,(list-to-array
-        (retrieve-dao 'schedule-data :schedule-revision (car revision)))))))
+  (let* ((schedule (find-dao 'schedule :grade grade)))
+    (if schedule
+	(let* ((revision
+		(select-dao 'schedule-revision (where (:= :schedule schedule))
+			    (order-by (:desc :id)) (limit 1))))
+	  (encode-json-plist-to-string
+	   `(:revision ,(car revision) :data
+		       ,(list-to-array
+			 (retrieve-dao 'schedule-data :schedule-revision (car revision))))))
+	"{}")))
 
 (my-defroute :post "/api/schedule/:grade/add" (:admin :user) (grade |weekday| |hour| |week-modulo| |course| |room|) "application/json"
   (dbi:with-transaction *connection*

@@ -1,12 +1,19 @@
 (var __-p-s_-m-v_-r-e-g)
 
-(i "../show-tab.lisp" "showTab")
-(i "../cleanup.lisp" "cleanup")
-(i "../fetch.lisp" "checkStatus" "json" "html" "handleFetchError"
+(i "/js/show-tab.lisp" "showTab")
+(i "/js/cleanup.lisp" "cleanup")
+(i "/js/fetch.lisp" "checkStatus" "json" "html" "handleFetchError"
    "cacheThenNetwork")
-(i "../utils.lisp" "all" "one" "clearChildren")
-(i "../template.lisp" "getTemplate")
-(i "../read-cookie.lisp" "readCookie")
+(i "/js/utils.lisp" "all" "one" "clearChildren")
+(i "/js/template.lisp" "getTemplate")
+(i "/js/read-cookie.lisp" "readCookie")
+(i "/js/state-machine.lisp" "pushState")
+
+(on ("click" (one "#schedule-edit-button") event)
+    (chain event (prevent-default))
+    (chain event (stop-propagation))
+    (let ((grade (chain window location pathname (split "/") 2)))
+      (push-state (concatenate 'string "/schedule/" grade "/edit"))))
 
 (defun load-courses ()
   (cache-then-network "/api/courses"
