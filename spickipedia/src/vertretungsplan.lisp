@@ -3,9 +3,18 @@
 (in-package :spickipedia.vertretungsplan)
 
 (defun get-schedule (url)
-  (dex:get url
-	   :headers '(("User-Agent" . "Vertretungsplan-App Moritz Hedtke <Moritz.Hedtke@t-online.de>"))
-	   :basic-auth (cons (uiop:getenv "SUBSTITUTION_SCHEDULE_USERNAME") (uiop:getenv "SUBSTITUTION_SCHEDULE_PASSWORD"))))
+  (uiop:with-temporary-file (:pathname temp-path :keep t)
+      (serapeum:write-stream-into-file
+       (dex:get
+	url
+	:want-stream t
+	:headers '(("User-Agent" . "Vertretungsplan-App Moritz Hedtke <Moritz.Hedtke@t-online.de>"))
+	:basic-auth (cons (uiop:getenv "SUBSTITUTION_SCHEDULE_USERNAME") (uiop:getenv "SUBSTITUTION_SCHEDULE_PASSWORD")))
+       temp-path
+       :if-does-not-exist :create
+       :if-exists :supersede)))
+
+;; (pdf:read-pdf-file (get-schedule "http://aesgb.de/_downloads/pws/vs.pdf")
 
 (defclass substitution ()
   ((hour

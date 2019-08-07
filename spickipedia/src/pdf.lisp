@@ -86,9 +86,9 @@
      (with-output-to-sequence (out)
        (inflate-zlib-stream in out)))))
 
-(defun get-decompressed (file)
+(defun get-decompressed (data)
   "Get decompressed part of pdf file (pdf spec)."
-  (let* ((pdf (read-pdf-file file))
+  (let* ((pdf (read-pdf-file data))
 	 (contents (map 'list 'content (objects pdf)))
 	 (streams (remove-if-not (lambda (x) (typep x 'pdf-stream)) contents))
 	 (jo (remove-if-not (lambda (x) (equal "/FlateDecode" (cdr (assoc "/Filter" (dict-values x) :test #'equal)))) streams))
@@ -208,10 +208,10 @@
 	       (unless (read-char in nil)
 		 (return-from parse-page extractor))))))))
 
-(defun parse (file)
+(defun parse (data)
   "Parse a pdf file into a text extractor object. This can be used to read the text of an existing pdf file."
   (let ((extractor (make-instance 'pdf-text-extractor)))
-    (loop for page in (get-decompressed file) do
+    (loop for page in (get-decompressed data) do
 	 (with-input-from-string (in page)
 	   (parse-page extractor in)
 	   (new-page extractor)))
