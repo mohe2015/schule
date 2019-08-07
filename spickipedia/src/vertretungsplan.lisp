@@ -1,6 +1,21 @@
 (defpackage spickipedia.vertretungsplan
-  (:use :cl :spickipedia.pdf :spickipedia.libc :local-time :str))
+  (:use :cl :spickipedia.pdf :spickipedia.libc :local-time :str)
+  (:export :get-schedule :parse-vertretungsplan))
 (in-package :spickipedia.vertretungsplan)
+
+(defclass substitution-schedules ()
+  ((schedules
+    :initform (make-hash-table)
+    :accessor substitution-schedules)))
+
+(defmethod update (substitution-schedule vertretungsplan)
+  nil)
+
+;; (spickipedia.vertretungsplan:parse-vertretungsplan (spickipedia.pdf:parse (spickipedia.vertretungsplan:get-schedule "http://aesgb.de/_downloads/pws/vs.pdf")))
+;; (spickipedia.vertretungsplan:parse-vertretungsplan (spickipedia.pdf:parse (spickipedia.vertretungsplan:get-schedule "http://aesgb.de/_downloads/pws/vs1.pdf")))
+
+
+;;(setf (gethash '001 empList) '(Charlie Brown))
 
 (defun get-schedule (url)
   (uiop:with-temporary-file (:pathname temp-path :keep t)
@@ -13,9 +28,6 @@
        temp-path
        :if-does-not-exist :create
        :if-exists :supersede)))
-
-;; (parse-vertretungsplan (spickipedia.pdf:parse (get-schedule "http://aesgb.de/_downloads/pws/vs.pdf")))
-;; (parse-vertretungsplan (spickipedia.pdf:parse (get-schedule "http://aesgb.de/_downloads/pws/vs1.pdf")))
 
 (defclass substitution ()
   ((hour
@@ -82,6 +94,8 @@
 (defclass vertretungsplan ()
   ((date
     :accessor vertretungsplan-date)
+   (updated-at
+    :accessor vertretungsplan-updated)
    (substitutions
     :initform '()
     :accessor vertretungsplan-substitutions)))
@@ -90,7 +104,7 @@
     (unless (read-new-page extractor)
       (return-from parse-vertretungsplan vertretungsplan))
     (read-newline extractor)
-    (format t "updated ~a~%" (strptime (replace-all "Mrz" "Mär" (read-line-part extractor)) "%a, %d. %b %Y %H:%M Uhr"))
+    (setf (vertretungsplan-updated vertretungsplan) (strptime (replace-all "Mrz" "Mär" (read-line-part extractor)) "%a, %d. %b %Y %H:%M Uhr"))
 					;(unless (equal "" (read-line-part extractor))
 					;  (error "fail"))
     (read-newline extractor)
