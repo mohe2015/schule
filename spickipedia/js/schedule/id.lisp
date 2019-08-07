@@ -42,7 +42,6 @@
   (hide (one "#schedule-show-button"))
   (show (one "#schedule-edit-button"))
   (hide (all ".add-course"))
-  (load-courses)
   (cache-then-network (concatenate 'string "/api/schedule/" grade)
 		      (lambda (data)
 			(remove (all ".schedule-data"))
@@ -62,7 +61,7 @@
   (hide (one "#schedule-edit-button"))
   (show (all ".add-course"))
   (load-courses)
-  (cache-then-network (concatenate 'string "/api/schedule/" grade)
+  (cache-then-network (concatenate 'string "/api/schedule/" grade "/all")
 		      (lambda (data)
 			(remove (all ".schedule-data"))
 			(loop for element in (chain data data) do

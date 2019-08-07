@@ -106,7 +106,7 @@ O to STREAM (or to *JSON-OUTPUT*)."
    (encode-object-member 'course (student-course-course o) stream)
    (encode-object-member 'student (student-course-student o) stream)))
 
-(my-defroute :get "/api/schedule/:grade" (:admin :user) (grade) "application/json"
+(my-defroute :get "/api/schedule/:grade/all" (:admin :user) (grade) "application/json"
   (let* ((schedule (find-dao 'schedule :grade grade)))
     (if schedule
 	(let* ((revision
@@ -114,8 +114,21 @@ O to STREAM (or to *JSON-OUTPUT*)."
 			    (order-by (:desc :id)) (limit 1))))
 	  (encode-json-plist-to-string
 	   `(:revision ,(car revision) :data
-		       ,(list-to-array
-			 (retrieve-dao 'schedule-data :schedule-revision (car revision))))))
+		       ,(list-to-array (retrieve-dao 'schedule-data :schedule-revision (car revision))))))
+	"{}")))
+
+(my-defroute :get "/api/schedule/:grade" (:admin :user) (grade) "application/json"
+  (let* ((schedule (find-dao 'schedule :grade grade)))
+    (if schedule
+	(let* ((revision
+		(select-dao 'schedule-revision (where (:= :schedule schedule))
+			    (order-by (:desc :id)) (limit 1)))
+	       (result (mito:select-dao 'schedule-data
+			 (sxql:inner-join :student_course :on (:= :schedule_data.course_id :student_course.course_id))
+                         (sxql:where (:and (:= :schedule_revision_id (object-id (car revision))) (:= :student_course.student_id (object-id user)))))))
+	  (encode-json-plist-to-string
+	   `(:revision ,(car revision) :data
+		       ,(list-to-array result))))
 	"{}")))
 
 (my-defroute :post "/api/schedule/:grade/add" (:admin :user) (grade |weekday| |hour| |week-modulo| |course| |room|) "application/json"
