@@ -25,6 +25,7 @@
                :flexi-streams
 	       :queues.simple-queue
 	       :cffi
+	       :dexador
 	       :log4cl
                :cl-who)
   :components ;; TODO FIXME fix all dependencies as otherwise there are compilation failures

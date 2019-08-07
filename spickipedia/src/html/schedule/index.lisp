@@ -22,6 +22,9 @@
        (:button :type "button" :class
         "btn btn-sm btn-outline-primary button-delete-schedule-data"
         (:span :class "fa fa-trash")))))
+    (:template :id "schedule-data-static-cell-template"
+	       (:div :class "mb-3 mt-3 schedule-data test"
+		     (:span :class "data" "Mathe LK Keller B201")))
     ,(tab "schedule"
        `(:ul :id "schedule-tabs" :class "nav nav-tabs" :role "tablist"
           (:li :class "nav-item"
@@ -43,7 +46,15 @@
           (:li :class "nav-item"
            (:a :class "nav-link schedule-tab-link" :id "friday-tab" :data-toggle "tab" :href
             "#friday" :role "tab" :aria-controls "friday" :aria-selected "false"
-            "Freitag")))
+            "Freitag"))
+
+	  (:li :class "nav-item"
+	       (:a :class "nav-link" :id "schedule-show-button" :href "" "Anzeigen"))
+	  
+	  (:li :class "nav-item"
+	       (:a :class "nav-link" :id "schedule-edit-button" :href "edit" "Bearbeiten"))
+	  
+	  )
        `(:div :class "tab-content" :id "schedule-table"
           ,(schedule-tab "monday")
           ,(schedule-tab "tuesday") ,(schedule-tab "wednesday")

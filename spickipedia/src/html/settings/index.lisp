@@ -19,8 +19,9 @@
           (:label (:input :type "checkbox" :name "test") "Test1") (:br))
        `(:a :id "settings-add-course" :type "button" :class
           "btn btn-primary norefresh" "Kurs erstellen")
-       `(:a :id "settings-show-schedule" :type "button" :class
-          "btn btn-primary norefresh" "Stundenplan ändern"))
+       `(:a :id "settings-edit-schedule" :type "button" :class
+            "btn btn-primary norefresh" "Stundenplan ändern")
+       `(:a :id "settings-show-schedule" :type "button" :class "btn btn-primary norefresh" "Studenplan anzeigen"))
 
     ,(modal "settings-create-grade" "Jahrgang hinzufügen"
       `((:button :type "button" :class "btn btn-secondary" :data-dismiss

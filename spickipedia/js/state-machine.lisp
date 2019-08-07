@@ -18,7 +18,7 @@
 (i "./teachers.lisp" "handleTeachersNew")
 (i "./courses/new.lisp" "handleCoursesNew")
 (i "./courses/index.lisp" "handleCourses")
-(i "./schedule/id.lisp" "handleScheduleGrade")
+(i "./schedule/id.lisp" "handleScheduleGradeEdit" "handleScheduleGrade")
 (i "./schedules/new.lisp" "handleSchedulesNew")
 (i "./schedules/index.lisp" "handleSchedules")
 (i "./student-courses/index.lisp" "handleStudentCourses")
