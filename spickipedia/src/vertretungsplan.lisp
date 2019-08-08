@@ -1,6 +1,6 @@
 (defpackage spickipedia.vertretungsplan
-  (:use :cl :spickipedia.pdf :spickipedia.libc :local-time :str)
-  (:export :get-schedule :parse-vertretungsplan))
+  (:use :cl :spickipedia.pdf :spickipedia.libc :local-time :str :spickipedia.web)
+  (:export :get-schedule :parse-vertretungsplan :substitution-schedules :update))
 (in-package :spickipedia.vertretungsplan)
 
 (defclass substitution-schedules ()
@@ -8,14 +8,14 @@
     :initform (make-hash-table)
     :accessor substitution-schedules)))
 
-(defmethod update (substitution-schedule vertretungsplan)
-  nil)
-
-;; (spickipedia.vertretungsplan:parse-vertretungsplan (spickipedia.pdf:parse (spickipedia.vertretungsplan:get-schedule "http://aesgb.de/_downloads/pws/vs.pdf")))
-;; (spickipedia.vertretungsplan:parse-vertretungsplan (spickipedia.pdf:parse (spickipedia.vertretungsplan:get-schedule "http://aesgb.de/_downloads/pws/vs1.pdf")))
-
-
-;;(setf (gethash '001 empList) '(Charlie Brown))
+(defmethod update (substitution-schedules vertretungsplan)
+  (let ((existing-schedule (gethash (timestamp-to-unix (vertretungsplan-date vertretungsplan)) (substitution-schedules substitution-schedules))))
+    (if existing-schedule
+	(if (timestamp< (vertretungsplan-updated existing-schedule) (vertretungsplan-updated vertretungsplan))
+	    (progn
+	      (log:info "updated"))
+	    (log:info "old update"))
+	(setf (gethash (timestamp-to-unix (vertretungsplan-date vertretungsplan)) (substitution-schedules substitution-schedules)) vertretungsplan))))
 
 (defun get-schedule (url)
   (uiop:with-temporary-file (:pathname temp-path :keep t)
@@ -104,7 +104,7 @@
     (unless (read-new-page extractor)
       (return-from parse-vertretungsplan vertretungsplan))
     (read-newline extractor)
-    (setf (vertretungsplan-updated vertretungsplan) (strptime (replace-all "Mrz" "Mär" (read-line-part extractor)) "%a, %d. %b %Y %H:%M Uhr"))
+    (setf (vertretungsplan-updated vertretungsplan) (local-time:unix-to-timestamp (strptime (replace-all "Mrz" "Mär" (read-line-part extractor)) "%a, %d. %b %Y %H:%M Uhr")))
 					;(unless (equal "" (read-line-part extractor))
 					;  (error "fail"))
     (read-newline extractor)

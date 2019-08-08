@@ -286,3 +286,34 @@
                     (wiki-article-revision-article
                      (find-dao 'wiki-article-revision :id
                       (getf revision :revision-id))))))))
+
+
+
+(my-defroute :get "/api/substitutions" (:admin :user) () "application/json"
+  (encode-json-to-string *VSS*))
+
+(defparameter *VSS* (make-instance 'spickipedia.vertretungsplan:substitution-schedules))
+(defvar *lock* (bt:make-lock))
+
+(defun update-substitution-schedule ()
+  (let ((top-level *standard-output*))
+    (bt:make-thread
+     (lambda ()
+       (loop
+	  (log:info "Updating substitution schedule")
+	  
+	  (handler-case (spickipedia.vertretungsplan:update *VSS* (spickipedia.vertretungsplan:parse-vertretungsplan (spickipedia.pdf:parse (spickipedia.vertretungsplan:get-schedule "http://aesgb.de/_downloads/pws/vs.pdf"))))
+	    (error (c)
+	      (trivial-backtrace:print-backtrace c)
+	      (log:error c)))
+	  
+	  (handler-case (spickipedia.vertretungsplan:update *VSS* (spickipedia.vertretungsplan:parse-vertretungsplan (spickipedia.pdf:parse (spickipedia.vertretungsplan:get-schedule "http://aesgb.de/_downloads/pws/vs1.pdf"))))
+	    (error (c)
+	      (trivial-backtrace:print-backtrace c)
+	      (log:error c)))
+	  
+	  ;(bt:with-lock-held (*lock*)
+	  ;  nil)
+	  (sleep 60))))))
+
+(update-substitution-schedule)
