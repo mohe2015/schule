@@ -18,11 +18,23 @@
     (return-from compare-substitutions nil))
   (when (not (equal (substitution-old-teacher a) (substitution-old-teacher b)))
     (return-from compare-substitutions nil))
+  (when (not (equal (substitution-old-room a) (substitution-old-room b)))
+    (return-from compare-substitutions nil))
+  (when (not (equal (substitution-old-subject a) (substitution-old-subject b)))
+    (return-from compare-substitutions nil))
   t)
 
 (defun substitution-equal-not-same (a b)
-  
-  )
+  (when (compare-substitutions (a b))
+    (when (not (equal (substitution-new-teacher a) (substitution-new-teacher b)))
+      (return-from substitution-equal-not-same t))
+    (when (not (equal (substitution-new-room a) (substitution-new-room b)))
+      (return-from substitution-equal-not-same t))
+    (when (not (equal (substitution-new-subject a) (substitution-new-subject b)))
+      (return-from substitution-equal-not-same t))
+    (when (not (equal (substitution-notes a) (substitution-notes b)))
+      (return-from substitution-equal-not-same t)))
+  nil)
 
 ;; TODO ignore ones from the past
 (defmethod update (substitution-schedules vertretungsplan)
@@ -31,12 +43,11 @@
 	(if (timestamp< (vertretungsplan-updated existing-schedule) (vertretungsplan-updated vertretungsplan))
 	    (let* ((old (vertretungsplan-substitutions existing-schedule))
 		   (new (vertretungsplan-substitutions vertretungsplan))
-		   (unchanged (intersection old new) :test #'substitution-equal-not-same)
+		   (updated (intersection old new) :test #'substitution-equal-not-same)
 		   (removed (set-difference old new :test #'compare-substitutions))
 		   (added (set-difference new old :test #'compare-substitutions)))
-
-	      ;; TODO updated
-	      
+	      (loop for substitution in updated do
+		   (update-substitution substitution (vertretungsplan-date vertretungsplan) 'UPDATED))
 	      (loop for substitution in removed do
 		   (update-substitution substitution (vertretungsplan-date vertretungsplan) 'REMOVED))
 	      (loop for substitution in added do
@@ -88,6 +99,18 @@
    (notes
     :initarg :notes
     :accessor substitution-notes)))
+
+(defmethod print-object ((obj substitution) out)
+  (format out "~a ~a ~a ~a ~a ~a ~a ~a ~a"
+	  (substitution-hour obj)
+	  (substitution-course obj)
+	  (substitution-old-teacher obj)
+	  (substitution-new-teacher obj)
+	  (substitution-old-room obj)
+	  (substitution-new-room obj)
+	  (substitution-old-subject obj)
+	  (substitution-new-subject obj)
+	  (substitution-notes obj)))
 
 (defun parse-substitution (substitution-list)
   (let* ((position (position "==>" substitution-list :test 'equal))
