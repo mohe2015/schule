@@ -54,7 +54,6 @@
 (defmethod new-page ((extractor pdf-text-extractor))
   "New page in extracted text."
   (log:trace "")
-  (new-line extractor)
   (qpush (extractor-pages extractor) (extractor-lines extractor))
   (setf (extractor-lines extractor) (make-queue :simple-queue)))
 
