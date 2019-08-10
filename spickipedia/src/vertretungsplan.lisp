@@ -11,13 +11,36 @@
 (defun update-substitution (substitution date action)
   (log:info action " " date " " substitution))
 
+(defun compare-substitutions (a b)
+  (when (not (= (substitution-hour a) (substitution-hour b)))
+    (return-from compare-substitutions nil))
+  (when (not (equal (substitution-course a) (substitution-course b)))
+    (return-from compare-substitutions nil))
+  (when (not (equal (substitution-old-teacher a) (substitution-old-teacher b)))
+    (return-from compare-substitutions nil))
+  t)
+
+(defun substitution-equal-not-same (a b)
+  
+  )
+
 ;; TODO ignore ones from the past
 (defmethod update (substitution-schedules vertretungsplan)
   (let ((existing-schedule (gethash (timestamp-to-unix (vertretungsplan-date vertretungsplan)) (substitution-schedules substitution-schedules))))
     (if existing-schedule
 	(if (timestamp< (vertretungsplan-updated existing-schedule) (vertretungsplan-updated vertretungsplan))
-	    (progn
-	      (vertretungsplan-substitutions vertretungsplan)
+	    (let* ((old (vertretungsplan-substitutions existing-schedule))
+		   (new (vertretungsplan-substitutions vertretungsplan))
+		   (unchanged (intersection old new) :test #'substitution-equal-not-same)
+		   (removed (set-difference old new :test #'compare-substitutions))
+		   (added (set-difference new old :test #'compare-substitutions)))
+
+	      ;; TODO updated
+	      
+	      (loop for substitution in removed do
+		   (update-substitution substitution (vertretungsplan-date vertretungsplan) 'REMOVED))
+	      (loop for substitution in added do
+		   (update-substitution substitution (vertretungsplan-date vertretungsplan) 'ADDED))
 	      (log:info "updated"))
 	    (log:info "old update"))
 	(progn
