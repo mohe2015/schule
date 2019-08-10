@@ -131,10 +131,14 @@
 	 (error "course not found"))
        (setf (substitution-new-subject s) (nth 2 right))
        (setf (substitution-new-room s) (nth 3 right))
-       (when (= 5 (length right))
-	 (setf (substitution-notes s) (nth 4 right))))
-      
+       (if (= 5 (length right))
+	   (setf (substitution-notes s) (nth 4 right))
+	   (setf (substitution-notes s) nil)))
+     
       ((or (= 1 (length right)) (= 2 (length right)))
+       (setf (substitution-new-teacher s) nil)
+       (setf (substitution-new-room s) nil)
+       (setf (substitution-new-subject s) nil)
        (if (equal "-----" (nth 0 right))
 	   (setf (substitution-notes s) "")
 	   (if (equal "?????" (nth 0 right))
