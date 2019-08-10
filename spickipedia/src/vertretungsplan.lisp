@@ -9,7 +9,7 @@
     :accessor substitution-schedules)))
 
 (defun update-substitution (substitution date action)
-  (log:info action " " date " " substitution))
+  (format t "~a ~a ~a~%" action date substitution))
 
 (defun compare-substitutions (a b)
   (when (not (= (substitution-hour a) (substitution-hour b)))
