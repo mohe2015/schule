@@ -8,14 +8,59 @@
     :initform (make-hash-table)
     :accessor substitution-schedules)))
 
+(defun update-substitution (substitution date action)
+  (format t "~a ~a ~a~%" action date substitution))
+
+(defun compare-substitutions (a b)
+  (when (not (equal (substitution-class a) (substitution-class b)))
+    (return-from compare-substitutions nil))
+  (when (not (= (substitution-hour a) (substitution-hour b)))
+    (return-from compare-substitutions nil))
+  (when (not (equal (substitution-course a) (substitution-course b)))
+    (return-from compare-substitutions nil))
+  (when (not (equal (substitution-old-teacher a) (substitution-old-teacher b)))
+    (return-from compare-substitutions nil))
+  (when (not (equal (substitution-old-room a) (substitution-old-room b)))
+    (return-from compare-substitutions nil))
+  (when (not (equal (substitution-old-subject a) (substitution-old-subject b)))
+    (return-from compare-substitutions nil))
+  t)
+
+(defun substitution-equal-not-same (a b)
+  (when (compare-substitutions (a b))
+    (when (not (equal (substitution-new-teacher a) (substitution-new-teacher b)))
+      (return-from substitution-equal-not-same t))
+    (when (not (equal (substitution-new-room a) (substitution-new-room b)))
+      (return-from substitution-equal-not-same t))
+    (when (not (equal (substitution-new-subject a) (substitution-new-subject b)))
+      (return-from substitution-equal-not-same t))
+    (when (not (equal (substitution-notes a) (substitution-notes b)))
+      (return-from substitution-equal-not-same t)))
+  nil)
+
+;; TODO ignore ones from the past
 (defmethod update (substitution-schedules vertretungsplan)
   (let ((existing-schedule (gethash (timestamp-to-unix (vertretungsplan-date vertretungsplan)) (substitution-schedules substitution-schedules))))
     (if existing-schedule
 	(if (timestamp< (vertretungsplan-updated existing-schedule) (vertretungsplan-updated vertretungsplan))
-	    (progn
+	    (let* ((old (vertretungsplan-substitutions existing-schedule))
+		   (new (vertretungsplan-substitutions vertretungsplan))
+		   (updated (intersection old new) :test #'substitution-equal-not-same)
+		   (removed (set-difference old new :test #'compare-substitutions))
+		   (added (set-difference new old :test #'compare-substitutions)))
+	      (loop for substitution in updated do
+		   (update-substitution substitution (vertretungsplan-date vertretungsplan) 'UPDATED))
+	      (loop for substitution in removed do
+		   (update-substitution substitution (vertretungsplan-date vertretungsplan) 'REMOVED))
+	      (loop for substitution in added do
+		   (update-substitution substitution (vertretungsplan-date vertretungsplan) 'ADDED))
+	      (setf (gethash (timestamp-to-unix (vertretungsplan-date vertretungsplan)) (substitution-schedules substitution-schedules)) vertretungsplan)
 	      (log:info "updated"))
 	    (log:info "old update"))
-	(setf (gethash (timestamp-to-unix (vertretungsplan-date vertretungsplan)) (substitution-schedules substitution-schedules)) vertretungsplan))))
+	(progn
+	  (setf (gethash (timestamp-to-unix (vertretungsplan-date vertretungsplan)) (substitution-schedules substitution-schedules)) vertretungsplan)
+	  (loop for substitution in (vertretungsplan-substitutions vertretungsplan) do
+	       (update-substitution substitution (vertretungsplan-date vertretungsplan) 'ADDED))))))
 
 (defun get-schedule (url)
   (uiop:with-temporary-file (:pathname temp-path :keep t)
@@ -29,8 +74,13 @@
        :if-does-not-exist :create
        :if-exists :supersede)))
 
+;; TOOD FIXME class is missing
+
 (defclass substitution ()
-  ((hour
+  ((class
+    :initarg :class
+    :accessor substitution-class)
+   (hour
     :initarg :hour
     :accessor substitution-hour)
    (course
@@ -58,11 +108,25 @@
     :initarg :notes
     :accessor substitution-notes)))
 
-(defun parse-substitution (substitution-list)
+(defmethod print-object ((obj substitution) out)
+  (format out "~a ~a ~a ~a ~a ~a ~a ~a ~a ~a"
+	  (substitution-class obj)
+	  (substitution-hour obj)
+	  (substitution-course obj)
+	  (substitution-old-teacher obj)
+	  (substitution-new-teacher obj)
+	  (substitution-old-room obj)
+	  (substitution-new-room obj)
+	  (substitution-old-subject obj)
+	  (substitution-new-subject obj)
+	  (substitution-notes obj)))
+
+(defun parse-substitution (class substitution-list)
   (let* ((position (position "==>" substitution-list :test 'equal))
 	 (left (subseq substitution-list 0 position))
 	 (right (subseq substitution-list (1+ position)))
 	 (s (make-instance 'substitution)))
+    (setf (substitution-class s) class)
     (setf (substitution-hour s) (parse-integer (nth 0 left)))
     (setf (substitution-old-teacher s) (nth 1 left))
     (setf (substitution-course s) (nth 2 left))
@@ -77,10 +141,14 @@
 	 (error "course not found"))
        (setf (substitution-new-subject s) (nth 2 right))
        (setf (substitution-new-room s) (nth 3 right))
-       (when (= 5 (length right))
-	 (setf (substitution-notes s) (nth 4 right))))
-      
+       (if (= 5 (length right))
+	   (setf (substitution-notes s) (nth 4 right))
+	   (setf (substitution-notes s) nil)))
+     
       ((or (= 1 (length right)) (= 2 (length right)))
+       (setf (substitution-new-teacher s) nil)
+       (setf (substitution-new-room s) nil)
+       (setf (substitution-new-subject s) nil)
        (if (equal "-----" (nth 0 right))
 	   (setf (substitution-notes s) "")
 	   (if (equal "?????" (nth 0 right))
@@ -147,21 +215,21 @@
 	   
 	   ((starts-with? "fehlende Lehrer:" (trim element))
 	    (loop for elem = (read-line-part extractor) while elem do
-		 (format t "~a~%" elem))
+		 (progn)) ;; (format t "~a~%" elem))
 	    (read-newline extractor)
 	    (setf element (read-line-part extractor))
 	    (setf last-state :missing-teachers))
 
 	   ((starts-with? "fehlende Klassen:" (trim element))
 	    (loop for elem = (read-line-part extractor) while elem do
-		 (format t "~a~%" elem))
+		 (progn)) ;;(format t "~a~%" elem))
 	    (read-newline extractor)
 	    (setf element (read-line-part extractor))
 	    (setf last-state :classes))
 
 	   ((starts-with? "fehlende Räume:" (trim element))
 	    (loop for elem = (read-line-part extractor) while elem do
-		 (format t "~a~%" elem))
+		 (progn)) ;;(format t "~a~%" elem))
 	    (read-newline extractor)
 	    (setf element (read-line-part extractor))
 	    (setf last-state :missing-rooms))
@@ -169,7 +237,7 @@
 	   ;; belongs to missing teachers
 	   ((and (eq last-state :missing-teachers) (starts-with? "(-) " (trim element)))
 	    (loop for elem = (read-line-part extractor) while elem do
-		 (format t "~a~%" elem))
+		 (progn)) ;; (format t "~a~%" elem))
 	    (read-newline extractor)
 	    (setf element (read-line-part extractor))
 	    (setf last-state :missing-teachers))
@@ -177,7 +245,7 @@
 	   ;; belongs to missing classes
 	   ((and (eq last-state :classes) (starts-with? "(-) " (trim element)))
 	    (loop for elem = (read-line-part extractor) while elem do
-		 (format t "~a~%" elem))
+		 (progn)) ;; (format t "~a~%" elem))
 	    (read-newline extractor)
 	    (setf element (read-line-part extractor))
 	    (setf last-state :classes))
@@ -185,7 +253,7 @@
 	   ;; belongs to missing rooms
 	   ((and (eq last-state :missing-rooms) (starts-with? "(-) " (trim element)))
 	    (loop for elem = (read-line-part extractor) while elem do
-		 (format t "~a~%" elem))
+	       (progn)) ;; (format t "~a~%" elem))
 	    (read-newline extractor)
 	    (setf element (read-line-part extractor))
 	    (setf last-state :missing-rooms))
@@ -194,7 +262,7 @@
 	   ((and (or (eq last-state :schedule) (eq last-state :for) (eq last-state :missing-teachers) (eq last-state :classes) (eq last-state :missing-rooms)) (= 0 (line-length extractor)))
 	    ;; substituion schedule starts
 	    (setf class element)
-	    (format t "clazz ~a~%" element)
+	    ;;(format t "clazz ~a~%" element)
 	    (read-newline extractor)
 	    (setf element (read-line-part extractor))
 	    (setf last-state :schedule))
@@ -207,7 +275,7 @@
 	   ;; normal schedule part
 	   ((eq last-state :schedule)
 	    (let ((substitution (cons element (loop for elem = (read-line-part extractor) while elem collect elem))))
-	      (push (parse-substitution substitution) (vertretungsplan-substitutions vertretungsplan)))
+	      (push (parse-substitution class substitution) (vertretungsplan-substitutions vertretungsplan)))
 	    (unless (read-newline extractor)
 	      (return-from parse-vertretungsplan (parse-vertretungsplan extractor vertretungsplan)))
 	    (setf element (read-line-part extractor))
@@ -215,10 +283,5 @@
 	   
 	   ((not element) (error "unexpected end"))
 	   
-	   (t (format t "~a~%" element) (break)))))
+	   (t #|(format t "~a~%" element)|# (break)))))
     vertretungsplan)
-
-#|
-(loop for file in (uiop:directory-files "/home/moritz/wiki/vs/") do
-(format t "~%~a~%" file)
-(parse-vertretungsplan (parse file)))|#

@@ -317,3 +317,9 @@
 	  (sleep 60))))))
 
 ;;(update-substitution-schedule)
+
+(defun test-vss ()
+  (let ((vss (make-instance 'spickipedia.vertretungsplan:substitution-schedules)))
+    (loop for file in (uiop:directory-files "/home/moritz/wiki/vs/") do
+	 ;;(format t "~%~a~%" file)
+	 (spickipedia.vertretungsplan:update vss (spickipedia.vertretungsplan:parse-vertretungsplan (spickipedia.pdf:parse file))))))
