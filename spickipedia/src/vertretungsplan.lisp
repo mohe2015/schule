@@ -12,6 +12,8 @@
   (format t "~a ~a ~a~%" action date substitution))
 
 (defun compare-substitutions (a b)
+  (when (not (equal (substitution-class a) (substitution-class b)))
+    (return-from compare-substitutions nil))
   (when (not (= (substitution-hour a) (substitution-hour b)))
     (return-from compare-substitutions nil))
   (when (not (equal (substitution-course a) (substitution-course b)))
@@ -52,6 +54,7 @@
 		   (update-substitution substitution (vertretungsplan-date vertretungsplan) 'REMOVED))
 	      (loop for substitution in added do
 		   (update-substitution substitution (vertretungsplan-date vertretungsplan) 'ADDED))
+	      (setf (gethash (timestamp-to-unix (vertretungsplan-date vertretungsplan)) (substitution-schedules substitution-schedules)) vertretungsplan)
 	      (log:info "updated"))
 	    (log:info "old update"))
 	(progn
@@ -71,8 +74,13 @@
        :if-does-not-exist :create
        :if-exists :supersede)))
 
+;; TOOD FIXME class is missing
+
 (defclass substitution ()
-  ((hour
+  ((class
+    :initarg :class
+    :accessor substitution-class)
+   (hour
     :initarg :hour
     :accessor substitution-hour)
    (course
@@ -101,7 +109,8 @@
     :accessor substitution-notes)))
 
 (defmethod print-object ((obj substitution) out)
-  (format out "~a ~a ~a ~a ~a ~a ~a ~a ~a"
+  (format out "~a ~a ~a ~a ~a ~a ~a ~a ~a ~a"
+	  (substitution-class obj)
 	  (substitution-hour obj)
 	  (substitution-course obj)
 	  (substitution-old-teacher obj)
@@ -112,11 +121,12 @@
 	  (substitution-new-subject obj)
 	  (substitution-notes obj)))
 
-(defun parse-substitution (substitution-list)
+(defun parse-substitution (class substitution-list)
   (let* ((position (position "==>" substitution-list :test 'equal))
 	 (left (subseq substitution-list 0 position))
 	 (right (subseq substitution-list (1+ position)))
 	 (s (make-instance 'substitution)))
+    (setf (substitution-class s) class)
     (setf (substitution-hour s) (parse-integer (nth 0 left)))
     (setf (substitution-old-teacher s) (nth 1 left))
     (setf (substitution-course s) (nth 2 left))
@@ -265,7 +275,7 @@
 	   ;; normal schedule part
 	   ((eq last-state :schedule)
 	    (let ((substitution (cons element (loop for elem = (read-line-part extractor) while elem collect elem))))
-	      (push (parse-substitution substitution) (vertretungsplan-substitutions vertretungsplan)))
+	      (push (parse-substitution class substitution) (vertretungsplan-substitutions vertretungsplan)))
 	    (unless (read-newline extractor)
 	      (return-from parse-vertretungsplan (parse-vertretungsplan extractor vertretungsplan)))
 	    (setf element (read-line-part extractor))
