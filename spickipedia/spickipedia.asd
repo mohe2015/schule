@@ -9,6 +9,7 @@
                :cl-ppcre
                :uiop
                :cl-fsnotify
+	       :fare-mop
                :mito
                :cl-json
                :sanitize
@@ -27,16 +28,15 @@
 	       :cffi
 	       :dexador
 	       :log4cl
+	       :serapeum
+	       :bt-semaphore
+	       :trivial-backtrace
                :cl-who)
   :components ;; TODO FIXME fix all dependencies as otherwise there are compilation failures
     ((:module "src" :components (
          (:file "package") ;; TODO split up into the single packages or google how you should do it
 
          (:file "argon2")
-         
-         (:file "pdf")
-	 (:file "libc")
-	 (:file "vertretungsplan" :depends-on ("pdf" "libc"))
 
          (:file "html/helpers" :depends-on ("package"))
          (:file "html/user-courses/index" :depends-on ("package" "html/helpers"))
@@ -50,12 +50,15 @@
          (:file "parenscript" :depends-on ("package"))
          (:file "tsquery-converter" :depends-on ("package"))
 
-         (:file "web" :depends-on ("package" "parenscript" "db" "index" "argon2"))
+         (:file "web" :depends-on ("package" "parenscript" "db" "index" "argon2" "vertretungsplan"))
          (:file "settings" :depends-on ("package" "web"))
          (:file "schedule" :depends-on ("package" "web")) ;; TODO FIXME clean up this dependency garbase
          (:file "student-courses" :depends-on ("package" "web"))
          (:file "default-handler" :depends-on ("package" "web"))
-
+         (:file "pdf")
+	 (:file "libc")
+	 (:file "vertretungsplan" :depends-on ("pdf" "libc"))
+	 
          (:file "db" :depends-on ("package" "config"))
 
          (:file "main" :depends-on ("package" "config" "db" "web"))

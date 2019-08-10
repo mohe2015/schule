@@ -4,7 +4,7 @@
 
 (in-package :spickipedia.pdf)
 
-(defclass pdf-text-extractor ()
+(defclass pdf-text-extractor (fare-mop:SIMPLE-PRINT-OBJECT-MIXIN)
   ((pages
     :initarg :pages
     :initform (make-queue :simple-queue)
@@ -20,7 +20,11 @@
    (current-part
     :initarg :current-part
     :initform (make-queue :simple-queue)
-    :accessor current-part))
+    :accessor current-part)
+   (last-number-p
+    :initarg :last-number-p
+    :initform nil
+    :accessor extractor-last-number-p))
   (:documentation "Stores extracted text to read and process it."))
 
 (defun queue-to-string (queue)
@@ -31,21 +35,25 @@
 
 (defmethod write-line-part-char ((extractor pdf-text-extractor) char)
   "Add character to part of line."
+  ;;(log:trace char)
   (qpush (current-part extractor) char))
 
 (defmethod new-part ((extractor pdf-text-extractor))
   "New part of line in extracted text."
+  (log:trace "")
   (qpush (current-line extractor) (queue-to-string (current-part extractor)))
   (setf (current-part extractor) (make-queue :simple-queue)))
 
 (defmethod new-line ((extractor pdf-text-extractor))
   "New line in extracted text."
+  (log:trace "")
   (new-part extractor)
   (qpush (extractor-lines extractor) (current-line extractor))
   (setf (current-line extractor) (make-queue :simple-queue)))
 
 (defmethod new-page ((extractor pdf-text-extractor))
   "New page in extracted text."
+  (log:trace "")
   (qpush (extractor-pages extractor) (extractor-lines extractor))
   (setf (extractor-lines extractor) (make-queue :simple-queue)))
 
@@ -86,9 +94,9 @@
      (with-output-to-sequence (out)
        (inflate-zlib-stream in out)))))
 
-(defun get-decompressed (file)
+(defun get-decompressed (data)
   "Get decompressed part of pdf file (pdf spec)."
-  (let* ((pdf (read-pdf-file file))
+  (let* ((pdf (read-pdf-file data))
 	 (contents (map 'list 'content (objects pdf)))
 	 (streams (remove-if-not (lambda (x) (typep x 'pdf-stream)) contents))
 	 (jo (remove-if-not (lambda (x) (equal "/FlateDecode" (cdr (assoc "/Filter" (dict-values x) :test #'equal)))) streams))
@@ -121,19 +129,22 @@
       (char string 1)
       (char string 0)))
 
-(defparameter *DEBUG* -123423243243)
-
 ;; 22 continue
 (defmethod draw-text-object ((extractor pdf-text-extractor) text)
   "Writes the text from the text object (pdf spec) into the text extractor."
-  (incf *DEBUG*)
-  (if (> *DEBUG* 22)
-      (break))
+  (log:trace text)
   (loop for x across text do
        (if (typep x 'string)
-	   (write-line-part-char extractor (escaped-to-char (subseq x 1 (- (length x) 1))))
-	   (if (< x -100)
-	       (new-part extractor)))))
+	   (progn
+	     (setf (extractor-last-number-p extractor) nil)
+	     (write-line-part-char extractor (escaped-to-char (subseq x 1 (- (length x) 1)))))
+	   (progn
+	     (setf (extractor-last-number-p extractor) t)
+	     (when (< x -100)
+	       (new-part extractor))))))
+
+;; (log:config :trace)
+;; (log:config :daily "file.txt")
 
 (defmethod parse-page ((extractor pdf-text-extractor) in)
   (let ((stack '()))
@@ -168,7 +179,8 @@
 		    (setf stack '()))
 		   ((equal e "TJ")
 		    (log:trace "TJ - draw text object")
-		    (draw-text-object extractor (car stack)) (setf stack '()))
+		    (draw-text-object extractor (car stack))
+		    (setf stack '()))
 		   ((equal e "TL")
 		    (log:trace "TL - set text leading")
 		    (setf stack '()))
@@ -176,8 +188,12 @@
 		    (log:trace "T* - newline")
 		    (new-line extractor))
 		   ((equal e "Td")
-		    (log:trace "Td - newline")
-		    (unless (equal "0" (car stack)) (new-line extractor)) (setf stack '()))
+		    (log:trace "Td - newline " (car stack))
+		    (if (equal "0" (car stack))
+			(if (extractor-last-number-p extractor)
+			    (new-part extractor))
+			(new-line extractor))
+		    (setf stack '()))
 		   ((equal e "w")
 		    (log:trace "w - line width")
 		    (setf stack '()))
@@ -199,8 +215,7 @@
 		   ((equal e "gs")
 		    (log:trace "gs - graphics state operator"))
 		   ((equal e "S")
-		    (log:trace "S - stroke path")
-		    )                   ; stroke path
+		    (log:trace "S - stroke path"))
 		   ((eq e nil) (return-from parse-page extractor))
 		   ((eq (elt e 0) #\/))              ; literal name
 		   (t (push e stack)))
@@ -208,11 +223,14 @@
 	       (unless (read-char in nil)
 		 (return-from parse-page extractor))))))))
 
-(defun parse (file)
+(defun parse (data)
   "Parse a pdf file into a text extractor object. This can be used to read the text of an existing pdf file."
   (let ((extractor (make-instance 'pdf-text-extractor)))
-    (loop for page in (get-decompressed file) do
+    (loop for page in (get-decompressed data) do
 	 (with-input-from-string (in page)
 	   (parse-page extractor in)
 	   (new-page extractor)))
     extractor))
+
+;; (defparameter *TEST* (parse #P"/home/moritz/wiki/vs/1.170.297.357.561.668.452.pdf"))
+;; (elt (slot-value (qtop (slot-value *TEST* 'pages) 'elements) 'queues:elements) 19)
