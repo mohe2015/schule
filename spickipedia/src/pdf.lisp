@@ -231,6 +231,3 @@
 	   (parse-page extractor in)
 	   (new-page extractor)))
     extractor))
-
-;; (defparameter *TEST* (parse #P"/home/moritz/wiki/vs/1.170.297.357.561.668.452.pdf"))
-;; (elt (slot-value (qtop (slot-value *TEST* 'pages) 'elements) 'queues:elements) 19)
