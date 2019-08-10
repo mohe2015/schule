@@ -208,7 +208,6 @@
 	   ((eq last-state :schedule)
 	    (let ((substitution (cons element (loop for elem = (read-line-part extractor) while elem collect elem))))
 	      (push (parse-substitution substitution) (vertretungsplan-substitutions vertretungsplan)))
-	    
 	    (unless (read-newline extractor)
 	      (return-from parse-vertretungsplan (parse-vertretungsplan extractor vertretungsplan)))
 	    (setf element (read-line-part extractor))
@@ -219,6 +218,7 @@
 	   (t (format t "~a~%" element) (break)))))
     vertretungsplan)
 
-#|(loop for file in (uiop:directory-files "/home/moritz/Documents/vs/") do
+#|
+(loop for file in (uiop:directory-files "/home/moritz/wiki/vs/") do
 (format t "~%~a~%" file)
 (parse-vertretungsplan (parse file)))|#

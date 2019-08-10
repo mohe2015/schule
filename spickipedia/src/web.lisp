@@ -316,4 +316,4 @@
 	  ;  nil)
 	  (sleep 60))))))
 
-(update-substitution-schedule)
+;;(update-substitution-schedule)
