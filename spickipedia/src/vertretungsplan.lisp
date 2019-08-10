@@ -8,14 +8,22 @@
     :initform (make-hash-table)
     :accessor substitution-schedules)))
 
+(defun update-substitution (substitution date action)
+  (log:info action " " date " " substitution))
+
+;; TODO ignore ones from the past
 (defmethod update (substitution-schedules vertretungsplan)
   (let ((existing-schedule (gethash (timestamp-to-unix (vertretungsplan-date vertretungsplan)) (substitution-schedules substitution-schedules))))
     (if existing-schedule
 	(if (timestamp< (vertretungsplan-updated existing-schedule) (vertretungsplan-updated vertretungsplan))
 	    (progn
+	      (vertretungsplan-substitutions vertretungsplan)
 	      (log:info "updated"))
 	    (log:info "old update"))
-	(setf (gethash (timestamp-to-unix (vertretungsplan-date vertretungsplan)) (substitution-schedules substitution-schedules)) vertretungsplan))))
+	(progn
+	  (setf (gethash (timestamp-to-unix (vertretungsplan-date vertretungsplan)) (substitution-schedules substitution-schedules)) vertretungsplan)
+	  (loop for substitution in (vertretungsplan-substitutions vertretungsplan) do
+	       (update-substitution substitution (vertretungsplan-date vertretungsplan) 'ADDED))))))
 
 (defun get-schedule (url)
   (uiop:with-temporary-file (:pathname temp-path :keep t)
