@@ -4,7 +4,7 @@
 
 (in-package :spickipedia.pdf)
 
-(defclass pdf-text-extractor ()
+(defclass pdf-text-extractor (fare-mop:SIMPLE-PRINT-OBJECT-MIXIN)
   ((pages
     :initarg :pages
     :initform (make-queue :simple-queue)
@@ -20,7 +20,11 @@
    (current-part
     :initarg :current-part
     :initform (make-queue :simple-queue)
-    :accessor current-part))
+    :accessor current-part)
+   (last-number-p
+    :initarg :last-number-p
+    :initform nil
+    :accessor extractor-last-number-p))
   (:documentation "Stores extracted text to read and process it."))
 
 (defun queue-to-string (queue)
@@ -133,9 +137,11 @@
   (loop for x across text do
        (if (typep x 'string)
 	   (progn
+	     (setf (extractor-last-number-p extractor) nil)
 	     (write-line-part-char extractor (escaped-to-char (subseq x 1 (- (length x) 1)))))
 	   (progn
-	     (when (or (> x 100) (< x -100))
+	     (setf (extractor-last-number-p extractor) t)
+	     (when (< x -100)
 	       (new-part extractor))))))
 
 ;; (log:config :trace)
@@ -184,8 +190,10 @@
 		    (new-line extractor))
 		   ((equal e "Td")
 		    (log:trace "Td - newline " (car stack))
-		    (unless (equal "0" (car stack))
-		      (new-line extractor))
+		    (if (equal "0" (car stack))
+			(if (extractor-last-number-p extractor)
+			    (new-part extractor))
+			(new-line extractor))
 		    (setf stack '()))
 		   ((equal e "w")
 		    (log:trace "w - line width")

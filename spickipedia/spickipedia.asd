@@ -9,6 +9,7 @@
                :cl-ppcre
                :uiop
                :cl-fsnotify
+	       :fare-mop
                :mito
                :cl-json
                :sanitize
