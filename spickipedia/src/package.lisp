@@ -117,4 +117,4 @@
   (:shadowing-import-from :ironclad :xor)
   (:shadowing-import-from :cl-fad :copy-file)
   (:shadowing-import-from :cl-fad :copy-stream)
-  (:export :*web* :schedule-tab :my-defroute))
+  (:export :*web* :schedule-tab :my-defroute :update-substitution-schedule))

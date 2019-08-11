@@ -29,6 +29,7 @@
 (i "./math.lisp" "renderMath")
 (i "./image-viewer.lisp")
 (i "./fetch.lisp" "checkStatus" "json" "handleFetchError")
+(i "./substitution-schedule/index.lisp" "handleSubstitutionSchedule")
 
 (export
  (defun update-state ()

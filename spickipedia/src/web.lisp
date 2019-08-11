@@ -288,38 +288,38 @@
                       (getf revision :revision-id))))))))
 
 
-
 (my-defroute :get "/api/substitutions" (:admin :user) () "application/json"
-  (encode-json-to-string *VSS*))
+  (bt:with-lock-held (*lock*)
+    (encode-json-to-string *VSS*)))
 
 (defparameter *VSS* (make-instance 'spickipedia.vertretungsplan:substitution-schedules))
 (defvar *lock* (bt:make-lock))
 
 (defun update-substitution-schedule ()
+  (loop for file in (uiop:directory-files "/home/moritz/wiki/vs/") do
+     ;;(format t "~%~a~%" file)
+       (spickipedia.vertretungsplan:update *VSS* (spickipedia.vertretungsplan:parse-vertretungsplan (spickipedia.pdf:parse file))))
+  
   (let ((top-level *standard-output*))
     (bt:make-thread
      (lambda ()
        (loop
 	  (log:info "Updating substitution schedule")
-	  
-	  (handler-case (spickipedia.vertretungsplan:update *VSS* (spickipedia.vertretungsplan:parse-vertretungsplan (spickipedia.pdf:parse (spickipedia.vertretungsplan:get-schedule "http://aesgb.de/_downloads/pws/vs.pdf"))))
+
+	  (handler-case
+	      (let ((substitution-schedule (spickipedia.vertretungsplan:parse-vertretungsplan (spickipedia.pdf:parse (spickipedia.vertretungsplan:get-schedule "http://aesgb.de/_downloads/pws/vs.pdf")))))
+		(bt:with-lock-held (*lock*)
+		  (spickipedia.vertretungsplan:update *VSS* substitution-schedule)))
 	    (error (c)
 	      (trivial-backtrace:print-backtrace c)
 	      (log:error c)))
-	  
-	  (handler-case (spickipedia.vertretungsplan:update *VSS* (spickipedia.vertretungsplan:parse-vertretungsplan (spickipedia.pdf:parse (spickipedia.vertretungsplan:get-schedule "http://aesgb.de/_downloads/pws/vs1.pdf"))))
+
+	  (handler-case
+	      (let ((substitution-schedule (spickipedia.vertretungsplan:parse-vertretungsplan (spickipedia.pdf:parse (spickipedia.vertretungsplan:get-schedule "http://aesgb.de/_downloads/pws/vs1.pdf")))))
+		(bt:with-lock-held (*lock*)
+		  (spickipedia.vertretungsplan:update *VSS* substitution-schedule)))
 	    (error (c)
 	      (trivial-backtrace:print-backtrace c)
 	      (log:error c)))
-	  
-	  ;(bt:with-lock-held (*lock*)
-	  ;  nil)
+    
 	  (sleep 60))))))
-
-;;(update-substitution-schedule)
-
-(defun test-vss ()
-  (let ((vss (make-instance 'spickipedia.vertretungsplan:substitution-schedules)))
-    (loop for file in (uiop:directory-files "/home/moritz/wiki/vs/") do
-	 ;;(format t "~%~a~%" file)
-	 (spickipedia.vertretungsplan:update vss (spickipedia.vertretungsplan:parse-vertretungsplan (spickipedia.pdf:parse file))))))
