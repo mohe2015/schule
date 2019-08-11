@@ -151,6 +151,7 @@
 			 ,(submit-button "Stundenplan erstellen")))
 
 	   ,@(html-settings)
+	   ,@(template-substitution-schedule)
 
 	   ,(tab "multiple-choice-question-html"
 		 `(:h2 :class "text-center question-html" "Dies ist eine Testfrage?")
