@@ -27,6 +27,7 @@
 	       :queues.simple-queue
 	       :cffi
 	       :dexador
+	       :group-by
 	       :log4cl
 	       :serapeum
 	       :bt-semaphore
