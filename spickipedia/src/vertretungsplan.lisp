@@ -40,6 +40,10 @@
 
 ;; TODO ignore ones from the past
 (defmethod update (substitution-schedules vertretungsplan)
+  (loop for k being each hash-key of (substitution-schedules substitution-schedules) using (hash-value v) do
+       (if (timestamp< (vertretungsplan-date v) (today))
+	   (remhash k (substitution-schedules substitution-schedules))))
+  
   (let ((existing-schedule (gethash (timestamp-to-unix (vertretungsplan-date vertretungsplan)) (substitution-schedules substitution-schedules))))
     (if existing-schedule
 	(if (timestamp< (vertretungsplan-updated existing-schedule) (vertretungsplan-updated vertretungsplan))
