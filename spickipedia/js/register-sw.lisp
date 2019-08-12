@@ -3,10 +3,14 @@
 
 (i "./utils.lisp" "all" "one" "clearChildren")
 
-(if (not (chain navigator service-worker))
-    (chain window
-     (add-event-listener "load"
-      (lambda ()
-        (chain navigator service-worker (register "/sw.lisp")
-         (then (lambda (registration) nil) (lambda (err) nil)))
-        nil))))
+(when (and (chain navigator service-worker) (chain window -push-manager))
+  (chain
+   navigator
+   service-worker
+   (register "/sw.lisp")
+   (then
+    (lambda (registration)
+      (chain registration push-manager (get-subscription))))
+   (catch
+       (lambda (error)
+	 (alert error)))))
