@@ -135,9 +135,9 @@
     (cond
       ((or (= 4 (length right)) (= 5 (length right)))
        (setf (substitution-new-teacher s) (nth 0 right))
-       (if (= 0 (length (substitution-new-teacher s))) ;; TODO needed?
+       (if (= 0 (length (substitution-new-teacher s)))
 	   (setf (substitution-new-teacher s) "?"))
-       (unless (equal (nth 1 right) (substitution-course s)) ;; TODO FIXME
+       (unless (equal (nth 1 right) (substitution-course s))
 	 (error "course not found"))
        (setf (substitution-new-subject s) (nth 2 right))
        (setf (substitution-new-room s) (nth 3 right))
@@ -155,7 +155,7 @@
 	       (setf (substitution-notes s) "?????")
 	       (error "wtf2")))
        (when (= 2 (length right))
-	 (setf (substitution-notes s) (concatenate 'string (substitution-notes s) (nth 1 right)))))
+	 (setf (substitution-notes s) (concatenate 'string (substitution-notes s) " " (nth 1 right)))))
       (t (error "fail")))
     s))
 
