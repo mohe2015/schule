@@ -24,15 +24,15 @@
    (lambda (data)
      (loop :for (k v) :of (chain data schedules) :do
 	  (let ((template (get-template "template-substitution-schedule")))
-	    (setf (inner-text (one ".substitution-schedule-date" template)) "1.1.2001")
-	    (if (chain v substitutoins)
+	    (setf (inner-text (one ".substitution-schedule-date" template)) k)
+	    (if (chain v substitutions)
 		(loop :for (clazz substitutions) :of (group-by (chain v substitutions) "class") :do
 		     (let ((class-template (get-template "template-substitution-for-class")))
-		       (setf (inner-text (one ".template-class" class-template)) "clazz")
-		       (append template class-template))
-		     (loop for substitution in substitutions do
-			  (let ((substitution-template (get-template "template-substitution")))
-			    (setf (inner-text (one "li" substitution-template)) "substitution")
-			    (append class-template substitution-template)))))
+		       (setf (inner-text (one ".template-class" class-template)) clazz)
+		       (loop for substitution in substitutions do
+			    (let ((substitution-template (get-template "template-substitution")))
+			      (setf (inner-text (one "li" substitution-template)) "substitution")
+			      (append class-template substitution-template)))
+		       (append template class-template))))
 	    (append (one "#substitution-schedule") template)))
      (show-tab "#substitution-schedule"))))
