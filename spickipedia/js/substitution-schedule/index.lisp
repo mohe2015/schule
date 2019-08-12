@@ -51,7 +51,7 @@
 		       (loop for substitution in substitutions do
 			    (let ((substitution-template (get-template "template-substitution")))
 			      (setf (inner-text (one "li" substitution-template)) (substitution-to-string substitution))
-			      (append class-template substitution-template)))
+			      (append (one "ul" class-template) substitution-template)))
 		       (append template class-template))))
 	    (append (one "#substitution-schedule") template)))
      (show-tab "#substitution-schedule"))))
