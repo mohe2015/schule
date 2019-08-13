@@ -45,8 +45,17 @@
     outputArray))
 
 (defun update-subscription-on-server (subscription)
-
-  nil)
+  (let ((formdata (new (-form-data))))
+    (chain formdata (append "_csrf_token" (read-cookie "_csrf_token")))
+    (chain formdata (append "subscription" (if subscription (chain -J-S-O-N (stringify subscription)) subscription)))
+    (chain
+     (fetch "/api/push-subscription" (create method "POST" body formdata))
+     (then
+      (lambda (response)
+	(chain console (log response))))
+     (catch
+	 (lambda (error)
+	   (chain console (log error)))))))
 
 (defun unsubscribe-user ()
   (chain
