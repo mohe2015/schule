@@ -12,7 +12,6 @@
       "/js/index.lisp"
       "/js/state-machine.lisp"
       "/js/editor-lib.lisp"
-      "/js/register-sw.lisp"
       "/js/utils.lisp"
       "/js/contact/index.lisp"
       "/js/wiki/page.lisp"

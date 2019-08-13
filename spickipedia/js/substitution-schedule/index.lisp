@@ -33,8 +33,45 @@
        "")
    (if (chain substitution notes)
        (concatenate 'string " | " (chain substitution notes))
-       "")
-   ))
+       "")))
+
+(defun urlBase64ToUint8Array (base64String)
+  (let* ((padding (chain "=" (repeat (% (- 4 (% base64String.length 4)) 4))))
+         (base64  (chain (+ base64String padding) (replace (regex "/\\-/g") "+") (replace (regex "/_/g") "/")))
+	 (rawData (chain window (atob base64)))
+	 (outputArray (new (-Uint8-Array (chain rawData length)))))
+    (loop for i from 0 to (- (chain rawData length) 1) do
+         (setf (getprop outputArray i) (chain rawData (char-Code-At i))))
+    outputArray))
+
+(if (and (chain navigator service-worker) (chain window -push-manager))
+    (chain
+     window
+     (add-event-listener
+      "load"
+      (lambda (event)
+	(chain
+	 navigator
+	 service-worker
+	 (register "/sw.lisp")
+	 (then
+	  (lambda (registration)
+	    (chain
+	     registration
+	     push-manager
+	     (get-subscription)
+	     (then
+	      (lambda (subscription)
+		(let ((is-subscribed (not (null subscription))))
+		  (if is-subscribed
+		      (setf (inner-text (one "#settings-enable-notifications")) "Benachrichtigungen deaktivieren")
+		      (setf (inner-text (one "#settings-enable-notifications")) "Benachrichtigungen aktivieren"))))))))
+	 (catch
+	     (lambda (error)
+	       (alert error))))
+	(progn
+	  (setf (inner-text (one "#settings-enable-notifications")) "Benachrichtigungen werden von deinem Gerät nicht unterstützt")
+	  (setf (disabled (one "#settings-enable-notifications")) t))))))
 
 (defroute "/substitution-schedule"
   (show-tab "#loading")
@@ -55,3 +92,21 @@
 		       (append template class-template))))
 	    (append (one "#substitution-schedule-content") template)))
      (show-tab "#substitution-schedule"))))
+
+(on ("click" (one "#settings-enable-notifications") event)
+  (chain event (prevent-default))
+  (chain event (stop-propagation))
+  (chain
+   registration
+   push-manager
+   (subscribe
+    (create
+     user-visible-only t
+     application-server-key (urlBase64ToUint8Array "BJNDT9kF9YzCy_ExMEUXumYXhfigSmPruzP7ZEkZBZDTldbVrHRo99eid1M_58O-eD-Kbl6Zp0-NfFUROKhlTY8=")))
+   (then
+    (lambda (push-registration)
+      (chain console (log push-registration))))
+   (catch
+       (lambda (error)
+	 (alert error))))
+  nil)
