@@ -112,3 +112,12 @@
                 (var fun (chain caches delete))
                 (chain console (log cache-name))
                 (chain fun (call caches cache-name)))))))))))))))
+
+(on ("push" self event)
+    (chain console (log event))
+
+    (let ((title "test")
+	  (options
+	   (create
+	    body "yay")))
+      (chain event (wait-until (chain self registration (show-notification title options))))))
