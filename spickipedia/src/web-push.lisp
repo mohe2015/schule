@@ -2,13 +2,13 @@
   (:use :cffi)
   (:export :send-push))
 
-(define-foreign-library libembed
-    (:unix (:or "/home/moritz/Documents/wiki/rust-web-push-test/target/debug/libembed.so"))
+(cffi:define-foreign-library libembed
+  (:unix (:or "/home/moritz/Documents/wiki/rust-web-push-test/target/debug/libembed.so"))
   (:t (:default "libembed.so")))
 
-(use-foreign-library libembed)
+(cffi:use-foreign-library libembed)
 
-(defcfun "send_notification" :uint32
+(cffi:defcfun "send_notification" :uint32
   (p256dh :pointer)
   (auth :pointer)
   (endpoint :pointer)
@@ -24,10 +24,9 @@
 |#
 
 (defun send-push (p256dh auth endpoint private-key-file content)
-  (with-foreign-strings ((p256dh-c p256dh)
+  (cffi:with-foreign-strings ((p256dh-c p256dh)
 			 (auth-c auth)
 			 (endpoint-c endpoint)
 			 (private-key-file-c private-key-file)
 			 (content-c content))
     (send-notification p256dh-c auth-c endpoint-c private-key-file-c content-c)))
-

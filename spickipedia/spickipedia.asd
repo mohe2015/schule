@@ -47,12 +47,13 @@
 	 (:file "html/substitution-schedule/index" :depends-on ("package" "html/helpers"))
          (:file "index" :depends-on ("package" "html/helpers" "html/user-courses/index" "html/settings/index" "html/schedule/index" "html/substitution-schedule/index"))
 
+	 (:file "web-push")
          (:file "config")
          (:file "sanitize" :depends-on ("package"))
          (:file "parenscript" :depends-on ("package"))
          (:file "tsquery-converter" :depends-on ("package"))
 
-         (:file "web" :depends-on ("package" "parenscript" "db" "index" "argon2" "vertretungsplan"))
+         (:file "web" :depends-on ("package" "parenscript" "db" "index" "argon2" "vertretungsplan" "web-push"))
          (:file "settings" :depends-on ("package" "web"))
          (:file "schedule" :depends-on ("package" "web")) ;; TODO FIXME clean up this dependency garbase
          (:file "student-courses" :depends-on ("package" "web"))

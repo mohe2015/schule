@@ -288,10 +288,13 @@
                       (getf revision :revision-id))))))))
 
 (my-defroute :post "/api/push-subscription" (:admin :user) (|subscription|) "application/json"
-  (let ((alist (decode-json-from-string (first |subscription|))))
-    (print (cdr (assoc :endpoint alist)))
-    (print (cdr (assoc :p-256-dh (cdr (assoc :keys alist)))))
-    (print (cdr (assoc :auth (cdr (assoc :keys alist)))))
+  (let* ((alist (decode-json-from-string (first |subscription|)))
+	 (endpoint (cdr (assoc :endpoint alist)))
+	 (p256dh (cdr (assoc :p-256-dh (cdr (assoc :keys alist)))))
+	 (auth (cdr (assoc :auth (cdr (assoc :keys alist))))))
+    (create-dao 'web-push :user user :endpoint endpoint :auth auth :p256dh p256dh)
+
+    
     nil))
 
 (my-defroute :get "/api/substitutions" (:admin :user) () "application/json"
