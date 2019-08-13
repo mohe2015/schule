@@ -53,5 +53,5 @@
 			      (setf (inner-text (one "li" substitution-template)) (substitution-to-string substitution))
 			      (append (one "ul" class-template) substitution-template)))
 		       (append template class-template))))
-	    (append (one "#substitution-schedule") template)))
+	    (append (one "#substitution-schedule-content") template)))
      (show-tab "#substitution-schedule"))))

@@ -19,7 +19,6 @@
    (register "/sw.lisp")
    (then
     (lambda (registration)
-      (chain console (log registration))
       (chain
        registration
        push-manager

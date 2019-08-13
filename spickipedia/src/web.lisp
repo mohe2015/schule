@@ -287,6 +287,8 @@
                      (find-dao 'wiki-article-revision :id
                       (getf revision :revision-id))))))))
 
+(my-defroute :post "/api/push-subscription" (:admin :user) (|json|) "application/json"
+  nil)
 
 (my-defroute :get "/api/substitutions" (:admin :user) () "application/json"
   (bt:with-lock-held (*lock*)

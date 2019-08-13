@@ -1,7 +1,9 @@
 (in-package :spickipedia.web)
 
 (defun template-substitution-schedule ()
-  `(,(tab "substitution-schedule")
+  `(,(tab "substitution-schedule"
+	  `((:a :id "settings-enable-notifications" :type "button" :class "btn btn-primary norefresh" "Benachrichtigungen aktivieren")
+	    (:div :id "substitution-schedule-content")))
      (:template
       :id "template-substitution-schedule"
       (:h1 :class "substitution-schedule-date text-center" "10.12.2001"))
