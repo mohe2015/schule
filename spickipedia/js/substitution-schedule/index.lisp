@@ -44,34 +44,81 @@
          (setf (getprop outputArray i) (chain rawData (char-Code-At i))))
     outputArray))
 
-(if (and (chain navigator service-worker) (chain window -push-manager))
+(defun update-subscription-on-server (subscription)
+
+  nil)
+
+(defun unsubscribe-user ()
+  (chain
+   registration
+   push-manager
+   (get-subscription)
+   (then
+    (lambda (subscription)
+      (if subscription
+	  (chain subscription (unsubscribe)))))
+   (catch
+       (lambda (error)
+	 (chain console (log error))))
+   (then
+    (lambda ()
+      (update-subscription-on-server nil)
+      (setf is-subscribed nil)
+      (update-button registration)))))
+
+(defun update-button (registration)
+  (chain
+   registration
+   push-manager
+   (get-subscription)
+   (then
+    (lambda (subscription)
+      (update-subscription-on-server subscription)
+      (setf (chain window is-subscribed) (not (null subscription)))
+      (if is-subscribed
+	  (setf (inner-text (one "#settings-enable-notifications")) "Benachrichtigungen deaktivieren")
+	  (setf (inner-text (one "#settings-enable-notifications")) "Benachrichtigungen aktivieren"))
+      (remove-class (one "#settings-enable-notifications") "disabled")))
+   (catch
+       (lambda (error)
+	 (chain console (log error))))))
+
+(on ("load" window event)
     (chain
-     window
-     (add-event-listener
-      "load"
-      (lambda (event)
-	(chain
-	 navigator
-	 service-worker
-	 (register "/sw.lisp")
-	 (then
-	  (lambda (registration)
-	    (chain
-	     registration
-	     push-manager
-	     (get-subscription)
-	     (then
-	      (lambda (subscription)
-		(let ((is-subscribed (not (null subscription))))
-		  (if is-subscribed
-		      (setf (inner-text (one "#settings-enable-notifications")) "Benachrichtigungen deaktivieren")
-		      (setf (inner-text (one "#settings-enable-notifications")) "Benachrichtigungen aktivieren"))))))))
-	 (catch
-	     (lambda (error)
-	       (alert error))))
-	(progn
-	  (setf (inner-text (one "#settings-enable-notifications")) "Benachrichtigungen werden von deinem Gerät nicht unterstützt")
-	  (setf (disabled (one "#settings-enable-notifications")) t))))))
+     navigator
+     service-worker
+     (register "/sw.lisp")
+     (then
+      (lambda (registration)
+	(setf (chain window registration) registration)
+	(update-button registration)))
+     (catch
+	 (lambda (error)
+	   (chain console (log error))))))
+
+(on ("click" (one "#settings-enable-notifications") event)
+  (chain event (prevent-default))
+  (chain event (stop-propagation))
+  (add-class (one "#settings-enable-notifications") "disabled")
+  (if is-subscribed
+      (unsubscribe-user)
+      (chain
+       registration
+       push-manager
+       (subscribe
+	(create
+	 user-visible-only t
+	 application-server-key (urlBase64ToUint8Array "BJNDT9kF9YzCy_ExMEUXumYXhfigSmPruzP7ZEkZBZDTldbVrHRo99eid1M_58O-eD-Kbl6Zp0-NfFUROKhlTY8=")))
+       (then
+	(lambda (push-registration)
+	  (chain console (log push-registration))
+	  (update-subscription-on-server push-registration)
+	  (setf (chain window is-subscribed) t)
+	  (update-button registration)))
+       (catch
+	   (lambda (error)
+	     (chain console (log error))
+	     (update-button registration))))))
 
 (defroute "/substitution-schedule"
   (show-tab "#loading")
@@ -92,21 +139,3 @@
 		       (append template class-template))))
 	    (append (one "#substitution-schedule-content") template)))
      (show-tab "#substitution-schedule"))))
-
-(on ("click" (one "#settings-enable-notifications") event)
-  (chain event (prevent-default))
-  (chain event (stop-propagation))
-  (chain
-   registration
-   push-manager
-   (subscribe
-    (create
-     user-visible-only t
-     application-server-key (urlBase64ToUint8Array "BJNDT9kF9YzCy_ExMEUXumYXhfigSmPruzP7ZEkZBZDTldbVrHRo99eid1M_58O-eD-Kbl6Zp0-NfFUROKhlTY8=")))
-   (then
-    (lambda (push-registration)
-      (chain console (log push-registration))))
-   (catch
-       (lambda (error)
-	 (alert error))))
-  nil)
