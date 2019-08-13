@@ -287,8 +287,12 @@
                      (find-dao 'wiki-article-revision :id
                       (getf revision :revision-id))))))))
 
-(my-defroute :post "/api/push-subscription" (:admin :user) (|json|) "application/json"
-  nil)
+(my-defroute :post "/api/push-subscription" (:admin :user) (|subscription|) "application/json"
+  (let ((alist (decode-json-from-string (first |subscription|))))
+    (print (cdr (assoc :endpoint alist)))
+    (print (cdr (assoc :p-256-dh (cdr (assoc :keys alist)))))
+    (print (cdr (assoc :auth (cdr (assoc :keys alist)))))
+    nil))
 
 (my-defroute :get "/api/substitutions" (:admin :user) () "application/json"
   (bt:with-lock-held (*lock*)
