@@ -92,6 +92,11 @@
            :student-course
            :student-course-student
            :student-course-course
+	   :web-push
+	   :web-push-user
+	   :web-push-p256dh
+	   :web-push-auth
+	   :web-push-endpoint
            :setup-db))
 
 (defpackage spickipedia.web

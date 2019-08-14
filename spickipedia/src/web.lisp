@@ -293,8 +293,7 @@
 	 (p256dh (cdr (assoc :p-256-dh (cdr (assoc :keys alist)))))
 	 (auth (cdr (assoc :auth (cdr (assoc :keys alist))))))
     (create-dao 'web-push :user user :endpoint endpoint :auth auth :p256dh p256dh)
-
-    
+    (spickipedia.web-push:send-push p256dh auth endpoint "rust-web-push-test/private.pem" "Es funktioniert!")
     nil))
 
 (my-defroute :get "/api/substitutions" (:admin :user) () "application/json"

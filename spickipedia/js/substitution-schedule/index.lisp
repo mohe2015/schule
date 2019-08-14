@@ -117,7 +117,7 @@
        (subscribe
 	(create
 	 user-visible-only t
-	 application-server-key (urlBase64ToUint8Array "BJNDT9kF9YzCy_ExMEUXumYXhfigSmPruzP7ZEkZBZDTldbVrHRo99eid1M_58O-eD-Kbl6Zp0-NfFUROKhlTY8=")))
+	 application-server-key (urlBase64ToUint8Array "BIdu79bj4cxbo-OebKwbp0wfrUAQ7MKUkGfxH_YG2W60n2knhpYFqp_64oyrV4pq8sY6wjdWuWvRnxj_TkVQqZ4=")))
        (then
 	(lambda (push-registration)
 	  (chain console (log push-registration))
