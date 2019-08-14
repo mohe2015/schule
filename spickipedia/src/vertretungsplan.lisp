@@ -27,7 +27,7 @@
   t)
 
 (defun substitution-equal-not-same (a b)
-  (when (compare-substitutions (a b))
+  (when (compare-substitutions a b)
     (when (not (equal (substitution-new-teacher a) (substitution-new-teacher b)))
       (return-from substitution-equal-not-same t))
     (when (not (equal (substitution-new-room a) (substitution-new-room b)))
@@ -40,12 +40,16 @@
 
 ;; TODO ignore ones from the past
 (defmethod update (substitution-schedules vertretungsplan)
+  (loop for k being each hash-key of (substitution-schedules substitution-schedules) using (hash-value v) do
+       (if (timestamp< (vertretungsplan-date v) (today))
+	   (remhash k (substitution-schedules substitution-schedules))))
+  
   (let ((existing-schedule (gethash (timestamp-to-unix (vertretungsplan-date vertretungsplan)) (substitution-schedules substitution-schedules))))
     (if existing-schedule
 	(if (timestamp< (vertretungsplan-updated existing-schedule) (vertretungsplan-updated vertretungsplan))
 	    (let* ((old (vertretungsplan-substitutions existing-schedule))
 		   (new (vertretungsplan-substitutions vertretungsplan))
-		   (updated (intersection old new) :test #'substitution-equal-not-same)
+		   (updated (intersection old new :test #'substitution-equal-not-same))
 		   (removed (set-difference old new :test #'compare-substitutions))
 		   (added (set-difference new old :test #'compare-substitutions)))
 	      (loop for substitution in updated do
@@ -135,9 +139,9 @@
     (cond
       ((or (= 4 (length right)) (= 5 (length right)))
        (setf (substitution-new-teacher s) (nth 0 right))
-       (if (= 0 (length (substitution-new-teacher s))) ;; TODO needed?
+       (if (= 0 (length (substitution-new-teacher s)))
 	   (setf (substitution-new-teacher s) "?"))
-       (unless (equal (nth 1 right) (substitution-course s)) ;; TODO FIXME
+       (unless (equal (nth 1 right) (substitution-course s))
 	 (error "course not found"))
        (setf (substitution-new-subject s) (nth 2 right))
        (setf (substitution-new-room s) (nth 3 right))
@@ -155,7 +159,7 @@
 	       (setf (substitution-notes s) "?????")
 	       (error "wtf2")))
        (when (= 2 (length right))
-	 (setf (substitution-notes s) (concatenate 'string (substitution-notes s) (nth 1 right)))))
+	 (setf (substitution-notes s) (concatenate 'string (substitution-notes s) " " (nth 1 right)))))
       (t (error "fail")))
     s))
 

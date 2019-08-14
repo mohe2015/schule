@@ -16,6 +16,17 @@ CREATE TABLE "user" (
     "updated_at" TIMESTAMP
 );
 
+CREATE TABLE "web_push" (
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "user_id" INTEGER NOT NULL,
+    "p256dh" VARCHAR(128) NOT NULL,
+    "auth" VARCHAR(32) NOT NULL,
+    "endpoint" VARCHAR(1024) NOT NULL,
+    "created_at" TIMESTAMP,
+    "updated_at" TIMESTAMP,
+    UNIQUE ("user_id", "p256dh", "auth", "endpoint")
+);
+
 CREATE TABLE "course" (
     "id" INTEGER PRIMARY KEY AUTOINCREMENT,
     "created_at" TIMESTAMP,
@@ -133,4 +144,4 @@ CREATE TABLE "wiki_article_revision_category" (
 CREATE TABLE IF NOT EXISTS "schema_migrations" (
     "version" VARCHAR(255) PRIMARY KEY
 );
-INSERT INTO schema_migrations (version) VALUES ('20190702151055');
+INSERT INTO schema_migrations (version) VALUES ('20190814143420');

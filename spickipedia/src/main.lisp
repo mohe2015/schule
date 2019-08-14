@@ -14,6 +14,8 @@
 (defvar *handler* nil)
 
 (defun start ()
+  (unless *handler*
+    (spickipedia.web:update-substitution-schedule))
   (when *handler*
     (restart-case (error "Server is already running.")
       (restart-server nil :report "Restart the server" (stop))))

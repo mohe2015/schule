@@ -52,9 +52,6 @@
   (let* ((schedules (select-dao 'schedule)))
     (encode-json-to-string (list-to-array schedules))))
 
-(my-defroute :get "/api/substitution-schedule" (:admin :user) () "application/json"
-  "{}")
-
 (defmethod encode-json ((o teacher-revision) &optional (stream *json-output*))
   "Write the JSON representation (Object) of the postmodern DAO CLOS object
 O to STREAM (or to *JSON-OUTPUT*)."

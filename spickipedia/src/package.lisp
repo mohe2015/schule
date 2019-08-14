@@ -92,6 +92,11 @@
            :student-course
            :student-course-student
            :student-course-course
+	   :web-push
+	   :web-push-user
+	   :web-push-p256dh
+	   :web-push-auth
+	   :web-push-endpoint
            :setup-db))
 
 (defpackage spickipedia.web
@@ -102,6 +107,7 @@
         :spickipedia.sanitize
         :spickipedia.tsquery-converter
         :spickipedia.parenscript
+	:spickipedia.web-push
         :mito
         :sxql
         :json
@@ -117,4 +123,4 @@
   (:shadowing-import-from :ironclad :xor)
   (:shadowing-import-from :cl-fad :copy-file)
   (:shadowing-import-from :cl-fad :copy-stream)
-  (:export :*web* :schedule-tab :my-defroute))
+  (:export :*web* :schedule-tab :my-defroute :update-substitution-schedule))

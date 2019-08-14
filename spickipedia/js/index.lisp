@@ -3,7 +3,6 @@
 (i "./state-machine.lisp" "updateState" "replaceState")
 (i "./state-machine.lisp" "pushState")
 (i "./editor-lib.lisp" "isLocalUrl")
-(i "./register-sw.lisp")
 (i "./utils.lisp" "all" "one" "clearChildren")
 
 (setf (chain window onerror)

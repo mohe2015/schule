@@ -99,6 +99,14 @@
    (course :col-type course :initarg :course :accessor student-course-course))
   (:metaclass dao-table-class) (:unique-keys (student course)))
 
+(defclass web-push ()
+  ((user :col-type user :initarg :user :accessor web-push-user)
+   (p256dh :col-type (:varchar 128) :initarg :p256dh :accessor web-push-p256dh)
+   (auth :col-type (:varchar 32) :initarg :auth :accessor web-push-auth)
+   (endpoint :col-type (:varchar 1024) :initarg :endpoint :accessor web-push-endpoint))
+  (:metaclass dao-table-class)
+  (:unique-keys (user p256dh auth endpoint)))
+
 (defun check-table (table)
   (ensure-table-exists table)
   (migrate-table table))
@@ -119,6 +127,7 @@
     (check-table 'schedule)
     (check-table 'schedule-revision)
     (check-table 'schedule-data)
+    (check-table 'web-push)
     (check-table 'student-course)))
 
 (defun do-generate-migrations ()
