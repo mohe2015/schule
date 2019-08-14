@@ -1,11 +1,11 @@
 [package]
-name = "rust-web-push-test"
+name = "web-push-interface"
 version = "0.1.0"
 authors = ["mohe2015 <Moritz.Hedtke@t-online.de>"]
 edition = "2018"
 
 [lib]
-name = "embed"
+name = "webpush"
 crate-type = ["dylib"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
