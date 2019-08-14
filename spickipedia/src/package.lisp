@@ -107,6 +107,7 @@
         :spickipedia.sanitize
         :spickipedia.tsquery-converter
         :spickipedia.parenscript
+	:spickipedia.web-push
         :mito
         :sxql
         :json

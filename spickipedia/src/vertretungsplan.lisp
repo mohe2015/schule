@@ -27,7 +27,7 @@
   t)
 
 (defun substitution-equal-not-same (a b)
-  (when (compare-substitutions (a b))
+  (when (compare-substitutions a b)
     (when (not (equal (substitution-new-teacher a) (substitution-new-teacher b)))
       (return-from substitution-equal-not-same t))
     (when (not (equal (substitution-new-room a) (substitution-new-room b)))
@@ -49,7 +49,7 @@
 	(if (timestamp< (vertretungsplan-updated existing-schedule) (vertretungsplan-updated vertretungsplan))
 	    (let* ((old (vertretungsplan-substitutions existing-schedule))
 		   (new (vertretungsplan-substitutions vertretungsplan))
-		   (updated (intersection old new) :test #'substitution-equal-not-same)
+		   (updated (intersection old new :test #'substitution-equal-not-same))
 		   (removed (set-difference old new :test #'compare-substitutions))
 		   (added (set-difference new old :test #'compare-substitutions)))
 	      (loop for substitution in updated do

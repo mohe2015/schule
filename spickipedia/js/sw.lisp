@@ -44,6 +44,7 @@
       "/js/read-cookie.lisp"
       "/js/editor.lisp"
       "/js/get-url-parameter.lisp"
+      "webfonts/fa-solid-900.woff2"
       "/favicon.ico"
       ))
 
