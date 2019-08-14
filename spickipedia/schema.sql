@@ -144,4 +144,4 @@ CREATE TABLE "wiki_article_revision_category" (
 CREATE TABLE IF NOT EXISTS "schema_migrations" (
     "version" VARCHAR(255) PRIMARY KEY
 );
-INSERT INTO schema_migrations (version) VALUES ('20190814142606');
+INSERT INTO schema_migrations (version) VALUES ('20190814143420');
