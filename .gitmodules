@@ -1,33 +1,12 @@
 [submodule "cl-sanitize"]
 	path = cl-sanitize
 	url = https://github.com/mohe2015/cl-sanitize.git
-[submodule "summernote"]
-	path = summernote
-	url = https://github.com/summernote/summernote.git
-[submodule "hunchentoot"]
-	path = hunchentoot
-	url = https://github.com/edicl/hunchentoot.git
 [submodule "mathlive"]
 	path = mathlive
 	url = https://github.com/arnog/mathlive.git
-[submodule "crypt_blowfish"]
-	path = crypt_blowfish
-	url = https://github.com/mohe2015/crypt_blowfish.git
-[submodule "monkeylib-bcrypt"]
-	path = monkeylib-bcrypt
-	url = https://github.com/mohe2015/monkeylib-bcrypt.git
 [submodule "lack"]
 	path = lack
 	url = https://github.com/mohe2015/lack.git
 [submodule "parenscript"]
 	path = parenscript
 	url = https://github.com/mohe2015/parenscript.git
-[submodule "clack"]
-	path = clack
-	url = https://github.com/mohe2015/clack.git
-[submodule "cl-selenium-webdriver"]
-	path = cl-selenium-webdriver
-	url = https://github.com/mohe2015/cl-selenium-webdriver.git
-[submodule "cl-inside-docker"]
-	path = cl-inside-docker
-	url = https://github.com/mohe2015/cl-inside-docker.git
