@@ -19,7 +19,7 @@
   (when *handler*
     (restart-case (error "Server is already running.")
       (restart-server nil :report "Restart the server" (stop))))
-  (setf *handler* (clackup *appfile-path* :server :woo)))
+  (setf *handler* (clackup *appfile-path* :server :fcgi)))
 
 (defun stop () (prog1 (clack.handler:stop *handler*) (setf *handler* nil)))
 
