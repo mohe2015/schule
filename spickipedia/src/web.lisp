@@ -224,9 +224,9 @@
     filehash))
 
 (my-defroute :post "/api/login" nil (|username| |password|) "text/html"
-  (format t "~A ~A~%" (first |username|) (first |password|))
-  (let* ((user (find-dao 'user :name (first |username|))))
-    (if (and user (verify (first |password|) (user-hash user)))
+  (format t "~A ~A~%" |username| |password|)
+  (let* ((user (find-dao 'user :name |username|)))
+    (if (and user (verify |password| (user-hash user)))
         (progn (setf (gethash :user *session*) (object-id user)) nil)
         (throw-code 403))))
 
