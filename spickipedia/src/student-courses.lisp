@@ -17,9 +17,9 @@
 
 (my-defroute :post "/api/student-courses" (:admin :user) (|student-course|) "text/html"
   (let* ((query (dbi.driver:prepare *connection* "INSERT OR IGNORE INTO student_course (student_id, course_id) VALUES (?, ?);"))
-         (result (dbi.driver:execute query (object-id user) (first |student-course|))))
+         (result (dbi.driver:execute query (object-id user) |student-course|)))
     ""))
 
 (my-defroute :delete "/api/student-courses" (:admin :user) (|student-course|) "text/html"
-  (delete-by-values 'student-course :student user :course-id (parse-integer (first |student-course|)))
+  (delete-by-values 'student-course :student user :course-id (parse-integer |student-course|))
   "")

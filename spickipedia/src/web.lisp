@@ -154,7 +154,7 @@
           (setf article (create-dao 'wiki-article :title title)))
       (let ((revision
              (create-dao 'wiki-article-revision :article article :author user
-			 :summary (first |summary|) :content (first |html|))))
+			 :summary |summary| :content |html|)))
 	(loop for category in categories do
              (create-dao 'wiki-article-revision-category :revision revision :category (first category))))
       nil)))
@@ -232,7 +232,7 @@
 
 (my-defroute :post "/api/logout" (:admin :user :anonymous) () "text/html"
   (setf (gethash :user *session*) nil)
-  ())
+  nil)
 
 (defun my-quit () (uiop:quit))
 
@@ -288,7 +288,7 @@
 			    (getf revision :revision-id))))))))
 
 (my-defroute :post "/api/push-subscription" (:admin :user) (|subscription|) "application/json"
-  (let* ((alist (decode-json-from-string (first |subscription|)))
+  (let* ((alist (decode-json-from-string subscription|))
 	 (endpoint (cdr (assoc :endpoint alist)))
 	 (p256dh (cdr (assoc :p-256-dh (cdr (assoc :keys alist)))))
 	 (auth (cdr (assoc :auth (cdr (assoc :keys alist))))))

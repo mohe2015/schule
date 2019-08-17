@@ -3,7 +3,7 @@
 (my-defroute :post "/api/teachers" (:admin :user) (|name| |initial|) "text/html"
   (dbi:with-transaction *connection*
     (let* ((teacher (create-dao 'teacher))
-           (revision (create-dao 'teacher-revision :author user :teacher teacher :name (first |name|) :initial (first |initial|))))
+           (revision (create-dao 'teacher-revision :author user :teacher teacher :name |name| :initial |initial|)))
       (format nil "~a" (object-id teacher)))))
 
 (my-defroute :get "/api/teachers" (:admin :user) () "application/json"
@@ -17,14 +17,14 @@
            (revision (create-dao 'course-revision
                        :author user
                        :course course
-                       :name (first |subject|)
-                       :initial (first |type|)
-                       :type (first |type|)
-                       :subject (first |subject|)
-                       :teacher (find-dao 'teacher :id (parse-integer (first |teacher|)))
-                       :is-tutorial (equal "on" (first |is-tutorial|))
+                       :name |subject|
+                       :initial |type|
+                       :type |type|
+                       :subject |subject|
+                       :teacher (find-dao 'teacher :id (parse-integer |teacher|))
+                       :is-tutorial (equal "on" |is-tutorial|)
                        :class (user-grade user)
-                       :topic (first |topic|))))
+                       :topic |topic|)))
       (format nil "~a" (object-id course)))))
 
 (my-defroute :get "/api/courses" (:admin :user) () "application/json"
@@ -44,7 +44,7 @@
 
 (my-defroute :post "/api/schedules" (:admin :user) (|grade|) "text/html"
   (dbi:with-transaction *connection*
-    (let* ((schedule (create-dao 'schedule :grade (first |grade|)))
+    (let* ((schedule (create-dao 'schedule :grade |grade|))
            (revision (create-dao 'schedule-revision :author user :schedule schedule)))
       (format nil "~a" (object-id schedule)))))
 
@@ -139,11 +139,11 @@ O to STREAM (or to *JSON-OUTPUT*)."
            (data
             (create-dao 'schedule-data
               :schedule-revision revision
-              :weekday (first |weekday|)
-              :hour (first |hour|)
-              :week-modulo (first |week-modulo|)
-              :course (find-dao 'course :id (first |course|))
-              :room (first |room|))))
+              :weekday |weekday|
+              :hour |hour|
+              :week-modulo |week-modulo|
+              :course (find-dao 'course :id |course|)
+              :room |room|)))
       (loop for old-data in (retrieve-dao 'schedule-data :schedule-revision (car last-revision)) do
         (create-dao 'schedule-data
           :schedule-revision revision
@@ -164,7 +164,7 @@ O to STREAM (or to *JSON-OUTPUT*)."
             (create-dao 'schedule-revision :author user :schedule schedule)))
       (loop for old-data in (retrieve-dao 'schedule-data :schedule-revision
                              (car last-revision))
-            do (if (not (= (object-id old-data) (parse-integer (first |id|))))
+            do (if (not (= (object-id old-data) (parse-integer |id|)))
                    (create-dao 'schedule-data :schedule-revision revision
                     :weekday (schedule-data-weekday old-data) :hour
                     (schedule-data-hour old-data) :week-modulo
