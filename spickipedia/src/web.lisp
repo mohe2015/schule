@@ -288,7 +288,7 @@
 			    (getf revision :revision-id))))))))
 
 (my-defroute :post "/api/push-subscription" (:admin :user) (|subscription|) "application/json"
-  (let* ((alist (decode-json-from-string subscription|))
+  (let* ((alist (decode-json-from-string |subscription|))
 	 (endpoint (cdr (assoc :endpoint alist)))
 	 (p256dh (cdr (assoc :p-256-dh (cdr (assoc :keys alist)))))
 	 (auth (cdr (assoc :auth (cdr (assoc :keys alist))))))
