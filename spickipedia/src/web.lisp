@@ -251,9 +251,10 @@
         mime-type
         (progn (format t "Forbidden mime-type: ~a~%" mime-type) "text/plain"))))
 
-(my-defroute :get "/api/file/:name" (:admin :user :anonymous) (name)
-    (get-safe-mime-type (merge-pathnames (concatenate 'string "uploads/" name)))
-  (merge-pathnames (concatenate 'string "uploads/" name)))
+; TODO FIXME SECURITY LFI
+;(my-defroute :get "/api/file/:name" (:admin :user :anonymous) (name)
+;    (get-safe-mime-type (merge-pathnames (concatenate 'string "uploads/" name)))
+;  (merge-pathnames (concatenate 'string "uploads/" name)))
 
 (defparameter *javascript-files* (make-hash-table :test #'equal))
 

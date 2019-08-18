@@ -1,29 +1,16 @@
 (in-package :spickipedia.web)
 
+(defparameter *static-files* (make-hash-table :test #'equal))
+
+(loop for file in (directory "spickipedia/static/**/*.*") do
+     (setf (gethash file *static-files*) file))
+
 (defroute ("/.*" :regexp t :method :get) ()
   (basic-headers)
-  (let ((path (merge-pathnames-as-file *static-directory* (parse-namestring (subseq (request-path-info *request*) 1)))))
-    (if (and (subpath-p *static-directory* path) (file-exists-p path) (not (directory-exists-p path)))
-        (with-cache-vector (read-file-into-byte-vector path)
+  (let ((path (merge-pathnames (parse-namestring (subseq (request-path-info *request*) 1)) *static-directory*)))
+    (if (gethash path *static-files*)
+	(with-cache-vector (read-file-into-byte-vector (gethash path *static-files*))
           (setf (getf (response-headers *response*) :content-type)
                 (get-safe-mime-type path))
           path)
         (test))))
-
-(defun subpath-p (base-path sub-path)
-  (let ((absolute-sub-directory (uiop:pathname-directory-pathname sub-path)))
-    (loop while (and (not (equal #P"/" absolute-sub-directory)) (ignore-errors (namestring absolute-sub-directory))) do
-	 (if (equal base-path absolute-sub-directory)
-	     (return-from subpath-p t))
-	 (setf absolute-sub-directory (uiop:pathname-parent-directory-pathname absolute-sub-directory)))
-  nil))
-
-(assert (subpath-p #P"/test/" #P"/test/subpath/"))
-(assert (not (subpath-p #P"/test/" #P"/test/../fakesubpath/")))
-(assert (not (subpath-p #P"/test/" #P"/wrongpath/subpath/")))
-(assert (not (subpath-p #P"/test/" #P"/")))
-(assert (not (subpath-p #P"/test/" #P"/test")))
-;(assert (subpath-p #P"/test/" #P"/t/../test/"))
-(assert (subpath-p #P"/test/" #P"/test/"))
-(assert (subpath-p #P"/test/" #P"/test/subfile"))
-;(assert (subpath-p #P"/test/" #P"/test/subfile/../../test/"))
