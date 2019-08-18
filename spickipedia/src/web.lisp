@@ -259,7 +259,7 @@
   (basic-headers)
   (setf (getf (response-headers *response*) :content-type)
         "application/javascript")
-  (let ((path (merge-pathnames (concatenate 'string "js/" (first splat)) *application-root*)))
+  (let ((path (merge-pathnames (merge-pathnames (first splat) #P"js/") *application-root*)))
     (when (subpath-p *application-root* path)
       (with-cache (read-file-into-string path)
 	(file-js-gen path)))))
