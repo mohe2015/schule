@@ -1,0 +1,10 @@
+spickipedia/src/default-handler.lisp:  (let ((path (merge-pathnames-as-file *static-directory* (parse-namestring (subseq (request-path-info *request*) 1)))))
+spickipedia/src/default-handler.lisp:    (if (and (file-exists-p path) (not (directory-exists-p path)))
+spickipedia/src/default-handler.lisp:        (with-cache-vector (read-file-into-byte-vector path)
+
+spickipedia/src/parenscript.lisp:(defun file-js-gen (file)
+spickipedia/src/parenscript.lisp:    (ps-compile-file file)))
+
+spickipedia/src/web.lisp:(my-defroute :get "/api/file/:name" (:admin :user :anonymous) (name)
+spickipedia/src/web.lisp:      (read-file-into-string
+spickipedia/src/web.lisp:    (file-js-gen
