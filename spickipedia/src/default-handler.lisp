@@ -10,19 +10,9 @@
           path)
         (test))))
 
-;; (merge-pathnames #P"../subpath/" #P"/basepath/")
-
-;; https://stackoverflow.com/a/44684290/5074433
-(defun abspath (path-string)
-  (uiop:unix-namestring
-   (uiop:merge-pathnames*
-    (uiop:parse-unix-namestring path-string))))
-; (abspath "/basepath/../fakesubpath/")
-
 (defun subpath-p (base-path sub-path)
-  (let ((absolute-sub-directory (uiop:pathname-directory-pathname (abspath sub-path))))
+  (let ((absolute-sub-directory (uiop:pathname-directory-pathname sub-path)))
     (loop while (and (not (equal #P"/" absolute-sub-directory)) (ignore-errors (namestring absolute-sub-directory))) do
-;;	 (break)
 	 (if (equal base-path absolute-sub-directory)
 	     (return-from subpath-p t))
 	 (setf absolute-sub-directory (uiop:pathname-parent-directory-pathname absolute-sub-directory)))

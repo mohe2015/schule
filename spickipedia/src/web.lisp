@@ -255,14 +255,17 @@
     (get-safe-mime-type (merge-pathnames (concatenate 'string "uploads/" name)))
   (merge-pathnames (concatenate 'string "uploads/" name)))
 
+(defparameter *javascript-files* (make-hash-table :test #'equal))
+
+(loop for file in (directory "spickipedia/js/**/*.lisp") do
+     (setf (gethash file *javascript-files*) (file-js-gen file)))
+
 (defroute ("/js/*" :method :get) (&key splat)
   (basic-headers)
-  (setf (getf (response-headers *response*) :content-type)
-        "application/javascript")
-  (let ((path (merge-pathnames (merge-pathnames (first splat) #P"js/") *application-root*)))
-    (when (subpath-p *application-root* path)
-      (with-cache (read-file-into-string path)
-	(file-js-gen path)))))
+  (setf (getf (response-headers *response*) :content-type) "application/javascript")
+  (let ((path (merge-pathnames (first splat) *javascript-directory*)))
+      (with-cache (gethash path *javascript-files*)
+	(gethash path *javascript-files*))))
 
 (my-defroute :get "/sw.lisp" nil nil "application/javascript"
   (with-cache

@@ -22,6 +22,7 @@
            :*static-directory*
            :*template-directory*
            :*database-path*
+	   :*javascript-directory*
            :appenv
            :developmentp
            :productionp))

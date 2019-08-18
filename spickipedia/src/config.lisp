@@ -11,6 +11,9 @@
 (defparameter *template-directory*
   (merge-pathnames #P"templates/" *application-root*))
 
+(defparameter *javascript-directory*
+  (merge-pathnames #P"js/" *application-root*))
+
 (defvar *database-path*
   (asdf/system:system-relative-pathname :spickipedia #P"spickipedia.db"))
 
