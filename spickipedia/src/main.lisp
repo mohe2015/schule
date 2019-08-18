@@ -13,14 +13,14 @@
 
 (defvar *handler* nil)
 
-(defun start ()
+(defun start (&optional (debug nil))
   ;;(unless *handler*
     ;;(spickipedia.web:update-substitution-schedule))
   (mito:connect-toplevel :sqlite3 :database-name (asdf/system:system-relative-pathname :spickipedia #P"spickipedia.db"))
   (when *handler*
     (restart-case (error "Server is already running.")
       (restart-server nil :report "Restart the server" (stop))))
-  (setf *handler* (clackup *appfile-path* :server :fcgi :debug nil)))
+  (setf *handler* (clackup *appfile-path* :server :fcgi :debug debug)))
 
 (defun stop () (prog1 (clack.handler:stop *handler*) (setf *handler* nil)))
 
@@ -31,7 +31,7 @@
     (when depth-first-p (funcall fn entry))))
 
 (defun development ()
-  (start)
+  (start t)
   (let ((top-level *standard-output*))
     (bordeaux-threads:make-thread
      (lambda ()
