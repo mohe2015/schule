@@ -36,6 +36,7 @@
 				  (setf (chain option inner-text) text)
 				  (chain course-select (append-child option))))))))
 
+(defparameter *WEEK-MODULO* (array "" " (ungerade)" " (gerade)"))
 
 (defroute "/schedule/:grade"
     (show-tab "#loading")
@@ -51,7 +52,7 @@
 				    (cell (getprop cell2 'children (- (chain element hour) 1) 'children 1))
 				    (template (get-template "schedule-data-static-cell-template")))
 			       (setf (inner-text (one ".data" template))
-				     (concatenate 'string (chain element course subject) " " (chain element course type) " " (chain element course teacher name) " " (chain element room)))
+				     (concatenate 'string (chain element course subject) " " (chain element course type) " " (chain element course teacher name) " " (chain element room) " " (getprop *WEEK-MODULO* (chain element week-modulo))))
 			       (chain cell (prepend template))))
 			(show-tab "#schedule"))))
 
@@ -70,7 +71,7 @@
 				    (cell (getprop cell2 'children (- (chain element hour) 1) 'children 1))
 				    (template (get-template "schedule-data-cell-template")))
 			       (setf (inner-text (one ".data" template))
-				     (concatenate 'string (chain element course subject) " " (chain element course type) " " (chain element course teacher name) " " (chain element room)))
+				     (concatenate 'string (chain element course subject) " " (chain element course type) " " (chain element course teacher name) " " (chain element room) " " (getprop *WEEK-MODULO* (chain element week-modulo))))
 			       (chain
 				(one ".button-delete-schedule-data" template)
 				(set-attribute "data-id" (chain element id)))
@@ -106,7 +107,7 @@
 (on ("click" (all ".schedule-tab-link") event)
     (chain event (prevent-default))
     (chain event (stop-propagation))
-    (chain window history (push-state null null (href (chain event target))))
+    (chain window history (replace-state null null (href (chain event target))))
     f)
 
 (when (chain document location hash)

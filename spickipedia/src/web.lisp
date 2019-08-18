@@ -251,7 +251,7 @@
         mime-type
         (progn (format t "Forbidden mime-type: ~a~%" mime-type) "text/plain"))))
 
-; TODO FIXME SECURITY LFI
+; TODO FIXME SECURITY LFIa
 ;(my-defroute :get "/api/file/:name" (:admin :user :anonymous) (name)
 ;    (get-safe-mime-type (merge-pathnames (concatenate 'string "uploads/" name)))
 ;  (merge-pathnames (concatenate 'string "uploads/" name)))

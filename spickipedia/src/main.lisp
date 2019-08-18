@@ -46,6 +46,6 @@
          (if (get-events)
              (progn
                (format top-level "Got a code update!~%")
-               (handler-case (asdf/operate:load-system :spickipedia)
+               (handler-case (asdf/operate:load-system :spickipedia :force t)
                              (error nil (format top-level "Failed compiling!~%"))))
              (sleep 1)))))))
