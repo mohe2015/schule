@@ -114,7 +114,7 @@ O to STREAM (or to *JSON-OUTPUT*)."
 			    (order-by (:desc :id)) (limit 1))))
 	  (encode-json-plist-to-string
 	   `(:revision ,(car revision) :data
-		       ,(list-to-array (retrieve-dao 'schedule-data :schedule-revision (car revision))))))
+		       ,(list-to-array (select-dao 'schedule-data (inner-join :schedule-revision-data :on (:= :schedule-revision (object-id (car revision)))))))))
 	"{}")))
 
 (my-defroute :get "/api/schedule/:grade" (:admin :user) (grade) "application/json"
