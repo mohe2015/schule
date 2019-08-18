@@ -259,12 +259,10 @@
   (basic-headers)
   (setf (getf (response-headers *response*) :content-type)
         "application/javascript")
-  (with-cache
-      (read-file-into-string
-       (merge-pathnames (concatenate 'string "js/" (first splat))
-			*application-root*))
-    (file-js-gen
-     (concatenate 'string (namestring *application-root*) "js/" (first splat)))))
+  (let ((path (merge-pathnames (concatenate 'string "js/" (first splat)) *application-root*)))
+    (when (subpath-p *application-root* path)
+      (with-cache (read-file-into-string path)
+	(file-js-gen path)))))
 
 (my-defroute :get "/sw.lisp" nil nil "application/javascript"
   (with-cache
