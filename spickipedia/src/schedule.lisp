@@ -134,24 +134,23 @@ O to STREAM (or to *JSON-OUTPUT*)."
 (my-defroute :post "/api/schedule/:grade/add" (:admin :user) (grade |weekday| |hour| |week-modulo| |course| |room|) "application/json"
   (dbi:with-transaction *connection*
     (let* ((schedule (find-dao 'schedule :grade grade))
-           (last-revision (select-dao 'schedule-revision (where (:= :schedule schedule)) (order-by (:desc :id)) (limit 1)))
+           (last-revision (first (select-dao 'schedule-revision (where (:= :schedule schedule)) (order-by (:desc :id)) (limit 1))))
            (revision (create-dao 'schedule-revision :author user :schedule schedule))
            (data
             (create-dao 'schedule-data
-              :schedule-revision revision
+	      :schedule-revision revision
               :weekday |weekday|
               :hour |hour|
               :week-modulo |week-modulo|
               :course (find-dao 'course :id |course|)
-              :room |room|)))
-      (loop for old-data in (retrieve-dao 'schedule-data :schedule-revision (car last-revision)) do
-        (create-dao 'schedule-data
-          :schedule-revision revision
-          :weekday (schedule-data-weekday old-data)
-          :hour (schedule-data-hour old-data)
-          :week-modulo (schedule-data-week-modulo old-data)
-          :course (schedule-data-course old-data)
-          :room (schedule-data-room old-data)))
+              :room |room|))
+	   (revision-data
+	    (create-dao
+	     'schedule-revision-data
+	     :schedule-revision revision
+	     :schedule-data data))
+	   (prepare (dbi.driver:prepare *connection* (sxql:yield (sxql:insert-into 'schedule_revision_data (:schedule_revision_id :schedule_data_id) (sxql:select ((:raw (object-id revision)) :schedule_data_id) (sxql:from :schedule_revision_data) (sxql:where (:= :schedule_revision_id (object-id last-revision))))))))
+	   (result (dbi:execute prepare)))
       (format nil "~a" (object-id data)))))
 
 (my-defroute :post "/api/schedule/:grade/delete" (:admin :user) (|id|) "application/json"
