@@ -75,12 +75,22 @@
   (:metaclass dao-table-class))
 
 (defclass schedule-data ()
-  ((schedule-revision :col-type schedule-revision :initarg :schedule-revision :accessor schedule-data-schedule-revision)
-   (weekday :col-type (:integer) :initarg :weekday :accessor schedule-data-weekday)
+  ((weekday :col-type (:integer) :initarg :weekday :accessor schedule-data-weekday)
    (hour :col-type (:integer) :initarg :hour :accessor schedule-data-hour)
    (week-modulo :col-type (:integer) :integer :week-modulo :accessor schedule-data-week-modulo)
    (course :col-type course :initarg :course :accessor schedule-data-course)
    (room :col-type (:varchar 32) :initarg :room :accessor schedule-data-room))
+  (:metaclass dao-table-class))
+
+(defclass schedule-revision-data ()
+  ((schedule-revision
+    :col-type schedule-revision
+    :initarg :schedule-revision
+    :accessor schedule-revision-data-schedule-revision)
+   (schedule-data
+    :col-type schedule-data
+    :initarg :schedule-data
+    :accessor schedule-revision-data-schedule-data))
   (:metaclass dao-table-class))
 
 (defclass course-revision ()
