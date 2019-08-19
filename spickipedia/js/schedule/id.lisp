@@ -111,7 +111,7 @@
     f)
 
 (when (chain document location hash)
-  (chain (new (bootstrap.-Tab (one (concatenate 'string "a[href=\"" (chain document location hash) "\"]")))) (show)))
+  (chain (new (bootstrap.-Tab (one (concatenate 'string "a[href=\"" (chain document location hash) "\"]")))) (show-element)))
 
 (on ("click" (one "body") event :dynamic-selector ".add-course")
     (chain console (log event))

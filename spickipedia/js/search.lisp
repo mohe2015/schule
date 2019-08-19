@@ -30,10 +30,10 @@
                     (setf (inner-html (one ".search-result-summary" template)) (chain page summary))
                     (append (one "#search-results-content") template)))))
     (if results-contain-query
-        (chain (one "#no-search-results") (hide))
-        (chain (one "#no-search-results") (show)))
-    (chain (one "#search-results-loading") (stop) (hide))
-    (chain (one "#search-results") (stop) (show))))
+        (chain (one "#no-search-results") (hide-element))
+        (chain (one "#no-search-results") (show-element)))
+    (chain (one "#search-results-loading") (stop) (hide-element))
+    (chain (one "#search-results") (stop) (show-element))))
 
 (on ("click" (one "#button-search") event)
     (let ((query (value (one "#search-query"))))

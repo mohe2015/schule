@@ -72,12 +72,15 @@
   `(chain ,element display))
 
 (defpsmacro show-popover (element)
-  (chain element (show)))
+  `(chain element (show)))
 
-(defpsmacro show (element)
+(defpsmacro hide-popover (element)
+  `(chain element (hide)))
+
+(defpsmacro show-element (element)
   `(remove-class ,element "d-none"))
 
-(defpsmacro hide (element)
+(defpsmacro hide-element (element)
   `(add-class ,element "d-none"))
 
 (defpsmacro show-modal (element)

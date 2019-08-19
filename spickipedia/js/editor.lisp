@@ -29,8 +29,8 @@
 		(push-state (concatenate 'string "/wiki/" article-path))))
              (catch
 		 (lambda (error)
-		   (chain (one "#publish-changes") (show))
-		   (chain (one "#publishing-changes") (hide))
+		   (chain (one "#publish-changes") (show-element))
+		   (chain (one "#publishing-changes") (hide-element))
 		   (handle-fetch-error error))))))
 
 (export
