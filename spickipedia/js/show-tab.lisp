@@ -11,4 +11,4 @@
            (lambda (tab)
              (not (= (chain tab id) id))))
           (hide-element))
-   (show-element (one id))))
+   (show (one id))))

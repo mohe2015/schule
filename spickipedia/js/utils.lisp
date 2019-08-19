@@ -5,7 +5,7 @@
         (chain this
                (for-each
 		(lambda (element)
-		  (hide-element element))))
+		  (hide element))))
         this))
 
 (setf (chain -Array prototype remove)
