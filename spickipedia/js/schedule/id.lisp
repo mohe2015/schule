@@ -99,7 +99,7 @@
        (then
 	(lambda (data)
           (setf (chain template (query-selector ".data") inner-text)
-		(concatenate 'string course " " room))
+		(concatenate 'string course " " room (getprop *WEEK-MODULO* (value (one "#week-modulo")))))
           (chain cell (prepend template))
           (hide-modal (one "#modal-schedule-data"))))
        (catch handle-fetch-error))))
