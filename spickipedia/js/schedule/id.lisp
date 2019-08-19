@@ -129,7 +129,7 @@
            (grade (chain location pathname (split "/") 2)))
       (chain form-data (append "id" id))
       (chain form-data (append "_csrf_token" (read-cookie "_csrf_token")))
-      (if (confirm "Möchtest du den Eintrag wirklich löschen?")
+      (if (confirm "Möchtest du den Eintrag wirklich löschen? Mit dem Veröffentlichen garantierst du, dass du nicht die Rechte anderer verletzt und bist damit einverstanden, unter der Creative Commons Namensnennung - Nicht-kommerziell - Weitergabe unter gleichen Bedingungen 4.0 International Lizenz zu veröffentlichen.")
           (chain
            (fetch (concatenate 'string "/api/schedule/" grade "/delete")
 		  (create method "POST" body form-data))
