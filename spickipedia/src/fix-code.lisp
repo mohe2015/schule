@@ -16,10 +16,11 @@
 (fix-code '(if t (chain (one "#test") (modal "hide")) (progn)))
 
 (defun fix-file (file)
-  (with-open-file (in file)
-    (loop for sexp = (read-preserving-whitespace in nil) while sexp do
-	 (print sexp)
-	 (print (fix-code sexp)))))
+  (let ((result (with-open-file (in file)
+		  (loop for sexp = (read-preserving-whitespace in nil) while sexp collect (fix-code sexp)))))
+    (with-open-file (out file :direction :output)
+      (loop for sexp in result do
+	   (write sexp out)))))
 
 (loop for file in (directory "spickipedia/**/*.lisp") do
      (fix-file file))
