@@ -57,6 +57,10 @@
 
      (:file "src/parenscript" :depends-on ("src/package"))
 
+     (:parenscript-file "js/state-machine" :depends-on ("js/contact/index" "js/wiki/page" "js/search" "js/quiz" "js/logout" "js/login" "js/root" "js/history" "js/wiki/page/edit" "js/create" "js/articles" "js/show-tab" "js/categories" "js/courses/index" "js/schedule/id" "js/schedules/new" "js/schedules/index" "js/student-courses/index" "js/settings/index" "js/utils" "js/template" "js/cleanup" "js/math" "js/image-viewer" "js/fetch" "js/substitution-schedule/index"))
+     (:parenscript-file "js/editor-lib" :depends-on ("js/file-upload" "js/categories" "js/fetch" "js/utils"))
+			
+     (:parenscript-file "js/utils")
      (:parenscript-file "js/index" :depends-on ("js/state-machine" "js/editor-lib" "js/utils"))
      
 
