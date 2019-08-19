@@ -123,13 +123,13 @@
     (chain event (stop-propagation))
     (let ((target (get-popover-target (chain event target))))
       (hide-popover target)
-      (chain (one "#link") (val (chain (one target) (attr "href"))))
+      (setf (value (one "#link")) (href (one target)))
       (on ("submit" (one "#form-link") event)
 	  (chain event (prevent-default))
 	  (chain event (stop-propagation))
 	  (hide-modal (one "#modal-link"))
 	  (chain document (get-elements-by-tag-name "article") 0 (focus))
-	  (chain (one target) (attr "href" (chain (one "#link") (val)))))
+	  (chain (one target) (attr "href" (value (one "#link")))))
       (show-modal (one "#modal-link"))))
 
 (on ("click" (one "body") event :dynamic-selector ".deleteLink")
@@ -146,7 +146,7 @@
 			  "<a href=\"#\" class=\"editLink\"><span class=\"fas fa-link\"></span></a> <a href=\"#\" class=\"deleteLink\"><span class=\"fas fa-unlink\"></span></a>"))))
 
 (tool "insertImage"
-      (show-modal (one "#image-modal")))
+      (show-modal (one "#modal-image")))
 
 (on ("click" (one "body") event :dynamic-selector "article[contenteditable=true] figure")
     (let ((target (chain event current-target)))
@@ -211,12 +211,12 @@
       (chain target (remove))))
 
 (on ("click" (one "#update-image") event)
-    (hide-modal (one "#image-modal"))
+    (hide-modal (one "#modal-image"))
     (chain document (get-elements-by-tag-name "article") 0 (focus))
-    (if (chain (one "#image-url") (val))
+    (if (value (one "#image-url"))
 	(chain document
 	       (exec-command "insertHTML" f
-			     (concatenate 'string "<img src=\"" (chain (one "#image-url") (val))
+			     (concatenate 'string "<img src=\"" (value (one "#image-url"))
 					  "\"></img>")))
 	(send-file
 	 (chain document (get-element-by-id "image-file") files 0))))
@@ -227,8 +227,8 @@
 (on ("click" (one "#update-table") event)
     (hide-modal (one "#table-modal"))
     (chain document (get-elements-by-tag-name "article") 0 (focus))
-    (let* ((columns (parse-int (chain (one "#table-columns") (val))))
-           (rows (parse-int (chain (one "#table-rows") (val))))
+    (let* ((columns (parse-int (value (one "#table-columns"))))
+           (rows (parse-int (value (one "#table-rows"))))
            (row-html (chain "<td></td>" (repeat columns)))
            (inner-table-html
             (chain (concatenate 'string "<tr>" row-html "</tr>")
