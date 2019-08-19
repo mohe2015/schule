@@ -123,13 +123,13 @@
     (chain event (stop-propagation))
     (let ((target (get-popover-target (chain event target))))
       (hide-popover target)
-      (setf (value (one "#link")) (href (one target)))
+      (setf (value (one "#link")) (href (chain target element)))
       (on ("submit" (one "#form-link") event)
 	  (chain event (prevent-default))
 	  (chain event (stop-propagation))
 	  (hide-modal (one "#modal-link"))
 	  (chain document (get-elements-by-tag-name "article") 0 (focus))
-	  (chain (one target) (attr "href" (value (one "#link")))))
+	  (setf (href (chain target element)) (value (one "#link"))))
       (show-modal (one "#modal-link"))))
 
 (on ("click" (one "body") event :dynamic-selector ".deleteLink")
@@ -141,7 +141,7 @@
 (on ("click" (one "body") event :dynamic-selector "article[contenteditable=true] a")
     (chain event (prevent-default))
     (chain event (stop-propagation))
-    (let ((target (chain event current-target)))
+    (let ((target (chain event target)))
       (show-popover (create-popover-for target
 			  "<a href=\"#\" class=\"editLink\"><span class=\"fas fa-link\"></span></a> <a href=\"#\" class=\"deleteLink\"><span class=\"fas fa-unlink\"></span></a>"))))
 
@@ -149,14 +149,14 @@
       (show-modal (one "#modal-image")))
 
 (on ("click" (one "body") event :dynamic-selector "article[contenteditable=true] figure")
-    (let ((target (chain event current-target)))
+    (let ((target (chain event target)))
       (show-popover (create-popover-for target
 			  "<a href=\"#\" class=\"floatImageLeft\"><span class=\"fas fa-align-left\"></span></a> <a href=\"#\" class=\"floatImageRight\"><span class=\"fas fa-align-right\"></span></a> <a href=\"#\" class=\"resizeImage25\">25%</a> <a href=\"#\" class=\"resizeImage50\">50%</a> <a href=\"#\" class=\"resizeImage100\">100%</a> <a href=\"#\" class=\"deleteImage\"><span class=\"fas fa-trash\"></span></a>"))))
 
 (on ("click" (one "body") event :dynamic-selector ".floatImageLeft")
     (chain event (prevent-default))
     (chain event (stop-propagation))
-    (let ((target (get-popover-target (chain event current-target))))
+    (let ((target (get-popover-target (chain event target))))
       (hide-popover target)
       (chain document (get-elements-by-tag-name "article") 0 (focus))
       (chain target class-list (remove "float-right"))
@@ -165,7 +165,7 @@
 (on ("click" (one "body") event :dynamic-selector ".floatImageRight")
     (chain event (prevent-default))
     (chain event (stop-propagation))
-    (let ((target (get-popover-target (chain event current-target))))
+    (let ((target (get-popover-target (chain event target))))
       (hide-popover target)
       (chain document (get-elements-by-tag-name "article") 0 (focus))
       (chain target class-list (remove "float-left"))
@@ -174,7 +174,7 @@
 (on ("click" (one "body") event :dynamic-selector ".resizeImage25")
     (chain event (prevent-default))
     (chain event (stop-propagation))
-    (let ((target (get-popover-target (chain event current-target))))
+    (let ((target (get-popover-target (chain event target))))
       (hide-popover target)
       (chain document (get-elements-by-tag-name "article") 0 (focus))
       (chain target class-list (remove "w-50"))
@@ -185,7 +185,7 @@
 (on ("click" (one "body") event :dynamic-selector ".resizeImage50")
     (chain event (prevent-default))
     (chain event (stop-propagation))
-    (let ((target (get-popover-target (chain event current-target))))
+    (let ((target (get-popover-target (chain event target))))
       (hide-popover target)
       (chain document (get-elements-by-tag-name "article") 0 (focus))
       (chain target class-list (remove "w-25"))
@@ -195,7 +195,7 @@
 (on ("click" (one "body") event :dynamic-selector ".resizeImage100")
     (chain event (prevent-default))
     (chain event (stop-propagation))
-    (let ((target (get-popover-target (chain event current-target))))
+    (let ((target (get-popover-target (chain event target))))
       (hide-popover target)
       (chain document (get-elements-by-tag-name "article") 0 (focus))
       (chain target class-list (remove "w-25"))
@@ -205,7 +205,7 @@
 (on ("click" (one "body") event :dynamic-selector ".deleteImage")
     (chain event (prevent-default))
     (chain event (stop-propagation))
-    (let ((target (get-popover-target (chain event current-target))))
+    (let ((target (get-popover-target (chain event target))))
       (hide-popover target)
       (chain document (get-elements-by-tag-name "article") 0 (focus))
       (chain target (remove))))
@@ -240,7 +240,7 @@
       (chain document (exec-command "insertHTML" f table-html))))
 
 (on ("click" (one "body") event :dynamic-selector "article[contenteditable=true] td")
-    (let ((target (chain event current-target)))
+    (let ((target (chain event target)))
       (show-popover (create-popover-for target "table data"))))
 
 (tool "insertFormula"
@@ -324,7 +324,7 @@
 (chain (one "body") (click remove-old-popovers))
 
 (on ("click" (one "body") event :dynamic-selector "article[contenteditable=true] .formula")
-    (let ((target (chain event current-target)))
+    (let ((target (chain event target)))
       (show-popover
        (create-popover-for
 	target
@@ -333,7 +333,7 @@
 (on ("click" (one "body") event :dynamic-selector ".deleteFormula")
     (chain event (prevent-default))
     (chain event (stop-propagation))
-    (let ((target (get-popover-target (chain event current-target))))
+    (let ((target (get-popover-target (chain event target))))
       (hide-popover target)
       (chain document (get-elements-by-tag-name "article") 0 (focus))
       (chain target (remove))))
@@ -341,7 +341,7 @@
 (on ("click" (one "body") event :dynamic-selector ".editFormula")
     (chain event (prevent-default))
     (chain event (stop-propagation))
-    (let* ((target (get-popover-target (chain event current-target)))
+    (let* ((target (get-popover-target (chain event target)))
            (content (chain -math-live (get-original-content target))))
       (hide-popover target)
       (chain document (get-elements-by-tag-name "article") 0 (focus))
