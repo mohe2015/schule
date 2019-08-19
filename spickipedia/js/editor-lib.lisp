@@ -327,9 +327,10 @@
 
 (on ("click" (one "body") event :dynamic-selector "article[contenteditable=true] .formula")
     (let ((target (chain event current-target)))
-      (create-popover-for target
-			  "<a href=\"#\" class=\"editFormula\"><span class=\"fas fa-pen\"></span></a> <a href=\"#\" class=\"deleteFormula\"><span class=\"fas fa-trash\"></span></a>")
-      (chain (one target) (popover "show"))))
+      (show-popover
+       (create-popover-for
+	target
+	"<a href=\"#\" class=\"editFormula\"><span class=\"fas fa-pen\"></span></a> <a href=\"#\" class=\"deleteFormula\"><span class=\"fas fa-trash\"></span></a>"))))
 
 (on ("click" (one "body") event :dynamic-selector ".deleteFormula")
     (chain event (prevent-default))

@@ -71,6 +71,9 @@
 (defpsmacro display (element)
   `(chain ,element display))
 
+(defpsmacro show-popover (element)
+  (chain element (show)))
+
 (defpsmacro show (element)
   `(remove-class ,element "d-none"))
 
@@ -78,10 +81,10 @@
   `(add-class ,element "d-none"))
 
 (defpsmacro show-modal (element)
-  `(chain (bootstrap.-Modal.get ,element) (show)))
+  `(chain (new (bootstrap.-Modal ,element)) (show)))
 
 (defpsmacro hide-modal (element)
-  `(chain (bootstrap.-Modal.get ,element) (hide)))
+  `(chain (new (bootstrap.-Modal ,element)) (hide)))
 
 (defpsmacro value (element)
   `(chain ,element value))
