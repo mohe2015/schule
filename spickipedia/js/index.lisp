@@ -14,10 +14,10 @@
                       " colno: " colno " error: " error))))
 
 (on ("click" (one "body") event :dynamic-selector "a")
-  (let ((url (href (chain event target))))
-    (if (is-local-url url)
-        (progn (chain event (prevent-default)) (push-state url) f)
-        t)))
+    (let ((url (href (chain event target))))
+      (if (is-local-url url)
+          (progn (chain event (prevent-default)) (push-state url) f)
+          t)))
 
 (setf (chain window onpopstate)
       (lambda (event)
@@ -28,10 +28,10 @@
                        (or (= (chain pathname 3) "create")
                            (= (chain pathname 3) "edit")))
                   (progn
-                   (if (confirm
-                        "Möchtest du die Änderung wirklich verwerfen?")
-                       (update-state))
-                   (return)))))
+                    (if (confirm
+                         "Möchtest du die Änderung wirklich verwerfen?")
+			(update-state))
+                    (return)))))
         (update-state)))
 
 (setf (chain window onbeforeunload)

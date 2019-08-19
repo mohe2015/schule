@@ -2,8 +2,8 @@
 (use-package :trivia)
 
 (match '(chain (one "#test") (modal "hide"))
-	   ((list 'chain a (list 'modal "hide"))
-	    (list 'hide-modal a)))
+  ((list 'chain a (list 'modal "hide"))
+   (list 'hide-modal a)))
 
 (defun fix-code (code)
   (let ((result (match code

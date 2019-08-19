@@ -8,8 +8,8 @@
 (i "/js/state-machine.lisp" "enterState")
 
 (defroute "/wiki/:name/create"
-  ;; TODO clean up - here are lots of useless lines of code
-  (enter-state "handleWikiPageEdit")
+    ;; TODO clean up - here are lots of useless lines of code
+    (enter-state "handleWikiPageEdit")
   (add-class (all ".edit-button") "disabled")
   (add-class (one "#is-outdated-article") "d-none")
   (if (and (not (null (chain window history state)))
@@ -22,7 +22,7 @@
 (on ("click" (one "#create-article") event)
     (chain event (prevent-default))
     (chain event (stop-propagation))
-  (let ((pathname (chain window location pathname (split "/"))))
-    (push-state (concatenate 'string "/wiki/" (chain pathname 2) "/create")
-     (chain window history state))
-    f))
+    (let ((pathname (chain window location pathname (split "/"))))
+      (push-state (concatenate 'string "/wiki/" (chain pathname 2) "/create")
+		  (chain window history state))
+      f))

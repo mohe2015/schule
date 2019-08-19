@@ -18,7 +18,7 @@
   (asdf/system:system-relative-pathname :spickipedia #P"spickipedia.db"))
 
 (defconfig :common
- `(:databases ((:maindb :sqlite3 :database-name ,*database-path*))))
+    `(:databases ((:maindb :sqlite3 :database-name ,*database-path*))))
 
 (defconfig |development| 'nil)
 

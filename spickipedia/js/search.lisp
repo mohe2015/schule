@@ -6,14 +6,14 @@
 (i "/js/fetch.lisp" "checkStatus" "json" "handleFetchErrorShow" "cacheThenNetwork")
 
 (on ("input" (one "#search-query") event)
-  (chain (one "#button-search") (click)))
+    (chain (one "#button-search") (click)))
 
 (defroute "/search"
-  (add-class (all ".edit-button") "disabled")
+    (add-class (all ".edit-button") "disabled")
   (show-tab "#search"))
 
 (defroute "/search/:query"
-  (add-class (all ".edit-button") "disabled")
+    (add-class (all ".edit-button") "disabled")
   (show-tab "#search")
   (setf (value (one "#search-query")) query))
 
@@ -22,13 +22,13 @@
   (let ((results-contain-query f))
     (if (not (null data))
         (loop for page in data
-              do (if (= (chain page title) query)
-                     (setf results-contain-query t)
-                     (let ((template (get-template "search-result-template")))
-                        (setf (inner-text (one ".s-title" template)) (chain page title))
-                        (setf (href template) (concatenate 'string "/wiki/" (chain page title)))
-                        (setf (inner-html (one ".search-result-summary" template)) (chain page summary))
-                        (append (one "#search-results-content") template)))))
+           do (if (= (chain page title) query)
+                  (setf results-contain-query t)
+                  (let ((template (get-template "search-result-template")))
+                    (setf (inner-text (one ".s-title" template)) (chain page title))
+                    (setf (href template) (concatenate 'string "/wiki/" (chain page title)))
+                    (setf (inner-html (one ".search-result-summary" template)) (chain page summary))
+                    (append (one "#search-results-content") template)))))
     (if results-contain-query
         (chain (one "#no-search-results") (hide))
         (chain (one "#no-search-results") (show)))
@@ -36,11 +36,11 @@
     (chain (one "#search-results") (stop) (show))))
 
 (on ("click" (one "#button-search") event)
-  (let ((query (value (one "#search-query"))))
-    (setf (href (one "#search-create-article")) (concatenate 'string "/wiki/" query "/create"))
-    (chain window history (replace-state nil nil (concatenate 'string "/search/" query)))
-    (hide (one "#search-results-loading"))
-    (show (one "#search-results"))
-    (if (not (undefined (chain window search-xhr))) ;; TODO fixme (maybe websocket at later point?)
-        (chain window search-xhr (abort)))
-    (cache-then-network (concatenate 'string "/api/search/" query) handle-response)))
+    (let ((query (value (one "#search-query"))))
+      (setf (href (one "#search-create-article")) (concatenate 'string "/wiki/" query "/create"))
+      (chain window history (replace-state nil nil (concatenate 'string "/search/" query)))
+      (hide (one "#search-results-loading"))
+      (show (one "#search-results"))
+      (if (not (undefined (chain window search-xhr))) ;; TODO fixme (maybe websocket at later point?)
+          (chain window search-xhr (abort)))
+      (cache-then-network (concatenate 'string "/api/search/" query) handle-response)))

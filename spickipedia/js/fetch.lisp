@@ -15,8 +15,8 @@
            (setf (value (one "#inputName")) (or (chain window local-storage name) ""))
            (chain window local-storage (remove-item "name"))
            (push-state "/login"
-            (create last-url (chain window location href) last-state
-             (chain window history state))))
+		       (create last-url (chain window location href) last-state
+			       (chain window history state))))
          (if (= status 403)
              (let ((error-message
                     "Du hast nicht die benötigten Berechtigungen, um diese Aktion durchzuführen. Sag mir Bescheid, wenn du glaubst, dass dies ein Fehler ist."))
@@ -37,8 +37,8 @@
            (setf (value (one "#inputName")) (or (chain window local-storage name) ""))
            (chain window local-storage (remove-item "name"))
            (push-state "/login"
-            (create last-url (chain window location href) last-state
-             (chain window history state))))
+		       (create last-url (chain window location href) last-state
+			       (chain window history state))))
          (if (= status 403)
              (let ((error-message
                     "Du hast nicht die benötigten Berechtigungen, um diese Aktion durchzuführen. Sag mir Bescheid, wenn du glaubst, dass dies ein Fehler ist."))
@@ -53,21 +53,21 @@
                    (show-tab "#error"))))))))
 
 (export
-  (defun handle-login-error (error repeated)
-    (let ((status (chain error response status)))
-      (chain window local-storage (remove-item "name"))
-      (if (= status 403)
-          (progn
+ (defun handle-login-error (error repeated)
+   (let ((status (chain error response status)))
+     (chain window local-storage (remove-item "name"))
+     (if (= status 403)
+         (progn
            (alert "Ungültige Zugangsdaten!")
            (chain (one "#login-button") (prop "disabled" f) (html "Anmelden")))
-          (if (= status 400)
-              (if repeated
-                  (progn
+         (if (= status 400)
+             (if repeated
+                 (progn
                    (alert "Ungültige Zugangsdaten!")
                    (chain (one "#login-button") (prop "disabled" f)
-                    (html "Anmelden")))
-                  (login-post t))
-              (handle-fetch-error error))))))
+			  (html "Anmelden")))
+                 (login-post t))
+             (handle-fetch-error error))))))
 
 (export
  (defun check-status (response)
@@ -84,30 +84,30 @@
    (chain response (json))))
 
 (export
-  (defun html ()
-    (chain response (text))))
+ (defun html ()
+   (chain response (text))))
 
 (export
  (defun cache-then-network (url callback)
    (var network-data-received f)
    (var network-update
         (chain
-          (fetch url)
-          (then check-status)
-          (then json)
-          (then
-            (lambda (data)
-              (setf network-data-received t)
-              (callback data)))
-          (catch handle-fetch-error-show)))
+         (fetch url)
+         (then check-status)
+         (then json)
+         (then
+          (lambda (data)
+            (setf network-data-received t)
+            (callback data)))
+         (catch handle-fetch-error-show)))
    (chain
-     caches
-     (match url)
-     (then check-status)
-     (then json)
-     (then
-      (lambda (data)
-        (if (not network-data-received)
-            (callback data))))
-     (catch (lambda () network-update))
-     (catch handle-fetch-error-show))))
+    caches
+    (match url)
+    (then check-status)
+    (then json)
+    (then
+     (lambda (data)
+       (if (not network-data-received)
+           (callback data))))
+    (catch (lambda () network-update))
+    (catch handle-fetch-error-show))))

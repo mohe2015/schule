@@ -10,34 +10,34 @@
 (i "/js/state-machine.lisp" "enterState" "pushState")
 
 (on ("click" (all ".edit-button") event)
-  (chain event (prevent-default))
-  (chain event (stop-propagation))
-  (let ((pathname (chain window location pathname (split "/"))))
-    (push-state (concatenate 'string "/wiki/" (chain pathname 2) "/edit") (chain window history state)))
-  f)
+    (chain event (prevent-default))
+    (chain event (stop-propagation))
+    (let ((pathname (chain window location pathname (split "/"))))
+      (push-state (concatenate 'string "/wiki/" (chain pathname 2) "/edit") (chain window history state)))
+    f)
 
 (defun init-editor (data)
   ;;(chain window history (replace-state data nil nil))
   (when (chain data categories)
     (remove (all ".closable-badge" (one "#form-settings")))
     (loop for category in (chain data categories) do
-      (let ((template (get-template "template-category")))
-        (setf (inner-html (one ".closable-badge-label" template)) category)
-        (before (one "#new-category") template))))
+	 (let ((template (get-template "template-category")))
+           (setf (inner-html (one ".closable-badge-label" template)) category)
+           (before (one "#new-category") template))))
   (setf (inner-html (one "article")) (chain data content))
   (show-editor)
   (show-tab "#page"))
 
 (defroute "/wiki/:page/edit"
-  (enter-state "handleWikiPageEdit")
+    (enter-state "handleWikiPageEdit")
   (setf (inner-text (one "#wiki-article-title")) (decode-u-r-i-component page))
 
   (show-tab "#loading")
   (cache-then-network (concatenate 'string "/api/wiki/" page) init-editor))
 
 (defstate handle-wiki-page-edit-enter
-  (add-class (all ".edit-button") "disabled"))
+    (add-class (all ".edit-button") "disabled"))
 
 (defstate handle-wiki-page-edit-exit
-  (remove-class (all ".edit-button") "disabled")
+    (remove-class (all ".edit-button") "disabled")
   (hide-editor))

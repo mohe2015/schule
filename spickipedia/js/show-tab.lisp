@@ -8,7 +8,7 @@
    ;; temp1.filter(function (tab) { return tab.id != "edit-quiz" })
    (chain (all ".my-tab")
           (filter
-            (lambda (tab)
-              (not (= (chain tab id) id))))
+           (lambda (tab)
+             (not (= (chain tab id) id))))
           (hide))
    (show (one id))))
