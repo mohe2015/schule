@@ -14,10 +14,17 @@
                       " colno: " colno " error: " error))))
 
 (on ("click" (one "body") event :dynamic-selector "a")
-    (let ((url (href (chain event target))))
-      (if (is-local-url url)
-          (progn (chain event (prevent-default)) (push-state url) f)
-          t)))
+    (if (chain event target is-Content-Editable)
+       (progn
+	 (chain event (prevent-default))
+	 (chain event (stop-propagation)))
+       (let ((url (href (chain event target))))
+	 (if (is-local-url url)
+             (progn
+	       (chain event (prevent-default))
+	       (push-state url)
+	       f)
+             t))))
 
 (setf (chain window onpopstate)
       (lambda (event)

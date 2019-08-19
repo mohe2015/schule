@@ -140,6 +140,8 @@
       (chain (one target) (remove))))
 
 (on ("click" (one "body") event :dynamic-selector "article[contenteditable=true] a")
+    (chain event (prevent-default))
+    (chain event (stop-propagation))
     (let ((target (chain event current-target)))
       (show-popover (create-popover-for target
 			  "<a href=\"#\" class=\"editLink\"><span class=\"fas fa-link\"></span></a> <a href=\"#\" class=\"deleteLink\"><span class=\"fas fa-unlink\"></span></a>"))))
