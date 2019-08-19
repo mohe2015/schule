@@ -16,7 +16,8 @@
 (fix-code '(if t (chain (one "#test") (modal "hide")) (progn)))
 
 (defun fix-file (file)
-  (let ((result (with-open-file (in file)
+  (let ((*print-case* :downcase)
+	(result (with-open-file (in file)
 		  (loop for sexp = (read-preserving-whitespace in nil) while sexp collect (fix-code sexp)))))
     (with-open-file (out file :direction :output :if-exists :supersede)
       (loop for sexp in result do
