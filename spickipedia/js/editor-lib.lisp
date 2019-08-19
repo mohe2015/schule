@@ -77,7 +77,7 @@
 	  (chain event (stop-propagation))
 	  (hide-modal (one "#modal-link"))
 	  (restore-range)
-	  (update-link (chain (one "#link") (val))))
+	  (update-link (value (one "#link"))))
       (show-modal (one "#modal-link")))
 
 (var articles (array))
@@ -298,12 +298,12 @@
   (if (not (chain element id))
       (setf (chain element id)
             (concatenate 'string "popover-target-" (random-int))))
-  (chain (one element)
-	 (popover
-	  (create html t template
-		  (concatenate 'string "<div data-target=\"#" (chain element id)
-			       "\" class=\"popover\" role=\"tooltip\"><div class=\"arrow\"></div><h3 class=\"popover-header\"></h3><div class=\"popover-body\"></div></div>")
-		  content content trigger "manual"))))
+  (new (bootstrap.-Popover
+	element
+	(create html t
+		template (concatenate 'string "<div data-target=\"#" (chain element id) "\" class=\"popover\" role=\"tooltip\"><div class=\"arrow\"></div><h3 class=\"popover-header\"></h3><div class=\"popover-body\"></div></div>")
+		content content
+		trigger "manual"))))
 
 (defun get-popover-target (element)
   (chain (one (chain (one element) (closest ".popover") (data "target"))) 0))
