@@ -305,7 +305,7 @@
 		trigger "manual"))))
 
 (defun get-popover-target (element)
-  (chain (one (chain (one element) (closest ".popover") (data "target"))) 0))
+  (chain bootstrap -Popover (get-Instance element)))
 
 (defun remove-old-popovers (event)
   (loop for popover in (one ".popover")

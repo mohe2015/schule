@@ -84,10 +84,17 @@
   `(add-class ,element "d-none"))
 
 (defpsmacro show-modal (element)
-  `(chain (new (bootstrap.-Modal ,element)) (show)))
+  `(let ((old-modal (chain bootstrap -Modal (get-Instance ,element))))
+     (if old-modal
+	 (chain old-modal (show))
+	 (chain (new (bootstrap.-Modal ,element)) (show)))))
 
+;; TODO FIXME double evaluation
 (defpsmacro hide-modal (element)
-  `(chain (new (bootstrap.-Modal ,element)) (hide)))
+  `(let ((old-modal (chain bootstrap -Modal (get-Instance ,element))))
+     (if old-modal
+	 (chain old-modal (hide))
+	 (chain (new (bootstrap.-Modal ,element)) (hide)))))
 
 (defpsmacro value (element)
   `(chain ,element value))
