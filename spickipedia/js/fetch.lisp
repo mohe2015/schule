@@ -42,14 +42,14 @@
          (if (= status 403)
              (let ((error-message
                     "Du hast nicht die benötigten Berechtigungen, um diese Aktion durchzuführen. Sag mir Bescheid, wenn du glaubst, dass dies ein Fehler ist."))
-               (chain (one "#errorMessage") (text error-message))
+               (setf (inner-text (one "#errorMessage")) error-message)
                (show-tab "#error"))
              (if (= (chain error response status) 404)
                  (show-tab "#not-found")
                  (let ((error-message
                         (concatenate 'string "Unbekannter Fehler: "
                                      (chain error response status-text))))
-                   (chain (one "#errorMessage") (text error-message))
+                   (setf (inner-text (one "#errorMessage")) error-message)
                    (show-tab "#error"))))))))
 
 (export

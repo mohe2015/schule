@@ -16,6 +16,39 @@ CREATE TABLE "user" (
     "updated_at" TIMESTAMP
 );
 
+CREATE TABLE "schedule_revision" (
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "author_id" INTEGER NOT NULL,
+    "schedule_id" INTEGER NOT NULL,
+    "created_at" TIMESTAMP,
+    "updated_at" TIMESTAMP
+);
+
+CREATE TABLE "course" (
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "created_at" TIMESTAMP,
+    "updated_at" TIMESTAMP
+);
+
+CREATE TABLE "schedule_data" (
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "weekday" INTEGER NOT NULL,
+    "hour" INTEGER NOT NULL,
+    "week_modulo" INTEGER NOT NULL,
+    "course_id" INTEGER NOT NULL,
+    "room" VARCHAR(32) NOT NULL,
+    "created_at" TIMESTAMP,
+    "updated_at" TIMESTAMP
+);
+
+CREATE TABLE "schedule_revision_data" (
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+    "schedule_revision_id" INTEGER NOT NULL,
+    "schedule_data_id" INTEGER NOT NULL,
+    "created_at" TIMESTAMP,
+    "updated_at" TIMESTAMP
+);
+
 CREATE TABLE "web_push" (
     "id" INTEGER PRIMARY KEY AUTOINCREMENT,
     "user_id" INTEGER NOT NULL,
@@ -25,12 +58,6 @@ CREATE TABLE "web_push" (
     "created_at" TIMESTAMP,
     "updated_at" TIMESTAMP,
     UNIQUE ("user_id", "p256dh", "auth", "endpoint")
-);
-
-CREATE TABLE "course" (
-    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-    "created_at" TIMESTAMP,
-    "updated_at" TIMESTAMP
 );
 
 CREATE TABLE "student_course" (
@@ -58,26 +85,6 @@ CREATE TABLE "course_revision" (
     "is_tutorial" BOOLEAN NOT NULL,
     "grade_id" INTEGER NOT NULL,
     "topic" VARCHAR(512) NOT NULL,
-    "created_at" TIMESTAMP,
-    "updated_at" TIMESTAMP
-);
-
-CREATE TABLE "schedule_revision" (
-    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-    "author_id" INTEGER NOT NULL,
-    "schedule_id" INTEGER NOT NULL,
-    "created_at" TIMESTAMP,
-    "updated_at" TIMESTAMP
-);
-
-CREATE TABLE "schedule_data" (
-    "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-    "schedule_revision_id" INTEGER NOT NULL,
-    "weekday" INTEGER NOT NULL,
-    "hour" INTEGER NOT NULL,
-    "week_modulo" INTEGER NOT NULL,
-    "course_id" INTEGER NOT NULL,
-    "room" VARCHAR(32) NOT NULL,
     "created_at" TIMESTAMP,
     "updated_at" TIMESTAMP
 );
@@ -144,4 +151,4 @@ CREATE TABLE "wiki_article_revision_category" (
 CREATE TABLE IF NOT EXISTS "schema_migrations" (
     "version" VARCHAR(255) PRIMARY KEY
 );
-INSERT INTO schema_migrations (version) VALUES ('20190814143420');
+INSERT INTO schema_migrations (version) VALUES ('20190818175429');

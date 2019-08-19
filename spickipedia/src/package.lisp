@@ -54,6 +54,7 @@
            :course-revision-is-tutorial
            :course-revision-grade
            :course-revision-topic
+	   :schedule-revision-data
            :user
            :user-grade
            :wiki-article

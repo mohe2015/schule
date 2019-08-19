@@ -67,8 +67,8 @@
          (then
           (lambda (response)
 	    (when (= (chain event request method) "GET")
-              (chain cache (put (chain event request) (chain response (clone))))
-              response))))))))))
+              (chain cache (put (chain event request) (chain response (clone)))))
+            response)))))))))
 
 (defun cache-then-fallback (event cache-name)
   (chain event
