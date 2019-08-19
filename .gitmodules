@@ -10,3 +10,6 @@
 [submodule "parenscript"]
 	path = parenscript
 	url = https://github.com/mohe2015/parenscript.git
+[submodule "popper.js"]
+	path = popper.js
+	url = https://github.com/FezVrasta/popper.js

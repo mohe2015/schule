@@ -1,3 +1,5 @@
+;; sed -r -i 's/[(]chain (.*) [(]modal "hide"[)][)]/(hide-modal \1)/g' *.lisp
+
 (ql:quickload :trivia)
 (use-package :trivia)
 

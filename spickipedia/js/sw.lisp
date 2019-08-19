@@ -5,6 +5,7 @@
 (var urls-to-cache
      ([]
       "/"
+      "/popper.js"
       "/bootstrap.css"
       "/all.css"
       "/index.css"

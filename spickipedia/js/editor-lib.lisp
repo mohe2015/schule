@@ -75,9 +75,9 @@
       (on ("submit" (one "#form-link") event)
 	  (chain event (prevent-default))
 	  (chain event (stop-propagation))
-	  (chain (one "#modal-link") (modal "hide"))
+	  (hide-modal (one "#modal-link"))
 	  (restore-range)
-	  (update-link (chain (one "#link") (val))))
+	  (update-link (value (one "#link"))))
       (show-modal (one "#modal-link")))
 
 (var articles (array))
@@ -122,43 +122,42 @@
     (chain event (prevent-default))
     (chain event (stop-propagation))
     (let ((target (get-popover-target (chain event target))))
-      (chain (one target) (popover "hide"))
-      (chain (one "#link") (val (chain (one target) (attr "href"))))
+      (hide-popover target)
+      (setf (value (one "#link")) (href (chain target element)))
       (on ("submit" (one "#form-link") event)
 	  (chain event (prevent-default))
 	  (chain event (stop-propagation))
-	  (chain (one "#modal-link") (modal "hide"))
+	  (hide-modal (one "#modal-link"))
 	  (chain document (get-elements-by-tag-name "article") 0 (focus))
-	  (chain (one target) (attr "href" (chain (one "#link") (val)))))
+	  (setf (href (chain target element)) (value (one "#link"))))
       (show-modal (one "#modal-link"))))
 
 (on ("click" (one "body") event :dynamic-selector ".deleteLink")
     (chain event (prevent-default))
     (chain event (stop-propagation))
     (let ((target (get-popover-target (chain event target))))
-      (chain (one target) (popover "hide"))
-      (chain (one target) (remove))))
+      (chain target (dispose))))
 
 (on ("click" (one "body") event :dynamic-selector "article[contenteditable=true] a")
-    (let ((target (chain event current-target)))
-      (create-popover-for target
-			  "<a href=\"#\" class=\"editLink\"><span class=\"fas fa-link\"></span></a> <a href=\"#\" class=\"deleteLink\"><span class=\"fas fa-unlink\"></span></a>")
-      (chain (one target) (popover "show"))))
+    (chain event (prevent-default))
+    (chain event (stop-propagation))
+    (let ((target (chain event target)))
+      (show-popover (create-popover-for target
+			  "<a href=\"#\" class=\"editLink\"><span class=\"fas fa-link\"></span></a> <a href=\"#\" class=\"deleteLink\"><span class=\"fas fa-unlink\"></span></a>"))))
 
 (tool "insertImage"
-      (show-modal (one "#image-modal")))
+      (show-modal (one "#modal-image")))
 
 (on ("click" (one "body") event :dynamic-selector "article[contenteditable=true] figure")
-    (let ((target (chain event current-target)))
-      (create-popover-for target
-			  "<a href=\"#\" class=\"floatImageLeft\"><span class=\"fas fa-align-left\"></span></a> <a href=\"#\" class=\"floatImageRight\"><span class=\"fas fa-align-right\"></span></a> <a href=\"#\" class=\"resizeImage25\">25%</a> <a href=\"#\" class=\"resizeImage50\">50%</a> <a href=\"#\" class=\"resizeImage100\">100%</a> <a href=\"#\" class=\"deleteImage\"><span class=\"fas fa-trash\"></span></a>")
-      (chain (one target) (popover "show"))))
+    (let ((target (chain event target)))
+      (show-popover (create-popover-for target
+			  "<a href=\"#\" class=\"floatImageLeft\"><span class=\"fas fa-align-left\"></span></a> <a href=\"#\" class=\"floatImageRight\"><span class=\"fas fa-align-right\"></span></a> <a href=\"#\" class=\"resizeImage25\">25%</a> <a href=\"#\" class=\"resizeImage50\">50%</a> <a href=\"#\" class=\"resizeImage100\">100%</a> <a href=\"#\" class=\"deleteImage\"><span class=\"fas fa-trash\"></span></a>"))))
 
 (on ("click" (one "body") event :dynamic-selector ".floatImageLeft")
     (chain event (prevent-default))
     (chain event (stop-propagation))
-    (let ((target (get-popover-target (chain event current-target))))
-      (chain (one target) (popover "hide"))
+    (let ((target (get-popover-target (chain event target))))
+      (hide-popover target)
       (chain document (get-elements-by-tag-name "article") 0 (focus))
       (chain target class-list (remove "float-right"))
       (chain target class-list (add "float-left"))))
@@ -166,8 +165,8 @@
 (on ("click" (one "body") event :dynamic-selector ".floatImageRight")
     (chain event (prevent-default))
     (chain event (stop-propagation))
-    (let ((target (get-popover-target (chain event current-target))))
-      (chain (one target) (popover "hide"))
+    (let ((target (get-popover-target (chain event target))))
+      (hide-popover target)
       (chain document (get-elements-by-tag-name "article") 0 (focus))
       (chain target class-list (remove "float-left"))
       (chain target class-list (add "float-right"))))
@@ -175,8 +174,8 @@
 (on ("click" (one "body") event :dynamic-selector ".resizeImage25")
     (chain event (prevent-default))
     (chain event (stop-propagation))
-    (let ((target (get-popover-target (chain event current-target))))
-      (chain (one target) (popover "hide"))
+    (let ((target (get-popover-target (chain event target))))
+      (hide-popover target)
       (chain document (get-elements-by-tag-name "article") 0 (focus))
       (chain target class-list (remove "w-50"))
       (chain target class-list (remove "w-100"))
@@ -186,8 +185,8 @@
 (on ("click" (one "body") event :dynamic-selector ".resizeImage50")
     (chain event (prevent-default))
     (chain event (stop-propagation))
-    (let ((target (get-popover-target (chain event current-target))))
-      (chain (one target) (popover "hide"))
+    (let ((target (get-popover-target (chain event target))))
+      (hide-popover target)
       (chain document (get-elements-by-tag-name "article") 0 (focus))
       (chain target class-list (remove "w-25"))
       (chain target class-list (remove "w-100"))
@@ -196,8 +195,8 @@
 (on ("click" (one "body") event :dynamic-selector ".resizeImage100")
     (chain event (prevent-default))
     (chain event (stop-propagation))
-    (let ((target (get-popover-target (chain event current-target))))
-      (chain (one target) (popover "hide"))
+    (let ((target (get-popover-target (chain event target))))
+      (hide-popover target)
       (chain document (get-elements-by-tag-name "article") 0 (focus))
       (chain target class-list (remove "w-25"))
       (chain target class-list (remove "w-50"))
@@ -206,18 +205,18 @@
 (on ("click" (one "body") event :dynamic-selector ".deleteImage")
     (chain event (prevent-default))
     (chain event (stop-propagation))
-    (let ((target (get-popover-target (chain event current-target))))
-      (chain (one target) (popover "hide"))
+    (let ((target (get-popover-target (chain event target))))
+      (hide-popover target)
       (chain document (get-elements-by-tag-name "article") 0 (focus))
       (chain target (remove))))
 
 (on ("click" (one "#update-image") event)
-    (chain (one "#image-modal") (modal "hide"))
+    (hide-modal (one "#modal-image"))
     (chain document (get-elements-by-tag-name "article") 0 (focus))
-    (if (chain (one "#image-url") (val))
+    (if (value (one "#image-url"))
 	(chain document
 	       (exec-command "insertHTML" f
-			     (concatenate 'string "<img src=\"" (chain (one "#image-url") (val))
+			     (concatenate 'string "<img src=\"" (value (one "#image-url"))
 					  "\"></img>")))
 	(send-file
 	 (chain document (get-element-by-id "image-file") files 0))))
@@ -226,10 +225,10 @@
       (show-modal (one "#table-modal")))
 
 (on ("click" (one "#update-table") event)
-    (chain (one "#table-modal") (modal "hide"))
+    (hide-modal (one "#table-modal"))
     (chain document (get-elements-by-tag-name "article") 0 (focus))
-    (let* ((columns (parse-int (chain (one "#table-columns") (val))))
-           (rows (parse-int (chain (one "#table-rows") (val))))
+    (let* ((columns (parse-int (value (one "#table-columns"))))
+           (rows (parse-int (value (one "#table-rows"))))
            (row-html (chain "<td></td>" (repeat columns)))
            (inner-table-html
             (chain (concatenate 'string "<tr>" row-html "</tr>")
@@ -241,13 +240,12 @@
       (chain document (exec-command "insertHTML" f table-html))))
 
 (on ("click" (one "body") event :dynamic-selector "article[contenteditable=true] td")
-    (let ((target (chain event current-target)))
-      (create-popover-for target "table data")
-      (chain (one target) (popover "show"))))
+    (let ((target (chain event target)))
+      (show-popover (create-popover-for target "table data"))))
 
 (tool "insertFormula"
       (on ("click" (one "#update-formula") event)
-	  (chain (one "#formula-modal") (modal "hide"))
+	  (hide-modal (one "#formula-modal"))
 	  (chain document (get-elements-by-tag-name "article") 0 (focus))
 	  (let ((latex (chain window mathfield (latex))))
 	    (chain window mathfield (revert-to-original-content))
@@ -266,7 +264,7 @@
 				    (create virtual-keyboard-mode "manual")))))
 
 (on ("click" (one "#update-formula") event)
-    (chain (one "#formula-modal") (modal "hide"))
+    (hide-modal (one "#formula-modal"))
     (chain document (get-elements-by-tag-name "article") 0 (focus))
     (let ((latex (chain window mathfield (latex))))
       (chain window mathfield (revert-to-original-content))
@@ -298,15 +296,15 @@
   (if (not (chain element id))
       (setf (chain element id)
             (concatenate 'string "popover-target-" (random-int))))
-  (chain (one element)
-	 (popover
-	  (create html t template
-		  (concatenate 'string "<div data-target=\"#" (chain element id)
-			       "\" class=\"popover\" role=\"tooltip\"><div class=\"arrow\"></div><h3 class=\"popover-header\"></h3><div class=\"popover-body\"></div></div>")
-		  content content trigger "manual"))))
+  (new (bootstrap.-Popover
+	element
+	(create html t
+		template (concatenate 'string "<div data-target=\"#" (chain element id) "\" class=\"popover\" role=\"tooltip\"><div class=\"arrow\"></div><h3 class=\"popover-header\"></h3><div class=\"popover-body\"></div></div>")
+		content content
+		trigger "manual"))))
 
 (defun get-popover-target (element)
-  (chain (one (chain (one element) (closest ".popover") (data "target"))) 0))
+  (chain bootstrap -Popover (get-Instance (chain element (closest ".popover")))))
 
 (defun remove-old-popovers (event)
   (loop for popover in (one ".popover")
@@ -321,30 +319,31 @@
                     (return-from remove-old-popovers)))
           (if (= (chain event target) target)
               (return-from remove-old-popovers))
-          (chain (one target) (popover "hide")))))
+          (show-popover (one target)))))
 
 (chain (one "body") (click remove-old-popovers))
 
 (on ("click" (one "body") event :dynamic-selector "article[contenteditable=true] .formula")
-    (let ((target (chain event current-target)))
-      (create-popover-for target
-			  "<a href=\"#\" class=\"editFormula\"><span class=\"fas fa-pen\"></span></a> <a href=\"#\" class=\"deleteFormula\"><span class=\"fas fa-trash\"></span></a>")
-      (chain (one target) (popover "show"))))
+    (let ((target (chain event target)))
+      (show-popover
+       (create-popover-for
+	target
+	"<a href=\"#\" class=\"editFormula\"><span class=\"fas fa-pen\"></span></a> <a href=\"#\" class=\"deleteFormula\"><span class=\"fas fa-trash\"></span></a>"))))
 
 (on ("click" (one "body") event :dynamic-selector ".deleteFormula")
     (chain event (prevent-default))
     (chain event (stop-propagation))
-    (let ((target (get-popover-target (chain event current-target))))
-      (chain (one target) (popover "hide"))
+    (let ((target (get-popover-target (chain event target))))
+      (hide-popover target)
       (chain document (get-elements-by-tag-name "article") 0 (focus))
       (chain target (remove))))
 
 (on ("click" (one "body") event :dynamic-selector ".editFormula")
     (chain event (prevent-default))
     (chain event (stop-propagation))
-    (let* ((target (get-popover-target (chain event current-target)))
+    (let* ((target (get-popover-target (chain event target)))
            (content (chain -math-live (get-original-content target))))
-      (chain (one target) (popover "hide"))
+      (hide-popover target)
       (chain document (get-elements-by-tag-name "article") 0 (focus))
       (setf (chain document (get-element-by-id "formula") inner-h-t-m-l)
             (concatenate 'string "\\( " content " \\)"))
@@ -356,7 +355,7 @@
       (chain (one "#update-formula") (off "click")
 	     (click
 	      (lambda (event)
-		(chain (one "#formula-modal") (modal "hide"))
+		(hide-modal (one "#formula-modal"))
 		(chain document (get-elements-by-tag-name "article") 0 (focus))
 		(let ((latex (chain window mathfield (latex))))
 		  (chain window mathfield (revert-to-original-content))
