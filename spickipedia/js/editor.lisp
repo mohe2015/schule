@@ -8,8 +8,8 @@
 (i "./fetch.lisp" "checkStatus" "json" "html" "handleFetchError")
 
 (on ("click" (one "#publish-changes") event)
-    (hide (one "#publish-changes"))
-    (show (one "#publishing-changes"))
+    (hide-element (one "#publish-changes"))
+    (show-element (one "#publishing-changes"))
     (let ((change-summary (value (one "#change-summary")))
           (temp-dom (chain (one "article") (clone-node t)))
           (article-path (chain window location pathname (split "/") 2))

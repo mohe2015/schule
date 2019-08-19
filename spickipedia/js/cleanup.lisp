@@ -8,5 +8,5 @@
  (defun cleanup ()
    (hide-editor)
    (hide-modal (one "#modal-publish-changes"))
-   (show (one "#publish-changes"))
-   (hide (one "#publishing-changes"))))
+   (show-element (one "#publish-changes"))
+   (hide-element (one "#publishing-changes"))))
