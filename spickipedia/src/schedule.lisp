@@ -149,8 +149,7 @@ O to STREAM (or to *JSON-OUTPUT*)."
 	     'schedule-revision-data
 	     :schedule-revision revision
 	     :schedule-data data))
-	   (prepare (dbi.driver:prepare *connection* (sxql:yield (sxql:insert-into 'schedule_revision_data (:schedule_revision_id :schedule_data_id) (sxql:select ((:raw (object-id revision)) :schedule_data_id) (sxql:from :schedule_revision_data) (sxql:where (:= :schedule_revision_id (object-id last-revision))))))))
-	   (result (dbi:execute prepare)))
+	   (result (mito:retrieve-by-sql (sxql:insert-into 'schedule_revision_data (:schedule_revision_id :schedule_data_id) (sxql:select ((:raw (object-id revision)) :schedule_data_id) (sxql:from :schedule_revision_data) (sxql:where (:= :schedule_revision_id (object-id last-revision))))))))
       (format nil "~a" (object-id data)))))
 
 (my-defroute :post "/api/schedule/:grade/delete" (:admin :user) (|id|) "application/json"
