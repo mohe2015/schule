@@ -122,7 +122,7 @@
     (chain event (prevent-default))
     (chain event (stop-propagation))
     (let ((target (get-popover-target (chain event target))))
-      (chain (one target) (popover "hide"))
+      (hide-popover (one target))
       (chain (one "#link") (val (chain (one target) (attr "href"))))
       (on ("submit" (one "#form-link") event)
 	  (chain event (prevent-default))
@@ -136,29 +136,27 @@
     (chain event (prevent-default))
     (chain event (stop-propagation))
     (let ((target (get-popover-target (chain event target))))
-      (chain (one target) (popover "hide"))
+      (hide-popover (one target))
       (chain (one target) (remove))))
 
 (on ("click" (one "body") event :dynamic-selector "article[contenteditable=true] a")
     (let ((target (chain event current-target)))
-      (create-popover-for target
-			  "<a href=\"#\" class=\"editLink\"><span class=\"fas fa-link\"></span></a> <a href=\"#\" class=\"deleteLink\"><span class=\"fas fa-unlink\"></span></a>")
-      (chain (one target) (popover "show"))))
+      (show-popover (create-popover-for target
+			  "<a href=\"#\" class=\"editLink\"><span class=\"fas fa-link\"></span></a> <a href=\"#\" class=\"deleteLink\"><span class=\"fas fa-unlink\"></span></a>"))))
 
 (tool "insertImage"
       (show-modal (one "#image-modal")))
 
 (on ("click" (one "body") event :dynamic-selector "article[contenteditable=true] figure")
     (let ((target (chain event current-target)))
-      (create-popover-for target
-			  "<a href=\"#\" class=\"floatImageLeft\"><span class=\"fas fa-align-left\"></span></a> <a href=\"#\" class=\"floatImageRight\"><span class=\"fas fa-align-right\"></span></a> <a href=\"#\" class=\"resizeImage25\">25%</a> <a href=\"#\" class=\"resizeImage50\">50%</a> <a href=\"#\" class=\"resizeImage100\">100%</a> <a href=\"#\" class=\"deleteImage\"><span class=\"fas fa-trash\"></span></a>")
-      (chain (one target) (popover "show"))))
+      (show-popover (create-popover-for target
+			  "<a href=\"#\" class=\"floatImageLeft\"><span class=\"fas fa-align-left\"></span></a> <a href=\"#\" class=\"floatImageRight\"><span class=\"fas fa-align-right\"></span></a> <a href=\"#\" class=\"resizeImage25\">25%</a> <a href=\"#\" class=\"resizeImage50\">50%</a> <a href=\"#\" class=\"resizeImage100\">100%</a> <a href=\"#\" class=\"deleteImage\"><span class=\"fas fa-trash\"></span></a>"))))
 
 (on ("click" (one "body") event :dynamic-selector ".floatImageLeft")
     (chain event (prevent-default))
     (chain event (stop-propagation))
     (let ((target (get-popover-target (chain event current-target))))
-      (chain (one target) (popover "hide"))
+      (hide-popover (one target))
       (chain document (get-elements-by-tag-name "article") 0 (focus))
       (chain target class-list (remove "float-right"))
       (chain target class-list (add "float-left"))))
@@ -167,7 +165,7 @@
     (chain event (prevent-default))
     (chain event (stop-propagation))
     (let ((target (get-popover-target (chain event current-target))))
-      (chain (one target) (popover "hide"))
+      (hide-popover (one target))
       (chain document (get-elements-by-tag-name "article") 0 (focus))
       (chain target class-list (remove "float-left"))
       (chain target class-list (add "float-right"))))
@@ -176,7 +174,7 @@
     (chain event (prevent-default))
     (chain event (stop-propagation))
     (let ((target (get-popover-target (chain event current-target))))
-      (chain (one target) (popover "hide"))
+      (hide-popover (one target))
       (chain document (get-elements-by-tag-name "article") 0 (focus))
       (chain target class-list (remove "w-50"))
       (chain target class-list (remove "w-100"))
@@ -187,7 +185,7 @@
     (chain event (prevent-default))
     (chain event (stop-propagation))
     (let ((target (get-popover-target (chain event current-target))))
-      (chain (one target) (popover "hide"))
+      (hide-popover (one target))
       (chain document (get-elements-by-tag-name "article") 0 (focus))
       (chain target class-list (remove "w-25"))
       (chain target class-list (remove "w-100"))
@@ -197,7 +195,7 @@
     (chain event (prevent-default))
     (chain event (stop-propagation))
     (let ((target (get-popover-target (chain event current-target))))
-      (chain (one target) (popover "hide"))
+      (hide-popover (one target))
       (chain document (get-elements-by-tag-name "article") 0 (focus))
       (chain target class-list (remove "w-25"))
       (chain target class-list (remove "w-50"))
@@ -207,7 +205,7 @@
     (chain event (prevent-default))
     (chain event (stop-propagation))
     (let ((target (get-popover-target (chain event current-target))))
-      (chain (one target) (popover "hide"))
+      (hide-popover (one target))
       (chain document (get-elements-by-tag-name "article") 0 (focus))
       (chain target (remove))))
 
@@ -242,8 +240,7 @@
 
 (on ("click" (one "body") event :dynamic-selector "article[contenteditable=true] td")
     (let ((target (chain event current-target)))
-      (create-popover-for target "table data")
-      (chain (one target) (popover "show"))))
+      (show-popover (create-popover-for target "table data"))))
 
 (tool "insertFormula"
       (on ("click" (one "#update-formula") event)
@@ -321,7 +318,7 @@
                     (return-from remove-old-popovers)))
           (if (= (chain event target) target)
               (return-from remove-old-popovers))
-          (chain (one target) (popover "hide")))))
+          (show-popover (one target)))))
 
 (chain (one "body") (click remove-old-popovers))
 
@@ -336,7 +333,7 @@
     (chain event (prevent-default))
     (chain event (stop-propagation))
     (let ((target (get-popover-target (chain event current-target))))
-      (chain (one target) (popover "hide"))
+      (hide-popover (one target))
       (chain document (get-elements-by-tag-name "article") 0 (focus))
       (chain target (remove))))
 
@@ -345,7 +342,7 @@
     (chain event (stop-propagation))
     (let* ((target (get-popover-target (chain event current-target)))
            (content (chain -math-live (get-original-content target))))
-      (chain (one target) (popover "hide"))
+      (hide-popover (one target))
       (chain document (get-elements-by-tag-name "article") 0 (focus))
       (setf (chain document (get-element-by-id "formula") inner-h-t-m-l)
             (concatenate 'string "\\( " content " \\)"))
