@@ -118,25 +118,6 @@
 
 	   ,(contact-html)
 
-	   ,(tab "create-course-tab"
-		 `(:form :method "POST" :action "/api/courses" :id
-			 "create-course-form"
-			 ,(text-input "Fach" "course-subject" "subject")
-			 (:div :class "form-group" (:label "Typ")
-			       (:select :class "custom-select" :name "type" :id "course-type"
-					(:option :selected "true" "GK") (:option "LK")))
-			 ,(teacher-select "teachers-select")
-			 ,(checkbox-input "Tutorium?" "is-tutorial" "is-tutorial")
-			 ,(text-input "Klasse" "course-class" "class")
-			 ,(text-input "Thema" "course-topic" "topic")
-			 `(submit-button "Kurs erstellen")))
-
-	   ,(tab "create-teacher-tab"
-		 `(:form :method "POST" :action "/api/teachers1" :id "create-teacher-form"
-			 ,(text-input "Name" "teacher-name" "name")
-			 ,(text-input "Initialien" "teacher-initial" "initial")
-			 ,(submit-button "LehrerIn erstellen")))
-
 	   ,(tab "articles"
 		 `(:h1 :class "text-center" "Alle Artikel")
 		 `(:ul :id "articles-list"))
@@ -171,12 +152,6 @@
 		       (:a :href "/teachers/new" :type "button" :class
 			   "btn btn-primary norefresh" "+"))
 		 `(:ul :id "teachers-list"))
-
-	   ,(tab "list-courses"
-		 `(:h2 :class "text-center" "Kurse"
-		       (:a :href "/courses/new" :type "button" :class
-			   "btn btn-primary norefresh" "+"))
-		 `(:ul :id "courses-list"))
 
 	   ,@(html-user-courses)
 
@@ -312,7 +287,7 @@
 				 "100" :style "width: 0%"))))
 
 	   ,(modal "wiki-link" "Spickipedia-Link einfügen"
-		   `((:button :type "button" :class "btn btn-primary" :id "publish-changes"
+		   `((:button :type "button" :class "btn btn-primary"
 			      "Änderungen veröffentlichen"))
 		   `(,(text-input "Anzeigetext" "article-link-text" "link-text")
 		      ,(text-input "Spickipedia-Artikel" "article-link-title" "link-title")))

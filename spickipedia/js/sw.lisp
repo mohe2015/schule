@@ -27,8 +27,6 @@
       "/js/articles.lisp"
       "/js/show-tab.lisp"
       "/js/categories.lisp"
-      "/js/teachers.lisp"
-      "/js/courses/new.lisp"
       "/js/courses/index.lisp"
       "/js/schedule/id.lisp"
       "/js/schedules/new.lisp"
