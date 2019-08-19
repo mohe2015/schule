@@ -72,7 +72,7 @@
   `(chain ,element display))
 
 (defpsmacro show-popover (element)
-  (chain element (show)))
+  `(chain element (show)))
 
 (defpsmacro show (element)
   `(remove-class ,element "d-none"))
