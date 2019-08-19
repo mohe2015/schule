@@ -365,6 +365,7 @@
 				 "Formeln editieren funktioniert nur in Google Chrome zuverlässig!")
 			   (:span :id "formula" "e=mc^2"))))
 
+	   (:script :src "/popper.js")
 	   (:script :src "/bootstrap.js")
 	   (:script :type "module" :src "/js/index.lisp"))))
 
