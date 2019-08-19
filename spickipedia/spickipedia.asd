@@ -2,6 +2,7 @@
   :version "0.1.0"
   :author "Moritz Hedtke"
   :license ""
+  :defsystem-depends-on (:paren-files)
   :depends-on (:clack
                :lack
                :caveman2
@@ -35,38 +36,44 @@
                :cl-who)
   :components ;; TODO FIXME fix all dependencies as otherwise there are compilation failures
   ((:module
-    "src"
+    "."
     :components
     (
-     (:file "web-push")
-     (:file "package" :depends-on ("web-push")) ;; TODO split up into the single packages or google how you should do it
+     (:file "src/web-push")
+     (:file "src/package" :depends-on ("src/web-push")) ;; TODO split up into the single packages or google how you should do it
 
-     (:file "argon2")
+     (:file "src/argon2")
      
-     (:file "html/helpers" :depends-on ("package"))
-     (:file "html/user-courses/index" :depends-on ("package" "html/helpers"))
-     (:file "html/contact/index" :depends-on ("package" "html/helpers"))
-     (:file "html/settings/index" :depends-on ("package" "html/helpers"))
-     (:file "html/schedule/index" :depends-on ("package" "html/helpers"))
-     (:file "html/substitution-schedule/index" :depends-on ("package" "html/helpers"))
-     (:file "index" :depends-on ("package" "html/helpers" "html/user-courses/index" "html/settings/index" "html/schedule/index" "html/substitution-schedule/index"))
+     (:file "src/html/helpers" :depends-on ("src/package"))
+     (:file "src/html/user-courses/index" :depends-on ("src/package" "src/html/helpers"))
+     (:file "src/html/contact/index" :depends-on ("src/package" "src/html/helpers"))
+     (:file "src/html/settings/index" :depends-on ("src/package" "src/html/helpers"))
+     (:file "src/html/schedule/index" :depends-on ("src/package" "src/html/helpers"))
+     (:file "src/html/substitution-schedule/index" :depends-on ("src/package" "src/html/helpers"))
+     (:file "src/index" :depends-on ("src/package" "src/html/helpers" "src/html/user-courses/index" "src/html/settings/index" "src/html/schedule/index" "src/html/substitution-schedule/index"))
      
-     (:file "config")
-     (:file "sanitize" :depends-on ("package"))
-     (:file "parenscript" :depends-on ("package"))
-     (:file "tsquery-converter" :depends-on ("package"))
+     (:file "src/config")
+     (:file "src/sanitize" :depends-on ("src/package"))
+
+     (:file "src/parenscript" :depends-on ("src/package"))
+
+     (:parenscript-file "js/index" :depends-on ("js/state-machine" "js/editor-lib" "js/utils"))
      
-     (:file "web" :depends-on ("package" "parenscript" "db" "index" "argon2" "vertretungsplan" "web-push"))
-     (:file "settings" :depends-on ("package" "web"))
-     (:file "schedule" :depends-on ("package" "web")) ;; TODO FIXME clean up this dependency garbage
-     (:file "student-courses" :depends-on ("package" "web"))
-     (:file "default-handler" :depends-on ("package" "web"))
-     (:file "pdf")
-     (:file "libc")
-     (:file "vertretungsplan" :depends-on ("pdf" "libc"))
+
+
+     (:file "src/tsquery-converter" :depends-on ("src/package"))
      
-     (:file "db" :depends-on ("package" "config"))
+     (:file "src/web" :depends-on ("src/package" "src/parenscript" "src/db" "src/index" "src/argon2" "src/vertretungsplan" "src/web-push"))
+     (:file "src/settings" :depends-on ("src/package" "src/web"))
+     (:file "src/schedule" :depends-on ("src/package" "src/web")) ;; TODO FIXME clean up this dependency garbage
+     (:file "src/student-courses" :depends-on ("src/package" "src/web"))
+     (:file "src/default-handler" :depends-on ("src/package" "src/web"))
+     (:file "src/pdf")
+     (:file "src/libc")
+     (:file "src/vertretungsplan" :depends-on ("src/pdf" "src/libc"))
      
-     (:file "main" :depends-on ("package" "config" "db" "web")))))
+     (:file "src/db" :depends-on ("src/package" "src/config"))
+     
+     (:file "src/main" :depends-on ("src/package" "src/config" "src/db" "src/web")))))
   :description ""
   :in-order-to ((test-op (test-op "spickipedia-test"))))
