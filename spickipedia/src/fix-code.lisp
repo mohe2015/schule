@@ -18,10 +18,10 @@
 (defun fix-file (file)
   (let ((*print-case* :downcase)
 	(result (with-open-file (in file)
-		  (loop for sexp = (read-preserving-whitespace in nil) while sexp collect (fix-code sexp)))))
+		  (loop for sexp = (read in nil) while sexp collect (fix-code sexp)))))
     (with-open-file (out file :direction :output :if-exists :supersede)
       (loop for sexp in result do
-	   (write sexp :stream out)))))
+	   (write sexp :stream out )))))
 
 (loop for file in (directory "spickipedia/**/*.lisp") do
      (fix-file file))
