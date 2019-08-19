@@ -6,7 +6,7 @@
 
 (export
  (defun send-file (file)
-   (chain (one "#uploadProgressModal") (modal "show"))
+   (show-modal (one "#uploadProgressModal"))
    (let ((data (new (-form-data))))
      (chain data (append "file" file))
      (chain data (append "_csrf_token" (read-cookie "_csrf_token")))
@@ -25,7 +25,7 @@
 			   url "/api/upload" cache f content-type f process-data f success
 			   (lambda (url)
 			     (setf (@ window file-upload-finished) t)
-			     (chain (one "#uploadProgressModal") (modal "hide"))
+			     (hide-modal (one "#uploadProgressModal"))
 			     (chain
 			      (chain document
 				     (exec-command "insertHTML" f
@@ -38,7 +38,7 @@
 			     (if (not (@ window file-upload-finished))
 				 (progn
 				   (setf (@ window file-upload-finished) t)
-				   (chain (one "#uploadProgressModal") (modal "hide"))
+				   (hide-modal (one "#uploadProgressModal"))
 				   (alert "Fehler beim Upload!")))))))))))
 
 (defun progress-handling-function (e)
@@ -49,7 +49,7 @@
 
   (on ("shown.bs.modal" (one "#uploadProgressModal") event)
       (if (@ window file-upload-finished)
-          (chain (one "#uploadProgressModal") (modal "hide"))))
+          (hide-modal (one "#uploadProgressModal"))))
 
   (on ("hide.bs.modal" (one "#uploadProgressModal") event)
       (if (not (@ window file-upload-finished))

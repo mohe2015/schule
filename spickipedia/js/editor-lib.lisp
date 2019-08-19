@@ -75,7 +75,7 @@
       (on ("submit" (one "#form-link") event)
 	  (chain event (prevent-default))
 	  (chain event (stop-propagation))
-	  (chain (one "#modal-link") (modal "hide"))
+	  (hide-modal (one "#modal-link"))
 	  (restore-range)
 	  (update-link (chain (one "#link") (val))))
       (show-modal (one "#modal-link")))
@@ -127,7 +127,7 @@
       (on ("submit" (one "#form-link") event)
 	  (chain event (prevent-default))
 	  (chain event (stop-propagation))
-	  (chain (one "#modal-link") (modal "hide"))
+	  (hide-modal (one "#modal-link"))
 	  (chain document (get-elements-by-tag-name "article") 0 (focus))
 	  (chain (one target) (attr "href" (chain (one "#link") (val)))))
       (show-modal (one "#modal-link"))))
@@ -212,7 +212,7 @@
       (chain target (remove))))
 
 (on ("click" (one "#update-image") event)
-    (chain (one "#image-modal") (modal "hide"))
+    (hide-modal (one "#image-modal"))
     (chain document (get-elements-by-tag-name "article") 0 (focus))
     (if (chain (one "#image-url") (val))
 	(chain document
@@ -226,7 +226,7 @@
       (show-modal (one "#table-modal")))
 
 (on ("click" (one "#update-table") event)
-    (chain (one "#table-modal") (modal "hide"))
+    (hide-modal (one "#table-modal"))
     (chain document (get-elements-by-tag-name "article") 0 (focus))
     (let* ((columns (parse-int (chain (one "#table-columns") (val))))
            (rows (parse-int (chain (one "#table-rows") (val))))
@@ -247,7 +247,7 @@
 
 (tool "insertFormula"
       (on ("click" (one "#update-formula") event)
-	  (chain (one "#formula-modal") (modal "hide"))
+	  (hide-modal (one "#formula-modal"))
 	  (chain document (get-elements-by-tag-name "article") 0 (focus))
 	  (let ((latex (chain window mathfield (latex))))
 	    (chain window mathfield (revert-to-original-content))
@@ -266,7 +266,7 @@
 				    (create virtual-keyboard-mode "manual")))))
 
 (on ("click" (one "#update-formula") event)
-    (chain (one "#formula-modal") (modal "hide"))
+    (hide-modal (one "#formula-modal"))
     (chain document (get-elements-by-tag-name "article") 0 (focus))
     (let ((latex (chain window mathfield (latex))))
       (chain window mathfield (revert-to-original-content))
@@ -356,7 +356,7 @@
       (chain (one "#update-formula") (off "click")
 	     (click
 	      (lambda (event)
-		(chain (one "#formula-modal") (modal "hide"))
+		(hide-modal (one "#formula-modal"))
 		(chain document (get-elements-by-tag-name "article") 0 (focus))
 		(let ((latex (chain window mathfield (latex))))
 		  (chain window mathfield (revert-to-original-content))
