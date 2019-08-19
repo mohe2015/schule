@@ -106,31 +106,31 @@
 	   (chain console (log error))))))
 
 (on ("click" (one "#settings-enable-notifications") event)
-  (chain event (prevent-default))
-  (chain event (stop-propagation))
-  (add-class (one "#settings-enable-notifications") "disabled")
-  (if is-subscribed
-      (unsubscribe-user)
-      (chain
-       registration
-       push-manager
-       (subscribe
-	(create
-	 user-visible-only t
-	 application-server-key (urlBase64ToUint8Array "BIdu79bj4cxbo-OebKwbp0wfrUAQ7MKUkGfxH_YG2W60n2knhpYFqp_64oyrV4pq8sY6wjdWuWvRnxj_TkVQqZ4=")))
-       (then
-	(lambda (push-registration)
-	  (chain console (log push-registration))
-	  (update-subscription-on-server push-registration)
-	  (setf (chain window is-subscribed) t)
-	  (update-button registration)))
-       (catch
-	   (lambda (error)
-	     (chain console (log error))
-	     (update-button registration))))))
+    (chain event (prevent-default))
+    (chain event (stop-propagation))
+    (add-class (one "#settings-enable-notifications") "disabled")
+    (if is-subscribed
+	(unsubscribe-user)
+	(chain
+	 registration
+	 push-manager
+	 (subscribe
+	  (create
+	   user-visible-only t
+	   application-server-key (urlBase64ToUint8Array "BIdu79bj4cxbo-OebKwbp0wfrUAQ7MKUkGfxH_YG2W60n2knhpYFqp_64oyrV4pq8sY6wjdWuWvRnxj_TkVQqZ4=")))
+	 (then
+	  (lambda (push-registration)
+	    (chain console (log push-registration))
+	    (update-subscription-on-server push-registration)
+	    (setf (chain window is-subscribed) t)
+	    (update-button registration)))
+	 (catch
+	     (lambda (error)
+	       (chain console (log error))
+	       (update-button registration))))))
 
 (defroute "/substitution-schedule"
-  (show-tab "#loading")
+    (show-tab "#loading")
   (cache-then-network
    "/api/substitutions"
    (lambda (data)

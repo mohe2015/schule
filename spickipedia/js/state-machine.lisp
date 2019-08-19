@@ -4,12 +4,12 @@
 (i "./wiki/page.lisp" "handleWikiPage")
 (i "./search.lisp" "handleSearchQuery" "handleSearch")
 (i "./quiz.lisp" "handleQuizIdResults" "handleQuizIdPlayIndex"
- "handleQuizIdPlay" "handleQuizIdEdit" "handleQuizCreate")
+   "handleQuizIdPlay" "handleQuizIdEdit" "handleQuizCreate")
 (i "./logout.lisp" "handleLogout")
 (i "./login.lisp" "handleLogin")
 (i "./root.lisp" "handle")
 (i "./history.lisp" "handleWikiPageHistoryIdChanges" "handleWikiPageHistoryId"
- "handleWikiNameHistory")
+   "handleWikiNameHistory")
 (i "./wiki/page/edit.lisp" "handleWikiPageEdit")
 (i "./create.lisp" "handleWikiNameCreate")
 (i "./articles.lisp" "handleArticles")
@@ -40,17 +40,17 @@
    (if (and (not (= (chain window location pathname) "/login"))
             (undefined (chain window local-storage name)))
        (progn
-        (chain window history
-         (push-state
-          (create last-url (chain window location href) last-state
-           (chain window history state))
-          nil "/login"))
-        (update-state)))
+         (chain window history
+		(push-state
+		 (create last-url (chain window location href) last-state
+			 (chain window history state))
+		 nil "/login"))
+         (update-state)))
    (setf (style (one ".login-hide")) "")
    (loop for route in (chain window routes)
-         do (when (route (chain window location pathname))
-              ;;(chain console (log (chain route name)))
-              (return-from update-state)))
+      do (when (route (chain window location pathname))
+           ;;(chain console (log (chain route name)))
+           (return-from update-state)))
    (setf (inner-text (one "#errorMessage")) "Unbekannter Pfad!")
    (show-tab "#error")))
 
@@ -94,7 +94,7 @@
   this)
 
 (export
-  (defparameter *STATE* (new (node "loading"))))
+ (defparameter *STATE* (new (node "loading"))))
 
 (let ((handle-wiki-page-edit (new (node "handleWikiPageEdit")))
       (handle-wiki-page (new (node "handleWikiPage")))
@@ -112,26 +112,26 @@
   (if (= (chain old-state value) new-state)
       (return (values (array) old-state)))
   (loop for state in (chain old-state (get-children)) do
-    (multiple-value-bind (transitions new-state-object) (current-state-to-new-state-internal state new-state)
-      (if transitions
-          (return (values (chain (array (concatenate 'string (chain state value) "Enter")) (concat transitions)) new-state-object))))))
+       (multiple-value-bind (transitions new-state-object) (current-state-to-new-state-internal state new-state)
+	 (if transitions
+             (return (values (chain (array (concatenate 'string (chain state value) "Enter")) (concat transitions)) new-state-object))))))
 
 (export
-  (defun current-state-to-new-state (old-state new-state)
-    (multiple-value-bind (transitions new-state-object) (current-state-to-new-state-internal old-state new-state)
-      (if transitions
-        (return (values transitions new-state-object))))
-    (if (chain old-state (get-parent-node))
-      (multiple-value-bind (transitions new-state-object) (current-state-to-new-state-internal (chain old-state (get-parent-node)) new-state)
-        (return (values (chain (array (concatenate 'string (chain old-state value) "Exit")) (concat transitions)) new-state-object))))))
+ (defun current-state-to-new-state (old-state new-state)
+   (multiple-value-bind (transitions new-state-object) (current-state-to-new-state-internal old-state new-state)
+     (if transitions
+         (return (values transitions new-state-object))))
+   (if (chain old-state (get-parent-node))
+       (multiple-value-bind (transitions new-state-object) (current-state-to-new-state-internal (chain old-state (get-parent-node)) new-state)
+         (return (values (chain (array (concatenate 'string (chain old-state value) "Exit")) (concat transitions)) new-state-object))))))
 
 (export
-  (async
-    (defun enter-state (state)
-      (let ((module (await (funcall import (chain import meta url)))))
-        (multiple-value-bind (transitions new-state-object) (current-state-to-new-state *STATE* state)
-          (loop for transition in transitions do
-            (debug "TRANSITION " transition)
-            (funcall (getprop window 'states transition)))
-          (debug "STATE " new-state-object)
-          (setf *STATE* new-state-object))))))
+ (async
+  (defun enter-state (state)
+    (let ((module (await (funcall import (chain import meta url)))))
+      (multiple-value-bind (transitions new-state-object) (current-state-to-new-state *STATE* state)
+        (loop for transition in transitions do
+             (debug "TRANSITION " transition)
+             (funcall (getprop window 'states transition)))
+        (debug "STATE " new-state-object)
+        (setf *STATE* new-state-object))))))
