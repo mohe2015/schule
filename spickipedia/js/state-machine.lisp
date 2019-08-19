@@ -15,8 +15,6 @@
 (i "./articles.lisp" "handleArticles")
 (i "./show-tab.lisp" "showTab")
 (i "./categories.lisp" "handleTagsRest")
-(i "./teachers.lisp" "handleTeachersNew")
-(i "./courses/new.lisp" "handleCoursesNew")
 (i "./courses/index.lisp" "handleCourses")
 (i "./schedule/id.lisp" "handleScheduleGradeEdit" "handleScheduleGrade")
 (i "./schedules/new.lisp" "handleSchedulesNew")
