@@ -20,7 +20,7 @@
 		  (loop for sexp = (read-preserving-whitespace in nil) while sexp collect (fix-code sexp)))))
     (with-open-file (out file :direction :output :if-exists :supersede)
       (loop for sexp in result do
-	   (write sexp out)))))
+	   (write sexp :stream out)))))
 
 (loop for file in (directory "spickipedia/**/*.lisp") do
      (fix-file file))
