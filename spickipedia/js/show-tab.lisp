@@ -10,5 +10,5 @@
           (filter
            (lambda (tab)
              (not (= (chain tab id) id))))
-          (hide-element))
+          (hide))
    (show (one id))))

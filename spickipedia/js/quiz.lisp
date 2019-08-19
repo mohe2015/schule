@@ -97,8 +97,8 @@
       (if everything-correct
           (incf (chain window correct-responses))
           (incf (chain window wrong-responses)))
-      (chain (one ".multiple-choice-submit-html") (hide-element))
-      (chain (one ".next-question") (show-element))))
+      (chain (one ".multiple-choice-submit-html") (hide))
+      (chain (one ".next-question") (show))))
 
 (on ("click" (one ".text-submit-html") event)
     (if (= (chain (one "#text-response") (val))
@@ -109,13 +109,13 @@
 	(progn
 	  (incf (chain window wrong-responses))
 	  (chain (one "#text-response") (add-class "is-invalid"))))
-    (chain (one ".text-submit-html") (hide-element))
-    (chain (one ".next-question") (show-element)))
+    (chain (one ".text-submit-html") (hide))
+    (chain (one ".next-question") (show)))
 
 (on ("click" (one ".next-question") event)
-    (chain (one ".next-question") (hide-element))
-    (chain (one ".text-submit-html") (show-element))
-    (chain (one ".multiple-choice-submit-html") (show-element))
+    (chain (one ".next-question") (hide))
+    (chain (one ".text-submit-html") (show))
+    (chain (one ".multiple-choice-submit-html") (show))
     (let ((pathname (chain window location pathname (split "/"))))
       (replace-state
        (concatenate 'string "/quiz/" (chain pathname 2) "/play/"
