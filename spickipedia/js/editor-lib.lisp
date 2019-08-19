@@ -72,13 +72,13 @@
              (setf (chain link rel) "noopener noreferrer"))))))
 
 (tool "createLink"
- (on ("submit" (one "#link-form") event)
+ (on ("submit" (one "#form-link") event)
    (chain event (prevent-default))
    (chain event (stop-propagation))
-   (chain (one "#link-modal") (modal "hide"))
+   (chain (one "#modal-link") (modal "hide"))
    (restore-range)
    (update-link (chain (one "#link") (val))))
- (show-modal (one "#link-modal")))
+ (show-modal (one "#modal-link")))
 
 (var articles (array))
 
@@ -124,13 +124,13 @@
   (let ((target (get-popover-target (chain event target))))
     (chain (one target) (popover "hide"))
     (chain (one "#link") (val (chain (one target) (attr "href"))))
-    (on ("submit" (one "#link-form") event)
+    (on ("submit" (one "#form-link") event)
       (chain event (prevent-default))
       (chain event (stop-propagation))
-      (chain (one "#link-modal") (modal "hide"))
+      (chain (one "#modal-link") (modal "hide"))
       (chain document (get-elements-by-tag-name "article") 0 (focus))
       (chain (one target) (attr "href" (chain (one "#link") (val)))))
-    (show-modal (one "#link-modal"))))
+    (show-modal (one "#modal-link"))))
 
 (on ("click" (one "body") event :dynamic-selector ".deleteLink")
   (chain event (prevent-default))
