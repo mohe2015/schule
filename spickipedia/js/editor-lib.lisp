@@ -136,7 +136,6 @@
     (chain event (prevent-default))
     (chain event (stop-propagation))
     (let ((target (get-popover-target (chain event target))))
-      (hide-popover target)
       (chain target (dispose))))
 
 (on ("click" (one "body") event :dynamic-selector "article[contenteditable=true] a")

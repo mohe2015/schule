@@ -19,7 +19,7 @@
 	 (chain event (prevent-default))
 	 (chain event (stop-propagation)))
        (let ((url (href (chain event target))))
-	 (if (is-local-url url)
+	 (if (and url (is-local-url url))
              (progn
 	       (chain event (prevent-default))
 	       (push-state url)
