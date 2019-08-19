@@ -140,40 +140,31 @@ O to STREAM (or to *JSON-OUTPUT*)."
     (let* ((schedule (find-dao 'schedule :grade grade))
            (last-revision (first (select-dao 'schedule-revision (where (:= :schedule schedule)) (order-by (:desc :id)) (limit 1))))
            (revision (create-dao 'schedule-revision :author user :schedule schedule))
-           (data
-            (create-dao 'schedule-data
-	      :schedule-revision revision
-              :weekday |weekday|
-              :hour |hour|
-              :week-modulo |week-modulo|
-              :course (find-dao 'course :id |course|)
-              :room |room|))
-	   (revision-data
-	    (create-dao
-	     'schedule-revision-data
-	     :schedule-revision revision
-	     :schedule-data data))
-	   (result (mito:retrieve-by-sql (sxql:insert-into 'schedule_revision_data (:schedule_revision_id :schedule_data_id) (sxql:select ((:raw (object-id revision)) :schedule_data_id) (sxql:from :schedule_revision_data) (sxql:where (:= :schedule_revision_id (object-id last-revision))))))))
+           (data (create-dao 'schedule-data
+			     :schedule-revision revision
+			     :weekday |weekday|
+			     :hour |hour|
+			     :week-modulo |week-modulo|
+			     :course (find-dao 'course :id |course|)
+			     :room |room|))
+	   (revision-data (create-dao 'schedule-revision-data
+				      :schedule-revision revision
+				      :schedule-data data))
+	   (result (retrieve-by-sql (insert-into 'schedule_revision_data (:schedule_revision_id :schedule_data_id)
+						 (select ((:raw (object-id revision)) :schedule_data_id)
+						   (from :schedule_revision_data)
+						   (where (:= :schedule_revision_id (object-id last-revision))))))))
       (format nil "~a" (object-id data)))))
 
 (my-defroute :post "/api/schedule/:grade/delete" (:admin :user) (|id|) "application/json"
   (dbi:with-transaction *connection*
     (let* ((schedule (user-grade user))
-           (last-revision
-            (select-dao 'schedule-revision (where (:= :schedule schedule))
-             (order-by (:desc :id)) (limit 1)))
-           (revision
-            (create-dao 'schedule-revision :author user :schedule schedule)))
-      (loop for old-data in (retrieve-dao 'schedule-data :schedule-revision
-                             (car last-revision))
-            do (if (not (= (object-id old-data) (parse-integer |id|)))
-                   (create-dao 'schedule-data :schedule-revision revision
-                    :weekday (schedule-data-weekday old-data) :hour
-                    (schedule-data-hour old-data) :week-modulo
-                    (schedule-data-week-modulo old-data) :course
-                    (schedule-data-course old-data) :room
-                    (schedule-data-room old-data))))
-      "")))
+           (last-revision (car (select-dao 'schedule-revision (where (:= :schedule schedule)) (order-by (:desc :id)) (limit 1))))
+           (revision (create-dao 'schedule-revision :author user :schedule schedule)))
+      (mito:retrieve-by-sql (insert-into 'schedule_revision_data (:schedule_revision_id :schedule_data_id)
+					 (select ((:raw (object-id revision)) :schedule_data_id)
+					   (from :schedule_revision_data)
+					   (where (:and (:= :schedule_revision_id (object-id last-revision)) (:not (:= (parse-integer |id|) :schedule_data_id))))))))))
 
 (defmacro test ()
   `(progn
