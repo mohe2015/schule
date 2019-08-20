@@ -1,7 +1,30 @@
 (var __-p-s_-m-v_-r-e-g)
 
-(i "./state-machine.lisp" "updateState" "replaceState")
-(i "./state-machine.lisp" "pushState")
+(i "./contact/index.lisp" "handleContact")
+(i "./wiki/page.lisp" "handleWikiPage")
+(i "./search.lisp" "handleSearchQuery" "handleSearch")
+(i "./quiz.lisp" "handleQuizIdResults" "handleQuizIdPlayIndex"
+   "handleQuizIdPlay" "handleQuizIdEdit" "handleQuizCreate")
+(i "./logout.lisp" "handleLogout")
+(i "./login.lisp" "handleLogin")
+(i "./root.lisp" "handle")
+(i "./history.lisp" "handleWikiPageHistoryIdChanges" "handleWikiPageHistoryId"
+   "handleWikiNameHistory")
+(i "./wiki/page/edit.lisp" "handleWikiPageEdit")
+(i "./create.lisp" "handleWikiNameCreate")
+(i "./articles.lisp" "handleArticles")
+(i "./categories.lisp" "handleTagsRest")
+(i "./courses/index.lisp" "handleCourses")
+(i "./schedule/id.lisp" "handleScheduleGradeEdit" "handleScheduleGrade")
+(i "./schedules/new.lisp" "handleSchedulesNew")
+(i "./schedules/index.lisp" "handleSchedules")
+(i "./student-courses/index.lisp" "handleStudentCourses")
+(i "./settings/index.lisp" "handleSettings")
+(i "./math.lisp" "renderMath")
+(i "./image-viewer.lisp")
+(i "./substitution-schedule/index.lisp" "handleSubstitutionSchedule")
+
+(i "./state-machine.lisp" "updateState" "replaceState" "pushState")
 (i "./editor-lib.lisp" "isLocalUrl")
 (i "./utils.lisp" "all" "one" "clearChildren")
 
