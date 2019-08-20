@@ -57,8 +57,6 @@
 
      (:file "src/parenscript" :depends-on ("src/package"))
 
-
-     (:parenscript-file "js/utils")
      (:parenscript-file "js/fetch" :depends-on ("js/state-machine" "js/utils" "js/show-tab"))
      (:parenscript-file "js/categories" :depends-on ("js/show-tab" "js/read-cookie" "js/utils" "js/template"))
      (:parenscript-file "js/file-upload" :depends-on ("js/read-cookie" "js/utils"))
@@ -83,7 +81,6 @@
      (:parenscript-file "js/cleanup" :depends-on ("js/editor" "js/utils"))
      (:parenscript-file "js/math" :depends-on ("js/utils"))
      (:parenscript-file "js/image-viewer" :depends-on ("js/utils"))
-     (:parenscript-file "js/fetch" :depends-on ("js/state-machine" "js/utils" "js/show-tab"))
      (:parenscript-file "js/substitution-schedule/index" :depends-on ("js/show-tab" "js/cleanup" "js/fetch" "js/utils" "js/template" "js/read-cookie" "js/state-machine"))
      (:parenscript-file "js/contact/index" :depends-on ("js/show-tab"))
      (:parenscript-file "js/state-machine" :depends-on ("js/contact/index" "js/wiki/page" "js/search" "js/quiz" "js/logout" "js/login" "js/root" "js/history" "js/wiki/page/edit" "js/create" "js/articles" "js/show-tab" "js/categories" "js/courses/index" "js/schedule/id" "js/schedules/new" "js/schedules/index" "js/student-courses/index" "js/settings/index" "js/utils" "js/template" "js/cleanup" "js/math" "js/image-viewer" "js/fetch" "js/substitution-schedule/index"))
