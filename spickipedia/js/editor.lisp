@@ -8,8 +8,7 @@
 (i "./fetch.lisp" "checkStatus" "json" "html" "handleFetchError")
 
 (on ("click" (one "#publish-changes") event)
-    (hide (one "#publish-changes"))
-    (show (one "#publishing-changes"))
+    (setf (disabled (one "#publish-changes")) t)
     (let ((change-summary (value (one "#change-summary")))
           (temp-dom (chain (one "article") (clone-node t)))
           (article-path (chain window location pathname (split "/") 2))
@@ -29,8 +28,7 @@
 		(push-state (concatenate 'string "/wiki/" article-path))))
              (catch
 		 (lambda (error)
-		   (chain (one "#publish-changes") (show))
-		   (chain (one "#publishing-changes") (hide))
+		   (setf (disabled (one "#publish-changes")) nil)
 		   (handle-fetch-error error))))))
 
 (export
