@@ -26,9 +26,9 @@
 
 (defconfig |test| 'nil)
 
-(defun config (&optional key) (envy:config "SPICKIPEDIA.CONFIG" key))
+(defun config (&optional key) (envy:config "SCHULE.CONFIG" key))
 
-(defun appenv () (uiop/os:getenv (config-env-var "SPICKIPEDIA.CONFIG")))
+(defun appenv () (uiop/os:getenv (config-env-var "SCHULE.CONFIG")))
 
 (defun developmentp () (string= (appenv) "development"))
 
