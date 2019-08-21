@@ -16,7 +16,7 @@
 (defun start (&optional (debug nil))
   ;;(unless *handler*
     ;;(schule.web:update-substitution-schedule))
-  (mito:connect-toplevel :sqlite3 :database-name (asdf/system:system-relative-pathname :schule #P"spickipedia.db"))
+  (mito:connect-toplevel :sqlite3 :database-name (asdf/system:system-relative-pathname :schule #P"schule.db"))
   (when *handler*
     (restart-case (error "Server is already running.")
       (restart-server nil :report "Restart the server" (stop))))

@@ -15,7 +15,7 @@
   (merge-pathnames #P"js/" *application-root*))
 
 (defvar *database-path*
-  (asdf/system:system-relative-pathname :schule #P"spickipedia.db"))
+  (asdf/system:system-relative-pathname :schule #P"schule.db"))
 
 (defconfig :common
     `(:databases ((:maindb :sqlite3 :database-name ,*database-path*))))

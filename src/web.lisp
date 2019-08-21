@@ -310,7 +310,7 @@
 (defun update-substitution-schedule ()
   (loop for file in (uiop:directory-files "/home/moritz/wiki/vs/") do
      ;;(format t "~%~a~%" file)
-       (schule.vertretungsplan:update *VSS* (spickipedia.vertretungsplan:parse-vertretungsplan (spickipedia.pdf:parse file))))
+       (schule.vertretungsplan:update *VSS* (schule.vertretungsplan:parse-vertretungsplan (spickipedia.pdf:parse file))))
   
   (let ((top-level *standard-output*))
     (bt:make-thread
@@ -319,7 +319,7 @@
 	  (log:info "Updating substitution schedule")
 
 	  (handler-case
-	      (let ((substitution-schedule (schule.vertretungsplan:parse-vertretungsplan (spickipedia.pdf:parse (spickipedia.vertretungsplan:get-schedule "http://aesgb.de/_downloads/pws/vs.pdf")))))
+	      (let ((substitution-schedule (schule.vertretungsplan:parse-vertretungsplan (schule.pdf:parse (spickipedia.vertretungsplan:get-schedule "http://aesgb.de/_downloads/pws/vs.pdf")))))
 		(bt:with-lock-held (*lock*)
 		  (schule.vertretungsplan:update *VSS* substitution-schedule)))
 	    (error (c)
@@ -327,7 +327,7 @@
 	      (log:error c)))
 
 	  (handler-case
-	      (let ((substitution-schedule (schule.vertretungsplan:parse-vertretungsplan (spickipedia.pdf:parse (spickipedia.vertretungsplan:get-schedule "http://aesgb.de/_downloads/pws/vs1.pdf")))))
+	      (let ((substitution-schedule (schule.vertretungsplan:parse-vertretungsplan (schule.pdf:parse (spickipedia.vertretungsplan:get-schedule "http://aesgb.de/_downloads/pws/vs1.pdf")))))
 		(bt:with-lock-held (*lock*)
 		  (schule.vertretungsplan:update *VSS* substitution-schedule)))
 	    (error (c)
