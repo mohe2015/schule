@@ -16,12 +16,12 @@ jobs:
           command: git submodule update --init
 
       - run:
-          name: Make spickipedia loadable
-          command: ln -sf $PWD/{spickipedia,lack,parenscript,clack,cl-coveralls} ~/.roswell/local-projects/
+          name: Make schule loadable
+          command: ln -sf $PWD/{schule,lack,parenscript,clack,cl-coveralls} ~/.roswell/local-projects/
 
       - run:
           name: Run tests
-          command: COVERALLS=true ros --verbose -s prove -s cl-coveralls -e '(or (coveralls:with-coveralls (:exclude (list "t") :project-dir ".") (prove:run :spickipedia-test)) (uiop:quit -1))'
+          command: COVERALLS=true ros --verbose -s prove -s cl-coveralls -e '(or (coveralls:with-coveralls (:exclude (list "t") :project-dir ".") (prove:run :schule-test)) (uiop:quit -1))'
 
       - run:
           name: Hotfix for sblint

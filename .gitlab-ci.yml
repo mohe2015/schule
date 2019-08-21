@@ -18,7 +18,7 @@ before_script:
   - mkdir -p roswell
   - cp -ruT cache/ ~/.cache/
   - cp -ruT roswell/ ~/.roswell/
-  - ln -sf $PWD/{spickipedia,lack,parenscript,clack,cl-coveralls} ~/.roswell/local-projects/
+  - ln -sf $PWD/{schule,lack,parenscript,clack,cl-coveralls} ~/.roswell/local-projects/
 
 after_script:
   - cp -ruT ~/.cache/ cache/
@@ -27,4 +27,4 @@ after_script:
 build-and-test:
   stage: build-and-test
   script:
-    - ros -s prove -e '(or (prove:run :spickipedia-test) (uiop:quit -1))'
+    - ros -s prove -e '(or (prove:run :schule-test) (uiop:quit -1))'

@@ -21,7 +21,7 @@ ros install slime
 (ql:update-dist "ultralisp")
 (ql:update-client)
 
-ln -s $PWD/spickipedia/ ~/.roswell/local-projects/
+ln -s $PWD/schule/ ~/.roswell/local-projects/
 ln -s $PWD/lack/ ~/.roswell/local-projects/
 ln -s $PWD/parenscript/ ~/.roswell/local-projects/
 ln -s $PWD/clack/ ~/.roswell/local-projects/
@@ -29,18 +29,18 @@ ln -s $PWD/cl-coveralls ~/.roswell/local-projects/
 ```
 
 ```lisp
-(ql:quickload :spickipedia)
-;;(spickipedia.db:do-generate-migrations)
-;;(spickipedia.db:do-migration-status)
-(spickipedia.db:do-migrate)
-(spickipedia:development)
-(in-package :spickipedia.web)
+(ql:quickload :schule)
+;;(schule.db:do-generate-migrations)
+;;(schule.db:do-migration-status)
+(schule.db:do-migrate)
+(schule:development)
+(in-package :schule.web)
 (create-dao 'user :name "Administrator" :hash (hash "xfg3zte94h62j392h") :group "admin")
 (create-dao 'user :name "Anonymous" :hash (hash "xfg3zte94h") :group "anonymous")
 (create-dao 'user :name "<your name>" :hash (hash "fjd8sh3l2h") :group "user"))
 
 (declaim (optimize (compilation-speed 0) (debug 0) (safety 0) (space 3) (speed 0)))
-(save-application "spickipedia"  :clear-clos-caches t :impurify t :prepend-kernel t)
+(save-application "schule"  :clear-clos-caches t :impurify t :prepend-kernel t)
 ```
 
 ```bash
@@ -49,6 +49,13 @@ html-minifier --collapse-boolean-attributes --collapse-inline-tag-whitespace --c
 java -jar closure-compiler-v20181210.jar --js_output_file=www/s/result.js --externs externs/jquery-3.3.js www/s/jquery-3.3.1.js www/s/popper.js www/s/bootstrap.js www/s/summernote-bs4.js www/s/visual-diff.js www/s/index.js
 npm i -g purgecss
 purgecss --content www/index.html --css www/s/all.css --css www/s/bootstrap.min.css --css www/s/index.css --css www/s/summernote-bs4.css -o www/s/ --content www/s/*.js
+```
+
+## Coding
+
+```bash
+read -s -p "substitution-schedule password: " SUBSTITUTION_SCHEDULE_PASSWORD
+RUST_BACKTRACE=1 SUBSTITUTION_SCHEDULE_USERNAME=schueler SUBSTITUTION_SCHEDULE_PASSWORD=$SUBSTITUTION_SCHEDULE_PASSWORD ros emacs
 ```
 
 ## Browser debugging
