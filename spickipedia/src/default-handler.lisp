@@ -2,7 +2,7 @@
 
 (defparameter *static-files* (make-hash-table :test #'equal))
 
-(loop for file in (directory "spickipedia/static/**/*.*") do
+(loop for file in (directory (concatenate 'string (namestring *application-root*) "/static/**/*.*")) do
      (setf (gethash file *static-files*) file))
 
 (defroute ("/.*" :regexp t :method :get) ()

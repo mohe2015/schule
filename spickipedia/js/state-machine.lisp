@@ -2,7 +2,6 @@
 
 (i "./utils.lisp" "all" "one" "clearChildren")
 (i "./template.lisp" "getTemplate")
-(i "./cleanup.lisp" "cleanup")
 (i "./fetch.lisp" "checkStatus" "json" "handleFetchError")
 (i "./show-tab.lisp" "showTab")
 

@@ -33,7 +33,6 @@
       "/js/schedules/index.lisp"
       "/js/settings/index.lisp"
       "/js/template.lisp"
-      "/js/cleanup.lisp"
       "/js/student-courses/index.lisp"
       "/js/math.lisp"
       "/js/image-viewer.lisp"

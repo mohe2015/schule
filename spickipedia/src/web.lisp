@@ -258,7 +258,7 @@
 
 (defparameter *javascript-files* (make-hash-table :test #'equal))
 
-(loop for file in (directory "spickipedia/js/**/*.lisp") do
+(loop for file in (directory (concatenate 'string (namestring *application-root*) "/js/**/*.lisp")) do
      (setf (gethash file *javascript-files*) (file-js-gen file)))
 
 (defroute ("/js/*" :method :get) (&key splat)

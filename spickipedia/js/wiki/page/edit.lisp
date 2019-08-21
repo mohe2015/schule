@@ -1,6 +1,5 @@
 (var __-p-s_-m-v_-r-e-g)
 
-(i "/js/cleanup.lisp" "cleanup")
 (i "/js/show-tab.lisp" "showTab")
 (i "/js/math.lisp" "renderMath")
 (i "/js/editor.lisp" "showEditor" "hideEditor")

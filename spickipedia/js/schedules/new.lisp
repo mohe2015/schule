@@ -1,7 +1,6 @@
 (var __-p-s_-m-v_-r-e-g)
 
 (i "../show-tab.lisp" "showTab")
-(i "../cleanup.lisp" "cleanup")
 (i "../read-cookie.lisp" "readCookie")
 (i "../fetch.lisp" "checkStatus" "json" "html" "handleFetchError")
 (i "../state-machine.lisp" "pushState")
