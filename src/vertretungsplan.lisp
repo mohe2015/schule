@@ -1,5 +1,5 @@
 (defpackage schule.vertretungsplan
-  (:use :cl :schule.pdf :schule.libc :local-time :str :spickipedia.web)
+  (:use :cl :schule.pdf :schule.libc :local-time :str :schule.web)
   (:export :get-schedule :parse-vertretungsplan :substitution-schedules :update))
 (in-package :schule.vertretungsplan)
 
