@@ -22,6 +22,7 @@ exec ros -Q -- $0 "$@"
 
 ;; https://git-scm.com/docs/git/2.18.0#git-codeGITEXTERNALDIFFcode
 ;; path old-file old-hex old-mode new-file new-hex new-mode
+;; GIT_EXTERNAL_DIFF=./diff.ros git diff
 (defun main (&rest argv)
   (declare (ignorable argv))
   (ignore-errors

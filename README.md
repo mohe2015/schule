@@ -51,6 +51,13 @@ npm i -g purgecss
 purgecss --content www/index.html --css www/s/all.css --css www/s/bootstrap.min.css --css www/s/index.css --css www/s/summernote-bs4.css -o www/s/ --content www/s/*.js
 ```
 
+## Coding
+
+```bash
+read -s -p "substitution-schedule password: " SUBSTITUTION_SCHEDULE_PASSWORD
+RUST_BACKTRACE=1 SUBSTITUTION_SCHEDULE_USERNAME=schueler SUBSTITUTION_SCHEDULE_PASSWORD=$SUBSTITUTION_SCHEDULE_PASSWORD ros emacs
+```
+
 ## Browser debugging
 
 ### Accessing modules
