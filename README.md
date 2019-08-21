@@ -1,10 +1,8 @@
-# wiki
-[![CircleCI](https://circleci.com/gh/mohe2015/wiki.svg?style=svg)](https://circleci.com/gh/mohe2015/wiki)
-[![Coverage Status](https://coveralls.io/repos/github/mohe2015/wiki/badge.svg?branch=testing)](https://coveralls.io/github/mohe2015/wiki)
+# schule
 
 ## Requirements
 
-* libfixposix-dev, libargon2-dev
+* libargon2-dev
 * fcgi
 * roswell
 * Atom (ubuntu install gnome tweaks and change theme to dark)
@@ -13,34 +11,18 @@
 
 ## Installation
 
-```bash
-ros install ccl-bin
-ros install slime
-
-(ql-dist:install-dist "http://dist.ultralisp.org/" :prompt nil)
-(ql:update-dist "ultralisp")
-(ql:update-client)
-
-ln -s $PWD/schule/ ~/.roswell/local-projects/
-ln -s $PWD/lack/ ~/.roswell/local-projects/
-ln -s $PWD/parenscript/ ~/.roswell/local-projects/
-ln -s $PWD/clack/ ~/.roswell/local-projects/
-ln -s $PWD/cl-coveralls ~/.roswell/local-projects/
-```
+`./setup.sh`
 
 ```lisp
+(declaim (optimize (compilation-speed 0) (debug 3) (safety 3) (space 0) (speed 0)))
 (ql:quickload :schule)
 ;;(schule.db:do-generate-migrations)
-;;(schule.db:do-migration-status)
 (schule.db:do-migrate)
 (schule:development)
 (in-package :schule.web)
 (create-dao 'user :name "Administrator" :hash (hash "xfg3zte94h62j392h") :group "admin")
 (create-dao 'user :name "Anonymous" :hash (hash "xfg3zte94h") :group "anonymous")
 (create-dao 'user :name "<your name>" :hash (hash "fjd8sh3l2h") :group "user"))
-
-(declaim (optimize (compilation-speed 0) (debug 0) (safety 0) (space 3) (speed 0)))
-(save-application "schule"  :clear-clos-caches t :impurify t :prepend-kernel t)
 ```
 
 ```bash
