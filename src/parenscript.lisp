@@ -1,4 +1,4 @@
-(in-package :spickipedia.parenscript)
+(in-package :schule.parenscript)
 
 (defparameter *js-target-version* "1.8.5")
 
@@ -27,7 +27,7 @@
 (defpsmacro i (file &rest contents) `(import ,file ,@contents)) ;; TODO remove
 
 (defun file-js-gen (file)
-  (in-package :spickipedia.parenscript)
+  (in-package :schule.parenscript)
   (handler-bind ((simple-warning
                   #'(lambda (e)
                       (if (equal "Returning from unknown block ~A" (simple-condition-format-control e))

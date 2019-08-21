@@ -1,4 +1,4 @@
-(in-package :spickipedia.web)
+(in-package :schule.web)
 
 (my-defroute :post "/api/teachers" (:admin :user) (|name| |initial|) "text/html"
   (dbi:with-transaction *connection*

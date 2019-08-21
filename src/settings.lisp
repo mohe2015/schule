@@ -1,4 +1,4 @@
-(in-package :spickipedia.web)
+(in-package :schule.web)
 
 (my-defroute :post "/api/settings" (:admin :user) (|grade|) "text/html"
  (setf (user-grade user) (find-dao 'schedule :id (parse-integer |grade|)))

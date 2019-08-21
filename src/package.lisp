@@ -1,20 +1,20 @@
-(defpackage spickipedia.argon2
+(defpackage schule.argon2
   (:use :cl :cffi :ironclad)
   (:export :hash :verify))
 
-(defpackage spickipedia.sanitize
+(defpackage schule.sanitize
   (:use :cl :sanitize)
-  (:export :*sanitize-spickipedia*))
+  (:export :*sanitize-schule*))
 
-(defpackage spickipedia.tsquery-converter
+(defpackage schule.tsquery-converter
   (:use :cl :str)
   (:export :tsquery-convert))
 
-(defpackage spickipedia.parenscript
+(defpackage schule.parenscript
   (:use :cl :parenscript :ppcre :ironclad)
   (:export :file-js-gen :js-files))
 
-(defpackage spickipedia.config
+(defpackage schule.config
   (:use :cl)
   (:import-from :envy :config-env-var :defconfig)
   (:export :config
@@ -27,9 +27,9 @@
            :developmentp
            :productionp))
 
-(defpackage spickipedia.db
+(defpackage schule.db
   (:use :cl :mito)
-  (:import-from :spickipedia.config :config)
+  (:import-from :schule.config :config)
   (:import-from :cl-dbi :connect-cached)
   (:import-from #:alexandria #:make-keyword #:compose)
   (:export :connection-settings
@@ -101,22 +101,22 @@
 	   :web-push-endpoint
            :setup-db))
 
-(defpackage spickipedia.web
+(defpackage schule.web
   (:use :cl
         :caveman2
-        :spickipedia.config
-        :spickipedia.db
-        :spickipedia.sanitize
-        :spickipedia.tsquery-converter
-        :spickipedia.parenscript
-	:spickipedia.web-push
+        :schule.config
+        :schule.db
+        :schule.sanitize
+        :schule.tsquery-converter
+        :schule.parenscript
+	:schule.web-push
         :mito
         :sxql
         :json
         :sxql.sql-type
         :ironclad
         :sanitize
-        :spickipedia.argon2
+        :schule.argon2
         :alexandria
         :cl-who
         :cl-fad

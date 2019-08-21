@@ -1,4 +1,4 @@
-(in-package :spickipedia.web)
+(in-package :schule.web)
 
 (my-defroute :get "/api/student-courses" (:admin :user) () "application/json"
   (if (user-grade user)

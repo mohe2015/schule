@@ -1,4 +1,4 @@
-(in-package :spickipedia.argon2)
+(in-package :schule.argon2)
 
 (define-foreign-library libargon2
   (:unix (:or "libargon2.so.1" "libargon2.so"))

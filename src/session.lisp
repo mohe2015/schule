@@ -1,9 +1,9 @@
 (in-package :cl-user)
 
-(defpackage spickipedia.session
+(defpackage schule.session
   (:use :cl))
 
-(in-package :spickipedia.session)
+(in-package :schule.session)
 
 (defmethod session-verify ((request request))
   (let ((*connection*

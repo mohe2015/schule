@@ -1,4 +1,4 @@
-(in-package :spickipedia.web)
+(in-package :schule.web)
 
 (defun template-substitution-schedule ()
   `(,(tab "substitution-schedule"

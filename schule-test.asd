@@ -1,11 +1,11 @@
-(defsystem "spickipedia-test"
+(defsystem "schule-test"
   :defsystem-depends-on ("prove-asdf")
   :author "Moritz Hedtke"
   :license ""
-  :depends-on ("spickipedia"
+  :depends-on ("schule"
                "prove")
   :components ((:module "tests"
                 :components
-                ((:test-file "spickipedia"))))
-  :description "Test system for spickipedia"
+                ((:test-file "schule"))))
+  :description "Test system for schule"
   :perform (test-op (op c) (symbol-call :prove-asdf :run-test-system c)))

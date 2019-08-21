@@ -1,4 +1,4 @@
-(in-package :spickipedia.web)
+(in-package :schule.web)
 
 (defparameter *static-files* (make-hash-table :test #'equal))
 

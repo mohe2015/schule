@@ -1,9 +1,9 @@
-(in-package :spickipedia.config)
+(in-package :schule.config)
 
 (setf (config-env-var) "APP_ENV")
 
 (defparameter *application-root*
-  (asdf/system:system-source-directory :spickipedia))
+  (asdf/system:system-source-directory :schule))
 
 (defparameter *static-directory*
   (merge-pathnames #P"static/" *application-root*))
@@ -15,7 +15,7 @@
   (merge-pathnames #P"js/" *application-root*))
 
 (defvar *database-path*
-  (asdf/system:system-relative-pathname :spickipedia #P"spickipedia.db"))
+  (asdf/system:system-relative-pathname :schule #P"spickipedia.db"))
 
 (defconfig :common
     `(:databases ((:maindb :sqlite3 :database-name ,*database-path*))))

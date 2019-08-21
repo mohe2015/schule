@@ -1,8 +1,8 @@
-(defpackage spickipedia.pdf
+(defpackage schule.pdf
   (:use :cl :pdf :deflate :flexi-streams :queues :log4cl)
   (:export :parse :read-line-part :read-newline :line-length :current-line :extractor-lines :read-new-page))
 
-(in-package :spickipedia.pdf)
+(in-package :schule.pdf)
 
 (defclass pdf-text-extractor (fare-mop:SIMPLE-PRINT-OBJECT-MIXIN)
   ((pages

@@ -1,4 +1,4 @@
-(in-package :spickipedia.web)
+(in-package :schule.web)
 
 (defun modal (base-id title footer body)
   `(:div :class "modal fade" :id ,(concatenate 'string "modal-" base-id)

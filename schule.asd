@@ -1,4 +1,4 @@
-(defsystem "spickipedia"
+(defsystem "schule"
   :version "0.1.0"
   :author "Moritz Hedtke"
   :license ""
@@ -106,4 +106,4 @@
      
      (:file "src/main" :depends-on ("src/package" "src/config" "src/db" "src/web")))))
   :description ""
-  :in-order-to ((test-op (test-op "spickipedia-test"))))
+  :in-order-to ((test-op (test-op "schule-test"))))

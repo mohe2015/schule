@@ -1,4 +1,4 @@
-(in-package :spickipedia.web)
+(in-package :schule.web)
 
 (defun contact-html ()
   (tab "tab-contact"

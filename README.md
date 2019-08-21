@@ -21,7 +21,7 @@ ros install slime
 (ql:update-dist "ultralisp")
 (ql:update-client)
 
-ln -s $PWD/spickipedia/ ~/.roswell/local-projects/
+ln -s $PWD/schule/ ~/.roswell/local-projects/
 ln -s $PWD/lack/ ~/.roswell/local-projects/
 ln -s $PWD/parenscript/ ~/.roswell/local-projects/
 ln -s $PWD/clack/ ~/.roswell/local-projects/
@@ -29,18 +29,18 @@ ln -s $PWD/cl-coveralls ~/.roswell/local-projects/
 ```
 
 ```lisp
-(ql:quickload :spickipedia)
-;;(spickipedia.db:do-generate-migrations)
-;;(spickipedia.db:do-migration-status)
-(spickipedia.db:do-migrate)
-(spickipedia:development)
-(in-package :spickipedia.web)
+(ql:quickload :schule)
+;;(schule.db:do-generate-migrations)
+;;(schule.db:do-migration-status)
+(schule.db:do-migrate)
+(schule:development)
+(in-package :schule.web)
 (create-dao 'user :name "Administrator" :hash (hash "xfg3zte94h62j392h") :group "admin")
 (create-dao 'user :name "Anonymous" :hash (hash "xfg3zte94h") :group "anonymous")
 (create-dao 'user :name "<your name>" :hash (hash "fjd8sh3l2h") :group "user"))
 
 (declaim (optimize (compilation-speed 0) (debug 0) (safety 0) (space 3) (speed 0)))
-(save-application "spickipedia"  :clear-clos-caches t :impurify t :prepend-kernel t)
+(save-application "schule"  :clear-clos-caches t :impurify t :prepend-kernel t)
 ```
 
 ```bash

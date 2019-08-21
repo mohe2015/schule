@@ -1,4 +1,4 @@
-(in-package :spickipedia.web)
+(in-package :schule.web)
 
 (defun html-settings ()
   `((:template :id "settings-student-course-html"

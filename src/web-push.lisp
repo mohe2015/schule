@@ -1,7 +1,7 @@
-(defpackage spickipedia.web-push
+(defpackage schule.web-push
   (:use :cl :cffi)
   (:export send-push))
-(in-package :spickipedia.web-push)
+(in-package :schule.web-push)
 
 (define-foreign-library libwebpush
   (:unix (:or "libwebpush.so.1" "libwebpush.so"))

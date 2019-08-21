@@ -1,4 +1,4 @@
-(in-package :spickipedia.web)
+(in-package :schule.web)
 
 (declaim (optimize (debug 3)))
 
@@ -103,7 +103,7 @@
       (encode-json-to-string
        `((content
           . ,(clean (wiki-article-revision-content (car revision))
-		    *sanitize-spickipedia*))
+		    *sanitize-schule*))
          (categories
           . ,(mapcar #'(lambda (v) (wiki-article-revision-category-category v))
                      (retrieve-dao 'wiki-article-revision-category :revision
@@ -116,7 +116,7 @@
     (encode-json-to-string
      `((content
         . ,(clean (wiki-article-revision-content revision)
-		  *sanitize-spickipedia*))
+		  *sanitize-schule*))
        (categories
         . ,(list-to-array
             (mapcar #'(lambda (v) (wiki-article-revision-category-category v))
@@ -137,7 +137,7 @@
           (encode-json-to-string
            `((content
               . ,(clean (wiki-article-revision-content revision)
-			*sanitize-spickipedia*))
+			*sanitize-schule*))
              (categories
               . ,(list-to-array
                   (mapcar
@@ -298,19 +298,19 @@
       (dbi:with-transaction *connection*
 	(delete-by-values 'web-push :user user :endpoint endpoint :auth auth :p256dh p256dh)
 	(create-dao 'web-push :user user :endpoint endpoint :auth auth :p256dh p256dh))
-      (send-push p256dh auth endpoint (namestring (asdf:system-relative-pathname :spickipedia #p"../rust-web-push/private.pem")) "Es funktioniert!"))))
+      (send-push p256dh auth endpoint (namestring (asdf:system-relative-pathname :schule #p"../rust-web-push/private.pem")) "Es funktioniert!"))))
 
 (my-defroute :get "/api/substitutions" (:admin :user) () "application/json"
   (bt:with-lock-held (*lock*)
     (encode-json-to-string *VSS*)))
 
-(defparameter *VSS* (make-instance 'spickipedia.vertretungsplan:substitution-schedules))
+(defparameter *VSS* (make-instance 'schule.vertretungsplan:substitution-schedules))
 (defvar *lock* (bt:make-lock))
 
 (defun update-substitution-schedule ()
   (loop for file in (uiop:directory-files "/home/moritz/wiki/vs/") do
      ;;(format t "~%~a~%" file)
-       (spickipedia.vertretungsplan:update *VSS* (spickipedia.vertretungsplan:parse-vertretungsplan (spickipedia.pdf:parse file))))
+       (schule.vertretungsplan:update *VSS* (spickipedia.vertretungsplan:parse-vertretungsplan (spickipedia.pdf:parse file))))
   
   (let ((top-level *standard-output*))
     (bt:make-thread
@@ -319,17 +319,17 @@
 	  (log:info "Updating substitution schedule")
 
 	  (handler-case
-	      (let ((substitution-schedule (spickipedia.vertretungsplan:parse-vertretungsplan (spickipedia.pdf:parse (spickipedia.vertretungsplan:get-schedule "http://aesgb.de/_downloads/pws/vs.pdf")))))
+	      (let ((substitution-schedule (schule.vertretungsplan:parse-vertretungsplan (spickipedia.pdf:parse (spickipedia.vertretungsplan:get-schedule "http://aesgb.de/_downloads/pws/vs.pdf")))))
 		(bt:with-lock-held (*lock*)
-		  (spickipedia.vertretungsplan:update *VSS* substitution-schedule)))
+		  (schule.vertretungsplan:update *VSS* substitution-schedule)))
 	    (error (c)
 	      (trivial-backtrace:print-backtrace c)
 	      (log:error c)))
 
 	  (handler-case
-	      (let ((substitution-schedule (spickipedia.vertretungsplan:parse-vertretungsplan (spickipedia.pdf:parse (spickipedia.vertretungsplan:get-schedule "http://aesgb.de/_downloads/pws/vs1.pdf")))))
+	      (let ((substitution-schedule (schule.vertretungsplan:parse-vertretungsplan (spickipedia.pdf:parse (spickipedia.vertretungsplan:get-schedule "http://aesgb.de/_downloads/pws/vs1.pdf")))))
 		(bt:with-lock-held (*lock*)
-		  (spickipedia.vertretungsplan:update *VSS* substitution-schedule)))
+		  (schule.vertretungsplan:update *VSS* substitution-schedule)))
 	    (error (c)
 	      (trivial-backtrace:print-backtrace c)
 	      (log:error c)))

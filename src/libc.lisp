@@ -1,8 +1,8 @@
-(defpackage spickipedia.libc
+(defpackage schule.libc
   (:use :cl :cffi)
   (:export :strptime))
 
-(in-package :spickipedia.libc)
+(in-package :schule.libc)
 
 (define-foreign-library libc
   (:unix (:or "libc.so.6" "libc.so"))

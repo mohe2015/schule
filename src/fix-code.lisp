@@ -25,5 +25,5 @@
       (loop for sexp in result do
 	   (write sexp :stream out )))))
 
-(loop for file in (directory "spickipedia/**/*.lisp") do
+(loop for file in (directory "schule/**/*.lisp") do
      (fix-file file))

@@ -1,4 +1,4 @@
-(in-package :spickipedia.tsquery-converter)
+(in-package :schule.tsquery-converter)
 
 (defun handle-quoted (query) (concat "(" (join " <-> " (split " " query)) ")"))
 

@@ -1,9 +1,9 @@
 (in-package :cl-user)
-(defpackage spickipedia-test
-  (:use :cl :spickipedia :prove))
-(in-package :spickipedia-test)
+(defpackage schule-test
+  (:use :cl :schule :prove))
+(in-package :schule-test)
 
-;; (prove:run :spickipedia-test)
+;; (prove:run :schule-test)
 
 (plan nil)
 

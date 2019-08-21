@@ -1,4 +1,4 @@
-(in-package :spickipedia.web)
+(in-package :schule.web)
 
 (defun schedule-tab (day)
   `(:div :class "tab-pane fade" :id ,day :role "tabpanel" :aria-labeledby

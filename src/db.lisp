@@ -1,4 +1,4 @@
-(in-package :spickipedia.db)
+(in-package :schule.db)
 
 (defun connection-settings (&optional (db :maindb))
   (cdr (assoc db (config :databases))))
@@ -142,12 +142,12 @@
 
 (defun do-generate-migrations ()
   (with-connection (db)
-    (generate-migrations (asdf/system:system-source-directory :spickipedia))))
+    (generate-migrations (asdf/system:system-source-directory :schule))))
 
 (defun do-migrate ()
   (with-connection (db)
-    (migrate (asdf/system:system-source-directory :spickipedia))))
+    (migrate (asdf/system:system-source-directory :schule))))
 
 (defun do-migration-status ()
   (with-connection (db)
-    (migration-status (asdf/system:system-source-directory :spickipedia))))
+    (migration-status (asdf/system:system-source-directory :schule))))

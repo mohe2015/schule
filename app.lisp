@@ -1,12 +1,12 @@
 
-(quicklisp-client:quickload :spickipedia) 
-(defpackage spickipedia.app
+(quicklisp-client:quickload :schule) 
+(defpackage schule.app
   (:use :cl)
   (:import-from :lack.builder :builder)
   (:import-from :ppcre :scan :regex-replace)
-  (:import-from :spickipedia.web :*web*)
-  (:import-from :spickipedia.config :config :productionp :*static-directory*)) 
-(in-package :spickipedia.app) 
+  (:import-from :schule.web :*web*)
+  (:import-from :schule.config :config :productionp :*static-directory*)) 
+(in-package :schule.app) 
 (builder
  (if (productionp)
      nil
