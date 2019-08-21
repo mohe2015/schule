@@ -13,3 +13,18 @@
 [submodule "popper.js"]
 	path = popper.js
 	url = https://github.com/FezVrasta/popper.js
+[submodule "dependencies/bootstrap"]
+	path = dependencies/bootstrap
+	url = https://github.com/twbs/bootstrap
+[submodule "dependencies/cl-pdf"]
+	path = dependencies/cl-pdf
+	url = https://github.com/mohe2015/cl-pdf
+[submodule "dependencies/Font-Awesome"]
+	path = dependencies/Font-Awesome
+	url = https://github.com/FortAwesome/Font-Awesome
+[submodule "dependencies/lack"]
+	path = dependencies/lack
+	url = https://github.com/mohe2015/lack
+[submodule "dependencies/mathlive"]
+	path = dependencies/mathlive
+	url = https://github.com/arnog/mathlive
