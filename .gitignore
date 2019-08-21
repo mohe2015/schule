@@ -1,15 +1,5 @@
-file.txt
-quicklisp/
 *~
 *#
 .#*
-database.db
-quicklisp.lisp
-quicklisp.lisp.asc
-uploads/
-track.json
-node_modules/
-spickipedia.db
-spickipedia.db-journal
-repl.lisp-repl
-vs/
+*.db
+*.db-journal
