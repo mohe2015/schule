@@ -28,3 +28,12 @@
 [submodule "dependencies/mathlive"]
 	path = dependencies/mathlive
 	url = https://github.com/arnog/mathlive
+[submodule "dependencies/mw-diff-sexp"]
+	path = dependencies/mw-diff-sexp
+	url = https://github.com/michaelw/mw-diff-sexp
+[submodule "dependencies/parenscript"]
+	path = dependencies/parenscript
+	url = https://github.com/mohe2015/parenscript
+[submodule "dependencies/popper.js"]
+	path = dependencies/popper.js
+	url = https://github.com/FezVrasta/popper.js
