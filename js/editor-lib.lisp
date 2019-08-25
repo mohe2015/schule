@@ -241,8 +241,8 @@
       (on ("click" (one "#update-formula") event)
        (hide-modal (one "#modal-formula"))
        (chain document (get-elements-by-tag-name "article") 0 (focus))
-       (let ((latex (chain window mathfield (latex))))
-          (chain window mathfield (revert-to-original-content))
+       (let ((latex (chain window mathfield ($latex))))
+          (chain window mathfield ($revert-to-original-content))
           (chain document
             (exec-command "insertHTML" f
                 (concatenate 'string
@@ -260,8 +260,8 @@
 (on ("click" (one "#update-formula") event)
     (hide-modal (one "#modal-formula"))
     (chain document (get-elements-by-tag-name "article") 0 (focus))
-    (let ((latex (chain window mathfield (latex))))
-      (chain window mathfield (revert-to-original-content))
+    (let ((latex (chain window mathfield ($latex))))
+      (chain window mathfield ($revert-to-original-content))
       (chain document
        (exec-command "insertHTML" f
           (concatenate 'string
@@ -351,8 +351,8 @@
         (lambda (event)
          (hide-modal (one "#modal-formula"))
          (chain document (get-elements-by-tag-name "article") 0 (focus))
-         (let ((latex (chain window mathfield (latex))))
-             (chain window mathfield (revert-to-original-content))
+         (let ((latex (chain window mathfield ($latex))))
+             (chain window mathfield ($revert-to-original-content))
              (setf (chain target element inner-h-t-m-l)
                (concatenate 'string "\\( " latex " \\)"))
              (loop for element in (chain document
