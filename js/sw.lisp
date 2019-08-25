@@ -42,7 +42,8 @@
       "/js/read-cookie.lisp"
       "/js/editor.lisp"
       "/js/get-url-parameter.lisp"
-      "webfonts/fa-solid-900.woff2"
+      "/webfonts/fa-solid-900.woff2"
+      "/mathlive.js"
       "/favicon.ico"))
 
 

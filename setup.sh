@@ -20,4 +20,4 @@ cp dependencies/bootstrap/dist/css/bootstrap.css static/
 cp dependencies/popper.js/packages/popper/dist/umd/popper.js.map static/
 cp dependencies/bootstrap/dist/js/bootstrap.js.map static/
 cp dependencies/bootstrap/dist/css/bootstrap.css.map static/
-cp dependencies/mathlive/dist/mathlive.mjs static/
+cp dependencies/mathlive/dist/mathlive.mjs static/mathlive.js
