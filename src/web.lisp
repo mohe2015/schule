@@ -211,20 +211,13 @@
     (encode-json-to-string (mapcar 'wiki-article-title articles))))
 
 (my-defroute :post "/api/upload" (:admin :user) (|file|) "text/html"
-  (let* ((filecontents (nth 0 |file|))
-         (filehash
-          (byte-array-to-hex-string (digest-stream :sha512 filecontents)))
-         (newpath
-          (merge-pathnames (concatenate 'string "uploads/" filehash)
-                           *application-root*)))
-    (with-open-file
-        (stream newpath :direction :output :if-exists :supersede :element-type
-         '(unsigned-byte 8))
-      (write-sequence (slot-value filecontents 'vector) stream))
+  (let* ((oldfile (nth 0 |file|))
+         (filehash (byte-array-to-hex-string (digest-stream :sha512 oldfile)))
+         (newpath (merge-pathnames (concatenate 'string "uploads/" filehash) *application-root*)))
+    (uiop:copy-file (pathname oldfile) newpath)
     filehash))
 
 (my-defroute :post "/api/login" nil (|username| |password|) "text/html"
-  (format t "~A ~A~%" |username| |password|)
   (let* ((user (find-dao 'user :name |username|)))
     (if (and user (verify |password| (user-hash user)))
         (progn (setf (gethash :user *session*) (object-id user)) nil)
@@ -234,9 +227,7 @@
   (setf (gethash :user *session*) nil)
   nil)
 
-(defun my-quit () (uiop:quit))
-
-(my-defroute :get "/api/killswitch" nil nil "text/html" (my-quit))
+(my-defroute :get "/api/killswitch" nil nil "text/html" (uiop:quit))
 
 (defun starts-with-p (str1 str2)
   "Determine whether `str1` starts with `str2`"
@@ -251,10 +242,15 @@
         mime-type
         (progn (format t "Forbidden mime-type: ~a~%" mime-type) "text/plain"))))
 
-; TODO FIXME SECURITY LFIa
-;(my-defroute :get "/api/file/:name" (:admin :user :anonymous) (name)
-;    (get-safe-mime-type (merge-pathnames (concatenate 'string "uploads/" name)))
-;  (merge-pathnames (concatenate 'string "uploads/" name)))
+(defun valid-hex (string)
+  (reduce #'(lambda (a b) (and a b)) (map 'list #'(lambda (c) (digit-char-p c 16)) string)))
+
+(my-defroute :get "/api/file/:name" (:admin :user :anonymous) (name)
+  (if (valid-hex name)
+    (get-safe-mime-type (merge-pathnames (concatenate 'string "uploads/" name)))
+    "text/plain")
+  (if (valid-hex name)
+    (merge-pathnames (concatenate 'string "uploads/" name))))
 
 (defparameter *javascript-files* (make-hash-table :test #'equal))
 
