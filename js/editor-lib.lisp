@@ -211,15 +211,15 @@
       (chain target (remove))))
 
 (on ("click" (one "#update-image") event)
-    (hide-modal (one "#modal-image"))
     (chain document (get-elements-by-tag-name "article") 0 (focus))
     (if (value (one "#image-url"))
-     (chain document
-             (exec-command "insertHTML" f
-                (concatenate 'string "<img src=\"" (value (one "#image-url"))
-                    "\"></img>")))
-     (send-file
-       (chain document (get-element-by-id "image-file") files 0))))
+      (progn
+        (hide-modal (one "#modal-image"))
+        (chain document
+            (exec-command "insertHTML" f
+               (concatenate 'string "<img src=\"" (value (one "#image-url"))
+                   "\"></img>"))))
+     (send-file (chain document (get-element-by-id "image-file") files 0))))
 
 (tool "table"
       (show-modal (one "#table-modal")))

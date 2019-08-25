@@ -250,7 +250,8 @@
     (get-safe-mime-type (merge-pathnames (concatenate 'string "uploads/" name)))
     "text/plain")
   (if (valid-hex name)
-    (merge-pathnames (concatenate 'string "uploads/" name))))
+    (with-cache-forever
+      (merge-pathnames (concatenate 'string "uploads/" name)))))
 
 (defparameter *javascript-files* (make-hash-table :test #'equal))
 

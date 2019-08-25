@@ -129,6 +129,7 @@ article h6 {
 
 .fullscreen article {
     height: 100%;
+    overflow-y: auto;
 }
 
 article p {

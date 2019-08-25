@@ -84,7 +84,7 @@
    (chain response (json))))
 
 (export
- (defun html ()
+ (defun html (response)
    (chain response (text))))
 
 (export
