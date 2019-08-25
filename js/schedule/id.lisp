@@ -22,18 +22,18 @@
 
 (defun load-courses ()
   (cache-then-network "/api/courses"
-		      (lambda (data)
-			(let ((course-select (one ".course-select"))) ;; TODO implement for multiple
-			  (clear-children course-select)
-			  (loop for course in data
-			     do (let ((option (chain document (create-element "option")))
-				      (text
-				       (concatenate 'string (chain course subject) " "
-						    (chain course type) " "
-						    (chain course teacher name))))
-				  (setf (chain option value) (chain course course-id))
-				  (setf (chain option inner-text) text)
-				  (chain course-select (append-child option))))))))
+          (lambda (data)
+           (let ((course-select (one ".course-select"))) ;; TODO implement for multiple
+                (clear-children course-select)
+                (loop for course in data
+                      do (let ((option (chain document (create-element "option")))
+                               (text
+                                    (concatenate 'string (chain course subject) " "
+                                         (chain course type) " "
+                                         (chain course teacher name))))
+                          (setf (chain option value) (chain course course-id))
+                          (setf (chain option inner-text) text)
+                          (chain course-select (append-child option))))))))
 
 (defparameter *WEEK-MODULO* (array "" " (ungerade)" " (gerade)"))
 
@@ -43,17 +43,17 @@
   (show (one "#schedule-edit-button"))
   (hide (all ".add-course"))
   (cache-then-network (concatenate 'string "/api/schedule/" grade)
-		      (lambda (data)
-			(remove (all ".schedule-data"))
-			(loop for element in (chain data data) do
-			     (let* ((cell1 (getprop (one "#schedule-table") 'children (chain element weekday)))
-				    (cell2 (chain cell1 (query-selector "tbody")))
-				    (cell (getprop cell2 'children (- (chain element hour) 1) 'children 1))
-				    (template (get-template "schedule-data-static-cell-template")))
-			       (setf (inner-text (one ".data" template))
-				     (concatenate 'string (chain element course subject) " " (chain element course type) " " (chain element course teacher name) " " (chain element room) " " (getprop *WEEK-MODULO* (chain element week-modulo))))
-			       (chain cell (prepend template))))
-			(show-tab "#schedule"))))
+          (lambda (data)
+           (remove (all ".schedule-data"))
+           (loop for element in (chain data data) do
+                   (let* ((cell1 (getprop (one "#schedule-table") 'children (chain element weekday)))
+                          (cell2 (chain cell1 (query-selector "tbody")))
+                          (cell (getprop cell2 'children (- (chain element hour) 1) 'children 1))
+                          (template (get-template "schedule-data-static-cell-template")))
+                        (setf (inner-text (one ".data" template))
+                           (concatenate 'string (chain element course subject) " " (chain element course type) " " (chain element course teacher name) " " (chain element room) " " (getprop *WEEK-MODULO* (chain element week-modulo))))
+                        (chain cell (prepend template))))
+           (show-tab "#schedule"))))
 
 (defroute "/schedule/:grade/edit"
     (show-tab "#loading")
@@ -62,20 +62,20 @@
   (show (all ".add-course"))
   (load-courses)
   (cache-then-network (concatenate 'string "/api/schedule/" grade "/all")
-		      (lambda (data)
-			(remove (all ".schedule-data"))
-			(loop for element in (chain data data) do
-			     (let* ((cell1 (getprop (one "#schedule-table") 'children (chain element weekday)))
-				    (cell2 (chain cell1 (query-selector "tbody")))
-				    (cell (getprop cell2 'children (- (chain element hour) 1) 'children 1))
-				    (template (get-template "schedule-data-cell-template")))
-			       (setf (inner-text (one ".data" template))
-				     (concatenate 'string (chain element course subject) " " (chain element course type) " " (chain element course teacher name) " " (chain element room) " " (getprop *WEEK-MODULO* (chain element week-modulo))))
-			       (chain
-				(one ".button-delete-schedule-data" template)
-				(set-attribute "data-id" (chain element id)))
-			       (chain cell (prepend template))))
-			(show-tab "#schedule"))))
+          (lambda (data)
+           (remove (all ".schedule-data"))
+           (loop for element in (chain data data) do
+                   (let* ((cell1 (getprop (one "#schedule-table") 'children (chain element weekday)))
+                          (cell2 (chain cell1 (query-selector "tbody")))
+                          (cell (getprop cell2 'children (- (chain element hour) 1) 'children 1))
+                          (template (get-template "schedule-data-cell-template")))
+                        (setf (inner-text (one ".data" template))
+                           (concatenate 'string (chain element course subject) " " (chain element course type) " " (chain element course teacher name) " " (chain element room) " " (getprop *WEEK-MODULO* (chain element week-modulo))))
+                        (chain
+                         (one ".button-delete-schedule-data" template)
+                         (set-attribute "data-id" (chain element id)))
+                        (chain cell (prepend template))))
+           (show-tab "#schedule"))))
 
 (on ("submit" (one "#form-schedule-data") event)
     (chain event (prevent-default))
@@ -93,14 +93,14 @@
       (chain form-data (append "_csrf_token" (read-cookie "_csrf_token")))
       (chain
        (fetch (concatenate 'string "/api/schedule/" grade "/add")
-	      (create method "POST" body form-data))
+        (create method "POST" body form-data))
        (then check-status) (then json)
        (then
-	(lambda (data)
-          (setf (chain template (query-selector ".data") inner-text)
-		(concatenate 'string course " " room (getprop *WEEK-MODULO* (value (one "#week-modulo")))))
-          (chain cell (prepend template))
-          (hide-modal (one "#modal-schedule-data"))))
+        (lambda (data)
+                (setf (chain template (query-selector ".data") inner-text)
+                 (concatenate 'string course " " room (getprop *WEEK-MODULO* (value (one "#week-modulo")))))
+                (chain cell (prepend template))
+                (hide-modal (one "#modal-schedule-data"))))
        (catch handle-fetch-error))))
 
 (on ("click" (all ".schedule-tab-link") event)
@@ -131,7 +131,7 @@
       (if (confirm "Möchtest du den Eintrag wirklich löschen? Mit dem Veröffentlichen garantierst du, dass du nicht die Rechte anderer verletzt und bist damit einverstanden, unter der Creative Commons Namensnennung - Nicht-kommerziell - Weitergabe unter gleichen Bedingungen 4.0 International Lizenz zu veröffentlichen.")
           (chain
            (fetch (concatenate 'string "/api/schedule/" grade "/delete")
-		  (create method "POST" body form-data))
+            (create method "POST" body form-data))
            (then check-status)
            (then
             (lambda (data)

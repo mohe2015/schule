@@ -20,9 +20,9 @@
   (when (chain data categories)
     (remove (all ".closable-badge" (one "#form-settings")))
     (loop for category in (chain data categories) do
-	 (let ((template (get-template "template-category")))
-           (setf (inner-html (one ".closable-badge-label" template)) category)
-           (before (one "#new-category") template))))
+     (let ((template (get-template "template-category")))
+          (setf (inner-html (one ".closable-badge-label" template)) category)
+          (before (one "#new-category") template))))
   (setf (inner-html (one "article")) (chain data content))
   (show-editor)
   (show-tab "#page"))

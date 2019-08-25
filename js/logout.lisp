@@ -17,6 +17,6 @@
      (then check-status)
      (then
       (lambda (data)
-	(chain window local-storage (remove-item "name"))
-	(replace-state "/login")))
+       (chain window local-storage (remove-item "name"))
+       (replace-state "/login")))
      (catch handle-fetch-error))))

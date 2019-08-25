@@ -39,15 +39,15 @@
 (on ("click" (one "body") event :dynamic-selector "a")
     (if (chain event target is-Content-Editable)
        (progn
-	 (chain event (prevent-default))
-	 (chain event (stop-propagation)))
+        (chain event (prevent-default))
+        (chain event (stop-propagation)))
        (let ((url (href (chain event target))))
-	 (if (and url (is-local-url url))
-             (progn
-	       (chain event (prevent-default))
-	       (push-state url)
-	       f)
-             t))))
+        (if (and url (is-local-url url))
+            (progn
+             (chain event (prevent-default))
+             (push-state url)
+             f)
+            t))))
 
 (setf (chain window onpopstate)
       (lambda (event)
@@ -60,7 +60,7 @@
                   (progn
                     (if (confirm
                          "Möchtest du die Änderung wirklich verwerfen?")
-			(update-state))
+                     (update-state))
                     (return)))))
         (update-state)))
 

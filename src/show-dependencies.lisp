@@ -29,7 +29,7 @@
     (:parenscript-file "js/contact/index" :depends-on ("js/show-tab"))
     (:parenscript-file "js/state-machine" :depends-on ("js/utils" "js/template" "js/cleanup" "js/fetch" "js/show-tab"))
 
-    (:parenscript-file "js/editor-lib" :depends-on ("js/file-upload" "js/categories" "js/fetch" "js/utils"))			
+    (:parenscript-file "js/editor-lib" :depends-on ("js/file-upload" "js/categories" "js/fetch" "js/utils"))
     (:parenscript-file "js/utils")
     (:parenscript-file "js/index" :depends-on ("js/contact/index" "js/wiki/page" "js/search" "js/quiz" "js/logout" "js/login" "js/root" "js/history" "js/wiki/page/edit" "js/create" "js/articles" "js/categories" "js/courses/index" "js/schedule/id" "js/schedules/new" "js/schedules/index" "js/student-courses/index" "js/settings/index" "js/math" "js/image-viewer" "js/substitution-schedule/index" "js/state-machine" "js/editor-lib" "js/utils"))))
 
@@ -37,7 +37,7 @@
   (format stream "digraph {~%")
   (loop for file in (get-graph) do
        (loop for dependency in (nth 3 file) do
-	    (format stream "~s -> ~s;~%" (nth 1 file) dependency)))
+        (format stream "~s -> ~s;~%" (nth 1 file) dependency)))
   (format stream "}"))
 
 ;; dot -Tpng ~/test.dot > output.png

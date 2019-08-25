@@ -43,81 +43,81 @@
       "/js/editor.lisp"
       "/js/get-url-parameter.lisp"
       "webfonts/fa-solid-900.woff2"
-      "/favicon.ico"
-      ))
+      "/favicon.ico"))
+
 
 (chain self
        (add-event-listener "install"
-			   (lambda (event)
-			     (chain self (skip-waiting))
-			     (chain event
-				    (wait-until
-				     (chain caches (open static-cache-name)
-					    (then (lambda (cache) (chain cache (add-all urls-to-cache))))))))))
+         (lambda (event)
+           (chain self (skip-waiting))
+           (chain event
+               (wait-until
+                    (chain caches (open static-cache-name)
+                         (then (lambda (cache) (chain cache (add-all urls-to-cache))))))))))
 
 (defun network-and-cache (event cache-name)
   (chain event
-	 (respond-with
-	  (chain caches (open cache-name)
-		 (then
-		  (lambda (cache)
-		    (chain (fetch (chain event request))
-			   (then
-			    (lambda (response)
-			      (when (= (chain event request method) "GET")
-				(chain cache (put (chain event request) (chain response (clone)))))
-			      response)))))))))
+   (respond-with
+    (chain caches (open cache-name)
+      (then
+         (lambda (cache)
+             (chain (fetch (chain event request))
+                (then
+                    (lambda (response)
+                         (when (= (chain event request method) "GET")
+                          (chain cache (put (chain event request) (chain response (clone)))))
+                         response)))))))))
 
 (defun cache-then-fallback (event cache-name)
   (chain event
-	 (respond-with
-	  (chain caches (open cache-name)
-		 (then
-		  (lambda (cache)
-		    (chain cache (match (chain event request))
-			   (then
-			    (lambda (response) (or response (chain cache (match "/"))))))))))))
+   (respond-with
+    (chain caches (open cache-name)
+      (then
+         (lambda (cache)
+             (chain cache (match (chain event request))
+                (then
+                    (lambda (response) (or response (chain cache (match "/"))))))))))))
 
 (chain self
        (add-event-listener "fetch"
-			   (lambda (event)
-			     (let* ((request (chain event request))
-				    (method (chain request method))
-				    (url (new (-u-r-l (chain request url))))
-				    (pathname (chain url pathname)))
-			       (if (chain pathname (starts-with "/api"))
-				   (network-and-cache event dynamic-cache-name)
-				   (cache-then-fallback event static-cache-name))))))
+         (lambda (event)
+           (let* ((request (chain event request))
+                  (method (chain request method))
+                  (url (new (-u-r-l (chain request url))))
+                  (pathname (chain url pathname)))
+             (if (chain pathname (starts-with "/api"))
+              (network-and-cache event dynamic-cache-name)
+              (cache-then-fallback event static-cache-name))))))
 
 (chain self
        (add-event-listener "activate"
-			   (lambda (event)
-			     (chain event
-				    (wait-until
-				     (chain caches (keys)
-					    (then
-					     (lambda (cache-names)
-					       (chain -promise
-						      (all
-						       (chain cache-names
-							      (filter
-							       (lambda (cache-name)
-								 (if (= cache-name static-cache-name)
-								     (return f))
-								 (if (= cache-name dynamic-cache-name)
-								     (return f))
-								 t))
-							      (map
-							       (lambda (cache-name)
-								 (var fun (chain caches delete))
-								 (chain console (log cache-name))
-								 (chain fun (call caches cache-name)))))))))))))))
+         (lambda (event)
+           (chain event
+               (wait-until
+                    (chain caches (keys)
+                         (then
+                               (lambda (cache-names)
+                                      (chain -promise
+                                            (all
+                                                   (chain cache-names
+                                                          (filter
+                                                                  (lambda (cache-name)
+                                                                     (if (= cache-name static-cache-name)
+                                                                         (return f))
+                                                                     (if (= cache-name dynamic-cache-name)
+                                                                         (return f))
+                                                                     t))
+                                                          (map
+                                                                  (lambda (cache-name)
+                                                                     (var fun (chain caches delete))
+                                                                     (chain console (log cache-name))
+                                                                     (chain fun (call caches cache-name)))))))))))))))
 
 (on ("push" self event)
     (chain console (log event))
 
     (let ((title "test")
-	  (options
-	   (create
-	    body "yay")))
+          (options
+            (create
+              body "yay")))
       (chain event (wait-until (chain self registration (show-notification title options))))))

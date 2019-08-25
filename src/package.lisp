@@ -22,7 +22,7 @@
            :*static-directory*
            :*template-directory*
            :*database-path*
-	   :*javascript-directory*
+     :*javascript-directory*
            :appenv
            :developmentp
            :productionp))
@@ -54,7 +54,7 @@
            :course-revision-is-tutorial
            :course-revision-grade
            :course-revision-topic
-	   :schedule-revision-data
+     :schedule-revision-data
            :user
            :user-grade
            :wiki-article
@@ -94,11 +94,11 @@
            :student-course
            :student-course-student
            :student-course-course
-	   :web-push
-	   :web-push-user
-	   :web-push-p256dh
-	   :web-push-auth
-	   :web-push-endpoint
+     :web-push
+     :web-push-user
+     :web-push-p256dh
+     :web-push-auth
+     :web-push-endpoint
            :setup-db))
 
 (defpackage schule.web
@@ -109,7 +109,7 @@
         :schule.sanitize
         :schule.tsquery-converter
         :schule.parenscript
-	:schule.web-push
+   :schule.web-push
         :mito
         :sxql
         :json

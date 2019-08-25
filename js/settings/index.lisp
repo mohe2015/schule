@@ -41,41 +41,41 @@
   (let ((select (chain document (query-selector "#settings-teachers-select"))))
     (setf (chain select inner-h-t-m-l) "")
     (chain (fetch "/api/teachers") (then check-status) (then json)
-	   (then
-	    (lambda (data)
+     (then
+      (lambda (data)
               (loop for teacher in data
-		 do (let ((element (chain document (create-element "option"))))
-                      (setf (chain element inner-text) (chain teacher name))
-                      (setf (chain element value) (chain teacher id))
-                      (chain select (append-child element))))))
-	   (catch handle-fetch-error))))
+               do (let ((element (chain document (create-element "option"))))
+                       (setf (chain element inner-text) (chain teacher name))
+                       (setf (chain element value) (chain teacher id))
+                       (chain select (append-child element))))))
+     (catch handle-fetch-error))))
 
 (defun load-settings ()
   (let ((grade-select (one "#settings-select-grade")))
     (cache-then-network "/api/settings"
-			(lambda (data)
-			  (if data
-			      (setf (chain grade-select value) (chain data id)))
-			  (load-courses)))))
+      (lambda (data)
+        (if data
+            (setf (chain grade-select value) (chain data id)))
+        (load-courses)))))
 
 (defun load-schedules ()
   (cache-then-network "/api/schedules"
-		      (lambda (data)
-			(let ((grade-select (one "#settings-select-grade")))
-			  (clear-children grade-select)
-			  (let ((default-option (chain document (create-element "option"))))
-			    (setf (chain default-option disabled) t)
-			    (setf (chain default-option selected) t)
-			    (setf (chain default-option value) "")
-			    (setf (chain default-option inner-text) "Jahrgang auswählen...")
-			    (chain grade-select (append-child default-option)))
-			  (loop for grade in data do
-			       (let ((option (chain document (create-element "option")))
-				     (text (chain grade grade)))
-				 (setf (chain option value) (chain grade id))
-				 (setf (chain option inner-text) text)
-				 (chain grade-select (append-child option))))
-			  (load-settings)))))
+          (lambda (data)
+           (let ((grade-select (one "#settings-select-grade")))
+                (clear-children grade-select)
+                (let ((default-option (chain document (create-element "option"))))
+                     (setf (chain default-option disabled) t)
+                     (setf (chain default-option selected) t)
+                     (setf (chain default-option value) "")
+                     (setf (chain default-option inner-text) "Jahrgang auswählen...")
+                     (chain grade-select (append-child default-option)))
+                (loop for grade in data do
+                        (let ((option (chain document (create-element "option")))
+                              (text (chain grade grade)))
+                         (setf (chain option value) (chain grade id))
+                         (setf (chain option inner-text) text)
+                         (chain grade-select (append-child option))))
+                (load-settings)))))
 
 (defun render ()
   (show-tab "#loading")
@@ -124,12 +124,12 @@
            (formdata (new (-form-data formelement))))
       (chain formdata (append "_csrf_token" (read-cookie "_csrf_token")))
       (chain (fetch "/api/schedules" (create method "POST" body formdata))
-	     (then check-status)
-	     (then
-              (lambda (data)
-		(hide-modal (one "#modal-settings-create-grade"))
-		(render)))
-	     (catch handle-fetch-error)))
+       (then check-status)
+       (then
+               (lambda (data)
+                (hide-modal (one "#modal-settings-create-grade"))
+                (render)))
+       (catch handle-fetch-error)))
     f)
 
 (on ("change" (one "#settings-select-grade") event)
@@ -151,15 +151,15 @@
            (formdata (new (-form-data formelement))))
       (chain formdata (append "_csrf_token" (read-cookie "_csrf_token")))
       (chain (fetch "/api/courses" (create method "POST" body formdata))
-	     (then check-status)
-	     (then
-              (lambda (data)
-		(hide-modal (one "#modal-settings-create-course"))
-		(render)))
-	     (catch handle-fetch-error)
-	     (finally
-              (lambda (error)
-		(setf (disabled (one "button[type=submit" (one "#form-settings-create-course"))) f)))))
+       (then check-status)
+       (then
+               (lambda (data)
+                (hide-modal (one "#modal-settings-create-course"))
+                (render)))
+       (catch handle-fetch-error)
+       (finally
+               (lambda (error)
+                (setf (disabled (one "button[type=submit" (one "#form-settings-create-course"))) f)))))
     f)
 
 (on ("click" (one "#button-create-teacher") event)
@@ -171,17 +171,17 @@
            (formdata (new (-form-data formelement))))
       (chain formdata (append "_csrf_token" (read-cookie "_csrf_token")))
       (chain (fetch "/api/teachers" (create method "POST" body formdata))
-	     (then check-status) (then json)
-	     (then
-	      (lambda (data)
-		(hide-modal (one "#modal-settings-create-teacher"))
-		(load-teachers)))
-	     (catch handle-fetch-error)))
+       (then check-status) (then json)
+       (then
+        (lambda (data)
+         (hide-modal (one "#modal-settings-create-teacher"))
+         (load-teachers)))
+       (catch handle-fetch-error)))
     f)
 
 (on ("change" (one "body") event)
     (if (not (chain event target (closest ".student-course-checkbox")))
-	(return))
+     (return))
     (let* ((formdata (new (-form-data))))
       (chain console (log (chain event target)))
       (chain formdata (append "student-course" (chain (chain event target id) (substring 15))))

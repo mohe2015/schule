@@ -18,8 +18,8 @@
 
 (defun send-push (p256dh auth endpoint private-key-file content)
   (with-foreign-strings ((p256dh-c p256dh)
-			 (auth-c auth)
-			 (endpoint-c endpoint)
-			 (private-key-file-c private-key-file)
-			 (content-c content))
+                         (auth-c auth)
+                         (endpoint-c endpoint)
+                         (private-key-file-c private-key-file)
+                         (content-c content))
     (send-notification p256dh-c auth-c endpoint-c private-key-file-c content-c)))

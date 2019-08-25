@@ -15,8 +15,8 @@
            (setf (value (one "#inputName")) (or (chain window local-storage name) ""))
            (chain window local-storage (remove-item "name"))
            (push-state "/login"
-		       (create last-url (chain window location href) last-state
-			       (chain window history state))))
+            (create last-url (chain window location href) last-state
+             (chain window history state))))
          (if (= status 403)
              (let ((error-message
                     "Du hast nicht die benötigten Berechtigungen, um diese Aktion durchzuführen. Sag mir Bescheid, wenn du glaubst, dass dies ein Fehler ist."))
@@ -37,8 +37,8 @@
            (setf (value (one "#inputName")) (or (chain window local-storage name) ""))
            (chain window local-storage (remove-item "name"))
            (push-state "/login"
-		       (create last-url (chain window location href) last-state
-			       (chain window history state))))
+            (create last-url (chain window location href) last-state
+             (chain window history state))))
          (if (= status 403)
              (let ((error-message
                     "Du hast nicht die benötigten Berechtigungen, um diese Aktion durchzuführen. Sag mir Bescheid, wenn du glaubst, dass dies ein Fehler ist."))
@@ -65,7 +65,7 @@
                  (progn
                    (alert "Ungültige Zugangsdaten!")
                    (chain (one "#login-button") (prop "disabled" f)
-			  (html "Anmelden")))
+                    (html "Anmelden")))
                  (login-post t))
              (handle-fetch-error error))))))
 

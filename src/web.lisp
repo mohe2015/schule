@@ -85,11 +85,11 @@
 
 (defmacro my-defroute (method path permissions params content-type &body body)
   `(defroute (,path :method ,method) (&key ,@params) (basic-headers)
-	     (setf (getf (response-headers *response*) :content-type) ,content-type)
-	     (with-connection (db)
-	       ,(if permissions
-		    `(with-user (with-group ',permissions ,@body))
-		    `(progn ,@body)))))
+       (setf (getf (response-headers *response*) :content-type) ,content-type)
+       (with-connection (db)
+         ,(if permissions
+           `(with-user (with-group ',permissions ,@body))
+           `(progn ,@body)))))
 
 (my-defroute :get "/api/wiki/:title" (:admin :user :anonymous) (title) "application/json"
   (let* ((article (find-dao 'wiki-article :title title)))
@@ -97,17 +97,17 @@
         (throw-code 404))
     (let ((revision
            (select-dao 'wiki-article-revision (where (:= :article article))
-		       (order-by (:desc :id)) (limit 1))))
+            (order-by (:desc :id)) (limit 1))))
       (if (not revision)
           (throw-code 404))
       (encode-json-to-string
        `((content
           . ,(clean (wiki-article-revision-content (car revision))
-		    *sanitize-schule*))
+              *sanitize-schule*))
          (categories
           . ,(mapcar #'(lambda (v) (wiki-article-revision-category-category v))
                      (retrieve-dao 'wiki-article-revision-category :revision
-				   (car revision)))))))))
+                      (car revision)))))))))
 
 (my-defroute :get "/api/revision/:id" (:admin :user) (id) "application/json"
   (let* ((revision (find-dao 'wiki-article-revision :id (parse-integer id))))
@@ -116,12 +116,12 @@
     (encode-json-to-string
      `((content
         . ,(clean (wiki-article-revision-content revision)
-		  *sanitize-schule*))
+            *sanitize-schule*))
        (categories
         . ,(list-to-array
             (mapcar #'(lambda (v) (wiki-article-revision-category-category v))
                     (retrieve-dao 'wiki-article-revision-category :revision
-				  revision))))))))
+                     revision))))))))
 
 (defun list-to-array (list) (make-array (length list) :initial-contents list))
 
@@ -137,13 +137,13 @@
           (encode-json-to-string
            `((content
               . ,(clean (wiki-article-revision-content revision)
-			*sanitize-schule*))
+                  *sanitize-schule*))
              (categories
               . ,(list-to-array
                   (mapcar
                    #'(lambda (v) (wiki-article-revision-category-category v))
                    (retrieve-dao 'wiki-article-revision-category :revision
-				 revision)))))))
+                    revision)))))))
         "{\"content\":\"\", \"categories\": []}")))
 
 (my-defroute :post "/api/wiki/:title" (:admin :user) (title |summary| |html| _parsed) "text/html"
@@ -154,9 +154,9 @@
           (setf article (create-dao 'wiki-article :title title)))
       (let ((revision
              (create-dao 'wiki-article-revision :article article :author user
-			 :summary |summary| :content |html|)))
-	(loop for category in categories do
-             (create-dao 'wiki-article-revision-category :revision revision :category (first category))))
+              :summary |summary| :content |html|)))
+       (loop for category in categories do
+                   (create-dao 'wiki-article-revision-category :revision revision :category (first category))))
       nil)))
 
 (my-defroute :post "/api/quiz/create" (:admin :user) nil "text/html"
@@ -167,7 +167,7 @@
     (format nil "~a"
             (object-id
              (create-dao 'quiz-revision :quiz (find-dao 'quiz :id quiz-id)
-			 :content |data| :author user)))))
+              :content |data| :author user)))))
 
 (my-defroute :get "/api/quiz/:the-id" (:admin :user) (the-id) "application/json"
   (let* ((quiz-id (parse-integer the-id))
@@ -190,7 +190,7 @@
                  . ,(local-time:format-timestring nil (object-created-at r)))
                 (size . ,(length (wiki-article-revision-content r)))))
           (select-dao 'wiki-article-revision (where (:= :article article))
-		      (order-by (:desc :created-at)))))
+           (order-by (:desc :created-at)))))
         (throw-code 404))))
 
 (my-defroute :get "/api/search/:query" (:admin :user :anonymous) (query) "application/json"
@@ -219,7 +219,7 @@
                            *application-root*)))
     (with-open-file
         (stream newpath :direction :output :if-exists :supersede :element-type
-		'(unsigned-byte 8))
+         '(unsigned-byte 8))
       (write-sequence (slot-value filecontents 'vector) stream))
     filehash))
 
@@ -266,7 +266,7 @@
   (setf (getf (response-headers *response*) :content-type) "application/javascript")
   (let ((path (merge-pathnames (first splat) *javascript-directory*)))
       (with-cache (gethash path *javascript-files*)
-	(gethash path *javascript-files*))))
+       (gethash path *javascript-files*))))
 
 (my-defroute :get "/sw.lisp" nil nil "application/javascript"
   (with-cache
@@ -287,17 +287,17 @@
         collect (wiki-article-title
                  (wiki-article-revision-article
                   (find-dao 'wiki-article-revision :id
-			    (getf revision :revision-id))))))))
+                   (getf revision :revision-id))))))))
 
 (my-defroute :post "/api/push-subscription" (:admin :user) (|subscription|) "application/json"
   (let* ((alist (decode-json-from-string |subscription|))
-	 (endpoint (cdr (assoc :endpoint alist)))
-	 (p256dh (cdr (assoc :p-256-dh (cdr (assoc :keys alist)))))
-	 (auth (cdr (assoc :auth (cdr (assoc :keys alist))))))
+         (endpoint (cdr (assoc :endpoint alist)))
+         (p256dh (cdr (assoc :p-256-dh (cdr (assoc :keys alist)))))
+         (auth (cdr (assoc :auth (cdr (assoc :keys alist))))))
     (when (and endpoint auth p256dh)
       (dbi:with-transaction *connection*
-	(delete-by-values 'web-push :user user :endpoint endpoint :auth auth :p256dh p256dh)
-	(create-dao 'web-push :user user :endpoint endpoint :auth auth :p256dh p256dh))
+       (delete-by-values 'web-push :user user :endpoint endpoint :auth auth :p256dh p256dh)
+       (create-dao 'web-push :user user :endpoint endpoint :auth auth :p256dh p256dh))
       (send-push p256dh auth endpoint (namestring (asdf:system-relative-pathname :schule #p"../rust-web-push/private.pem")) "Es funktioniert!"))))
 
 (my-defroute :get "/api/substitutions" (:admin :user) () "application/json"
@@ -311,27 +311,27 @@
   (loop for file in (uiop:directory-files "/home/moritz/wiki/vs/") do
      ;;(format t "~%~a~%" file)
        (schule.vertretungsplan:update *VSS* (schule.vertretungsplan:parse-vertretungsplan (schule.pdf:parse file))))
-  
+
   (let ((top-level *standard-output*))
     (bt:make-thread
      (lambda ()
        (loop
-	  (log:info "Updating substitution schedule")
+        (log:info "Updating substitution schedule")
 
-	  (handler-case
-	      (let ((substitution-schedule (schule.vertretungsplan:parse-vertretungsplan (schule.pdf:parse (schule.vertretungsplan:get-schedule "http://aesgb.de/_downloads/pws/vs.pdf")))))
-		(bt:with-lock-held (*lock*)
-		  (schule.vertretungsplan:update *VSS* substitution-schedule)))
-	    (error (c)
-	      (trivial-backtrace:print-backtrace c)
-	      (log:error c)))
+        (handler-case
+             (let ((substitution-schedule (schule.vertretungsplan:parse-vertretungsplan (schule.pdf:parse (schule.vertretungsplan:get-schedule "http://aesgb.de/_downloads/pws/vs.pdf")))))
+              (bt:with-lock-held (*lock*)
+                  (schule.vertretungsplan:update *VSS* substitution-schedule)))
+           (error (c)
+              (trivial-backtrace:print-backtrace c)
+              (log:error c)))
 
-	  (handler-case
-	      (let ((substitution-schedule (schule.vertretungsplan:parse-vertretungsplan (schule.pdf:parse (schule.vertretungsplan:get-schedule "http://aesgb.de/_downloads/pws/vs1.pdf")))))
-		(bt:with-lock-held (*lock*)
-		  (schule.vertretungsplan:update *VSS* substitution-schedule)))
-	    (error (c)
-	      (trivial-backtrace:print-backtrace c)
-	      (log:error c)))
-	  
-	  (sleep 60))))))
+        (handler-case
+             (let ((substitution-schedule (schule.vertretungsplan:parse-vertretungsplan (schule.pdf:parse (schule.vertretungsplan:get-schedule "http://aesgb.de/_downloads/pws/vs1.pdf")))))
+              (bt:with-lock-held (*lock*)
+                  (schule.vertretungsplan:update *VSS* substitution-schedule)))
+           (error (c)
+              (trivial-backtrace:print-backtrace c)
+              (log:error c)))
+
+        (sleep 60))))))

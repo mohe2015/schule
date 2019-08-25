@@ -24,5 +24,5 @@
     (chain event (stop-propagation))
     (let ((pathname (chain window location pathname (split "/"))))
       (push-state (concatenate 'string "/wiki/" (chain pathname 2) "/create")
-		  (chain window history state))
+       (chain window history state))
       f))

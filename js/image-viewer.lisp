@@ -5,5 +5,5 @@
 
 (on ("click" (one "body") event :dynamic-selector "article[contenteditable=false] img")
     (if (null (chain document fullscreen-element))
-	(chain event target (request-fullscreen))
-	(chain document (exit-fullscreen))))
+     (chain event target (request-fullscreen))
+     (chain document (exit-fullscreen))))

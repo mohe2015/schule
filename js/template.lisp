@@ -4,4 +4,4 @@
 (export
  (defun get-template (id)
    (chain document
-	  (import-node (chain document (get-element-by-id id) content) t))))
+    (import-node (chain document (get-element-by-id id) content) t))))

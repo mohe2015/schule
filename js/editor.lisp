@@ -19,17 +19,17 @@
       (chain formdata (append "summary" change-summary))
       (chain formdata (append "html" (inner-html temp-dom)))
       (loop for category in categories do
-	   (chain formdata (append "categories[]" category)))
+       (chain formdata (append "categories[]" category)))
       (chain (fetch (concatenate 'string "/api/wiki/" article-path) (create method "POST" body formdata))
              (then check-status)
              (then
               (lambda (data)
-		(hide-modal (one "#modal-publish-changes"))
-		(push-state (concatenate 'string "/wiki/" article-path))))
+               (hide-modal (one "#modal-publish-changes"))
+               (push-state (concatenate 'string "/wiki/" article-path))))
              (catch
-		 (lambda (error)
-		   (setf (disabled (one "#publish-changes")) nil)
-		   (handle-fetch-error error))))))
+              (lambda (error)
+                  (setf (disabled (one "#publish-changes")) nil)
+                  (handle-fetch-error error))))))
 
 (export
  (defun show-editor ()

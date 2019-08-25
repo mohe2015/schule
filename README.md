@@ -14,13 +14,12 @@
 `./setup.sh`
 
 ```lisp
-(declaim (optimize (compilation-speed 0) (debug 3) (safety 3) (space 0) (speed 0)))
 (ql:quickload :schule)
 ;;(schule.db:do-generate-migrations)
 (schule.db:do-migrate)
 (schule:development)
 (in-package :schule.web)
-(create-dao 'user :name "Administrator" :hash (hash "xfg3zte94h62j392h") :group "admin")
+(create-dao 'user :name "admin" :hash (hash "admin") :group "admin")
 (create-dao 'user :name "Anonymous" :hash (hash "xfg3zte94h") :group "anonymous")
 (create-dao 'user :name "<your name>" :hash (hash "fjd8sh3l2h") :group "user"))
 ```

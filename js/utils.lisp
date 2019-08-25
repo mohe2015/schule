@@ -4,24 +4,24 @@
       (lambda ()
         (chain this
                (for-each
-		(lambda (element)
-		  (hide element))))
+                (lambda (element)
+                    (hide element))))
         this))
 
 (setf (chain -Array prototype remove)
       (lambda ()
         (chain this
                (for-each
-		(lambda (element)
-		  (remove element))))
+                (lambda (element)
+                    (remove element))))
         this))
 
 (setf (chain -Array prototype add-event-listener)
       (lambda (event func)
         (chain this
                (for-each
-		(lambda (element)
-		  (chain element (add-event-listener event func)))))
+                (lambda (element)
+                    (chain element (add-event-listener event func)))))
         this))
 
 ;; THIS IS HACKY AS HELL AND SHOULD PROBABLY AT LEAST BE IMPLEMENTED USING A SUBCLASS

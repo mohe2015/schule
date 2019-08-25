@@ -15,10 +15,10 @@
             (undefined (chain window local-storage name)))
        (progn
          (chain window history
-		(push-state
-		 (create last-url (chain window location href) last-state
-			 (chain window history state))
-		 nil "/login"))
+          (push-state
+             (create last-url (chain window location href) last-state
+                 (chain window history state))
+             nil "/login"))
          (update-state)))
    (setf (style (one ".login-hide")) "")
    (loop for route in (chain window routes)
@@ -87,8 +87,8 @@
       (return (values (array) old-state)))
   (loop for state in (chain old-state (get-children)) do
        (multiple-value-bind (transitions new-state-object) (current-state-to-new-state-internal state new-state)
-	 (if transitions
-             (return (values (chain (array (concatenate 'string (chain state value) "Enter")) (concat transitions)) new-state-object))))))
+        (if transitions
+                   (return (values (chain (array (concatenate 'string (chain state value) "Enter")) (concat transitions)) new-state-object))))))
 
 (export
  (defun current-state-to-new-state (old-state new-state)

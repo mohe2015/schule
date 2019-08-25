@@ -37,8 +37,8 @@
 (defun urlBase64ToUint8Array (base64String)
   (let* ((padding (chain "=" (repeat (% (- 4 (% base64String.length 4)) 4))))
          (base64  (chain (+ base64String padding) (replace (regex "/\\-/g") "+") (replace (regex "/_/g") "/")))
-	 (rawData (chain window (atob base64)))
-	 (outputArray (new (-Uint8-Array (chain rawData length)))))
+         (rawData (chain window (atob base64)))
+         (outputArray (new (-Uint8-Array (chain rawData length)))))
     (loop for i from 0 to (- (chain rawData length) 1) do
          (setf (getprop outputArray i) (chain rawData (char-Code-At i))))
     outputArray))
@@ -51,10 +51,10 @@
      (fetch "/api/push-subscription" (create method "POST" body formdata))
      (then
       (lambda (response)
-	(chain console (log response))))
+       (chain console (log response))))
      (catch
-	 (lambda (error)
-	   (chain console (log error)))))))
+      (lambda (error)
+         (chain console (log error)))))))
 
 (defun unsubscribe-user ()
   (chain
@@ -64,10 +64,10 @@
    (then
     (lambda (subscription)
       (if subscription
-	  (chain subscription (unsubscribe)))))
+       (chain subscription (unsubscribe)))))
    (catch
        (lambda (error)
-	 (chain console (log error))))
+        (chain console (log error))))
    (then
     (lambda ()
       (update-subscription-on-server nil)
@@ -84,12 +84,12 @@
       (update-subscription-on-server subscription)
       (setf (chain window is-subscribed) (not (null subscription)))
       (if is-subscribed
-	  (setf (inner-text (one "#settings-enable-notifications")) "Benachrichtigungen deaktivieren")
-	  (setf (inner-text (one "#settings-enable-notifications")) "Benachrichtigungen aktivieren"))
+       (setf (inner-text (one "#settings-enable-notifications")) "Benachrichtigungen deaktivieren")
+       (setf (inner-text (one "#settings-enable-notifications")) "Benachrichtigungen aktivieren"))
       (remove-class (one "#settings-enable-notifications") "disabled")))
    (catch
        (lambda (error)
-	 (chain console (log error))))))
+        (chain console (log error))))))
 
 (on ("load" window event)
     (chain
@@ -98,35 +98,35 @@
      (register "/sw.lisp")
      (then
       (lambda (registration)
-	(setf (chain window registration) registration)
-	(update-button registration)))
+       (setf (chain window registration) registration)
+       (update-button registration)))
      (catch
-	 (lambda (error)
-	   (chain console (log error))))))
+      (lambda (error)
+         (chain console (log error))))))
 
 (on ("click" (one "#settings-enable-notifications") event)
     (chain event (prevent-default))
     (chain event (stop-propagation))
     (add-class (one "#settings-enable-notifications") "disabled")
     (if is-subscribed
-	(unsubscribe-user)
-	(chain
-	 registration
-	 push-manager
-	 (subscribe
-	  (create
-	   user-visible-only t
-	   application-server-key (urlBase64ToUint8Array "BIdu79bj4cxbo-OebKwbp0wfrUAQ7MKUkGfxH_YG2W60n2knhpYFqp_64oyrV4pq8sY6wjdWuWvRnxj_TkVQqZ4=")))
-	 (then
-	  (lambda (push-registration)
-	    (chain console (log push-registration))
-	    (update-subscription-on-server push-registration)
-	    (setf (chain window is-subscribed) t)
-	    (update-button registration)))
-	 (catch
-	     (lambda (error)
-	       (chain console (log error))
-	       (update-button registration))))))
+     (unsubscribe-user)
+     (chain
+       registration
+       push-manager
+       (subscribe
+         (create
+           user-visible-only t
+           application-server-key (urlBase64ToUint8Array "BIdu79bj4cxbo-OebKwbp0wfrUAQ7MKUkGfxH_YG2W60n2knhpYFqp_64oyrV4pq8sY6wjdWuWvRnxj_TkVQqZ4=")))
+       (then
+         (lambda (push-registration)
+            (chain console (log push-registration))
+            (update-subscription-on-server push-registration)
+            (setf (chain window is-subscribed) t)
+            (update-button registration)))
+       (catch
+            (lambda (error)
+               (chain console (log error))
+               (update-button registration))))))
 
 (defroute "/substitution-schedule"
     (show-tab "#loading")
@@ -134,16 +134,16 @@
    "/api/substitutions"
    (lambda (data)
      (loop :for (k v) :of (chain data schedules) :do
-	  (let ((template (get-template "template-substitution-schedule")))
-	    (setf (inner-text (one ".substitution-schedule-date" template)) (chain (new (-date (* k 1000))) (to-locale-date-string "de-DE")))
-	    (if (chain v substitutions)
-		(loop :for (clazz substitutions) :of (group-by (chain v substitutions) "class") :do
-		     (let ((class-template (get-template "template-substitution-for-class")))
-		       (setf (inner-text (one ".template-class" class-template)) clazz)
-		       (loop for substitution in substitutions do
-			    (let ((substitution-template (get-template "template-substitution")))
-			      (setf (inner-text (one "li" substitution-template)) (substitution-to-string substitution))
-			      (append (one "ul" class-template) substitution-template)))
-		       (append template class-template))))
-	    (append (one "#substitution-schedule-content") template)))
+      (let ((template (get-template "template-substitution-schedule")))
+         (setf (inner-text (one ".substitution-schedule-date" template)) (chain (new (-date (* k 1000))) (to-locale-date-string "de-DE")))
+         (if (chain v substitutions)
+          (loop :for (clazz substitutions) :of (group-by (chain v substitutions) "class") :do
+                 (let ((class-template (get-template "template-substitution-for-class")))
+                     (setf (inner-text (one ".template-class" class-template)) clazz)
+                     (loop for substitution in substitutions do
+                      (let ((substitution-template (get-template "template-substitution")))
+                           (setf (inner-text (one "li" substitution-template)) (substitution-to-string substitution))
+                           (append (one "ul" class-template) substitution-template)))
+                     (append template class-template))))
+         (append (one "#substitution-schedule-content") template)))
      (show-tab "#substitution-schedule"))))
