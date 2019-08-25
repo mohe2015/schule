@@ -72,71 +72,63 @@
               (setf (chain link rel) "noopener noreferrer"))))))
 
 (tool "createLink"
-      (on ("submit" (one "#form-link") event)
-       (chain event (prevent-default))
-       (chain event (stop-propagation))
-       (hide-modal (one "#modal-link"))
-       (restore-range)
-       (update-link (value (one "#link"))))
-      (show-modal (one "#modal-link")))
+  (on ("submit" (one "#form-create-link") event) ;; this doesn't remove the old listener
+    (chain event (prevent-default))
+    (chain event (stop-propagation))
+    (hide-modal (one "#modal-create-link"))
+    (restore-range)
+    (update-link (value (one "#create-link"))))
+  (show-modal (one "#modal-create-link")))
 
 (var articles (array))
 
 (cache-then-network "/api/articles" (lambda (data) (setf articles data)))
 
-(chain document (get-element-by-id "link")
-       (add-event-listener "input"
-         (lambda (event)
-           (chain console (log event))
-           (let* ((input (chain document (get-element-by-id "link")))
-                  (value (chain input value (replace "/wiki/" "")))
-                  (result
-                       (chain articles
-                            (filter
-                                  (lambda (article)
-                                         (not
-                                          (=
-                                                 (chain article (to-lower-case)
-                                                        (index-of (chain value (to-lower-case))))
-                                                 -1)))))))
-             (chain console (log result))
-             (setf (chain input next-element-sibling inner-h-t-m-l) "")
-             (if (> (chain result length) 0)
-              (add-class (chain input next-element-sibling) "show")
-              (remove-class (chain input next-element-sibling) "show"))
-             (loop for article in result
-              do (let ((element (chain document (create-element "div"))))
-                      (setf (chain element class-name) "dropdown-item")
-                      (setf (chain element inner-h-t-m-l) article)
-                      (chain element
-                           (add-event-listener "click"
-                                  (lambda (event)
-                                          (setf (chain input value)
-                                                (concatenate 'string "/wiki/"
-                                                                (chain element inner-h-t-m-l)))
-                                          (remove-class (chain input next-element-sibling) "show"))))
-                      (chain input next-element-sibling (append element))))
-             nil))))
+(on ("input" (all ".link-input") event)
+  (let* ((input (chain event target))
+         (value (chain input value (replace "/wiki/" "")))
+         (result
+           (chain articles
+             (filter
+               (lambda (article)
+                 (not (= (chain article (to-lower-case) (index-of (chain value (to-lower-case)))) -1)))))))
+    (chain console (log result))
+    (setf (chain input next-element-sibling inner-h-t-m-l) "")
+    (if (> (chain result length) 0)
+     (add-class (chain input next-element-sibling) "show")
+     (remove-class (chain input next-element-sibling) "show"))
+    (loop for article in result
+     do (let ((element (chain document (create-element "div"))))
+             (setf (chain element class-name) "dropdown-item")
+             (setf (chain element inner-h-t-m-l) article)
+             (chain element
+               (add-event-listener "click"
+                 (lambda (event)
+                   (setf (chain input value) (concatenate 'string "/wiki/" (chain element inner-h-t-m-l)))
+                   (remove-class (chain input next-element-sibling) "show"))))
+             (chain input next-element-sibling (append element))))
+    nil))
 
 (on ("click" (one "body") event :dynamic-selector ".editLink")
     (chain event (prevent-default))
     (chain event (stop-propagation))
     (let ((target (get-popover (chain event target))))
       (hide-popover target)
-      (setf (value (one "#link")) (href (chain target element)))
-      (on ("submit" (one "#form-link") event)
+      (setf (value (one "#edit-link")) (href (chain target element)))
+      (on ("submit" (one "#form-edit-link") event)
        (chain event (prevent-default))
        (chain event (stop-propagation))
-       (hide-modal (one "#modal-link"))
+       (hide-modal (one "#modal-edit-link"))
        (chain document (get-elements-by-tag-name "article") 0 (focus))
-       (setf (href (chain target element)) (value (one "#link"))))
-      (show-modal (one "#modal-link"))))
+       (setf (href (chain target element)) (value (one "#edit-link"))))
+      (show-modal (one "#modal-edit-link"))))
 
 (on ("click" (one "body") event :dynamic-selector ".deleteLink")
     (chain event (prevent-default))
     (chain event (stop-propagation))
     (let ((target (get-popover (chain event target))))
-      (hide-popover target)))
+      (hide-popover target)
+      (remove (chain target element))))
 
 (on ("click" (one "body") event :dynamic-selector "article[contenteditable=true] a")
     (chain event (prevent-default))

@@ -286,16 +286,19 @@
             "modal" "Fertig"))
         `(,(text-input "Kategorie..." "new-category" "category" :no-label? t)))
 
-     ,(modal "link" "Link"
-        `((:button :type "button" :class "btn btn-secondary" :data-dismiss
-            "modal" "Abbrechen")
+     ,(modal "create-link" "Link erstellen"
+        `((:button :type "button" :class "btn btn-secondary" :data-dismiss "modal" "Abbrechen")
           ,(submit-button "Ok" :id "update-link"))
-        `((:div :class "form-group" :style
-           "position: relative; display: inline-block;"
-           (:input :type "text" :id "link" :class "form-control" :autocomplete
-                "off")
-           (:div :class "dropdown-menu" :style
-              "position: absolute; top: 100%; left: 0px; z-index: 100; width: 100%;"))))
+        `((:div :class "form-group" :style "position: relative; display: inline-block;"
+           (:input :type "text" :id "create-link" :class "form-control link-input" :autocomplete "off")
+           (:div :class "dropdown-menu" :style "position: absolute; top: 100%; left: 0px; z-index: 100; width: 100%;"))))
+
+      ,(modal "edit-link" "Link ändern"
+         `((:button :type "button" :class "btn btn-secondary" :data-dismiss "modal" "Abbrechen")
+           ,(submit-button "Ok" :id "update-link"))
+         `((:div :class "form-group" :style "position: relative; display: inline-block;"
+            (:input :type "text" :id "edit-link" :class "form-control link-input" :autocomplete "off")
+            (:div :class "dropdown-menu" :style "position: absolute; top: 100%; left: 0px; z-index: 100; width: 100%;"))))
 
      ,(modal "table" "Tabelle"
         `((:button :type "button" :class "btn btn-secondary" :data-dismiss
