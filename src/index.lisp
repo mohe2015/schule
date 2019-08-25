@@ -328,17 +328,14 @@
           (:button :type "button" :class "btn btn-primary" :id "update-formula"
             "Ok"))
         `((:div :class "form-group"
-           (:div :class "alert alert-warning" :role "alert"
-              "Formeln editieren funktioniert nur in Google Chrome zuverlässig!")
+           (:div :class "alert alert-warning" :role "alert" "Formeln editieren funktioniert nur in Google Chrome zuverlässig!")
            (:span :id "formula" "e=mc^2"))))
 
      (:script :src "/popper.js")
      (:script :src "/bootstrap.js")
-     (:script :type "module" :src "/js/index.lisp"))))
-
+     (:script :type "module" :src "/js/index.lisp")
+     (:link :rel "stylesheet" :href "/mathlive.core.css")
+     (:link :rel "stylesheet" :href "/mathlive.css"))))
 #|
-(:link :rel "stylesheet" :href "/mathlive.core.css")
-(:link :rel "stylesheet" :href "/mathlive.css")
-(:script :src "/mathlive.js")
 (:script :src "/visual-diff.js")
 |#
