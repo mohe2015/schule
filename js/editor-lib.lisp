@@ -238,7 +238,7 @@
 
 (tool "insertFormula"
       (on ("click" (one "#update-formula") event)
-       (hide-modal (one "#formula-modal"))
+       (hide-modal (one "#modal-formula"))
        (chain document (get-elements-by-tag-name "article") 0 (focus))
        (let ((latex (chain window mathfield (latex))))
           (chain window mathfield (revert-to-original-content))
@@ -250,14 +250,14 @@
           (loop for element in (chain document
                                 (get-elements-by-class-name "formula"))
                     do (chain -math-live (render-math-in-element element)))))
-      (show-modal (one "#formula-modal"))
+      (show-modal (one "#modal-formula"))
       (setf (chain window mathfield)
        (chain -math-live
         (make-math-field (chain document (get-element-by-id "formula"))
                (create virtual-keyboard-mode "manual")))))
 
 (on ("click" (one "#update-formula") event)
-    (hide-modal (one "#formula-modal"))
+    (hide-modal (one "#modal-formula"))
     (chain document (get-elements-by-tag-name "article") 0 (focus))
     (let ((latex (chain window mathfield (latex))))
       (chain window mathfield (revert-to-original-content))
@@ -344,11 +344,11 @@
             (chain -math-live
              (make-math-field (chain document (get-element-by-id "formula"))
                     (create virtual-keyboard-mode "manual"))))
-      (show-modal (one "#formula-modal"))
+      (show-modal (one "#modal-formula"))
       (chain (one "#update-formula") (off "click")
        (click
         (lambda (event)
-         (hide-modal (one "#formula-modal"))
+         (hide-modal (one "#modal-formula"))
          (chain document (get-elements-by-tag-name "article") 0 (focus))
          (let ((latex (chain window mathfield (latex))))
              (chain window mathfield (revert-to-original-content))

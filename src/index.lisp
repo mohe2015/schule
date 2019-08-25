@@ -288,14 +288,14 @@
 
      ,(modal "create-link" "Link erstellen"
         `((:button :type "button" :class "btn btn-secondary" :data-dismiss "modal" "Abbrechen")
-          ,(submit-button "Ok" :id "update-link"))
+          ,(submit-button "Ok"))
         `((:div :class "form-group" :style "position: relative; display: inline-block;"
            (:input :type "text" :id "create-link" :class "form-control link-input" :autocomplete "off")
            (:div :class "dropdown-menu" :style "position: absolute; top: 100%; left: 0px; z-index: 100; width: 100%;"))))
 
       ,(modal "edit-link" "Link ändern"
          `((:button :type "button" :class "btn btn-secondary" :data-dismiss "modal" "Abbrechen")
-           ,(submit-button "Ok" :id "update-link"))
+           ,(submit-button "Ok"))
          `((:div :class "form-group" :style "position: relative; display: inline-block;"
             (:input :type "text" :id "edit-link" :class "form-control link-input" :autocomplete "off")
             (:div :class "dropdown-menu" :style "position: absolute; top: 100%; left: 0px; z-index: 100; width: 100%;"))))
