@@ -5,6 +5,7 @@
 (i "./categories.lisp")
 (i "./fetch.lisp" "cacheThenNetwork")
 (i "./utils.lisp" "all" "one" "clearChildren")
+(i "/mathlive.mjs" "MathLive")
 
 (defun save-range ()
   (chain document (get-elements-by-tag-name "article") 0 (focus))

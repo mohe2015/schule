@@ -1,6 +1,6 @@
 set -ex
 
-mkdir uploads
+mkdir -p uploads
 
 ln -sf $PWD/ ~/quicklisp/local-projects/
 ln -sf $PWD/lack/ ~/quicklisp/local-projects/
