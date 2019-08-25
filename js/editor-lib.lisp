@@ -214,10 +214,10 @@
      (send-file (chain document (get-element-by-id "image-file") files 0))))
 
 (tool "table"
-      (show-modal (one "#table-modal")))
+      (show-modal (one "#modal-table")))
 
 (on ("click" (one "#update-table") event)
-    (hide-modal (one "#table-modal"))
+    (hide-modal (one "#modal-table"))
     (chain document (get-elements-by-tag-name "article") 0 (focus))
     (let* ((columns (parse-int (value (one "#table-columns"))))
            (rows (parse-int (value (one "#table-rows"))))
@@ -231,9 +231,10 @@
              inner-table-html "</table></div>")))
       (chain document (exec-command "insertHTML" f table-html))))
 
-(on ("click" (one "body") event :dynamic-selector "article[contenteditable=true] td")
-    (let ((target (chain event target)))
-      (show-popover (create-popover-for target "table data"))))
+;; TODO TABLE resizing (maybe only on rightclick / longclick on mobile)?
+;;(on ("click" (one "body") event :dynamic-selector "article[contenteditable=true] td")
+;;    (let ((target (chain event target)))
+;;      (show-popover (create-popover-for target "table data"))))
 
 (tool "insertFormula"
       (on ("click" (one "#update-formula") event)
