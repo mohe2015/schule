@@ -197,20 +197,16 @@
                    (:a :href "#" :id "format-p" (:span :class "fas fa-paragraph")) " "
                    (:a :href "#" :id "format-h2" (:span :class "fas fa-heading")) " "
                    (:a :href "#" :id "format-h3" (:span :class "fas fa-heading")) " "
-                   (:a :href "#" :id "superscript" (:span :class "fas fa-superscript"))
-                   " " (:a :href "#" :id "subscript" (:span :class "fas fa-subscript"))
-                   " "
-                   (:a :href "#" :id "insertUnorderedList"
-                    (:span :class "fas fa-list-ul"))
-                   " "
-                   (:a :href "#" :id "insertOrderedList" (:span :class "fas fa-list-ol"))
-                   " " (:a :href "#" :id "indent" (:span :class "fas fa-indent")) " "
+                   (:a :href "#" :id "superscript" (:span :class "fas fa-superscript")) " "
+                   (:a :href "#" :id "subscript" (:span :class "fas fa-subscript")) " "
+                   (:a :href "#" :id "insertUnorderedList" (:span :class "fas fa-list-ul")) " "
+                   (:a :href "#" :id "insertOrderedList" (:span :class "fas fa-list-ol")) " "
+                   (:a :href "#" :id "indent" (:span :class "fas fa-indent")) " "
                    (:a :href "#" :id "outdent" (:span :class "fas fa-outdent")) " "
                    (:a :href "#" :id "createLink" (:span :class "fas fa-link")) " "
                    (:a :href "#" :id "insertImage" (:span :class "fas fa-image")) " "
                    (:a :href "#" :id "table" (:span :class "fas fa-table")) " "
-                   (:a :href "#" :id "insertFormula" (:span :class "fas fa-calculator"))
-                   " " (:a :href "#" :id "undo" (:span :class "fas fa-undo")) " "
+                   (:a :href "#" :id "undo" (:span :class "fas fa-undo")) " "
                    (:a :href "#" :id "redo" (:span :class "fas fa-redo")) " "
                    (:a :href "#" :id "settings" (:span :class "fas fa-cog")) " "
                    (:a :href "#" :id "finish" (:span :class "fas fa-check")))

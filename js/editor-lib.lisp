@@ -237,20 +237,20 @@
 ;;    (let ((target (chain event target)))
 ;;      (show-popover (create-popover-for target "table data"))))
 
-(tool "insertFormula"
+'(tool "insertFormula"
       (on ("click" (one "#update-formula") event)
-       (hide-modal (one "#modal-formula"))
-       (chain document (get-elements-by-tag-name "article") 0 (focus))
-       (let ((latex (chain window mathfield ($latex))))
-          (chain window mathfield ($revert-to-original-content))
-          (chain document
-            (exec-command "insertHTML" f
-                (concatenate 'string
-                           "<span class=\"formula\" contenteditable=\"false\">\\("
-                           latex "\\)</span>")))
-          (loop for element in (chain document
-                                (get-elements-by-class-name "formula"))
-                    do (chain -math-live (render-math-in-element element)))))
+        (chain document (get-elements-by-tag-name "article") 0 (focus))
+        (let ((latex (chain window mathfield ($latex))))
+           (chain window mathfield ($revert-to-original-content))
+           (chain document
+             (exec-command "insertHTML" f
+                 (concatenate 'string
+                            "<span class=\"formula\" contenteditable=\"false\">\\("
+                            latex "\\)</span>")))
+           (loop for element in (chain document
+                                 (get-elements-by-class-name "formula"))
+                     do (chain -math-live (render-math-in-element element))))
+        (hide-modal (one "#modal-formula")))
       (show-modal (one "#modal-formula"))
       (setf (chain window mathfield)
        (chain -math-live
