@@ -1,2 +1,8 @@
-target
+target/debug/libwebpush.d
+target/debug/.cargo-lock
+target/.rustc_info.json
+target/debug/incremental
+target/debug/deps
+target/debug/build
+target/debug/.fingerprint
 *.pem
