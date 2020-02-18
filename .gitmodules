@@ -18,7 +18,7 @@
 	url = https://github.com/twbs/bootstrap
 [submodule "dependencies/cl-pdf"]
 	path = dependencies/cl-pdf
-	url = https://github.com/mohe2015/cl-pdf
+	url = https://github.com/mbattyani/cl-pdf
 [submodule "dependencies/Font-Awesome"]
 	path = dependencies/Font-Awesome
 	url = https://github.com/FortAwesome/Font-Awesome
